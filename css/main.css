@@ -1,0 +1,122 @@
+@import url(./normalize.min.css);
+@import url(./milligram.min.css);
+@import url(../fonts/lato/latofonts.css);
+*{
+    font-family: Lato;
+}
+
+hr{
+    border-top: 1px solid #585757;
+    width:80%;
+    margin-left:10%;
+}
+
+.question_title{
+    color:#0063a7;
+    text-align:center;
+    margin-top:100px;
+}
+
+.third_qn_onwards{
+    margin-top:20px !important;
+}
+
+.choose_more_domains .answer_choice{
+    width:90%;
+    margin-left:0px;
+}
+
+.selected_domain{
+    background-color: #dde3eb;
+}
+
+.answer_choice{
+    cursor:pointer;
+    color:black;
+    font-weight:normal;
+    border: 0.1rem solid #585757;
+    border-radius: .4rem;
+    text-align:center;
+    width:50%;
+    margin-left:25%;
+}
+
+.answer_choice a{
+    padding-left:0px;
+    padding-right:0px;
+}
+
+.answer_choice{
+    padding-left:10px;
+    padding-right:10px;
+    padding-top:5px;
+    padding-bottom:5px;
+    margin-bottom:10px;
+}
+
+.answer_choice:hover{
+    background-color: #dde3eb;
+}
+
+.results_title{
+    color:#0063a7;
+    text-align:center;
+}
+
+.result_box{
+    border:solid 1px;
+    padding:15px !important;
+    margin-bottom:15px !important;
+}
+
+.result_box{
+    margin-right:2%;
+}
+
+.result_box:last-of-type{
+    border-radius: .4rem;
+    margin-right:0;
+}
+
+.result_title{
+    text-align:left;
+    color:black;
+    font-weight:bold;
+    margin-bottom:5px;
+}
+
+.result_details, .result_date{
+    text-align:left;
+    color:black;
+    font-weight:normal;
+    margin-bottom:5px;
+}
+
+
+/*Mobile screens*/
+@media (max-width: 40.0rem) {
+    h1{
+        font-size:2em;
+    }
+
+    .question_title{
+        margin-top:20px;
+    }
+
+    .answer_choice{
+        width:90%;
+        margin-left:5%;
+    }
+
+    .result_box{
+        width:100% !important;
+    }
+
+    .result_box:first-of-type{
+        margin-right:0px;
+    }
+    .result_box:last-of-type{
+        margin-left:0px;
+    }
+}
+
