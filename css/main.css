@@ -65,7 +65,7 @@ hr{
 }
 
 .answer_choice:hover{
-    background-color: #dde3eb;
+    background-color: #edf3fb !important;
 }
 
 .results_title{

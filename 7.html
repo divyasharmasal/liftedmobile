@@ -168,6 +168,7 @@ $( document ).ready(function() {
 
         if (elm.hasClass(className)){
             elm.removeClass(className);
+            elm.css("background-color", "white");
         }
         else{
             $(this).parent().parent().children().each(function(){
