@@ -183,10 +183,11 @@ hr{
 }
 
 .full_result_box{
+    font-size:1.4em;
     border-radius: .4rem;
     border:solid 1px;
     padding:15px !important;
-    margin-bottom:15px !important;
+    margin-bottom:25px !important;
 }
 
 .full_result_box a, .result_box a{
