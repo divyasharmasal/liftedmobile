@@ -182,6 +182,18 @@ hr{
     margin-bottom:5px;
 }
 
+.full_result_box{
+    border-radius: .4rem;
+    border:solid 1px;
+    padding:15px !important;
+    margin-bottom:15px !important;
+}
+
+.full_result_box a, .result_box a{
+    cursor:pointer;
+}
+
+
 /*Mobile screens - width*/
 @media (max-height: 50.0rem) {
     .mobile_scroll_for_results{
@@ -210,7 +222,7 @@ hr{
         margin-left:0;
     }
 
-    .result_box{
+    .result_box, .full_result_box{
         width:100% !important;
     }
 
