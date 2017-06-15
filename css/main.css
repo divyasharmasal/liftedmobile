@@ -112,7 +112,10 @@ hr{
 }
 
 .take_test_button{
-    font-size:1em;
+    font-size: 1.7rem;
+    height: 6rem;
+    line-height: 6rem;
+    padding: 0 2rem;
 }
 
 .mobile_scroll_for_results{
