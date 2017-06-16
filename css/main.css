@@ -144,8 +144,8 @@ hr{
 
 .competency_desc h2{
     font-size:1.8em;
-    /*font-weight:bold;*/
     text-align:center;
+    color:black;
 }
 
 .competency_qn_separator{
