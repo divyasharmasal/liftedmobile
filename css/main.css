@@ -5,6 +5,24 @@
     font-family: Lato;
 }
 
+a{
+}
+
+a:visited{
+}
+
+.button,
+.button-large{
+    color:#0063a7 !important;
+    border-color:#0063a7 !important;
+    background-color:white;
+}
+
+.button:hover{
+    background-color:white;
+}
+
+
 hr{
     border-top: 1px solid #585757;
     width:80%;
@@ -125,8 +143,8 @@ hr{
 }
 
 .competency_desc h2{
-    font-size:1.4em;
-    font-weight:bold;
+    font-size:1.8em;
+    /*font-weight:bold;*/
     text-align:center;
 }
 
@@ -186,7 +204,7 @@ hr{
 }
 
 .full_result_box{
-    font-size:1.4em;
+    font-size:1.3em;
     border-radius: .4rem;
     border:solid 1px;
     padding:15px !important;
