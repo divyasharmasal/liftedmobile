@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-   liftedmobile:
+    liftedmobile:
         build:
             context: ./
             dockerfile: ./Dockerfile
