@@ -32,7 +32,7 @@ else:
     # if DJANGO_SECRET_KEY is set in ENV, then assume it's a production server
     DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
