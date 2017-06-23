@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+   liftedmobile:
+        build:
+            context: ./
+            dockerfile: ./Dockerfile
+        ports:
+            - "80:80"
+        expose:
+            - "80"
