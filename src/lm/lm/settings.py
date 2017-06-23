@@ -20,10 +20,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'kw!3bqy4e39x0@xhoor4uvpwj!hgofxh9p5=j7^9$x-i*41vc_'
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = None
+DEBUG = None
+
+if 'DJANGO_SECRET_KEY' in os.environ:
+    SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+    DEBUG = False
+else:
+    SECRET_KEY = 'kw!3bqy4e39x0@xhoor4uvpwj!hgofxh9p5=j7^9$x-i*41vc_'
+    # if DJANGO_SECRET_KEY is set in ENV, then assume it's a production server
+    DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -80,6 +87,12 @@ DATABASES = {
     }
 }
 
+# Password hashing
+# https://docs.djangoproject.com/en/1.11/topics/auth/passwords/#using-argon2-with-django
+
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -104,13 +117,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
