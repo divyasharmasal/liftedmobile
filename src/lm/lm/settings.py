@@ -21,16 +21,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECURITY WARNING: don't run with debug turned on in production!
-SECRET_KEY = None
-DEBUG = None
+SECRET_KEY = 'G-:Gglp?"ayxKD(urwBxbmd%,.PfiF9Ark.cw#iIc#*H$&J\<l9yV]|1"Z6[z}/'
+DEBUG = True
 
-if 'DJANGO_SECRET_KEY' in os.environ:
+if 'DEV' in os.environ:
+    SECRET_KEY = 'kw!3bqy4e39x0@xhoor4uvpwj!hgofxh9p5=j7^9$x-i*41vc_'
+    DEBUG = True
+
+elif 'DJANGO_SECRET_KEY' in os.environ:
+    # if DJANGO_SECRET_KEY is set in ENV, then assume it's a production server
     SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
     DEBUG = False
-else:
-    SECRET_KEY = 'kw!3bqy4e39x0@xhoor4uvpwj!hgofxh9p5=j7^9$x-i*41vc_'
-    # if DJANGO_SECRET_KEY is set in ENV, then assume it's a production server
-    DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'app',
 ]
 
 MIDDLEWARE = [
@@ -127,3 +129,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+print(STATIC_ROOT)
+
