@@ -71,16 +71,28 @@ source venv/bin/activate
 ### Updating Python requirements
 
 If you use `pip3 install` to add any Python packages to the virtual
-environment, make sure to update `requirements.txt` as well:
+environment, make sure to update `requirements.txt` as well. Note that this
+command filters out any line containing `pkg-resources` which usually breaks
+the build.
 
 ``` 
-pip3 freeze > requirements.txt 
+pip3 freeze | grep -v "pkg-resources" > requirements.txt
 ```
 
 Run `pip3 install -r requirements.txt` to install all the packages
 listed in `requirements.txt`.
 
 ## Launching the app locally
+
+Just `cd` to the `liftedmobile` directory and run:
+
+```
+./run_dev_server.sh
+```
+
+Don't run `python3 manage.py` yourself; `run_dev_server.sh` specifies a `DEV`
+environment variable that makes Django set `DEBUG=false`. Otherwise, I can't
+guarantee whether it will set `DEBUG` to `false`.
 
 ## Deployment
 
@@ -89,7 +101,13 @@ listed in `requirements.txt`.
 Run:
 
 ```
-docker build -t liftedmobile .
+./docker-compose.sh
+```
+
+To view the logs from the container, run:
+
+```
+docker logs -f liftedmobile
 ```
 
 

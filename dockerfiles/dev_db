@@ -1,0 +1,2 @@
+FROM postgres:alpine
+ADD ./dev_db.init.sql /docker-entrypoint-initdb.d/

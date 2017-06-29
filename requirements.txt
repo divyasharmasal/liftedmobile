@@ -4,3 +4,5 @@ Django==1.11.2
 pycparser==2.17
 pytz==2017.2
 six==1.10.0
+uWSGI==2.0.15
+psycopg2==2.7.1
