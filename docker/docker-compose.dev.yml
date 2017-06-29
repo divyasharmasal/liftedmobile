@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+    db_dev:
+        container_name: liftedmobile_db_dev
+        build: 
+            context: ../
+            dockerfile: ./docker/db_dev
+        environment:
+            - POSTGRES_PASSWORD=fGWJTw2Dbpa2p547brXEVjXyzHZu9puytcAaA9mY 
+
+
+    liftedmobile_dev:
+        container_name: liftedmobile_dev
+        build:
+            context: ../
+            dockerfile: ./docker/liftedmobile_dev
+        volumes:
+            - ../src:/src
+        ports:
+            - "80:80"
+        expose:
+            - "80"
+        environment:
+            - DEV=true
+            - DB_PWD=fGWJTw2Dbpa2p547brXEVjXyzHZu9puytcAaA9mY 

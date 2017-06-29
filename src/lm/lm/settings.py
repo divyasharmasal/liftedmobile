@@ -33,6 +33,9 @@ elif 'DJANGO_SECRET_KEY' in os.environ:
     SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
     DEBUG = False
 
+
+print("Debug set to", str(DEBUG))
+
 ALLOWED_HOSTS = ["*"]
 
 
@@ -84,15 +87,15 @@ WSGI_APPLICATION = 'lm.wsgi.application'
 
 DATABASES = None
 
-if 'DEV' in os.environ:
+if 'DEV' in os.environ and 'DB_PWD' in os.environ:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'liftedmobile',
             'USER': 'postgres',
             'PASSWORD': os.environ['DB_PWD'],
-            'HOST': 'localhost',
-            'PORT': '5433',
+            'HOST': 'liftedmobile_db_dev',
+            'PORT': '5432',
         }
     }
 else:
@@ -100,8 +103,7 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'liftedmobile',
-            'USER': 'liftedmobile',
-            'PASSWORD': 'mypassword',
+            'USER': 'postgres',
             'HOST': 'liftedmobile_db',
             'PORT': '5432',
         }
@@ -148,4 +150,3 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-

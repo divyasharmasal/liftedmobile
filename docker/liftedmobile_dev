@@ -1,0 +1,20 @@
+FROM alpine:latest
+
+WORKDIR /src
+
+RUN apk update
+
+RUN apk add python3 python3-dev \
+        py-psycopg2 postgresql-dev \
+        linux-headers \
+        build-base libffi-dev \
+    rm -rf /var/cache/apk/*
+
+RUN pip3 install --upgrade pip
+
+COPY ./requirements.txt /requirements.txt
+RUN pip3 install -r /requirements.txt
+
+EXPOSE 80
+
+CMD cd /src/lm && python3 manage.py runserver 0.0.0.0:80
