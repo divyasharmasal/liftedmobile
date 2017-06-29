@@ -6,6 +6,8 @@ services:
         build: 
             context: ../
             dockerfile: ./docker/db
+        environment:
+            - POSTGRES_PASSWORD=fGWJTw2Dbpa2p547brXEVjXyzHZu9puytcAaA9mY 
 
     liftedmobile:
         container_name: liftedmobile
@@ -16,3 +18,5 @@ services:
             - "80:80"
         expose:
             - "80"
+        environment:
+            - DB_PWD=fGWJTw2Dbpa2p547brXEVjXyzHZu9puytcAaA9mY 

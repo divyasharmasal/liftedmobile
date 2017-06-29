@@ -8,5 +8,6 @@ class Question(models.Model):
 
 class Option(models.Model):
     id = models.AutoField(primary_key=True)
+    index = models.IntegerField()
     text = models.TextField()
     question = models.ForeignKey(Question, on_delete=models.CASCADE)

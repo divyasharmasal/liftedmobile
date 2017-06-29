@@ -7,7 +7,7 @@ services:
             context: ../
             dockerfile: ./docker/db_dev
         environment:
-            - POSTGRES_PASSWORD=fGWJTw2Dbpa2p547brXEVjXyzHZu9puytcAaA9mY 
+            - POSTGRES_PASSWORD=password 
 
 
     liftedmobile_dev:
@@ -18,9 +18,9 @@ services:
         volumes:
             - ../src:/src
         ports:
-            - "80:80"
+            - "8000:8000"
         expose:
-            - "80"
+            - "8000"
         environment:
             - DEV=true
-            - DB_PWD=fGWJTw2Dbpa2p547brXEVjXyzHZu9puytcAaA9mY 
+            - DB_PWD=password 

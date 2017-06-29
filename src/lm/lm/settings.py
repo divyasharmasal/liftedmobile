@@ -104,6 +104,7 @@ else:
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'liftedmobile',
             'USER': 'postgres',
+            'PASSWORD': os.environ['DB_PWD'],
             'HOST': 'liftedmobile_db',
             'PORT': '5432',
         }

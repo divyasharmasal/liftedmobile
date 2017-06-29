@@ -6,6 +6,7 @@ RUN apk update
 
 RUN apk add python3 python3-dev \
         py-psycopg2 postgresql-dev \
+        postgresql \
         linux-headers \
         build-base libffi-dev \
     rm -rf /var/cache/apk/*
@@ -15,6 +16,16 @@ RUN pip3 install --upgrade pip
 COPY ./requirements.txt /requirements.txt
 RUN pip3 install -r /requirements.txt
 
-EXPOSE 80
+EXPOSE 8000
 
-CMD cd /src/lm && python3 manage.py runserver 0.0.0.0:80
+CMD cd /src/lm && \
+
+    sh /src/lm/sleep_until_pg_isready.sh && \
+
+    python3 manage.py migrate && \
+
+    echo && \
+    echo "Docker containers are up. Logs from liftedmobile_dev:" && \
+    echo && \
+
+    python3 manage.py runserver 0.0.0.0:8000

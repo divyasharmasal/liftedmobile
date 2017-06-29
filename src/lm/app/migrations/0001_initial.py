@@ -18,6 +18,7 @@ class Migration(migrations.Migration):
             name='Option',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('index', models.IntegerField()),
                 ('text', models.TextField()),
             ],
         ),

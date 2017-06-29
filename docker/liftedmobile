@@ -39,6 +39,7 @@ EXPOSE 80
 
 WORKDIR /src/lm
 
+RUN python3 manage.py migrate
 RUN python3 manage.py collectstatic --no-input
 
 CMD gunicorn -D --bind unix:/gunicorn.sock lm.wsgi:application && \
