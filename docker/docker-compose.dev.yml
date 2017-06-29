@@ -23,4 +23,4 @@ services:
             - "8000"
         environment:
             - DEV=true
-            - DB_PWD=password 
+            - DB_PWD=password

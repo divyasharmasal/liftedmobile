@@ -11,8 +11,6 @@ def load_mvp_data(apps, schema_editor):
     Option = apps.get_model("app", "Option")
 
     # Data for question 0
-    print()
-    print("Creating data for question 0")
     qn_0 = Question(index=0, text="What is your job?")
     qn_0.save()
 
@@ -31,7 +29,6 @@ def load_mvp_data(apps, schema_editor):
 
 
     # Data for question 1
-    print("Creating data for question 1")
     qn_1 = Question(index=1, text="What do you want to learn?")
     qn_1.save()
 
@@ -65,7 +62,6 @@ def load_mvp_data(apps, schema_editor):
 
 
     # Data for question 2
-    print("Creating data for question 2")
     qn_2 = Question(index=2, text="Why do you want to learn?")
     qn_2.save()
 
@@ -99,7 +95,6 @@ def load_mvp_data(apps, schema_editor):
 
 
     # Data for question 3
-    print("Creating data for question 3")
     qn_3 = Question(index=3, text="What do you hope to achieve?")
     qn_3.save()
 
