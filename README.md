@@ -12,6 +12,7 @@ You need the following software to proceed:
 - [`docker`](https://www.docker.com/community-edition): 17.03.1-ce or above
 - [`docker-compose`](https://docs.docker.com/compose/install/): 1.13.0 or above
 - [`git`](https://git-scm.com/)
+- [`yarn`](https://yarnpkg.com/en/): 0.24.6 or above
 
 ### Getting the source code
 
@@ -124,4 +125,16 @@ migration, instead of creating a new migration:
 docker kill liftedmobile_db_dev && \
 docker rm liftedmobile_db_dev && \
 docker rmi docker_db_dev
+```
+
+## Frontend
+
+The frontend is a single-page application written in Preact. 
+
+To build it:
+
+```
+cd src/lm/app/frontend
+yarn install
+gulp
 ```

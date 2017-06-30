@@ -1,3 +1,31 @@
+# compiled frontend files 
+src/lm/app/frontend/dist/
+
+# node
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.yarn-integrity
+*.tgz
+.node_repl_history
+.eslintcache
+.npm
+jspm_packages/
+.lock-wscript
+bower_components
+.grunt
+.nyc_output
+coverage
+lib-cov
+pids
+*.pid
+*.seed
+*.pid.lock
+
+
+
 # Django
 src/lm/static/
 
