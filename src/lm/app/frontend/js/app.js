@@ -10,6 +10,6 @@ class Foo extends Component {
 }
 
 render(
-  ( <Foo />), 
+  <Foo />, 
   document.body
 );

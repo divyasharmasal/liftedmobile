@@ -54,7 +54,13 @@ function bundleApp(isProduction) {
       }
     })
     .bundle()
-    .on('error',gutil.log)
+    .on('error', function(error){
+      gutil.log(gutil.colors.red("Error:") + "\n");
+      console.log(error.message);
+      console.log(error.loc);
+      console.log();
+      console.log(error.codeFrame);
+    })
     .pipe(source('bundle.js'))
     .pipe(buffer())
     .pipe(uglify())
