@@ -1,37 +1,45 @@
 FROM nginx:alpine
 
-# Copy source code, but do not copy venv to minimise build size
+# Copy source code. Note that src/venv should be in .dockerignore
 RUN mkdir /src
-COPY src/lm /src/lm
+COPY src /src
 COPY ./requirements.txt /requirements.txt
 
 WORKDIR /src
 
-# Separate the update and upgrade process to save time during development
-# Make sure that this runs when you build the production server 
+## Separate the update and upgrade process to save time during development.
+## Make sure that this runs when you build the production server 
 RUN apk update && \
     apk --no-cache upgrade
 
-# Install requirements and remove unneeded packages at one
-# shot to minimise build size
+## Install requirements and remove unneeded packages
 RUN apk --no-cache add python3 python3-dev \
-        py-psycopg2 postgresql-dev \
-        linux-headers \
+        py-psycopg2 postgresql-dev curl gnupg nodejs linux-headers \
         build-base libffi-dev && \
 
     pip3 install --upgrade pip && \
-
     pip3 install -r /requirements.txt && \
-
     pip3 install gunicorn && \
-
-    apk del build-base python3-dev \
-            postgresql-dev linux-headers && \
-
+    apk del build-base python3-dev postgresql-dev linux-headers && \
     rm -rf /var/cache/apk/*
 
 
-# copy nginx config file
+## Link the yarn binary to /bin
+#RUN curl -o- -L https://yarnpkg.com/install.sh | sh && \
+    #ln -s /root/.yarn/bin/yarn /bin/yarn && \
+    #ln -s /root/.yarn/bin/yarnpkg /bin/yarnpkg && \
+    #ln -s /root/.yarn/bin/yarn.js /bin/yarn.js
+
+## Install preact-cli
+#RUN yarn global add preact-cli
+
+## Build the frontend
+#RUN cd /src/frontend && \
+    #yarn install && \
+    #preact build --dest ../lm/app/static/app/dist/
+
+
+# Copy the nginx config file
 RUN mkdir /config
 COPY ./config/nginx.conf /config/nginx.conf
 
@@ -39,8 +47,7 @@ EXPOSE 80
 
 WORKDIR /src/lm
 
-RUN python3 manage.py migrate
-RUN python3 manage.py collectstatic --no-input
-
-CMD gunicorn -D --bind unix:/gunicorn.sock lm.wsgi:application && \
+CMD python3 manage.py migrate && \
+    python3 manage.py collectstatic --no-input && \
+    gunicorn -D --bind unix:/gunicorn.sock lm.wsgi:application && \
     nginx -c /config/nginx.conf -g 'daemon off;'

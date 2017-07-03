@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'lm.wsgi.application'
 
 DATABASES = None
 
-if 'DEV' in os.environ and 'DB_PWD' in os.environ:
+if 'DEV' in os.environ:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',

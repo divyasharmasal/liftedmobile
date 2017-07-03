@@ -5,15 +5,16 @@
         <title>LIFTED Mobile</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
         <meta charset="utf-8">
-        <link rel="stylesheet" href="{% static "app/css/main.css" %}" />
+        <link rel="stylesheet" href="{% static "/app/dist/main.css" %}" />
         {% block head %}
         {% endblock %}
     </head>
     <body>
         {% block body %}
         {% endblock %}
-    <!--<script src="{% static "/app/js/vendors.js" %}"></script>-->
-    <script src="{% static "/app/js/bundle.js" %}"></script>
+        <script defer src="{% static "/app/dist/bundle.js" %}"></script>
+        <script>window.fetch||document.write('<script src="{% static "/polyfills.js" %}"><\/script>')</script>
+
     </body>
 </html>
 
