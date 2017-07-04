@@ -167,3 +167,5 @@ docker rm liftedmobile_db_dev && \
 docker rmi docker_db_dev
 ```
 
+## Deploying to AWS
+
