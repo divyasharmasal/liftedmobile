@@ -14,6 +14,7 @@ You need the following software to proceed:
 - [`git`](https://git-scm.com/)
 - [`yarn`](https://yarnpkg.com/en/): 0.24.6 or above
 - [`preact-cli`](https://github.com/developit/preact-cli): 1.3.0 or above
+- [`gulp`](http://gulpjs.com/): 3.9.1 or above
 
 ### Getting the source code
 
@@ -56,6 +57,7 @@ git remote add github git remote add github git@github_lm:weijiekoh/liftedmobile
 
 ## Local development
 
+### Backend 
 Just `cd` to the `liftedmobile` directory and run:
 
 ```
@@ -78,6 +80,43 @@ docker logs -f liftedmobile_dev
 ```
 
 Launch Lifted Mobile: http://localhost:8000
+
+### Frontend
+
+The frontend is a single-page application written in Preact. 
+
+`gulp` automates the process of running `preact build` while developing the
+frontend code. Any changes to `src/frontend/gulpfile.js` or any files in the
+frontend/src directory will trigger `preact build`, as defined in the build
+task below.
+
+If you wish to modify the frontend code, run this command in the `liftedmobile`
+root directory to make `gulp` watch the `src/frontend/src` directory and
+rebuild using `preact-build` when any change is made:
+
+```
+./gulp.sh
+```
+
+To run `preact build` once and **not** monitor for file changes:
+
+```
+./gulp.sh deploy
+```
+
+I personally use a [`tmux`](https://tmux.github.io/) screen with 3 panes: one
+for my editor, one for `gulp.sh`, and one for the `build_dev.sh`.
+
+```
+-----------------------------
+| vim        | gulp.sh      |
+|            |              |
+|            |--------------|
+|            | build_dev.sh |
+|            |              |
+-----------------------------
+```
+
 
 ## Deployment
 
@@ -128,23 +167,3 @@ docker rm liftedmobile_db_dev && \
 docker rmi docker_db_dev
 ```
 
-## Frontend
-
-The frontend is a single-page application written in Preact. 
-
-### What `gulp` does
-
-`gulp` automates the process of running `preact build` while
-developing the frontend code. Any changes to gulpfile.js or any files
-in the frontend/src directory will trigger `preact build`, as defined
-in the build task below.
-
-
-To launch `gulp`, run this in the `liftedmobile` root directory:
-
-```
-gulp --gulpfile src/frontend/gulpfile.js
-```
-
-To run `preact build` once and **not** monitor for file changes, run
-`gulp deploy`.

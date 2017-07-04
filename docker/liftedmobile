@@ -40,7 +40,7 @@ RUN yarn global add preact-cli
 # Build the frontend
 RUN cd /src/frontend && \
     yarn install && \
-    preact build --dest ../lm/app/static/app/dist/
+    preact build --clean --production true --dest ../lm/app/static/app/dist/
 
 
 # Copy the nginx config file
