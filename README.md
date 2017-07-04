@@ -13,6 +13,7 @@ You need the following software to proceed:
 - [`docker-compose`](https://docs.docker.com/compose/install/): 1.13.0 or above
 - [`git`](https://git-scm.com/)
 - [`yarn`](https://yarnpkg.com/en/): 0.24.6 or above
+- [`preact-cli`](https://github.com/developit/preact-cli): 1.3.0 or above
 
 ### Getting the source code
 
@@ -131,10 +132,19 @@ docker rmi docker_db_dev
 
 The frontend is a single-page application written in Preact. 
 
-To build it:
+### What `gulp` does
+
+`gulp` automates the process of running `preact build` while
+developing the frontend code. Any changes to gulpfile.js or any files
+in the frontend/src directory will trigger `preact build`, as defined
+in the build task below.
+
+
+To launch `gulp`, run this in the `liftedmobile` root directory:
 
 ```
-cd src/lm/app/frontend
-yarn install
-gulp
+gulp --gulpfile src/frontend/gulpfile.js
 ```
+
+To run `preact build` once and **not** monitor for file changes, run
+`gulp deploy`.

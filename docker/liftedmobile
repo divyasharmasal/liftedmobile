@@ -24,19 +24,19 @@ RUN apk --no-cache add python3 python3-dev \
     rm -rf /var/cache/apk/*
 
 
-## Link the yarn binary to /bin
-#RUN curl -o- -L https://yarnpkg.com/install.sh | sh && \
-    #ln -s /root/.yarn/bin/yarn /bin/yarn && \
-    #ln -s /root/.yarn/bin/yarnpkg /bin/yarnpkg && \
-    #ln -s /root/.yarn/bin/yarn.js /bin/yarn.js
+# Link the yarn binary to /bin
+RUN curl -o- -L https://yarnpkg.com/install.sh | sh && \
+    ln -s /root/.yarn/bin/yarn /bin/yarn && \
+    ln -s /root/.yarn/bin/yarnpkg /bin/yarnpkg && \
+    ln -s /root/.yarn/bin/yarn.js /bin/yarn.js
 
-## Install preact-cli
-#RUN yarn global add preact-cli
+# Install preact-cli
+RUN yarn global add preact-cli
 
-## Build the frontend
-#RUN cd /src/frontend && \
-    #yarn install && \
-    #preact build --dest ../lm/app/static/app/dist/
+# Build the frontend
+RUN cd /src/frontend && \
+    yarn install && \
+    preact build --dest ../lm/app/static/app/dist/
 
 
 # Copy the nginx config file
