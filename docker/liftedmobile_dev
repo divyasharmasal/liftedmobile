@@ -20,7 +20,7 @@ EXPOSE 8000
 
 # Wait till the database is ready and then launch the dev server
 CMD cd /src/lm && \
-    sh /src/lm/sleep_until_pg_isready.sh && \
+    sh /src/lm/sleep_until_dev_pg_isready.sh && \
     python3 manage.py migrate && \
     echo && \
     echo "Docker containers are up. Logs from liftedmobile_dev:" && \
