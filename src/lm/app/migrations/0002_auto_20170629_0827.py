@@ -98,29 +98,13 @@ def load_mvp_data(apps, schema_editor):
     qn_3 = Question(index=3, text="What do you hope to achieve?")
     qn_3.save()
 
-    opt_3_0 = Option(text="I want to learn different perspectives on the law.",
+    opt_3_0 = Option(text="Prepare for my next job role.",
             index=0, question=qn_3)
     opt_3_0.save()
 
-    opt_3_1 = Option(text="I want to acquire foundational skills.",
+    opt_3_1 = Option(text="Get better at my current job.",
             index=1, question=qn_3)
     opt_3_1.save()
-
-    opt_3_2 = Option(text="I want to acquire higher-level skills",
-            index=2, question=qn_3)
-    opt_3_2.save()
-
-    opt_3_3 = Option(text="I want to have a basic understanding about various subjects.",
-            index=3, question=qn_3)
-    opt_3_3.save()
-
-    opt_3_4 = Option(text="I want to deepen my understanding about various subjects",
-            index=4, question=qn_3)
-    opt_3_4.save()
-
-    opt_3_5 = Option(text="I want to update myself on my specific area of work.",
-            index=5, question=qn_3)
-    opt_3_5.save()
 
 
 class Migration(migrations.Migration):

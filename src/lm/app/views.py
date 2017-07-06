@@ -22,13 +22,14 @@ def index(request):
 
 
 def qns_and_opts(request):
+    """
+    Respond with a JSON representation of the quiz questions
+    """
     qns = []
     questions = Question.objects.order_by("index")
     for question in questions:
-        qn = { 
-                "text": question.text,
-                "options": []
-             }
+        qn = { "text": question.text, "options": [] }
+
         options = Option.objects.filter(question=question).order_by("index")
         for option in options:
             qn["options"].append({

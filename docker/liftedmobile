@@ -5,25 +5,28 @@ RUN mkdir /src
 COPY src /src
 COPY ./requirements.txt /requirements.txt
 
+# Copy the nginx config file
+RUN mkdir /config
+COPY ./config/nginx.conf /config/nginx.conf
+
 WORKDIR /src
 
-## Separate the update and upgrade process to save time during development.
-## Make sure that this runs when you build the production server 
+# Separate the update and upgrade process to save time during development.
+# Make sure that this runs when you build the production server 
 RUN apk update && \
     apk --no-cache upgrade
 
-## Install requirements and remove unneeded packages
+# Install requirements and remove unneeded packages
 RUN apk --no-cache add python3 python3-dev \
         postgresql py-psycopg2 postgresql-dev \
         curl gnupg nodejs linux-headers \
         build-base libffi-dev bash && \
-
     pip3 --no-cache-dir install --upgrade pip && \
     pip3 --no-cache-dir install -r /requirements.txt && \
     pip3 --no-cache-dir install gunicorn && \
-    apk del build-base python3-dev postgresql-dev linux-headers nodejs && \
+    apk del build-base python3-dev postgresql-dev linux-headers \
+            gnupg libffi-dev nodejs && \
     rm -rf /var/cache/apk/*
-
 
 # Link the yarn binary to /bin. The command to create ~/.profile is only to
 # quash an inconsequential error message from yarn's installation script that
@@ -44,10 +47,6 @@ RUN yarn global add preact-cli && \
     gulp deploy --gulpfile /src/frontend/gulpfile.js && \
     rm -rf /src/frontend/node_modules /usr/local/share/.config/yarn && \
     rm -rf /usr/lib/node_modules
-
-# Copy the nginx config file
-RUN mkdir /config
-COPY ./config/nginx.conf /config/nginx.conf
 
 EXPOSE 80
 

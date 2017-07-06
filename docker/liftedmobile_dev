@@ -6,11 +6,8 @@ COPY ./requirements.txt /requirements.txt
 
 # Install dependencies to get Django running
 RUN apk update
-RUN apk add python3 python3-dev \
-        py-psycopg2 postgresql-dev \
-        postgresql \
-        linux-headers \
-        build-base libffi-dev \
+RUN apk add python3 python3-dev py-psycopg2 postgresql-dev \
+            postgresql linux-headers build-base libffi-dev && \
     rm -rf /var/cache/apk/* && \
     pip3 --no-cache-dir install --upgrade pip && \
     pip3 --no-cache-dir install -r /requirements.txt
@@ -23,5 +20,7 @@ CMD cd /src/lm && \
     python3 manage.py migrate && \
     echo && \
     echo "Docker containers are up; server at: http://0.0.0.0:8000/" && \
+    echo "Run ./gulp.sh in a separate terminal to keep Django's static" && \
+    echo "files up to date." && \
     echo && \
     python3 manage.py runserver 0.0.0.0:8000
