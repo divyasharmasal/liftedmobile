@@ -34,7 +34,7 @@ RUN apk update                                                              && \
     ln -s /root/.yarn/bin/yarn.js /bin/yarn.js                              && \
 
 # Install preact-cli and build the frontend
-    yarn global add preact-cli                                              && \
+    yarn --verbose global add preact-cli                                    && \
     cd /src/frontend                                                        && \
     yarn install                                                            && \
     yarn global add gulp                                                    && \
@@ -51,10 +51,10 @@ EXPOSE 80
 
 WORKDIR /src/lm
 
-CMD sh /src/lm/sleep_until_prod_pg_isready.sh && \
-    python3 manage.py migrate && \
-    python3 manage.py collectstatic --no-input && \
-    gunicorn -D --bind unix:/gunicorn.sock lm.wsgi:application && \
-    echo && \
-    echo "Docker containers are up; server at: http://0.0.0.0:80/" && \
+CMD sh /src/lm/sleep_until_prod_pg_isready.sh                               && \
+    python3 manage.py migrate                                               && \
+    python3 manage.py collectstatic --no-input                              && \
+    gunicorn -D --bind unix:/gunicorn.sock lm.wsgi:application              && \
+    echo                                                                    && \
+    echo "Docker containers are up; server at: http://0.0.0.0:80/"          && \
     nginx -c /config/nginx.conf -g 'daemon off;'
