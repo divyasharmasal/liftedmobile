@@ -24,21 +24,18 @@ RUN apk --no-cache add python3 python3-dev \
     pip3 --no-cache-dir install --upgrade pip && \
     pip3 --no-cache-dir install -r /requirements.txt && \
     pip3 --no-cache-dir install gunicorn && \
-    apk del build-base python3-dev postgresql-dev linux-headers \
-            gnupg libffi-dev && \
-    rm -rf /var/cache/apk/*
 
 # Link the yarn binary to /bin. The command to create ~/.profile is only to
 # quash an inconsequential error message from yarn's installation script that
 # it can't set $PATH in a profile.
-RUN touch ~/.profile && \ 
+    touch ~/.profile && \ 
     curl -o- -L https://yarnpkg.com/install.sh | sh && \
     ln -s /root/.yarn/bin/yarn /bin/yarn && \
     ln -s /root/.yarn/bin/yarnpkg /bin/yarnpkg && \
-    ln -s /root/.yarn/bin/yarn.js /bin/yarn.js
+    ln -s /root/.yarn/bin/yarn.js /bin/yarn.js && \
 
 # Install preact-cli and build the frontend
-RUN yarn global add preact-cli && \
+    yarn global add preact-cli && \
     cd /src/frontend && \
     yarn install && \
     yarn global add gulp && \
@@ -46,7 +43,10 @@ RUN yarn global add preact-cli && \
     cd /src && \
     gulp deploy --gulpfile /src/frontend/gulpfile.js && \
     rm -rf /src/frontend/node_modules /usr/local/share/.config/yarn \
-    /usr/lib/node_modules
+           /usr/lib/node_modules && \
+    apk del build-base python3-dev postgresql-dev linux-headers \
+            gnupg libffi-dev && \
+    rm -rf /var/cache/apk/*
 
 EXPOSE 80
 
