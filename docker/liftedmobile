@@ -38,7 +38,7 @@ RUN apk update                                                              && \
     cd /src/frontend                                                        && \
     yarn install                                                            && \
     yarn add gulp                                                           && \
-    cd /src/frontend                                                        && \
+    echo "Running gulp deploy"                                              && \
     gulp deploy                                                             && \
     #gulp deploy --gulpfile /src/frontend/gulpfile.js                        && \
     yarn cache clean                                                        && \
