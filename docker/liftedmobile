@@ -37,6 +37,7 @@ RUN apk update                                                              && \
     yarn global --verbose add preact-cli                                    && \
     cd /src/frontend                                                        && \
     yarn install                                                            && \
+    yarn add gulp                                                           && \
     yarn global add gulp                                                    && \
     yarn cache clean                                                        && \
     cd /src                                                                 && \
