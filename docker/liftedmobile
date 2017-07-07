@@ -34,7 +34,7 @@ RUN apk update                                                              && \
     ln -s /root/.yarn/bin/yarn.js /bin/yarn.js                              && \
 
 # Install preact-cli and build the frontend
-    yarn global --verbose add preact-cli                                    && \
+    yarn global add preact-cli                                              && \
     cd /src/frontend                                                        && \
     yarn install                                                            && \
     yarn add gulp                                                           && \
