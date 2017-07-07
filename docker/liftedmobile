@@ -34,14 +34,14 @@ RUN apk update                                                              && \
     ln -s /root/.yarn/bin/yarn.js /bin/yarn.js                              && \
 
 # Install preact-cli and build the frontend
-    yarn global add preact-cli                                              && \
+    yarn global add preact-cli gulp                                         && \
     cd /src/frontend                                                        && \
     yarn install                                                            && \
     yarn add gulp                                                           && \
-    yarn global add gulp                                                    && \
+    cd /src/frontend                                                        && \
+    gulp deploy                                                             && \
+    #gulp deploy --gulpfile /src/frontend/gulpfile.js                        && \
     yarn cache clean                                                        && \
-    cd /src                                                                 && \
-    gulp deploy --gulpfile /src/frontend/gulpfile.js                        && \
     rm -rf /src/frontend/node_modules /usr/local/share/.config/yarn \
            /usr/lib/node_modules                                            && \
     apk del build-base python3-dev postgresql-dev linux-headers \
