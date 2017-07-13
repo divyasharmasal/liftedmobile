@@ -1,8 +1,13 @@
 argon2-cffi==16.3.0
 cffi==1.10.0
 Django==1.11.2
+lml==0.0.1
+lxml==3.8.0
+pkg-resources==0.0.0
+psycopg2==2.7.1
 pycparser==2.17
+pyexcel-io==0.4.2
+pyexcel-odsr==0.4.0
 pytz==2017.2
 six==1.10.0
 uWSGI==2.0.15
-psycopg2==2.7.1
