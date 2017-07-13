@@ -14,21 +14,43 @@ class Option(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
 
 
-class JobVertical(models.Model):
+class Vertical(models.Model):
     id = models.IntegerField(primary_key=True)
-    title = models.TextField()
-
-    # the copy-text of the question that the user sees
-    question_text = models.TextField()
+    name = models.TextField(unique=True)
+    question= models.TextField(unique=True)
 
 
-class LCategory(models.Model):
+class VerticalCategory(models.Model):
     # the ID is the category key (1, 2, 3, etc)
-    id = models.IntegerField(primary_key=True) 
+    id = models.IntegerField(primary_key=True)
 
+    vertical = models.ForeignKey(Vertical, on_delete=models.CASCADE)
     # e.g. Technical Lawyering
-    title = models.TextField()
+    name = models.TextField()
 
     # the copy-text of the question that the user sees
     # e.g. Administration and problem-solving
-    question_text = models.TextField()
+    question = models.TextField()
+
+
+class Venue(models.Model):
+    acronym = models.TextField(primary_key=True)
+    name = models.TextField(unique=True)
+
+
+class Format(models.Model):
+    acronym = models.TextField(primary_key=True)
+    name = models.TextField(unique=True)
+
+
+class Level(models.Model):
+    acronym = models.TextField(primary_key=True)
+    name = models.TextField(unique=True)
+
+
+class Need(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.TextField(unique=True)
+    question = models.TextField(unique=True)
+    format = models.ForeignKey(Format, on_delete=models.CASCADE)
+    level = models.ForeignKey(Level, on_delete=models.CASCADE)

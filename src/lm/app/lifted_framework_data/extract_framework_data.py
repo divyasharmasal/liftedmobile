@@ -34,15 +34,15 @@ def read_ods_file(filename):
 
 
 def parse_levels():
-    return parse_two_column(read_ods_file(LEVELS_FILE))
+    return parse_item_rows(read_ods_file(LEVELS_FILE))
 
 
 def parse_venues():
-    return parse_two_column(read_ods_file(VENUES_FILE))
+    return parse_item_rows(read_ods_file(VENUES_FILE))
 
 
 def parse_formats():
-    return parse_two_column(read_ods_file(FORMATS_FILE))
+    return parse_item_rows(read_ods_file(FORMATS_FILE))
 
 
 def parse_needs():
@@ -73,7 +73,7 @@ def parse_verticals():
         # first row of each section
         if len(row) == 5:
             j = 0
-            # handle the vertical and vertical_question_text
+            # handle the vertical and vertical_question
             for cell in row[0:2]:
                 current_vertical[headers[j]] = cell
                 j += 1
@@ -147,4 +147,4 @@ def parse_two_column(ods_data):
 
 if __name__ == "__main__":
     import pprint
-    pprint.pprint(parse_verticals())
+    pprint.pprint(parse_formats())
