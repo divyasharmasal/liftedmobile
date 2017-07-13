@@ -6,13 +6,23 @@ the LIFTED framework and courses for 2017.
 
 #!/usr/bin/env python3
 import pyexcel_odsr
+import os
 
-LEVELS_FILE = "levels.ods"
-VENUES_FILE = "venues.ods"
-FORMATS_FILE = "formats.ods"
-NEEDS_FILE = "needs.ods"
-COURSES_FILE = "courses.ods"
-VERTICALS_FILE = "verticals.ods"
+
+def _make_path(filename):
+    """
+    Returns an absolute path of @filename, assuming that it's in the same
+    directory as this Python file.
+    """
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
+
+
+LEVELS_FILE = _make_path("levels.ods")
+VENUES_FILE = _make_path("venues.ods")
+FORMATS_FILE = _make_path("formats.ods")
+NEEDS_FILE = _make_path("needs.ods")
+COURSES_FILE = _make_path("courses.ods")
+VERTICALS_FILE = _make_path("verticals.ods")
 
 
 def read_ods_file(filename):
@@ -136,4 +146,5 @@ def parse_two_column(ods_data):
 
 
 if __name__ == "__main__":
-    print(parse_verticals())
+    import pprint
+    pprint.pprint(parse_verticals())
