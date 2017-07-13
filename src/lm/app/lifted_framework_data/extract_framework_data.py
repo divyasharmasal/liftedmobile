@@ -133,6 +133,8 @@ def parse_two_column(ods_data):
     """
     For simple two-column sheets:
     {B1: B2, C1: C2, ...}
+
+    Unused.
     """
     data = {}
     sheet = ods_data[list(ods_data.keys())[0]]

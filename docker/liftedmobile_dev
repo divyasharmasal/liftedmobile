@@ -19,11 +19,10 @@ EXPOSE 8000
 CMD cd /src/lm && \
     sh /src/lm/sleep_until_dev_pg_isready.sh && \
    #python3 manage.py makemigrations && \
-   python3 manage.py migrate #&& \
-
-   #python3 manage.py makemigrations --empty app #&& \
-   #echo && \
-   #echo "Docker containers are up; server at: http://0.0.0.0:8000/" && \
-   #echo "Run ./gulp.sh in a separate terminal to continually update the static files while you develop the frontend." && \
-   #echo && \
-   #python3 manage.py runserver 0.0.0.0:8000
+   python3 manage.py migrate && \
+   #python3 manage.py makemigrations --empty app --name load_initial_data #&& \
+    echo && \
+    echo "Docker containers are up; server at: http://0.0.0.0:8000/" && \
+    echo "Run ./gulp.sh in a separate terminal to continually update the static files while you develop the frontend." && \
+    echo && \
+    python3 manage.py runserver 0.0.0.0:8000
