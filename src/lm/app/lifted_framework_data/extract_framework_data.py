@@ -46,11 +46,43 @@ def parse_formats():
 
 
 def parse_needs():
-    return parse_item_rows(read_ods_file(NEEDS_FILE))
+    rows = parse_item_rows(read_ods_file(NEEDS_FILE))
+    for row in rows:
+        formats = [x.strip() for x in row["Formats"].split("/")]
+        row["Formats"] = formats
+
+        levels = [x.strip() for x in row["Levels"].split("/")]
+        row["Levels"] = levels
+
+    return rows
 
 
 def parse_courses():
     return parse_item_rows(read_ods_file(COURSES_FILE))
+
+
+def parse_funding_types():
+    ods_data = read_ods_file(COURSES_FILE)["Courses"]
+    headers = ods_data[0]
+
+    i = 0
+    for header in headers:
+        if header == "Available Funding":
+            funding_index = i
+            break
+        i += 1
+
+    all_funding_types = set()
+    for row in ods_data[1:]:
+        # stop the loop when the row is empty
+        if len(row) == 0:
+            break
+        funding_types = [x.strip() for x in row[funding_index].split("/")]
+        for ft in funding_types:
+            if len(ft) > 0:
+                all_funding_types.add(ft)
+    return all_funding_types
+
 
 
 def parse_verticals():
@@ -149,4 +181,4 @@ def parse_two_column(ods_data):
 
 if __name__ == "__main__":
     import pprint
-    pprint.pprint(parse_formats())
+    pprint.pprint(parse_funding_types())

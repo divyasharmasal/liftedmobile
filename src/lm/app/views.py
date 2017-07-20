@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
-from app.models import Question, Option
 import sys
 import json
 
@@ -22,19 +21,20 @@ def index(request):
 
 
 def qns_and_opts(request):
-    """
-    Respond with a JSON representation of the quiz questions
-    """
-    qns = []
-    questions = Question.objects.order_by("index")
-    for question in questions:
-        qn = { "text": question.text, "options": [] }
+    return _json_response(["TODO"])
+    # """
+    # Respond with a JSON representation of the quiz questions
+    # """
+    # qns = []
+    # questions = Question.objects.order_by("index")
+    # for question in questions:
+        # qn = { "text": question.text, "options": [] }
 
-        options = Option.objects.filter(question=question).order_by("index")
-        for option in options:
-            qn["options"].append({
-                "text": option.text,
-            })
-        qns.append(qn)
+        # options = Option.objects.filter(question=question).order_by("index")
+        # for option in options:
+            # qn["options"].append({
+                # "text": option.text,
+            # })
+        # qns.append(qn)
 
-    return _json_response(qns)
+    # return _json_response(qns)
