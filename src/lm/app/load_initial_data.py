@@ -67,7 +67,7 @@ def load(apps, schema_editor):
     parsed_needs = extract_framework_data.parse_needs()
 
     for n in parsed_needs:
-        need = Need(name=n["Need"], question=n["Need question text"])
+        need = Need(name=n["Need"], option=n["Need option text"])
         needs.append(need)
 
     Need.objects.using(db_alias).bulk_create(needs)

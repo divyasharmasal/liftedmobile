@@ -100,7 +100,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('name', models.TextField(unique=True)),
-                ('question', models.TextField(unique=True)),
+                ('option', models.TextField(unique=True)),
             ],
         ),
         migrations.CreateModel(

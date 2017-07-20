@@ -48,7 +48,13 @@ def qns_and_opts(request):
 
     qn2 = create_qn("What do you want to learn?", qn2_opts)
 
+    qn3_opts = []
+    for row in models.Need.objects.all():
+        qn3_opts.append({"text": row.option})
+    qn3 = create_qn("Why do you want to learn?", qn3_opts)
+
     qns.append(qn1)
     qns.append(qn2)
+    qns.append(qn3)
 
     return _json_response(qns)

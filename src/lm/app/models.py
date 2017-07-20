@@ -35,7 +35,7 @@ class Level(models.Model):
 class Need(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.TextField(unique=True)
-    question = models.TextField(unique=True)
+    option = models.TextField(unique=True)
 
 
 class NeedFormat(models.Model):
