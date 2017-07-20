@@ -1,5 +1,6 @@
 # compiled frontend files 
 src/lm/app/frontend/dist/
+src/lm/app/lifted_framework_data/.~lock*
 
 # node
 
