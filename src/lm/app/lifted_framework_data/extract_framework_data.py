@@ -58,10 +58,31 @@ def parse_needs():
 
 
 def parse_courses():
-    return parse_item_rows(read_ods_file(COURSES_FILE))
+    rows = parse_item_rows(read_ods_file(COURSES_FILE))
+    for row in rows:
+        start_dates = []
+        for date in row["Start dates (2017)"].split("\n"):
+            d = date.strip()
+            if len(d) > 0:
+                start_dates.append(date.strip())
+        row["Start dates (2017)"] = start_dates
+
+        funding_types = []
+        for funding_type in row["Available Funding"].split("/"):
+            f = funding_type.strip()
+
+            if len(f) > 0:
+                funding_types.append(funding_type.strip())
+        row["Available Funding"] = funding_types
+
+    return rows
 
 
 def parse_funding_types():
+    """
+    Extract funding type IDs from the course spreadsheet:
+    ['–', 'C$', 'SFA', 'WSQ', 'SF']
+    """
     ods_data = read_ods_file(COURSES_FILE)["Courses"]
     headers = ods_data[0]
 
@@ -81,7 +102,7 @@ def parse_funding_types():
         for ft in funding_types:
             if len(ft) > 0:
                 all_funding_types.add(ft)
-    return all_funding_types
+    return list(all_funding_types)
 
 
 
@@ -181,4 +202,5 @@ def parse_two_column(ods_data):
 
 if __name__ == "__main__":
     import pprint
-    pprint.pprint(parse_funding_types())
+    # pprint.pprint(parse_courses())
+    parse_verticals()

@@ -1,12 +1,17 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
+from app import models
 import sys
 import json
 
 
 
 def _print(*args, **kwargs):
+    """
+    Helps to debug command-line output as viewed through Docker logs.
+    sys.stdout.flush() ensures that the output is displayed as soon as it's printed.
+    """
     print(*args, **kwargs)
     sys.stdout.flush()
 
@@ -21,20 +26,29 @@ def index(request):
 
 
 def qns_and_opts(request):
-    return _json_response(["TODO"])
-    # """
-    # Respond with a JSON representation of the quiz questions
-    # """
-    # qns = []
-    # questions = Question.objects.order_by("index")
-    # for question in questions:
-        # qn = { "text": question.text, "options": [] }
+    """
+    Respond with a JSON representation of the quiz questions
+    [{ "text": question_text, 
+       "options": [ { "text": option_text }, ... ]}, ...]
+    """
 
-        # options = Option.objects.filter(question=question).order_by("index")
-        # for option in options:
-            # qn["options"].append({
-                # "text": option.text,
-            # })
-        # qns.append(qn)
+    def create_qn(qn_text, options):
+        return { "text": qn_text, "options": options }
 
-    # return _json_response(qns)
+    qns = []
+
+    qn1 = create_qn("What is your job?", [{"text": v.option} for v in models.Vertical.objects.all()])
+
+    qn2_opts = {}
+    for row in models.VerticalCategory.objects.all():
+        opt_num = row.vertical_id - 1
+        if opt_num not in qn2_opts:
+            qn2_opts[opt_num] = []
+        qn2_opts[opt_num].append(row.option)
+
+    qn2 = create_qn("What do you want to learn?", qn2_opts)
+
+    qns.append(qn1)
+    qns.append(qn2)
+
+    return _json_response(qns)

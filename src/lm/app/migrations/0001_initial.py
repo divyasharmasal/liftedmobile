@@ -15,10 +15,77 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='Course',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('name', models.TextField()),
+                ('cost', models.DecimalField(decimal_places=2, max_digits=11)),
+                ('duration', models.DecimalField(decimal_places=1, max_digits=6)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='CourseCpdPoints',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('points', models.DecimalField(decimal_places=2, max_digits=6, null=True)),
+                ('is_private', models.BooleanField()),
+                ('course', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='CourseFormat',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='CourseFunding',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='CourseLevel',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='CourseStartDate',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('start_date', models.TextField()),
+                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='CourseVenue',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='CourseVerticalCategory',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
+            ],
+        ),
+        migrations.CreateModel(
             name='Format',
             fields=[
                 ('acronym', models.TextField(primary_key=True, serialize=False)),
                 ('name', models.TextField(unique=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Funding',
+            fields=[
+                ('funding_type', models.TextField(primary_key=True, serialize=False)),
             ],
         ),
         migrations.CreateModel(
@@ -64,23 +131,43 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.IntegerField(primary_key=True, serialize=False)),
                 ('name', models.TextField(unique=True)),
-                ('question', models.TextField(unique=True)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Funding',
-            fields=[
-                ('funding_type', models.TextField(primary_key=True, serialize=False)),
+                ('option', models.TextField(unique=True)),
             ],
         ),
         migrations.CreateModel(
             name='VerticalCategory',
             fields=[
                 ('id', models.IntegerField(primary_key=True, serialize=False)),
+                ('key', models.IntegerField()),
                 ('name', models.TextField()),
-                ('question', models.TextField()),
+                ('option', models.TextField()),
                 ('vertical', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Vertical')),
             ],
+        ),
+        migrations.AddField(
+            model_name='courseverticalcategory',
+            name='vertical_category',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.VerticalCategory'),
+        ),
+        migrations.AddField(
+            model_name='coursevenue',
+            name='venue',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Venue'),
+        ),
+        migrations.AddField(
+            model_name='courselevel',
+            name='level',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Level'),
+        ),
+        migrations.AddField(
+            model_name='coursefunding',
+            name='funding_type',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Funding'),
+        ),
+        migrations.AddField(
+            model_name='courseformat',
+            name='format',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Format'),
         ),
         migrations.AlterUniqueTogether(
             name='needlevel',
@@ -89,5 +176,33 @@ class Migration(migrations.Migration):
         migrations.AlterUniqueTogether(
             name='needformat',
             unique_together=set([('need', 'format')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='courseverticalcategory',
+            unique_together=set([('course', 'vertical_category')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='coursevenue',
+            unique_together=set([('course', 'venue')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='coursestartdate',
+            unique_together=set([('course', 'start_date')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='courselevel',
+            unique_together=set([('course', 'level')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='coursefunding',
+            unique_together=set([('course', 'funding_type')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='courseformat',
+            unique_together=set([('course', 'format')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='verticalcategory',
+            unique_together=set([('key', 'vertical')]),
         ),
     ]
