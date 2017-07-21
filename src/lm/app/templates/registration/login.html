@@ -8,11 +8,17 @@
         <link rel="stylesheet" href="{% static "/app/dist/style.css" %}" />
         {% block head %}
         {% endblock %}
+        <style>
+            .button-large, p{
+                font-size:1.8em;
+            }
+        </style>
     </head>
     <body>
         <div class="pure-g">
             <form method="post" action="{% url 'login' %}" class="pure-form">
                 {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}" />
                 {% if form.errors %}
                     <div class="pure-u-1">
                         <p>Your username and password didn't match. Please try again.</p>
@@ -40,8 +46,8 @@
                         <p>{{ form.password }}</p>
                     </div>
                     <div class="pure-u-1">
-                        <input class="pure-button" type="submit" value="Login" />
-                        <input type="hidden" name="next" value="{{ next }}" />
+                        <input class="pure-button pure-button-primary button-large" 
+                        type="submit" value="Login" />
                     </div>
             </form>
         </div>

@@ -31,16 +31,15 @@ RUN apk update                                                              && \
     curl -o- -L https://yarnpkg.com/install.sh | sh                         && \
     ln -s /root/.yarn/bin/yarn /bin/yarn                                    && \
     ln -s /root/.yarn/bin/yarnpkg /bin/yarnpkg                              && \
-    ln -s /root/.yarn/bin/yarn.js /bin/yarn.js                              && \
+    ln -s /root/.yarn/bin/yarn.js /bin/yarn.js                             # && \
 
 # Install preact-cli and build the frontend
-    yarn global add preact-cli gulp                                         && \
+RUN yarn global add preact-cli gulp gulp-shell                              && \
     cd /src/frontend                                                        && \
     yarn install                                                            && \
     yarn add gulp                                                           && \
     echo "Running gulp deploy"                                              && \
-    gulp deploy                                                             && \
-    #gulp deploy --gulpfile /src/frontend/gulpfile.js                        && \
+    gulp deploy --gulpfile /src/frontend/gulpfile.js                        && \
     yarn cache clean                                                        && \
     rm -rf /src/frontend/node_modules /usr/local/share/.config/yarn \
            /usr/lib/node_modules                                            && \

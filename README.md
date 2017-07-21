@@ -155,7 +155,7 @@ docker exec -it liftedmobile_db_dev psql -U postgres
 ### Migrations
 
 Initial data is loaded into the database via migrations. Specifically, 
-`0002_auto_20170629_0827.py` in the `migrations/` directory uses `RunPython`
+`0002_auto....py` in the `migrations/` directory uses `RunPython`
 to populate the database with data from the MVP.
 
 To make a change to this data, it's easier to wipe the database and edit the
@@ -169,3 +169,16 @@ docker rmi docker_db_dev
 
 ## Deploying to AWS
 
+First, get your AWS login command, such as:
+
+```
+ssh -i "liftedmobile.pem" ubuntu@52.221.77.72
+```
+
+Next, `cd` to the directory with `liftedmobile.pem`.
+
+Finally, run this command:
+
+```
+/path/to/push_prod.sh "ssh -i "liftedmobile.pem" ubuntu@52.221.77.72"
+```
