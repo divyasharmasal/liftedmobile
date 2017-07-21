@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import Http404
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required 
 from app import models
 import sys
 import json
@@ -23,11 +24,14 @@ def _json_response(obj):
             content_type="application/json")
 
 
+@login_required
 def index(request):
     return render(request, "app/index.html")
 
 
+@login_required
 def qns_and_opts(request):
+    _print(request.user.is_authenticated)
     """
     Respond with a JSON representation of the quiz questions
     [{ "text": question_text, 
@@ -69,21 +73,33 @@ def _get_courses(vertical_id, vertical_category):
             courseverticalcategory__vertical_category__id=vertical_id)
 
 
+def _get_courses_any_category(vertical_id):
+    return models.Course.objects.filter(
+            courseverticalcategory__vertical_category__id=vertical_id)
+
+
+
+@login_required
 def courses(request):
     if "v" not in request.GET or "c" not in request.GET:
         raise Http404("Please provide the vertical and category IDs.")
 
     vertical_id = request.GET["v"]
     vertical_category = request.GET["c"]
+    course_query = None
 
-    try:
-        vertical_id = int(vertical_id)
-        vertical_category = int(vertical_category)
-    except:
-        raise Http404("The vertical and category IDs should be numeric.")
+    if (vertical_category == "any"):
+        course_query = _get_courses_any_category(vertical_id)
+    else:
+        try:
+            vertical_id = int(vertical_id)
+            vertical_category = int(vertical_category)
+            course_query = _get_courses(vertical_id, vertical_category)
+        except:
+            raise Http404("The vertical and category IDs should be numeric.")
     
     courses = []
-    for c in _get_courses(vertical_id, vertical_category):
+    for c in course_query:        
         start_dates = models.CourseStartDate.objects.filter(course=c)
         course_level = models.CourseLevel.objects.get(course=c)
         level = models.Level.objects.get(acronym=course_level.level_id)

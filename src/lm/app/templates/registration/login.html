@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>LIFTED Mobile</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="{% static "/app/dist/style.css" %}" />
+        {% block head %}
+        {% endblock %}
+    </head>
+    <body>
+        <div class="pure-g">
+            <form method="post" action="{% url 'login' %}" class="pure-form">
+                {% csrf_token %}
+                {% if form.errors %}
+                    <div class="pure-u-1">
+                        <p>Your username and password didn't match. Please try again.</p>
+                    </div>
+                {% endif %}
+
+                {% if next %}
+                {% if user.is_authenticated %}
+                    <div class="pure-u-1">
+                        <p>Your account doesn't have access to this page.</p>
+                    </div>
+                {% else %}
+                    <div class="pure-u-1">
+                        <h1>Please log in to see this page.</h1>
+                    </div>
+                {% endif %}
+                {% endif %}
+                    <div class="pure-u-1">
+                        <p>{{ form.username.label_tag }}</p>
+                        <p>{{ form.username }}</p>
+                    </div>
+
+                    <div class="pure-u-1">
+                        <p>{{ form.password.label_tag }}</p>
+                        <p>{{ form.password }}</p>
+                    </div>
+                    <div class="pure-u-1">
+                        <input class="pure-button" type="submit" value="Login" />
+                        <input type="hidden" name="next" value="{{ next }}" />
+                    </div>
+            </form>
+        </div>
+        {% block body %}
+        {% endblock %}
+    </body>
+</html>
