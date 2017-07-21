@@ -56,6 +56,10 @@ class NeedLevel(models.Model):
     level = models.ForeignKey(Level, on_delete=models.CASCADE)
 
 
+class Funding(models.Model):
+    funding_type = models.TextField(primary_key=True)
+
+
 class Course(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.TextField()
@@ -101,10 +105,6 @@ class CourseStartDate(models.Model):
     id = models.AutoField(primary_key=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     start_date = models.TextField()
-
-
-class Funding(models.Model):
-    funding_type = models.TextField(primary_key=True)
 
 
 class CourseFunding(models.Model):

@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import Http404
 from django.http import HttpResponse
 from django.http import JsonResponse
 from app import models
@@ -10,7 +11,8 @@ import json
 def _print(*args, **kwargs):
     """
     Helps to debug command-line output as viewed through Docker logs.
-    sys.stdout.flush() ensures that the output is displayed as soon as it's printed.
+    sys.stdout.flush() ensures that the output is displayed as soon as it's
+    printed.
     """
     print(*args, **kwargs)
     sys.stdout.flush()
@@ -37,7 +39,8 @@ def qns_and_opts(request):
 
     qns = []
 
-    qn1 = create_qn("What is your job?", [{"text": v.option} for v in models.Vertical.objects.all()])
+    qn1 = create_qn("What is your job?", 
+            [{"text": v.option} for v in models.Vertical.objects.all()])
 
     qn2_opts = {}
     for row in models.VerticalCategory.objects.all():
@@ -58,3 +61,52 @@ def qns_and_opts(request):
     qns.append(qn3)
 
     return _json_response(qns)
+
+
+def _get_courses(vertical_id, vertical_category):
+    return models.Course.objects.filter(
+            courseverticalcategory__vertical_category__key=vertical_category,
+            courseverticalcategory__vertical_category__id=vertical_id)
+
+
+def courses(request):
+    if "v" not in request.GET or "c" not in request.GET:
+        raise Http404("Please provide the vertical and category IDs.")
+
+    vertical_id = request.GET["v"]
+    vertical_category = request.GET["c"]
+
+    try:
+        vertical_id = int(vertical_id)
+        vertical_category = int(vertical_category)
+    except:
+        raise Http404("The vertical and category IDs should be numeric.")
+    
+    courses = []
+    for c in _get_courses(vertical_id, vertical_category):
+        start_dates = models.CourseStartDate.objects.filter(course=c)
+        course_level = models.CourseLevel.objects.get(course=c)
+        level = models.Level.objects.get(acronym=course_level.level_id)
+        course_format = models.CourseFormat.objects.get(course=c)
+        format_name  = models.Format.objects.get(
+                acronym=course_format.format_id).name
+        points = models.CourseCpdPoints.objects.get(course=c)
+
+
+        cpd_points = points.points
+        if cpd_points is None:
+            cpd_points = 0
+
+        courses.append({
+            "name": c.name,
+            "cost": float(c.cost),
+            "start_dates": [x.start_date for x in start_dates],
+            "level": level.name,
+            "format": format_name,
+            "cpd": {
+                "points": float(cpd_points),
+                "is_private": points.is_private
+                }
+            })
+    return _json_response(courses)
+
