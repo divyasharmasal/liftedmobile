@@ -70,7 +70,7 @@ def qns_and_opts(request):
 def _get_courses(vertical_id, vertical_category):
     return models.Course.objects.filter(
             courseverticalcategory__vertical_category__key=vertical_category,
-            courseverticalcategory__vertical_category__id=vertical_id)
+            courseverticalcategory__vertical_category__vertical_id=vertical_id)
 
 
 def _get_courses_any_category(vertical_id):
