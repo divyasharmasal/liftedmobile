@@ -1,6 +1,14 @@
 from app.lifted_framework_data import extract_framework_data
+from django.contrib.auth.models import User
+from django.utils import timezone
+from lm import settings
+
 
 def load(apps, schema_editor):
+    User.objects.create_superuser(username=settings.LIFTED_TEMP_USERNAME, 
+            password=settings.LIFTED_TEMP_PASSWORD, 
+            last_login=timezone.now(), email='')
+
     Vertical = apps.get_model("app", "Vertical")
     VerticalCategory = apps.get_model("app", "VerticalCategory")
     Level = apps.get_model("app", "Level")
