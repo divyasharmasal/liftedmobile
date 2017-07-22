@@ -182,3 +182,5 @@ Finally, run this command:
 ```
 /path/to/push_prod.sh "ssh -i "liftedmobile.pem" ubuntu@52.221.77.72"
 ```
+
+    `ssh` in to the server, and 
