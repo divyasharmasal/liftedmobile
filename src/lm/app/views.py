@@ -74,8 +74,17 @@ def courses(request):
 
     vertical_id = request.GET["v"]
     vertical_category = request.GET["c"]
-    need_ids = request.GET["n"]
+    need_ids = request.GET["n"].strip()
     course_query = None
+
+    if len(need_ids) == 0:
+        need_ids = []
+    else:
+        try:
+            need_ids = need_ids.split(",")
+        except:
+            return HttpResponseServerError("Invalid need IDs")
+
 
     if (vertical_category == "any" and need_ids == "any"):
         course_query = models.Course.objects.filter(
@@ -102,7 +111,6 @@ def courses(request):
                     " should be numeric.")
     else:
         try:
-            need_ids = need_ids.split(",")
             vertical_id = int(vertical_id)
             vertical_category = int(vertical_category)
             course_query = models.Course.objects.filter(
