@@ -169,18 +169,29 @@ docker rmi docker_db_dev
 
 ## Deploying to AWS
 
-First, get your AWS login command, such as:
+
+Note your AWS login command, such as:
 
 ```
 ssh -i "liftedmobile.pem" ubuntu@52.221.77.72
 ```
 
-Next, `cd` to the directory with `liftedmobile.pem`.
+Locally, `cd` to the directory with `liftedmobile.pem`.
 
-Finally, run this command:
+Run:
 
 ```
 /path/to/push_prod.sh "ssh -i "liftedmobile.pem" ubuntu@52.221.77.72"
 ```
 
-    `ssh` in to the server, and 
+Now, `ssh` into the remote server.  Install `docker`, `docker-compose`, and
+`git` on an AWS EC2 instance.
+
+Clone the `liftedmobile` repository and `git checkout` to the `mvp` branch.
+
+Run these commands to start the docker containers which you just pushed:
+
+```
+cd liftedmobile
+docker-compose -f docker/docker-compose.prod.yml up -d
+```
