@@ -1,1 +1,0 @@
-Make multiple-choice options not shift when checked

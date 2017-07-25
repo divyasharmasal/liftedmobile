@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import Http404
+from django.http import HttpResponseServerError
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required 
@@ -67,36 +67,51 @@ def qns_and_opts(request):
     return _json_response(qns)
 
 
-def _get_courses(vertical_id, vertical_category):
-    return models.Course.objects.filter(
-            courseverticalcategory__vertical_category__key=vertical_category,
-            courseverticalcategory__vertical_category__vertical_id=vertical_id)
-
-
-def _get_courses_any_category(vertical_id):
-    return models.Course.objects.filter(
-            courseverticalcategory__vertical_category__id=vertical_id)
-
-
-
-@login_required
+# @login_required
 def courses(request):
     if "v" not in request.GET or "c" not in request.GET:
-        raise Http404("Please provide the vertical and category IDs.")
+        return HttpResponseServerError("Please provide the vertical and category IDs.")
 
     vertical_id = request.GET["v"]
     vertical_category = request.GET["c"]
+    need_ids = request.GET["n"]
     course_query = None
 
-    if (vertical_category == "any"):
-        course_query = _get_courses_any_category(vertical_id)
-    else:
+    if (vertical_category == "any" and need_ids == "any"):
+        course_query = models.Course.objects.filter(
+                courseverticalcategory__vertical_category__id=vertical_id)
+
+    elif (vertical_category == "any" and need_ids != "any"):
+        try:
+            course_query = models.Course.objects.filter(
+                    courseverticalcategory__vertical_category__id=vertical_id,
+                    courselevel__needlevel__need__in=need_ids)
+        except:
+            return HttpResponseServerError("Could not retrieve courses; are the" +
+                    " need IDs correctly formatted?")
+
+    elif (vertical_category != "any" and need_ids == "any"):
         try:
             vertical_id = int(vertical_id)
             vertical_category = int(vertical_category)
-            course_query = _get_courses(vertical_id, vertical_category)
+            course_query = models.Course.objects.filter(
+                courseverticalcategory__vertical_category__key=vertical_category,
+                courseverticalcategory__vertical_category__vertical_id=vertical_id)
         except:
-            raise Http404("The vertical and category IDs should be numeric.")
+            return HttpResponseServerError("The vertical and category IDs" + 
+                    " should be numeric.")
+    else:
+        try:
+            need_ids = need_ids.split(",")
+            vertical_id = int(vertical_id)
+            vertical_category = int(vertical_category)
+            course_query = models.Course.objects.filter(
+                courseverticalcategory__vertical_category__key=vertical_category,
+                courseverticalcategory__vertical_category__vertical_id=vertical_id,
+                courselevel__level_id__needlevel__need_id__in=need_ids)
+        except:
+            return HttpResponseServerError("The vertical and category IDs " + 
+                    "should be numeric.")
     
     courses = []
     for c in course_query:        
