@@ -67,7 +67,7 @@ def qns_and_opts(request):
     return _json_response(qns)
 
 
-# @login_required
+@login_required
 def courses(request):
     if "v" not in request.GET or "c" not in request.GET:
         return HttpResponseServerError("Please provide the vertical and category IDs.")
@@ -87,8 +87,11 @@ def courses(request):
 
 
     if (vertical_category == "any" and need_ids == "any"):
-        course_query = models.Course.objects.filter(
-                courseverticalcategory__vertical_category__id=vertical_id)
+        try:
+            course_query = models.Course.objects.filter(
+                    courseverticalcategory__vertical_category__id=vertical_id)
+        except:
+            return HttpResponseServerError("Error code 0")
 
     elif (vertical_category == "any" and need_ids != "any"):
         try:
@@ -96,8 +99,7 @@ def courses(request):
                     courseverticalcategory__vertical_category__id=vertical_id,
                     courselevel__level_id__needlevel__need_id__in=need_ids)
         except:
-            return HttpResponseServerError("Could not retrieve courses; are the" +
-                    " need IDs correctly formatted?")
+            return HttpResponseServerError("Error code 1")
 
     elif (vertical_category != "any" and need_ids == "any"):
         try:
@@ -107,7 +109,7 @@ def courses(request):
                 courseverticalcategory__vertical_category__key=vertical_category,
                 courseverticalcategory__vertical_category__vertical_id=vertical_id)
         except:
-            return HttpResponseServerError("The vertical and category IDs should be numeric.")
+            return HttpResponseServerError("Error code 2")
     else:
         try:
             vertical_id = int(vertical_id)
@@ -117,7 +119,7 @@ def courses(request):
                 courseverticalcategory__vertical_category__vertical_id=vertical_id,
                 courselevel__level_id__needlevel__need_id__in=need_ids)
         except e:
-            return HttpResponseServerError("The vertical and category IDs should be numeric.")
+            return HttpResponseServerError("Error code 3")
     
     courses = []
     for c in course_query.distinct():
