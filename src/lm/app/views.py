@@ -78,10 +78,10 @@ def courses(request):
     course_query = None
 
     if len(need_ids) == 0:
-        need_ids = []
-    else:
+        need_ids = "any"
+    elif need_ids != "any":
         try:
-            need_ids = need_ids.split(",")
+            need_ids = [int(x) for x in need_ids.split(",")]
         except:
             return HttpResponseServerError("Invalid need IDs")
 
@@ -94,7 +94,7 @@ def courses(request):
         try:
             course_query = models.Course.objects.filter(
                     courseverticalcategory__vertical_category__id=vertical_id,
-                    courselevel__needlevel__need__in=need_ids)
+                    courselevel__level_id__needlevel__need_id__in=need_ids)
         except:
             return HttpResponseServerError("Could not retrieve courses; are the" +
                     " need IDs correctly formatted?")
@@ -107,8 +107,7 @@ def courses(request):
                 courseverticalcategory__vertical_category__key=vertical_category,
                 courseverticalcategory__vertical_category__vertical_id=vertical_id)
         except:
-            return HttpResponseServerError("The vertical and category IDs" + 
-                    " should be numeric.")
+            return HttpResponseServerError("The vertical and category IDs should be numeric.")
     else:
         try:
             vertical_id = int(vertical_id)
@@ -117,12 +116,11 @@ def courses(request):
                 courseverticalcategory__vertical_category__key=vertical_category,
                 courseverticalcategory__vertical_category__vertical_id=vertical_id,
                 courselevel__level_id__needlevel__need_id__in=need_ids)
-        except:
-            return HttpResponseServerError("The vertical and category IDs " + 
-                    "should be numeric.")
+        except e:
+            return HttpResponseServerError("The vertical and category IDs should be numeric.")
     
     courses = []
-    for c in course_query:        
+    for c in course_query.distinct():
         start_dates = models.CourseStartDate.objects.filter(course=c)
         course_level = models.CourseLevel.objects.get(course=c)
         level = models.Level.objects.get(acronym=course_level.level_id)
