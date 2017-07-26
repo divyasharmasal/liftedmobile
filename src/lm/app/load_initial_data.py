@@ -5,7 +5,10 @@ from lm import settings
 
 
 def load(apps, schema_editor):
-    User.objects.create_superuser(username=settings.LIFTED_TEMP_USERNAME, 
+    User.objects.create_superuser(username=settings.LIFTED_TEMP_SUPER_USERNAME, 
+            password=settings.LIFTED_TEMP_SUPER_PASSWORD, 
+            last_login=timezone.now(), email='')
+    User.objects.create_user(username=settings.LIFTED_TEMP_USERNAME, 
             password=settings.LIFTED_TEMP_PASSWORD, 
             last_login=timezone.now(), email='')
 

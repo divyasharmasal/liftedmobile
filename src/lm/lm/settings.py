@@ -15,6 +15,9 @@ import os
 LIFTED_TEMP_USERNAME = 'lifted'
 LIFTED_TEMP_PASSWORD = '***REMOVED***'
 
+LIFTED_TEMP_SUPER_USERNAME = 'weijie'
+LIFTED_TEMP_SUPER_PASSWORD = 'uCZN3xocaSWHXTEGNDFhVWbZB7NicYLfYnjvGicuMTUYALxF7uc99pbo9QNAjGvpb7NhR3aMY5T8wUMGyHYaQgbVFitn4hGeM2HM'
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
