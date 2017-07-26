@@ -6,16 +6,9 @@
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
         <meta charset="utf-8">
         <link rel="stylesheet" href="{% static "/app/dist/style.css" %}" />
-        {% block head %}
-        {% endblock %}
-        <style>
-            .button-large, p{
-                font-size:1.8em;
-            }
-        </style>
     </head>
     <body>
-        <div class="pure-g">
+        <div class="pure-g login_form">
             <form method="post" action="{% url 'login' %}" class="pure-form">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ next }}" />
