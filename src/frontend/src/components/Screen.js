@@ -46,7 +46,11 @@ const renderCourses = (courses, courseTableRef, unPadCourses) => {
 
   let result;
   if (!courses){
-    result = <div class="loader">Loading courses...</div>;
+    result = (
+      <div class="load1">
+        <div class="loader">Loading courses...</div>;
+      </div>
+    );
   }
   else if (courses.courses.length === 0){
     result = (
