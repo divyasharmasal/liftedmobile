@@ -75,6 +75,7 @@ const renderCourses = (courses, courseTableRef, unPadCourses) => {
     });
 
     let isTailored;
+    console.log(courses);
     if (!courses.tailored){
       isTailored = [
         <p>We didn't find any courses that matched every option you've 
@@ -180,7 +181,7 @@ class BranchScreen extends Screen{
       // authFetch courses with verticalId, categoryId, and needIds
       response.json().then(courses => {
         if (courses.length > 0){
-          this.storeCourses(courses, true);
+          this.storeCourses(courses, selectedNeeds.length > 0);
         }
         else{
           // if there are no courses, fetch with categoryId = "any"
@@ -284,7 +285,6 @@ class BranchScreen extends Screen{
             <h2>Courses we recommend</h2>
           </div>
           <div class="pure-u-1" ref={courses => this.courses = courses}>
-            <a name="courses" />
             <div class="courses">
               {courses}
             </div>

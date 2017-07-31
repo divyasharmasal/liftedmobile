@@ -24,6 +24,7 @@ export default class Question extends Component{
     });
   }
 
+
   onAnswerClick(e){
     let selectedIndex = parseInt(e.target.dataset.index, 10);
     if (this.type === this.QN_TYPES.SINGLE){

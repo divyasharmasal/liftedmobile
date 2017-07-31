@@ -32,7 +32,7 @@ gulp.task('build', shell.task([
    'preact build --clean --production false --dest ../lm/app/static/app/dist/',
    'mv ../lm/app/static/app/dist/bundle*.js ../lm/app/static/app/dist/bundle.js',
    'mv ../lm/app/static/app/dist/polyfills*.js ../lm/app/static/app/dist/polyfills.js',
-    'mv ../lm/app/static/app/dist/style*.css ../lm/app/static/app/dist/style.css'
+   'mv ../lm/app/static/app/dist/style*.css ../lm/app/static/app/dist/style.css'
   ],
   {
     env: {

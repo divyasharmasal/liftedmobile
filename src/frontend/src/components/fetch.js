@@ -1,4 +1,3 @@
-
 let authFetch = function(url){
   return fetch(url, {
     method: "GET",
