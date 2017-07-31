@@ -31,7 +31,6 @@ def index(request):
 
 @login_required
 def qns_and_opts(request):
-    _print(request.user.is_authenticated)
     """
     Respond with a JSON representation of the quiz questions
     [{ "text": question_text, 
