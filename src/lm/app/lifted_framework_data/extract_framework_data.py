@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Extract data from the ODS spreadsheets which contain
 the LIFTED framework and courses for 2017.
@@ -23,6 +24,34 @@ FORMATS_FILE = _make_path("formats.ods")
 NEEDS_FILE = _make_path("needs.ods")
 COURSES_FILE = _make_path("courses.ods")
 VERTICALS_FILE = _make_path("verticals.ods")
+COMPETENCIES_FILE = _make_path("competencies.ods")
+JOB_ROLES_FILE = _make_path("job_roles.ods")
+
+
+def parse_item_rows(ods_data):
+    """
+    Where each row contains a distinct item, and the headers
+    represent keys.
+
+    [ { header1: value1, header2: value2, ...}
+        { header1: value1, header2: value2, ...} ]
+    """
+    sheet = ods_data[list(ods_data.keys())[0]]
+    headers = sheet[0]
+    result = []
+
+    for row in sheet[1:]:
+        if len(row) == 0:
+            break
+
+        data = {}
+        i = 0
+        for cell in row:
+            data[headers[i]] = cell
+            i += 1
+        result.append(data)
+
+    return result
 
 
 def read_ods_file(filename):
@@ -99,9 +128,9 @@ def parse_funding_types():
         if len(row) == 0:
             break
         funding_types = [x.strip() for x in row[funding_index].split("/")]
-        for ft in funding_types:
-            if len(ft) > 0:
-                all_funding_types.add(ft)
+        for f_type in funding_types:
+            if len(f_type) > 0:
+                all_funding_types.add(f_type)
     return list(all_funding_types)
 
 
@@ -154,53 +183,49 @@ def parse_verticals():
     return result
 
 
-def parse_item_rows(ods_data):
+def trim_values(dict_data):
     """
-    Where each row contains a distinct item, and the headers
-    represent keys.
-
-    [
-        { header1: value1, header2: value2, ...}
-        { header1: value1, header2: value2, ...}
-    ]
+    Strip trailing whitespace from each value in a dict
     """
-    sheet = ods_data[list(ods_data.keys())[0]]
-    headers = sheet[0]
-    result = []
-
-    for row in sheet[1:]:
-        if len(row) == 0:
-            break
-
-        data = {}
-        i = 0
-        for cell in row:
-            data[headers[i]] = cell
-            i += 1
-        result.append(data)
-
-    return result
+    i = 0
+    for data_item in dict_data:
+        for key, value in data_item.items():
+            if isinstance(value, str):
+                dict_data[i][key] = value.strip()
+        i += 1
+    return dict_data
 
 
-def parse_two_column(ods_data):
+def parse_competencies():
     """
-    For simple two-column sheets:
-    {B1: B2, C1: C2, ...}
-
-    Unused.
+    Extract data about the competencies.
     """
-    data = {}
-    sheet = ods_data[list(ods_data.keys())[0]]
+    data = trim_values(parse_item_rows(read_ods_file(COMPETENCIES_FILE)))
+    return data
 
-    for row in sheet[1:]:
-        if len(row) != 2:
-            break
-        data[row[0]] = row[1]
 
+def parse_competency_categories():
+    """
+    Extract data about the competency categories.
+    """
+    competencies = parse_competencies()
+    categories = list(set([x["Competency Category"] for x in competencies]))
+    return categories
+
+
+def parse_job_roles():
+    """
+    Extract data about job roles
+    """
+    data = trim_values(parse_item_rows(read_ods_file(JOB_ROLES_FILE)))
+
+    # parse competency IDs
+    for row in data:
+        row["Competency IDs"] = [int(x.strip()) for x in row["Competency IDs "].split(",")]
+        del row["Competency IDs "]
     return data
 
 
 if __name__ == "__main__":
     import pprint
-    # pprint.pprint(parse_courses())
-    parse_verticals()
+    pprint.pprint(parse_job_roles())
