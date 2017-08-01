@@ -21,7 +21,7 @@ ENV PYTHONUNBUFFERED 1
 CMD cd /src/lm && \
     sh /src/lm/sleep_until_dev_pg_isready.sh && \
 
-    # python3 manage.py makemigrations #&& \
+   #python3 manage.py makemigrations && \
     python3 manage.py migrate && \
     echo && \
     echo "Docker containers are up; server at: http://0.0.0.0:8000/" && \

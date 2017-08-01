@@ -43,12 +43,6 @@ export default class App extends Component {
     }).catch(err =>{
       console.error(err);
     });
-
-    // redirect to / if the user refreshes
-    //if (window.location.pathname !== "/" && 
-        //Object.keys(this.state.selectedAnswers).length === 0){
-      //window.location.replace("/");
-    //}
   }
 
 
@@ -118,7 +112,6 @@ export default class App extends Component {
     // If neither state nor sessionStorage contains the selectedAnswers,
     // route to /
     else if (!selectedAnswers && !storedSelectedAnswers){
-      console.error("selectedAnswers not found");
       route("/");
     }
 

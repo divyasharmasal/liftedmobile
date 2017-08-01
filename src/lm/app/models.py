@@ -28,6 +28,9 @@ class Format(models.Model):
 
 
 class Level(models.Model):
+    """
+    Course levels; not to be confused with job role levels
+    """
     acronym = models.TextField(primary_key=True)
     name = models.TextField(unique=True)
 
@@ -120,3 +123,33 @@ class CourseCpdPoints(models.Model):
     course = models.OneToOneField(Course, on_delete=models.CASCADE)
     points = models.DecimalField(decimal_places=2, max_digits=6, null=True)
     is_private = models.BooleanField()
+
+
+class CompetencyCategory(models.Model):
+    class Meta:
+        unique_together = (("vertical", "name"))
+    id = models.AutoField(primary_key=True)
+    name = models.TextField()
+    vertical = models.ForeignKey(Vertical, on_delete=models.CASCADE)
+
+
+class Competency(models.Model):
+    id = models.IntegerField(primary_key=True)
+    vertical = models.ForeignKey(Vertical, on_delete=models.CASCADE)
+    category = models.ForeignKey(CompetencyCategory, on_delete=models.CASCADE)
+    specialism = models.TextField(null=True)
+    copy_desc = models.TextField()
+    full_desc = models.TextField()
+
+
+class JobRole(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.TextField(unique=True)
+    role_level = models.IntegerField()
+    org_type = models.TextField()
+    thin_desc = models.TextField()
+
+
+class JobRoleCompetency(models.Model):
+    job_role = models.ForeignKey(JobRole, on_delete=models.CASCADE)
+    competency = models.ForeignKey(Competency, on_delete=models.CASCADE)

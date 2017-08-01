@@ -201,6 +201,11 @@ def parse_competencies():
     Extract data about the competencies.
     """
     data = trim_values(parse_item_rows(read_ods_file(COMPETENCIES_FILE)))
+
+    # Make empty specialisms None
+    for row in data:
+        if row["Specialism"] == "":
+            row["Specialism"] = None
     return data
 
 
@@ -209,8 +214,16 @@ def parse_competency_categories():
     Extract data about the competency categories.
     """
     competencies = parse_competencies()
-    categories = list(set([x["Competency Category"] for x in competencies]))
-    return categories
+
+    competency_categories = {}
+    for competency in competencies:
+        cat = competency["Competency Category"]
+        if competency["Vertical"] not in competency_categories:
+            competency_categories[competency["Vertical"]] = [cat]
+        else:
+            if cat not in competency_categories[competency["Vertical"]]:
+                competency_categories[competency["Vertical"]].append(cat)
+    return competency_categories
 
 
 def parse_job_roles():
