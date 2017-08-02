@@ -10,7 +10,7 @@ import {
 
 export {BranchScreen};
 
-class BranchScreen extends Screen{
+class BranchScreen extends Screen {
   storeCourses = (courses, tailored) => {
     this.setState({
       courses: {
@@ -116,7 +116,8 @@ class BranchScreen extends Screen{
         {courseNotice}
         <div class="take_test_prompt pure-u-1 pure-u-md-10-24">
           <h1>Take a full learning needs diagnostic test.</h1>
-          <a class="take_test_button">Take the test</a>
+          <a href={this.props.nextScreenPath} 
+             class="take_test_button">Take the test</a>
         </div>
 
         <div class="pure-u-md-2-24"></div>

@@ -59,9 +59,16 @@ def qns_and_opts(request):
         qn3_opts.append({"text": row.option})
     qn3 = create_qn("I want to...", qn3_opts)
 
+    qn4_opts = [
+                    {"text": "A law firm"}, 
+                    {"text": "A corporation or organisation"}
+               ]
+    qn4 = create_qn("I work at...", qn4_opts)
+
     qns.append(qn1)
     qns.append(qn2)
     qns.append(qn3)
+    qns.append(qn4)
 
     return _json_response(qns)
 

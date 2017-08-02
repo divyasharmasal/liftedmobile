@@ -8,6 +8,7 @@ import {
   WhyLearnScreen, 
   WhatCompetencyScreen, 
   JobScreen, 
+  WhereWorkScreen,
 } from './screens';
 
 
@@ -23,7 +24,8 @@ export default class App extends Component {
 
   componentWillMount = () => {
     if (typeof window !== "undefined"){
-      let storedSelectedAnswers = JSON.parse(sessionStorage.getItem("selectedAnswers"));
+      let storedSelectedAnswers = JSON.parse(
+        sessionStorage.getItem("selectedAnswers"));
       if (storedSelectedAnswers){
         this.setState({
           selectedAnswers: storedSelectedAnswers,
@@ -70,7 +72,8 @@ export default class App extends Component {
     });
 
     // Store selectedAnswers to sessionStorage and the state
-    sessionStorage.setItem("selectedAnswers", JSON.stringify(selectedAnswers));
+    sessionStorage.setItem("selectedAnswers", 
+      JSON.stringify(selectedAnswers));
     this.setState({ selectedAnswers }, () => {
       // Run the callback, unless it's on the branch screen
       if (qnNum !== 3){ 
@@ -121,6 +124,7 @@ export default class App extends Component {
           qnNum={0}
           qnData={this.state.qns[0]}
           path="/"
+          default
           handleAnswerSelect={this.handleAnswerSelect}
           nextScreenPath="/what" />
 
@@ -145,7 +149,16 @@ export default class App extends Component {
           qnData={this.state.qns[2]}
           path="/choose"
           handleAnswerSelect={this.handleAnswerSelect}
-          selectedAnswers={selectedAnswers} />
+          selectedAnswers={selectedAnswers} 
+          nextScreenPath="/test" />
+
+        <WhereWorkScreen
+          qnNum={4}
+          qnData={this.state.qns[3]}
+          path="/test"
+          handleAnswerSelect={this.handleAnswerSelect}
+          selectedAnswers={selectedAnswers}
+        />
       </Router>
 		);
 	}
