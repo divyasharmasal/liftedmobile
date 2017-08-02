@@ -8,7 +8,7 @@ import {
   WhyLearnScreen, 
   WhatCompetencyScreen, 
   JobScreen, 
-} from './Screen';
+} from './screens';
 
 
 export default class App extends Component {
