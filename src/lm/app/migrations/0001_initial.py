@@ -15,6 +15,22 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='Competency',
+            fields=[
+                ('id', models.IntegerField(primary_key=True, serialize=False)),
+                ('specialism', models.TextField(null=True)),
+                ('copy_desc', models.TextField()),
+                ('full_desc', models.TextField()),
+            ],
+        ),
+        migrations.CreateModel(
+            name='CompetencyCategory',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('name', models.TextField()),
+            ],
+        ),
+        migrations.CreateModel(
             name='Course',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
@@ -89,6 +105,24 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='JobRole',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('name', models.TextField(unique=True)),
+                ('role_level', models.IntegerField()),
+                ('org_type', models.TextField()),
+                ('thin_desc', models.TextField()),
+            ],
+        ),
+        migrations.CreateModel(
+            name='JobRoleCompetency',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('competency', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Competency')),
+                ('job_role', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.JobRole')),
+            ],
+        ),
+        migrations.CreateModel(
             name='Level',
             fields=[
                 ('acronym', models.TextField(primary_key=True, serialize=False)),
@@ -144,54 +178,10 @@ class Migration(migrations.Migration):
                 ('vertical', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Vertical')),
             ],
         ),
-        migrations.CreateModel(
-            name='Competency',
-            fields=[
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
-                ('specialism', models.TextField(null=True)),
-                ('copy_desc', models.TextField()),
-                ('full_desc', models.TextField()),
-            ],
-        ),
-        migrations.CreateModel(
-            name='CompetencyCategory',
-            fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('name', models.TextField()),
-                ('vertical', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Vertical')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='JobRole',
-            fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('name', models.TextField(unique=True)),
-                ('role_level', models.IntegerField()),
-                ('org_type', models.TextField()),
-                ('thin_desc', models.TextField()),
-            ],
-        ),
-        migrations.CreateModel(
-            name='JobRoleCompetency',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('competency', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Competency')),
-                ('job_role', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.JobRole')),
-            ],
-        ),
         migrations.AddField(
-            model_name='competency',
-            name='category',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.CompetencyCategory'),
-        ),
-        migrations.AddField(
-            model_name='competency',
+            model_name='jobrole',
             name='vertical',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Vertical'),
-        ),
-        migrations.AlterUniqueTogether(
-            name='competencycategory',
-            unique_together=set([('vertical', 'name')]),
         ),
         migrations.AddField(
             model_name='courseverticalcategory',
@@ -217,6 +207,25 @@ class Migration(migrations.Migration):
             model_name='courseformat',
             name='format',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Format'),
+        ),
+        migrations.AddField(
+            model_name='competencycategory',
+            name='vertical',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Vertical'),
+        ),
+        migrations.AddField(
+            model_name='competency',
+            name='category',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.CompetencyCategory'),
+        ),
+        migrations.AddField(
+            model_name='competency',
+            name='vertical',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Vertical'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='verticalcategory',
+            unique_together=set([('key', 'vertical')]),
         ),
         migrations.AlterUniqueTogether(
             name='needlevel',
@@ -251,7 +260,7 @@ class Migration(migrations.Migration):
             unique_together=set([('course', 'format')]),
         ),
         migrations.AlterUniqueTogether(
-            name='verticalcategory',
-            unique_together=set([('key', 'vertical')]),
+            name='competencycategory',
+            unique_together=set([('vertical', 'name')]),
         ),
     ]

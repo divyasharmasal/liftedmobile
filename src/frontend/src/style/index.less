@@ -4,6 +4,10 @@
 @import (once, css) "./fonts.css";
 @import (once, css) "./loading_anim.css";
 
+@hover_bg_color: #edf3fb;
+@sal_blue: #0063a7;
+@border_radius: .4rem;
+
 *, html, body {
     font-family: Lato, Arial;
     /*font-weight: 300;*/
@@ -16,7 +20,7 @@
 
 h1{
     font-weight: normal;
-    color: #0063a7;
+    color: @sal_blue;
 }
 
 hr{
@@ -78,10 +82,10 @@ hr{
         padding-bottom:1.5em;
         padding-left:2em;
         padding-right:2em;
-        color: #0063a7;
+        color: @sal_blue;
         margin-bottom: 1.0rem;
         border: 1px solid;
-        border-radius: .4rem;
+        border-radius: @border_radius;
     }
 }
 
@@ -105,13 +109,17 @@ hr{
         color:black;
         font-size: 2.5em;
         border: 1px solid #585757;
-        border-radius: .4rem;
+        border-radius: @border_radius;
         text-align:center;
         padding-left:10px;
         padding-right:10px;
         padding-top:15px;
         padding-bottom:15px;
         margin-bottom:15px;
+
+        &:hover{
+            background-color: @hover_bg_color;
+        }
     }
 
     .option_tick{
@@ -126,17 +134,13 @@ hr{
 
         .option_tick{
             visibility:visible;
-            color:#0063a7;
+            color:@sal_blue;
             display:initial;
         }
 
         .option_text{
             float:right;
         }
-    }
-
-    .answer:hover{
-        background-color: #edf3fb;
     }
 
     .disabled, 
@@ -174,7 +178,7 @@ p{
     h2{
         font-size:3.5em;
         font-weight: normal;
-        color: #0063a7;
+        color: @sal_blue;
         margin-bottom:0;
     }
     
@@ -194,6 +198,8 @@ p{
 
 .course_notice{
     text-align:center;
+    // Prevent height flash-change before the div gets rendered
+    min-height:112px; 
 }
 
 .why_learn_qn{
@@ -207,6 +213,46 @@ p{
     }
 }
 
+
+.role_picker{
+    .level{
+
+        @role_transition: padding-left 0.5s, 
+                          border-color 0.5s,
+                          background-color 0.5s;
+        @role_transition_function: ease-in-out;
+        .role{
+            margin:0;
+            margin-bottom:10px;
+            text-align:left;
+            border-radius: @border_radius;
+            cursor:pointer;
+            height:100%;
+            transition: @role_transition;
+            -webkit-transition: @role_transition;
+            transition-timing-function: @role_transition_function;
+            -webkit-transition-timing-function: @role_transition_function;
+            padding-top:1em;
+            padding-bottom:1em;
+            border: solid 1px;
+            border-color:rgba(0, 0, 0, 0);
+            padding-left:1em;
+
+            /*&:hover{*/
+                /*background-color: @hover_bg_color;*/
+                border-color:black;
+            /*}*/
+
+            .selected{
+                border:solid 1px;
+            }
+
+            .name{
+                font-weight:bold;
+            }
+        }
+    }
+}
 /* Media queries */
 @media (max-width: 568px) {
     .scroll_down_msg{
@@ -216,6 +262,18 @@ p{
         .question{
             .answer{
                 padding: 15px 10px;
+            }
+        }
+    }
+
+    .role_picker{
+        .level{
+            .role{
+                border: solid 1px;
+                border-radius: @border_radius;
+                padding-top:0;
+                padding-bottom:0;
+                margin-bottom:10px;
             }
         }
     }
@@ -245,14 +303,6 @@ p{
             font-size:1.5em;
         }
 
-    }
-
-    .answer{
-        .option_tick{
-        }
-
-        .option_text{
-        }
     }
 
     .courses{

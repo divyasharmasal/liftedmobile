@@ -46,7 +46,6 @@ print("Debug set to", str(DEBUG))
 
 ALLOWED_HOSTS = ["*"]
 
-
 # Application definition
 
 INSTALLED_APPS = [

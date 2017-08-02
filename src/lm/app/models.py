@@ -148,6 +148,7 @@ class JobRole(models.Model):
     role_level = models.IntegerField()
     org_type = models.TextField()
     thin_desc = models.TextField()
+    vertical = models.ForeignKey(Vertical, on_delete=models.CASCADE)
 
 
 class JobRoleCompetency(models.Model):

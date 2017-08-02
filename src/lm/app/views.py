@@ -60,8 +60,8 @@ def qns_and_opts(request):
     qn3 = create_qn("I want to...", qn3_opts)
 
     qn4_opts = [
-                    {"text": "A law firm"}, 
-                    {"text": "A corporation or organisation"}
+                    {"text": "A law firm."}, 
+                    {"text": "A corporation or organisation."}
                ]
     qn4 = create_qn("I work at...", qn4_opts)
 
@@ -76,7 +76,8 @@ def qns_and_opts(request):
 @login_required
 def courses(request):
     if "v" not in request.GET or "c" not in request.GET:
-        return HttpResponseServerError("Please provide the vertical and category IDs.")
+        return HttpResponseServerError("Please provide the vertical and "
+                                       "category IDs.")
 
     vertical_id = request.GET["v"]
     vertical_category = request.GET["c"]
@@ -155,3 +156,45 @@ def courses(request):
             })
     return _json_response(courses)
 
+
+@login_required
+def roles(request):
+    """
+    Used by RoleScreen for the diagnostic
+    """
+    if "o" not in request.GET or \
+       "v" not in request.GET:
+        return HttpResponseServerError("Please provide the org type and "
+                                       "vertical params.")
+    org_type = request.GET["o"]
+    vertical_id = request.GET["v"]
+    org_type_name = None
+
+    try:
+        org_type = int(org_type)
+        vertical_id = int(vertical_id)
+    except:
+        return HttpResponseServerError("Please provide valid "
+                                       "workplace/vertical params.")
+
+    if org_type == 0:
+        org_type_name = "Law firm"
+    elif org_type == 1:
+        org_type_name = "In-house"
+    else:
+        return HttpResponseServerError("Please provide org_type/vertical "
+                                       "params that correspond to the "
+                                       "right org_type.")
+
+    vertical = models.Vertical.objects.get(id=vertical_id)
+    job_role_query = models.JobRole.objects.filter(
+            org_type=org_type_name, vertical=vertical)
+
+    job_roles = sorted([{ 
+        "name": job_role.name, 
+        "desc": job_role.thin_desc,
+        "level": job_role.role_level,
+        "id": job_role.id,
+        } for job_role in job_role_query.distinct()], 
+        key=lambda j: j["level"])
+    return _json_response(job_roles)

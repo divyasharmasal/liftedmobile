@@ -3,8 +3,6 @@ import { h, Component } from 'preact';
 export default class Question extends Component{
   constructor(props){
     super(props);
-    this.onAnswerClick = this.onAnswerClick.bind(this);
-    this.componentWillMount = this.componentWillMount.bind(this);
 
     this.QN_TYPES = {
       SINGLE: 0,
@@ -18,15 +16,14 @@ export default class Question extends Component{
   }
 
 
-  componentWillMount(){
+  componentWillMount = () => {
     this.setState({
       preSelected: this.props.preSelected,
     });
   }
 
 
-  onAnswerClick(e){
-    let selectedIndex = parseInt(e.target.dataset.index, 10);
+  onAnswerClick = selectedIndex => {
     if (this.type === this.QN_TYPES.SINGLE){
       this.props.handleAnswerSelect(selectedIndex, this.props.isMultiQn);
     }
@@ -86,17 +83,12 @@ export default class Question extends Component{
       let tick = "✔";
       optionBtns.push(
         <div key={i} 
-            data-index={i}
             class={answerClass}
-            onClick={onAnswerClick}>
-            <div 
-              data-index={i}
-              class="option_tick">
+            onClick={() => {this.onAnswerClick(i)}}>
+            <div class="option_tick">
             {tick}
           </div>
-          <div 
-            data-index={i}
-            class={optionTextClass}>
+          <div class={optionTextClass}>
             {option.text}
           </div>
         </div>

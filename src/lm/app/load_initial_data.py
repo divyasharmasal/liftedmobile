@@ -207,6 +207,7 @@ def load(apps, schema_editor):
         jr = JobRole(name=job_role["Role"], 
                      role_level=job_role["Level"], 
                      org_type=job_role["In-house or law firm?"],
+                     vertical=vertical,
                      thin_desc=job_role["Thin Description"])
         jr.save()
 

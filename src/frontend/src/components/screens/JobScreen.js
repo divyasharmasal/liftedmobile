@@ -21,7 +21,6 @@ class JobScreen extends Screen{
 						handleAnswerSelect={this.handleAnswerSelect}
 						qnData={this.props.qnData} 
 					/>
-          <div class="preload_lato_bold">&nbsp;</div>
 				</div>
       </div>
     );

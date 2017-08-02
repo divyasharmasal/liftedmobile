@@ -9,6 +9,7 @@ import {
   WhatCompetencyScreen, 
   JobScreen, 
   WhereWorkScreen,
+  RoleScreen,
 } from './screens';
 
 
@@ -158,7 +159,15 @@ export default class App extends Component {
           path="/test"
           handleAnswerSelect={this.handleAnswerSelect}
           selectedAnswers={selectedAnswers}
-        />
+          nextScreenPath="/test/role" />
+
+        <RoleScreen
+          qnNum={5}
+          qnData={null}
+          path="/test/role"
+          selectedAnswers={selectedAnswers}
+          nextScreenPath="/test/goal" />
+
       </Router>
 		);
 	}
