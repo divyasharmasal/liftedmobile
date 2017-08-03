@@ -205,12 +205,10 @@ def roles(request):
 
     if role_num is not None:
         role = models.JobRole.objects.get(id=role_num)
-        job_role_query = models.JobRole.objects.filter(
-                role_level__gte=role.role_level,
-                org_type=org_type_name, 
-                vertical=vertical).exclude(
-                    role_level=role.role_level,
-                        )
+        job_role_query = models.JobRole.objects \
+                .filter(role_level__gte=role.role_level,
+                        role_level__lte=role.role_level+1) \
+                .exclude(id=role_num)
     else:
         job_role_query = models.JobRole.objects.filter(
                 org_type=org_type_name, vertical=vertical)
