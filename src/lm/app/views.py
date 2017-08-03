@@ -82,6 +82,10 @@ def qns_and_opts(request):
 
 @login_required
 def courses(request):
+    """
+    Respond with a list of courses that correspond to a given vertical and
+    category ID.
+    """
     if "v" not in request.GET or "c" not in request.GET:
         return HttpResponseServerError("Please provide the vertical and "
                                        "category IDs.")
@@ -167,7 +171,8 @@ def courses(request):
 # @login_required
 def roles(request):
     """
-    Used by RoleScreen for the diagnostic
+    Repsond with a list of roles given the organisation type, vertical, and 
+    (optionally) current role. Used by RoleScreen for the diagnostic.
     """
     if "o" not in request.GET or \
        "v" not in request.GET:
@@ -202,23 +207,86 @@ def roles(request):
 
     job_role_query = None
     vertical = models.Vertical.objects.get(id=vertical_id)
-
+    
+    # if the role num is specified, it's from /test/nextrole
     if role_num is not None:
         role = models.JobRole.objects.get(id=role_num)
         job_role_query = models.JobRole.objects \
                 .filter(role_level__gte=role.role_level,
                         role_level__lte=role.role_level+1) \
                 .exclude(id=role_num)
+
+    # if it's not, it's from /test/
     else:
         job_role_query = models.JobRole.objects.filter(
                 org_type=org_type_name, vertical=vertical)
 
 
-    job_roles = sorted([{ 
-        "name": job_role.name, 
-        "desc": job_role.thin_desc,
-        "level": job_role.role_level,
-        "id": job_role.id,
-        } for job_role in job_role_query.distinct()], 
-        key=lambda j: j["level"])
+    job_roles = sorted([{ "name": job_role.name, 
+                          "desc": job_role.thin_desc,
+                          "level": job_role.role_level,
+                          "id": job_role.id} \
+                               for job_role in job_role_query.distinct()
+                       ], key=lambda j: j["level"])
     return _json_response(job_roles)
+
+
+@login_required
+def diag(request):
+    """
+    Given a role ID, respond with the competency diagnostic questions.
+    """
+    role_num = None
+    try:
+        role_num = int(request.GET["r"])
+    except:
+        return HttpResponseServerError("Please provide a valid role num.")
+
+    role = models.JobRole.objects.get(id=role_num)
+    competencies = models.JobRoleCompetency.objects.filter(job_role=role)
+
+    result = []
+    for c in competencies:
+        result.append({
+            "id": c.competency.id,
+            "desc": c.competency.copy_desc,
+        })
+
+    return _json_response(result)
+
+
+# @login_required
+def results(request):
+    """
+    Retrieve data for the diagnostic results page
+    """
+    answers = {}
+    for k, v in request.GET.items():
+        try:
+            answers[k] = int(v)
+        except:
+            return HttpResponseServerError("Invalid answer provided for %s" % k)
+
+    # get competency categories
+    competencies = models.Competency.objects.filter(id__in=answers.keys())
+    categories = [x.category for x in competencies]
+
+    categorised_answers = {}
+    for k, v in answers.items():
+        # Scores:
+        # 0 - yes - +2
+        # 1 - unsure - -1
+        # 2 - no - -2
+        key = {0: 2, 1: -1, 2: -2}
+        score = key[v]
+
+        if score not in [2, -1, -2]:
+            return HttpResponseServerError("Invalid answer provided for %s" % k)
+
+        category = competencies.get(id=k).category.name
+
+        if category not in categorised_answers:
+            categorised_answers[category] = 0
+        categorised_answers[category] += score
+
+    return _json_response(categorised_answers)

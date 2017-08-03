@@ -10,7 +10,7 @@ export {GoalScreen};
 class GoalScreen extends Screen{
   handleAnswerSelect = selectedGoal => {
     let selectedAnswers = this.props.selectedAnswers;
-    selectedAnswers[this.props.qnNum+1] = [selectedGoal];
+    selectedAnswers[this.props.qnNum] = [selectedGoal];
 
     // Store selectedAnswers to sessionStorage and the state
     sessionStorage.setItem("selectedAnswers", JSON.stringify(selectedAnswers));

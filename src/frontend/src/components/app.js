@@ -11,6 +11,8 @@ import {
   WhereWorkScreen,
   RoleScreen,
   GoalScreen,
+  DiagScreen,
+  DiagResultsScreen,
 } from './screens';
 
 
@@ -33,6 +35,14 @@ export default class App extends Component {
           selectedAnswers: storedSelectedAnswers,
         });
       }
+
+      let storedDiagAnswers = JSON.parse(
+        sessionStorage.getItem("diagAnswers"));
+      if (storedDiagAnswers){
+        this.setState({
+          diagAnswers: storedDiagAnswers,
+        });
+      }
     }
   }
 
@@ -53,6 +63,7 @@ export default class App extends Component {
   handleAnswerSelect = (qnNum, answer, isMultiQn, callback) => {
     let selectedAnswers = this.state.selectedAnswers;
 
+    // Multi-select qns
     if (isMultiQn && qnNum === 3){
       let index = selectedAnswers[qnNum-1].indexOf(answer);
       if (index > -1){
@@ -62,6 +73,7 @@ export default class App extends Component {
         selectedAnswers[qnNum-1].push(answer);
       }
     }
+    // Single-select qns
     else{
       selectedAnswers[qnNum] = [answer];
     }
@@ -93,6 +105,15 @@ export default class App extends Component {
 	handleRoute = e => {
 		this.currentUrl = e.url;
 	};
+
+
+  routeToDiagResults = answers => {
+    this.setState({
+      diagAnswers: answers,
+    }, () => {
+      route("/test/results");
+    });
+  }
 
 
   render = () => {
@@ -170,19 +191,30 @@ export default class App extends Component {
           nextScreenPath="/test/goal" />
 
         <GoalScreen
-          qnNum={5}
+          qnNum={6}
           qnData={this.state.qns[4]}
           path="/test/goal"
           handleAnswerSelect={this.handleAnswerSelect}
           selectedAnswers={selectedAnswers} />
 
         <RoleScreen
-          qnNum={6}
+          qnNum={7}
           path="/test/nextrole"
           isNextRole={true}
           handleAnswerSelect={this.handleAnswerSelect}
           selectedAnswers={selectedAnswers}
           nextScreenPath="/test/diag" />
+
+        <DiagScreen
+          qnNum={8}
+          path="/test/diag"
+          routeToDiagResults={this.routeToDiagResults}
+          selectedAnswers={selectedAnswers}
+          nextScreenPath="/test/results" />
+        
+        <DiagResultsScreen
+          path="/test/results"
+          answers={this.state.diagAnswers} />
 
       </Router>
 		);

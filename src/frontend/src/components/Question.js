@@ -24,10 +24,7 @@ export default class Question extends Component{
 
 
   onAnswerClick = selectedIndex => {
-    if (this.props.isRoleQn){
-      this.props.handleAnswerSelect(selectedIndex, this.props.isMultiQn);
-    }
-    else if (this.type === this.QN_TYPES.SINGLE){
+    if (this.type === this.QN_TYPES.SINGLE){
       this.props.handleAnswerSelect(selectedIndex, this.props.isMultiQn);
     }
     else if (this.type === this.QN_TYPES.MULTI){
@@ -106,7 +103,7 @@ export default class Question extends Component{
         <div key={i} 
             class={answerClass}
             onClick={() => {this.onAnswerClick(i)}}>
-            <div class="option_tick">
+          <div class="option_tick">
             {tick}
           </div>
           <div class={optionTextClass}>

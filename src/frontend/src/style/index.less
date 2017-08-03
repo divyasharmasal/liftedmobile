@@ -5,6 +5,7 @@
 @import (once, css) "./loading_anim.css";
 
 @hover_bg_color: #edf3fb;
+@selected_bg_color: #dde3eb;
 @sal_blue: #0063a7;
 @border_radius: .4rem;
 
@@ -118,7 +119,7 @@ hr{
         margin-bottom:15px;
 
         &:hover{
-            background-color: @hover_bg_color;
+            /*background-color: @hover_bg_color;*/
         }
     }
 
@@ -144,7 +145,8 @@ hr{
     }
 
     .selected{
-        background-color: #dde3eb;
+        background-color:@selected_bg_color;
+        font-weight:bold;
 
         .option_tick{
             visibility:visible;
@@ -268,7 +270,132 @@ p{
     }
 }
 
+.diag{
+    .diag_qn{
+        margin-bottom:80px;
+        p{
+            font-size:2.5em;
+        }
+
+        p, 
+        .answer{
+            width: 80%;
+            margin-left: 10%;
+        }
+
+        /*hr{*/
+            /*width:50%;*/
+            /*margin:auto;*/
+            /*margin-top:50px;*/
+        /*}*/
+
+        /*&:last-of-type hr{*/
+            /*display:none;*/
+        /*}*/
+
+        &:last-of-type{
+            margin-bottom:50px;
+        }
+    }
+
+
+    .diag_button{
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+        font-size: 2em;
+        font-weight:bold;
+        height: 5em;
+        line-height: 3em;
+        padding-top:1.5em;
+        padding-bottom:1.5em;
+        padding-left:2em;
+        padding-right:2em;
+        color: @sal_blue;
+        margin-bottom: 1.0rem;
+        border: 1px solid;
+        border-radius: @border_radius;
+    }
+}
+
+
+.results {
+    .competencies{
+        width:80%;
+        margin-left:10%;
+        h2{
+            font-size:2.5em;
+        }
+        .improve ul,
+        .good ul{
+            padding-left:0;
+            list-style: none;
+            li{
+                font-size:2em;
+                text-align:left;
+                list-style-position: inside;
+                text-indent: -1em;
+                margin-left: 1em;
+            }
+
+            li:before{
+                font-weight:bold;
+                color:mediumspringgreen;
+            }
+        }
+
+        .improve ul{
+            list-style-type: circle;
+        }
+
+        .good ul li:before{
+            content: "✓ ";
+        }
+    }
+}
+
 @media (max-width: 568px) {
+    .results {
+        .competencies{
+            width:initial;
+            margin-left:auto;
+
+            h2{
+                font-size:1.5em;
+            }
+            .improve ul,
+            .good ul{
+                li{
+                    font-size:1.5em;
+                }
+            }
+        }
+    }
+    .diag{
+        .diag_qn{
+            margin-bottom:30px;
+            p{
+                font-size:1.5em;
+            }
+            p, 
+            .answer{
+                width: auto;
+                margin-left: auto;
+            }
+        }
+
+        .diag_button{
+            padding: .5em .5em;
+            line-height: 1.2em;
+            display: inline-block;
+            height: initial;
+        }
+    }
+            
     .question {
         .role_option_text{
             font-size:0.8em;
@@ -276,7 +403,13 @@ p{
                 font-size:0.8em;
             }
         }
+
+        .answer{
+            padding-top:0.3em;
+            padding-bottom:0.3em;
+        }
     }
+
     .course_notice{
         min-height:auto;
     }
@@ -289,6 +422,7 @@ p{
     .scroll_down_msg{
         display: initial !important;
     }
+
     .question_small{
         .question{
             .answer{
