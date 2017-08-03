@@ -77,8 +77,6 @@ class BranchScreen extends Screen {
 
     // Store selectedAnswers to sessionStorage and the state
     sessionStorage.setItem("selectedAnswers", JSON.stringify(selectedAnswers));
-    //this.props.handleAnswerSelect(this.props.qnNum, index, isMultiQn, 
-      //this.routeToNextScreen);
   }
 
   padCourses = () => {

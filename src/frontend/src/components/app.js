@@ -10,6 +10,7 @@ import {
   JobScreen, 
   WhereWorkScreen,
   RoleScreen,
+  GoalScreen,
 } from './screens';
 
 
@@ -163,10 +164,25 @@ export default class App extends Component {
 
         <RoleScreen
           qnNum={5}
-          qnData={null}
           path="/test/role"
+          handleAnswerSelect={this.handleAnswerSelect}
           selectedAnswers={selectedAnswers}
           nextScreenPath="/test/goal" />
+
+        <GoalScreen
+          qnNum={5}
+          qnData={this.state.qns[4]}
+          path="/test/goal"
+          handleAnswerSelect={this.handleAnswerSelect}
+          selectedAnswers={selectedAnswers} />
+
+        <RoleScreen
+          qnNum={6}
+          path="/test/nextrole"
+          isNextRole={true}
+          handleAnswerSelect={this.handleAnswerSelect}
+          selectedAnswers={selectedAnswers}
+          nextScreenPath="/test/diag" />
 
       </Router>
 		);

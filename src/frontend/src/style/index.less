@@ -128,6 +128,20 @@ hr{
         width: 20px;
         margin-right: 0;
     }
+    
+    /*.desc{*/
+        /*display:none;*/
+    /*}*/
+
+    .role_option_text{
+        font-weight:bold;
+        .desc{
+            margin-top:5px;
+            font-weight:normal;
+            font-size:0.8em;
+            display:block;
+        }
+    }
 
     .selected{
         background-color: #dde3eb;
@@ -228,16 +242,16 @@ p{
             border-radius: @border_radius;
             cursor:pointer;
             height:100%;
-            transition: @role_transition;
-            -webkit-transition: @role_transition;
-            transition-timing-function: @role_transition_function;
-            -webkit-transition-timing-function: @role_transition_function;
             padding-top:1em;
             padding-bottom:1em;
             border: solid 1px;
-            border-color:rgba(0, 0, 0, 0);
             padding-left:1em;
 
+            /*border-color:rgba(0, 0, 0, 0);*/
+            /*transition: @role_transition;*/
+            /*-webkit-transition: @role_transition;*/
+            /*transition-timing-function: @role_transition_function;*/
+            /*-webkit-transition-timing-function: @role_transition_function;*/
             /*&:hover{*/
                 /*background-color: @hover_bg_color;*/
                 border-color:black;
@@ -253,8 +267,25 @@ p{
         }
     }
 }
-/* Media queries */
+
 @media (max-width: 568px) {
+    .question {
+        .role_option_text{
+            font-size:0.8em;
+            .desc{
+                font-size:0.8em;
+            }
+        }
+    }
+    .course_notice{
+        min-height:auto;
+    }
+
+    .take_test_prompt .take_test_button{
+        padding: 0.9em 1.2em;
+        line-height:3.5em;
+    }
+
     .scroll_down_msg{
         display: initial !important;
     }
@@ -277,6 +308,7 @@ p{
             }
         }
     }
+    
 }
 
 @media (max-width: 768px) {
@@ -302,7 +334,6 @@ p{
         .answer{
             font-size:1.5em;
         }
-
     }
 
     .courses{

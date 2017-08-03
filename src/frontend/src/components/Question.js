@@ -24,7 +24,10 @@ export default class Question extends Component{
 
 
   onAnswerClick = selectedIndex => {
-    if (this.type === this.QN_TYPES.SINGLE){
+    if (this.props.isRoleQn){
+      this.props.handleAnswerSelect(selectedIndex, this.props.isMultiQn);
+    }
+    else if (this.type === this.QN_TYPES.SINGLE){
       this.props.handleAnswerSelect(selectedIndex, this.props.isMultiQn);
     }
     else if (this.type === this.QN_TYPES.MULTI){
@@ -49,11 +52,11 @@ export default class Question extends Component{
 
 
   render(){
-    let qnData = this.props.qnData;
-    let onAnswerClick = this.onAnswerClick;
-    let isVerticalQn = this.props.qnNum === 0;
+    const qnData = this.props.qnData;
+    const onAnswerClick = this.onAnswerClick;
+    const tick = "✔";
+    const options = qnData.options;
 
-    let options = qnData.options;
     let optionBtns = [];
 
     // Only show this message if props.scrollDownMsg is true
@@ -61,6 +64,9 @@ export default class Question extends Component{
     let optionTextClass = "option text";
     if (this.props.isMultiQn){
       optionTextClass += " multi_option_text";
+    }
+    else if (this.props.isRoleQn){
+      optionTextClass += " role_option_text";
     }
 
     if (this.props.scrollDownMsg){
@@ -72,15 +78,30 @@ export default class Question extends Component{
         </div>
     }
 
+
     // Display questions and options.
     options.forEach((option, i) => {
+      let optionDesc;
+      if (this.props.isRoleQn){
+        optionDesc = (
+          <span class="desc">{option.desc}</span>
+        );
+      }
+
       let answerClass = "answer";
       if (this.state.preSelected){
         if (this.state.preSelected.indexOf(i) > -1){
           answerClass = "answer selected";
         }
       }
-      let tick = "✔";
+
+      if (this.props.isRoleQn){
+        // override i with the ID of the role
+        // TODO: refactor the code to make handleAnswerSelect
+        // deal with IDs, not indices
+        i = option.id;
+      }
+
       optionBtns.push(
         <div key={i} 
             class={answerClass}
@@ -90,6 +111,7 @@ export default class Question extends Component{
           </div>
           <div class={optionTextClass}>
             {option.text}
+            {optionDesc}
           </div>
         </div>
       );

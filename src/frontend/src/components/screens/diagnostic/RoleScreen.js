@@ -14,15 +14,22 @@ class RoleScreen extends Screen{
 
 
   componentWillMount = () => {
-    let selectedAnswers = this.props.selectedAnswers;
-    const workplace = selectedAnswers[4][0];
-    //const verticalId = selectedAnswers[0][0] + 1;
     //TODO: change once the framework provides data for verticals 1 and 2
+    //const verticalId = selectedAnswers[0][0] + 1;
     const verticalId = 3;
+    const selectedAnswers = this.props.selectedAnswers;
+    const workplace = selectedAnswers[4][0];
+    let url = "/roles?";
+
+    if (this.props.isNextRole){
+      const role = selectedAnswers[5][0];
+      url += "&r=" + encodeURIComponent(role);
+    }
+
     // law firm : 0
     // corp/org : 1
-    let url = "/roles?o=" + encodeURIComponent(workplace) +
-          "&v=" + encodeURIComponent(verticalId)
+    url += "&o=" + encodeURIComponent(workplace) +
+           "&v=" + encodeURIComponent(verticalId)
     authFetch(url).then(response => {
       response.json().then(roles => {
         this.setState({ roles });
@@ -31,11 +38,13 @@ class RoleScreen extends Screen{
   }
 
 
-  onRoleClick = roleId => {
-    console.log(roleId);
-  }
+  //onRoleClick = roleId => {
+    //console.log(roleId);
+  //}
 
 
+  //TODO: Refactor Question.js to do what this does in addition
+  //to rendering regular qns
   renderRolePicker(roleData){
     let result = [];
     let roles = {};
@@ -44,40 +53,56 @@ class RoleScreen extends Screen{
         roles[r.level] = [];
       }
       roles[r.level].push({
-        name: r.name,
+        text: r.name,
         desc: r.desc,
         id: r.id,
+        level: r.level,
       });
     });
 
+    let options = [];
     Object.keys(roles).sort().forEach(level => {
-      let items = [];
+      // sort by ID
+      let r = roles[level].sort((a, b) => a.id - b.id);
+      options = options.concat(r);
+      //let items = [];
+      //items.push({
+        //text: level.name,
+        //desc: level.desc
+      //});
 
-      roles[level].forEach(role => {
-        items.push(
-          <div class="role"
-            onClick={() => { this.onRoleClick(role.id)}}>
+      //roles[level].forEach(role => {
+        //items.push(
+          //<div class="role"
+            //onClick={() => { this.onRoleClick(role.id)}}>
 
-            <div class="name">
-              <p>{role.name}</p>
-            </div>
+            //<div class="name">
+              //<p>{role.name}</p>
+            //</div>
 
-            <div class="desc">
-              <p>{role.desc}</p>
-            </div>
+            //<div class="desc">
+              //<p>{role.desc}</p>
+            //</div>
 
-          </div>
-        );
-      });
+          //</div>
+        //);
+      //});
 
-      let levelDiv = (
-        <div class="level row">
-          {items}
-        </div>
-      );
-      result.push(levelDiv);
+      //result.push(
+        //<div class="level row">
+          //{items}
+        //</div>
+      //);
     });
-    return result;
+
+    //return result;
+    return (<Question
+      qnNum={this.props.qnNum}
+      isMultiQn={false}
+      isRoleQn={true}
+      handleAnswerSelect={this.handleAnswerSelect}
+      qnData={{options: options}}
+    />);
   }
 
 

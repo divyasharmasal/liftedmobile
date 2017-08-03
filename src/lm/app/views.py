@@ -65,10 +65,17 @@ def qns_and_opts(request):
                ]
     qn4 = create_qn("I work at...", qn4_opts)
 
+    qn5_opts = [
+                    {"text": "Prepare for my next job or role."}, 
+                    {"text": "Get better at my current job."}
+               ]
+    qn5 = create_qn("I want to...", qn5_opts)
+
     qns.append(qn1)
     qns.append(qn2)
     qns.append(qn3)
     qns.append(qn4)
+    qns.append(qn5)
 
     return _json_response(qns)
 
@@ -157,7 +164,7 @@ def courses(request):
     return _json_response(courses)
 
 
-@login_required
+# @login_required
 def roles(request):
     """
     Used by RoleScreen for the diagnostic
@@ -185,10 +192,29 @@ def roles(request):
         return HttpResponseServerError("Please provide org_type/vertical "
                                        "params that correspond to the "
                                        "right org_type.")
+    role_num = None
+    if "r" in request.GET:
+        try:
+            role_num = int(request.GET["r"])
+        except:
+            return HttpResponseServerError("Please provide a valid "
+                                           "role number.")
 
+    job_role_query = None
     vertical = models.Vertical.objects.get(id=vertical_id)
-    job_role_query = models.JobRole.objects.filter(
-            org_type=org_type_name, vertical=vertical)
+
+    if role_num is not None:
+        role = models.JobRole.objects.get(id=role_num)
+        job_role_query = models.JobRole.objects.filter(
+                role_level__gte=role.role_level,
+                org_type=org_type_name, 
+                vertical=vertical).exclude(
+                    role_level=role.role_level,
+                        )
+    else:
+        job_role_query = models.JobRole.objects.filter(
+                org_type=org_type_name, vertical=vertical)
+
 
     job_roles = sorted([{ 
         "name": job_role.name, 
