@@ -64,7 +64,7 @@ const renderCourses = (courses, courseTableRef, unPadCourses) => {
     courses.courses.forEach((course, i) => {
       rows.push(
         <tr key={i}>
-          <td data-title="Name">{i+1}) {course.name}</td>
+          <td data-title="Name">{course.name}</td>
           <td data-title="Cost">{format_cost(course.cost)}</td>
           <td data-title="CPD">{format_cpd(course.cpd)}</td>
           <td data-title="Level">{course.level}</td>
