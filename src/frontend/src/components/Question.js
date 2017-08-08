@@ -77,8 +77,11 @@ export default class Question extends Component{
 
 
     // Display questions and options.
+    let levelAnchors = new Set();
     options.forEach((option, i) => {
       let optionDesc;
+      let currentLevel = option.level;
+
       if (this.props.isRoleQn){
         optionDesc = (
           <span class="desc">{option.desc}</span>
@@ -99,25 +102,49 @@ export default class Question extends Component{
         i = option.id;
       }
 
-      optionBtns.push(
-        <div key={i} 
-            class={answerClass}
-            onClick={() => {this.onAnswerClick(i)}}>
-          <div class="option_tick">
-            {tick}
+      let levelAnchor;
+      if (this.props.isRoleQn && !levelAnchors.has(currentLevel)){
+        levelAnchor = (
+          <div class="level">
+            <a name={"level_" + currentLevel}>Level {currentLevel} roles</a>
           </div>
-          <div class={optionTextClass}>
-            {option.text}
-            {optionDesc}
+        );
+      }
+
+      levelAnchors.add(currentLevel);
+
+      optionBtns.push(
+        <div>
+          {this.props.isRoleQn && levelAnchor}
+          <div key={i} 
+              class={answerClass}
+              onClick={() => {this.onAnswerClick(i)}}>
+            <div class="option_tick">
+              {tick}
+            </div>
+            <div class={optionTextClass}>
+              {option.text}
+              {optionDesc}
+            </div>
           </div>
         </div>
       );
     });
 
+    let levelAnchorLinks = [];
+    Array.from(levelAnchors).sort().forEach(levelNum => {
+      levelAnchorLinks.push(
+        <a href={"#level_" + levelNum}>{levelNum}</a>
+      );
+    });
+
     return (
       <div className="question">
-        <h1>{qnData.text}</h1>
+        {qnData.text && <h1>{qnData.text}</h1>}
         {scrollDownMsg}
+        {(this.props.isRoleQn && levelAnchorLinks.length > 0) && 
+            <p class="select_level">Select level: {levelAnchorLinks}</p>
+        }
         {optionBtns}
       </div>
     );

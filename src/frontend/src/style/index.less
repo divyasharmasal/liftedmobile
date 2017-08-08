@@ -179,6 +179,8 @@ p{
     margin-bottom:64px;
 }
 
+.select_level a,
+.select_level a:visited,
 .scroll_link:visited,
 .scroll_link{
     color: rgb(0, 0, 238);
@@ -231,41 +233,24 @@ p{
 
 
 .role_picker{
+    .question{
+        margin-top:0;
+    }
+
     .level{
+        font-size:40px;
+        margin-bottom:40px;
+        margin-top:40px;
+    }
 
-        @role_transition: padding-left 0.5s, 
-                          border-color 0.5s,
-                          background-color 0.5s;
-        @role_transition_function: ease-in-out;
-        .role{
-            margin:0;
-            margin-bottom:10px;
-            text-align:left;
-            border-radius: @border_radius;
-            cursor:pointer;
-            height:100%;
-            padding-top:1em;
-            padding-bottom:1em;
-            border: solid 1px;
-            padding-left:1em;
+    .select_level{
+        font-size:1.2em;
+        a{
+            margin-right:10px;
+        }
 
-            /*border-color:rgba(0, 0, 0, 0);*/
-            /*transition: @role_transition;*/
-            /*-webkit-transition: @role_transition;*/
-            /*transition-timing-function: @role_transition_function;*/
-            /*-webkit-transition-timing-function: @role_transition_function;*/
-            /*&:hover{*/
-                /*background-color: @hover_bg_color;*/
-                border-color:black;
-            /*}*/
-
-            .selected{
-                border:solid 1px;
-            }
-
-            .name{
-                font-weight:bold;
-            }
+        a:last-of-type{
+            margin-right:0px;
         }
     }
 }
@@ -440,6 +425,10 @@ p{
 
     .role_picker{
         .level{
+            font-size:19.2px;
+            margin-top:20px;
+            margin-bottom:20px;
+
             .role{
                 border: solid 1px;
                 border-radius: @border_radius;

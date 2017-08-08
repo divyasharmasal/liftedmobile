@@ -38,13 +38,6 @@ class RoleScreen extends Screen{
   }
 
 
-  //onRoleClick = roleId => {
-    //console.log(roleId);
-  //}
-
-
-  //TODO: Refactor Question.js to do what this does in addition
-  //to rendering regular qns
   renderRolePicker(roleData){
     let result = [];
     let roles = {};
@@ -65,37 +58,8 @@ class RoleScreen extends Screen{
       // sort by ID
       let r = roles[level].sort((a, b) => a.id - b.id);
       options = options.concat(r);
-      //let items = [];
-      //items.push({
-        //text: level.name,
-        //desc: level.desc
-      //});
-
-      //roles[level].forEach(role => {
-        //items.push(
-          //<div class="role"
-            //onClick={() => { this.onRoleClick(role.id)}}>
-
-            //<div class="name">
-              //<p>{role.name}</p>
-            //</div>
-
-            //<div class="desc">
-              //<p>{role.desc}</p>
-            //</div>
-
-          //</div>
-        //);
-      //});
-
-      //result.push(
-        //<div class="level row">
-          //{items}
-        //</div>
-      //);
     });
 
-    //return result;
     return (<Question
       qnNum={this.props.qnNum}
       isMultiQn={false}
