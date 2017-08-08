@@ -50,7 +50,7 @@ hr{
         }
 
         .answer{
-            font-size: 1.5em;
+            font-size: 1.25em;
         }
 
         .answer{
@@ -99,6 +99,7 @@ hr{
         font-size:4em;
     }
 
+
     .answer{
         -webkit-touch-callout: none;
         -webkit-user-select: none;
@@ -121,10 +122,12 @@ hr{
         &:hover{
             /*background-color: @hover_bg_color;*/
         }
+
     }
 
     .option_tick{
-        visibility:hidden;
+        /*visibility:hidden;*/
+        display:none;
         float:left;
         width: 20px;
         margin-right: 0;
@@ -404,6 +407,10 @@ p{
 
     .course_notice{
         min-height:auto;
+        p{
+            margin-top:5px;
+            margin-bottom:5px;
+        }
     }
 
     .take_test_prompt .take_test_button{
@@ -458,24 +465,49 @@ p{
         margin-top: 10px;
 
         h1{
-            font-size:2.5em;
+            font-size:2em;
+            margin-bottom:15px;
         }
 
         .answer{
-            font-size:1.5em;
+            font-size:1.25em;
         }
+
+        .tile{
+            font-size: 1em;
+            margin-bottom:5px;
+            /*padding-top:0;*/
+            /*padding-bottom:0;*/
+            /*text-align: left;*/
+            /*width:40%;*/
+            /*float:left;*/
+            /*position:relative;*/
+
+            /*&:nth-of-type(2n+1){*/
+                /*margin-right:5px;*/
+            /*}*/
+            
+            .option_tick{
+                display:none;
+            }
+        }
+    }
+
+    .for_better_results{
+        margin-bottom:0px;
     }
 
     .courses{
         h2{
             font-size:2em;
+            margin-top:10px;
         }
+
         .course_table,
         .course_table tbody{
             display: block;
             width: 100%;
         }
-
 
         .course_table {
             border:none;
@@ -493,6 +525,7 @@ p{
             tr{
                 padding: 10px;
                 margin-bottom: 10px;
+                float:left;
             }
 
             th[data-title]:before,
@@ -506,17 +539,33 @@ p{
                 margin-bottom: 5px;
                 font-size:0.7em;
                 color: #444;
+                float:left;
+                width:47%;
+
+                &:nth-of-type(2n){
+                    margin-right:10px;
+                }
+
+
+                &:empty { 
+                    display: none;
+                }
             }
 
-            td:empty { 
-                display: none;
+            // Let the last <td> element take up the full width
+            // only if the number of <td> elements is odd
+            td:last-child:not(:nth-child(odd)){
+                width:100%;
+                margin-right:0;
             }
+
 
             td:first-child {
                 font-size: 0.7em;
                 font-weight: bold;
-                margin-bottom: 5px;
+                margin-bottom: 10px;
                 color: #333;
+                width:100%;
             }
 
             td:first-child:before { 

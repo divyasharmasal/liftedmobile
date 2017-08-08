@@ -84,10 +84,11 @@ class WhyLearnScreen extends Screen{
     return (
       <div class="pure-g">
         <a name="top" />
-        {courseNotice}
+        {/*courseNotice*/}
         <div class="pure-u-1 why_learn_qn">
           <Question
             isMultiQn={false}
+            useTiles={true}
             scrollDownMsg={true}
             handleAnswerSelect={this.handleAnswerSelect}
             qnData={this.props.qnData} 
@@ -96,7 +97,7 @@ class WhyLearnScreen extends Screen{
         <div class="courses">
           <a name="courses" />
           <div class="pure-u-1">
-            <h2>Courses we recommend</h2>
+            <h2>Recommend courses</h2>
           </div>
           <div class="pure-u-1" ref={courses => this.courses = courses}>
             {courses}

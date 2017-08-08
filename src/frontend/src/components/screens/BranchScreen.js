@@ -131,7 +131,7 @@ class BranchScreen extends Screen {
         <div class="courses">
           <a name="courses" />
           <div class="pure-u-1">
-            <h2>Courses we recommend</h2>
+            <h2>Recommend courses</h2>
           </div>
           <div class="pure-u-1" ref={courses => this.courses = courses}>
             <div class="courses">

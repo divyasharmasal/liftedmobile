@@ -23,10 +23,10 @@ const createCoursesUrl = (verticalId, categoryId, needIds) => {
 const renderCourses = (courses, courseTableRef, unPadCourses) => {
   const format_cpd = cpd => {
     if (cpd.is_private){
-      return "Private CPD points";
+      return "Private";
     }
     else{
-      return cpd.points.toFixed(0) + " CPD points";
+      return cpd.points.toFixed(0) + " points";
     }
   }
 
@@ -64,7 +64,7 @@ const renderCourses = (courses, courseTableRef, unPadCourses) => {
     courses.courses.forEach((course, i) => {
       rows.push(
         <tr key={i}>
-          <td data-title="Name">{course.name}</td>
+          <td data-title="Name">{i+1}) {course.name}</td>
           <td data-title="Cost">{format_cost(course.cost)}</td>
           <td data-title="CPD">{format_cpd(course.cpd)}</td>
           <td data-title="Level">{course.level}</td>
@@ -83,27 +83,31 @@ const renderCourses = (courses, courseTableRef, unPadCourses) => {
       ];
     }
 
-    result = [
-      isTailored,
+    result = (
+      <div>
+        {isTailored}
+      {/*
       <p class="for_better_results">
         <a class="scroll_link" 
           href="#top" onClick={unPadCourses}>
           For better results, answer more questions &#10548;</a></p>,
-      <table class="pure-table course_table"
-        ref={courseTableRef}>
-        <thead>
-          <td>Name</td>
-          <td>Cost</td>
-          <td>CPD</td>
-          <td>Level</td>
-          <td>Format</td>
-          <td>Dates (2017)</td>
-        </thead>
-        <tbody>
-          {rows}
-        </tbody>
-      </table>
-    ];
+      */}
+        <table class="pure-table course_table"
+          ref={courseTableRef}>
+          <thead>
+            <td>Name</td>
+            <td>Cost</td>
+            <td>CPD</td>
+            <td>Level</td>
+            <td>Format</td>
+            <td>Dates (2017)</td>
+          </thead>
+          <tbody>
+            {rows}
+          </tbody>
+        </table>
+      </div>
+    );
   }
 
   return result;

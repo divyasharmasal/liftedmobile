@@ -66,14 +66,13 @@ export default class Question extends Component{
       optionTextClass += " role_option_text";
     }
 
-    if (this.props.scrollDownMsg){
-      let msg = <p>Scroll down to see courses we've picked for you, or answer
-                more questions for better results.</p>;
-      scrollDownMsg = 
-        <div className="scroll_down_msg">
-          {msg}
-        </div>
-    }
+    //if (this.props.scrollDownMsg){
+      //let msg = <p>Scroll down to see courses we've picked for you.</p>;
+      //scrollDownMsg = 
+        //<div className="scroll_down_msg">
+          //{msg}
+        //</div>
+    //}
 
 
     // Display questions and options.
@@ -89,6 +88,11 @@ export default class Question extends Component{
       }
 
       let answerClass = "answer";
+
+      if (this.props.useTiles){
+        answerClass += " tile";
+      }
+
       if (this.state.preSelected){
         if (this.state.preSelected.indexOf(i) > -1){
           answerClass = "answer selected";
@@ -142,7 +146,7 @@ export default class Question extends Component{
       <div className="question">
         {qnData.text && <h1>{qnData.text}</h1>}
         {scrollDownMsg}
-        {(this.props.isRoleQn && levelAnchorLinks.length > 0) && 
+        {(this.props.isRoleQn && levelAnchorLinks.length > 1) && 
             <p class="select_level">Select level: {levelAnchorLinks}</p>
         }
         {optionBtns}

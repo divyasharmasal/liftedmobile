@@ -56,7 +56,7 @@ def qns_and_opts(request):
     qn3_opts = []
     for row in models.Need.objects.all():
         qn3_opts.append({"text": row.option})
-    qn3 = create_qn("I want to...", qn3_opts)
+    qn3 = create_qn("I want...", qn3_opts)
 
     qn4_opts = [
                     {"text": "A law firm."}, 
