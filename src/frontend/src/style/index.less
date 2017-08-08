@@ -330,8 +330,8 @@ p{
         h2{
             font-size:2.5em;
         }
-        .improve ul,
-        .good ul{
+
+        ul{
             padding-left:0;
             list-style: none;
             li{
@@ -352,8 +352,15 @@ p{
             list-style-type: circle;
         }
 
-        .good ul li:before{
-            content: "✓ ";
+        .good ul li{
+            span{
+                position: relative;
+                left: 10px;
+            }
+
+            &:before{
+                content: "✓ ";
+            }
         }
     }
 }

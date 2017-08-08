@@ -30,7 +30,7 @@ LOGIN_REDIRECT_URL = '/'
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECURITY WARNING: don't run with debug turned on in production!
 SECRET_KEY = 'G-:Gglp?"ayxKD(urwBxbmd%,.PfiF9Ark.cw#iIc#*H$&J\<l9yV]|1"Z6[z}/'
-DEBUG = True
+DEBUG = False
 
 if 'DEV' in os.environ:
     SECRET_KEY = 'kw!3bqy4e39x0@xhoor4uvpwj!hgofxh9p5=j7^9$x-i*41vc_'

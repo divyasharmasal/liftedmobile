@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-docker start liftedmobile liftedmobile_db && docker logs -f liftedmobile
+docker-compose -f docker/docker-compose.prod.yml up -d

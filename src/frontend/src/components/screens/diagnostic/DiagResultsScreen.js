@@ -37,7 +37,7 @@ class DiagResultsScreen extends Screen{
     let result = [];
     competencies.forEach(c => {
       result.push(
-        <li>{c}</li>
+        <li><span>{c}</span></li>
       );
     });
     return <ul>{result}</ul>;

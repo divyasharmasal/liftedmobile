@@ -16,6 +16,7 @@ RUN apk add python3 python3-dev py-psycopg2 postgresql-dev \
 EXPOSE 8000
 
 ENV PYTHONUNBUFFERED 1
+ENV DEV 1
 
 # Wait till the database is ready and then launch the dev server
 CMD cd /src/lm && \

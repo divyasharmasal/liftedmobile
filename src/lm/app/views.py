@@ -8,7 +8,6 @@ import sys
 import json
 
 
-
 def _print(*args, **kwargs):
     """
     Helps to debug command-line output as viewed through Docker logs.
@@ -168,7 +167,7 @@ def courses(request):
     return _json_response(courses)
 
 
-# @login_required
+@login_required
 def roles(request):
     """
     Repsond with a list of roles given the organisation type, vertical, and 
@@ -255,7 +254,7 @@ def diag(request):
     return _json_response(result)
 
 
-# @login_required
+@login_required
 def results(request):
     """
     Retrieve data for the diagnostic results page
