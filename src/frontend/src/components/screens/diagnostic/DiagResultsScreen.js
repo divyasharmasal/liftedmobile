@@ -34,101 +34,65 @@ class DiagResultsScreen extends Screen{
 
 
   renderCompetencies = comps => {
-    let competencies = comps.sort((a, b) => a.score - b.score).reverse();
-
-    const limegreenColors = {
-      0.2: "rgb(229,249,229)",
-      0.3: "rgb(201,242,201)",
-      0.4: "rgb(168,234,168)",
-      0.5: "rgb(130,225,130)",
-      0.6: "rgb(83,213,83)",
-      0.7: "rgb(48,195,48)",
-      0.8: "rgb(42,172,42)",
-      0.9: "rgb(35,143,35)",
-      1: "rgb(25,103,25)",
+    let results = [];
+    const colors = {
+      0: "rgb(169,169,169)",
+      0.1: "rgb(156,166,156)",
+      0.2: "rgb(142,163,142)",
+      0.3: "rgb(129,160,129)",
+      0.4: "rgb(115,157,115)",
+      0.5: "rgb(102,154,102)",
+      0.6: "rgb(88,151,88)",
+      0.7: "rgb(75,148,75)",
+      0.8: "rgb(61,145,61)",
+      0.9: "rgb(48,142,48)",
+      1: "rgb(34,139,34)",
     };
 
-    const orangeRedColors = {
-      0.2: "rgb(255,241,235)",
-      0.3: "rgb(255,225,214)",
-      0.4: "rgb(255,208,190)",
-      0.5: "rgb(255,188,164)",
-      0.6: "rgb(255,165,132)",
-      0.7: "rgb(255,137,93)",
-      0.8: "rgb(255,97,39)",
-      0.9: "rgb(228,62,0)",
-      1: "rgb(166,45,0)",
-    };
+    let competencies = [];
+    Object.keys(comps).forEach(key => {
+      competencies.push({
+        score: comps[key],
+        text: key,
+      });
+    });
 
-    let scores = competencies.map(x => x.score);
-    const minScore = Math.min(...scores);
-    let isGood = true;
-    if (minScore < 0){
-      scores = scores.map(x => x + Math.abs(minScore));
-      isGood = false;
+    competencies.sort((a, b) => a.score - b.score).reverse();
+    let min = Math.min(...competencies.map(x => x.score));
+    if (min > 0){
+      min = 0;
     }
 
+    competencies.forEach((c, i) => {
+      competencies[i].score += Math.abs(min);
+    });
+
+    const scores = competencies.map(x => x.score);
     const total = scores.reduce((acc, cur) => acc + cur);
-    let result = [];
+    const colorVals = scores.map(x => Math.round(x / total * 10) / 10);
 
     competencies.forEach((c, i) => {
-      let colorDeg = Math.round(scores[i] / total * 10) / 10 + 0.5;
-      if (colorDeg > 1){
-        colorDeg = 1
-      };
-
-      let color;
-      if (isGood){
-        color = limegreenColors[colorDeg];
-      }
-      else{
-        color = orangeRedColors[colorDeg];
-      }
-      result.push(
-        <li><span style={{ color:color }}>{c.text}</span></li>
+      results.push(
+        <p>
+          <span style={{ 
+            color: colors[colorVals[i]] 
+          }}>
+            {c.text}
+          </span>
+        </p>
       );
     });
-    return <ul>{result}</ul>;
+    return <div>{results}</div>;
   }
 
 
   renderResults = results => {
-    let good = [];
-    let improve = [];
-    Object.keys(results).forEach(result => {
-      const r = {
-        score: results[result],
-        text: result
-      };
-
-      if (results[result] > 0){
-        good.push(r);
-      }
-      else{
-        improve.push(r);
-      }
-    });
-
-    let goodElms = this.renderCompetencies(good);
-    let improveElms = this.renderCompetencies(improve);
-
     return (
-      <div class="competencies">
-        {good.length > 0 &&
-          <div class="good pure-u-md-11-24">
-            <h2>Your key competencies:</h2>
-            {goodElms}
-          </div>
-        }
-
-        <div class="pure-u-md-1-24"></div>
-
-        {improve.length > 0 &&
-          <div class="improve pure-u-md-11-24">
-            <h2>Areas for improvement:</h2>
-            {improveElms}
-          </div>
-        }
+      <div>
+        <div class="competencies">
+          <p>In order of strength:</p>
+          {this.renderCompetencies(results)}
+        </div>
       </div>
     );
   }
@@ -142,7 +106,7 @@ class DiagResultsScreen extends Screen{
       <div className="pure-g">
         <div className="pure-u-1">
           <div className="question results">
-            <h1>Your learning needs</h1>
+            <h1>Your competencies</h1>
             {this.renderResults(this.state.results)}
           </div>
         </div>
