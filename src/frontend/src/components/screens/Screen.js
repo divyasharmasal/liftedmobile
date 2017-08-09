@@ -40,6 +40,7 @@ const renderCourses = (courses, courseTableRef, unPadCourses) => {
     }
   }
 
+
   const format_dates = dates => {
     return dates.join(", ") + " 2017";
   }

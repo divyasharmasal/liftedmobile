@@ -1,17 +1,9 @@
-"Heat map" or ranking of competencies in results
-
 Treat industry specialisms differently in results - add a box or
 something
 
 Caveat about job roles that they are not mutually exclusive & you
 should go by the description, not the title.
 
-Role name alignment
-
 Display by date and allow a sort by CPD points
 
-Adaption theme esque tiles
-
-Optimal num of characters for the Why screen
-
-RoleScreen jump to level function
+Optimal num of characters for the Why screen: 30 characters

@@ -8,6 +8,7 @@
 @selected_bg_color: #dde3eb;
 @sal_blue: #0063a7;
 @border_radius: .4rem;
+@link_blue: rgb(0, 0, 238);
 
 *, html, body {
     font-family: Lato, Arial;
@@ -50,7 +51,7 @@ hr{
         }
 
         .answer{
-            font-size: 1.25em;
+            font-size: 2em;
         }
 
         .answer{
@@ -186,11 +187,39 @@ p{
 .select_level a:visited,
 .scroll_link:visited,
 .scroll_link{
-    color: rgb(0, 0, 238);
+    color: @link_blue;
     text-decoration:none;
 }
 
 .courses{
+    .sorter p{
+
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select:none;
+
+        text-align:center;
+        /*display:none;*/
+
+        a{
+            display:inline-block;
+            margin-left:10px;
+            text-decoration:none;
+            color:@link_blue;
+            cursor:pointer;
+            &:visited{
+                color:@link_blue;
+            }
+        }
+
+        .symbol{
+            color:black;
+        }
+    }
+
     width:100%;
     p, h2{
         text-align:center;
@@ -243,7 +272,6 @@ p{
     }
 
     .select_level{
-        font-size:1.2em;
         a{
             margin-right:10px;
         }
@@ -422,13 +450,19 @@ p{
 
     .question_small{
         .question{
+            margin-bottom:15px;
             .answer{
+                font-size:1.25em;
                 padding: 15px 10px;
             }
         }
     }
 
     .role_picker{
+        .select_level{
+            font-size:1.2em;
+        }
+
         .level{
             font-size:19.2px;
             margin-top:20px;
@@ -496,6 +530,10 @@ p{
     }
 
     .courses{
+        .sorter{
+            display:initial;
+        }
+
         h2{
             font-size:2em;
             margin-top:21.44px;

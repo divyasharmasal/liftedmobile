@@ -4,9 +4,11 @@ import { authFetch } from '../fetch';
 import {
   Screen, 
   createCoursesUrl, 
-  renderCourses,
+  //renderCourses,
   renderCourseFoundNotice,
 } from './Screen';
+
+import { Courses } from '../Courses';
 
 export {BranchScreen};
 
@@ -90,9 +92,12 @@ class BranchScreen extends Screen {
 
 
   render = () => {
-    let courseTableRef = courseTable => {this.courseTable = courseTable};
-    let courses = renderCourses(this.state.courses, courseTableRef, 
-      this.unPadCourses);
+    const courseTableRef = courseTable => {this.courseTable = courseTable};
+    //let courses = renderCourses(this.state.courses, courseTableRef, 
+      //this.unPadCourses);
+    const courses = <Courses courses={this.state.courses}
+                             courseTableRef={courseTableRef}
+                             unPadCourses={this.unPadCourses} />;
 
     // find out which item the user selected in the previous screen
     const preSelected = this.props.selectedAnswers[this.props.qnNum - 1];
@@ -100,10 +105,9 @@ class BranchScreen extends Screen {
     let qnData = this.props.qnData;
     qnData.text = "...or choose more goals if you wish.";
 
-    let notice = renderCourseFoundNotice(this.state.courses, this.padCourses);
-    let courseNotice = (
+    const courseNotice = (
       <div class="course_notice pure-u-1">
-        {notice}
+        {renderCourseFoundNotice(this.state.courses, this.padCourses)}
       </div>
     );
 
