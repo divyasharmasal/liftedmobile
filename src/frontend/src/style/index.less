@@ -192,8 +192,7 @@ p{
 }
 
 .courses{
-    .sorter p{
-
+    .sorter{
         -webkit-touch-callout: none;
         -webkit-user-select: none;
         -khtml-user-select: none;
@@ -236,8 +235,18 @@ p{
         width:100%;
         font-size:1.4em;
 
+
         thead{
             font-weight:bold;
+            .sorter{
+                text-align:left;
+                padding-left:0.7em;
+                margin-left:0;
+                a{
+                    color:black;
+                    margin-left:5px;
+                }
+            }        
         }
 
         tr{

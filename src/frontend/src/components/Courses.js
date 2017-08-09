@@ -2,6 +2,15 @@ import { h, Component } from 'preact';
 
 export { Courses };
 
+const symbol = isDesc => {
+  const desc = "▼";
+  const asc = "▲";
+
+  if (isDesc){ 
+    return desc;
+  }
+  return asc;
+}
 
 class Sorter extends Component{
   constructor(props){
@@ -14,21 +23,10 @@ class Sorter extends Component{
   }
 
 
-  symbol = isDesc => {
-    const desc = "▼";
-    const asc = "▲";
-
-    if (isDesc){ 
-      return desc;
-    }
-    return asc;
-  }
-
-
   render(){
-    const nameSym = this.symbol(this.state.nameDesc);
-    const dateSym = this.symbol(this.state.dateDesc);
-    const cpdSym = this.symbol(this.state.cpdDesc);
+    const nameSym = symbol(this.state.nameDesc);
+    const dateSym = symbol(this.state.dateDesc);
+    const cpdSym = symbol(this.state.cpdDesc);
 
     return (
       <div class="sorter">
@@ -65,6 +63,9 @@ export default class Courses extends Component{
     this.state = {
       courses: this.props.courses,
       sortDesc: true,
+      nameDesc: true,
+      cpdDesc: true,
+      dateDesc: true,
     };
   }
 
@@ -197,10 +198,13 @@ export default class Courses extends Component{
     }
     else{
       let rows = [];
+
       courses.courses.forEach((course, i) => {
         rows.push(
           <tr key={i}>
-            <td data-title="Name">{course.name}</td>
+            <td data-title="Name">
+              {course.name}
+            </td>
             <td data-title="Cost">{this.format_cost(course.cost)}</td>
             <td data-title="CPD">{this.format_cpd(course.cpd)}</td>
             <td data-title="Level">{course.level}</td>
@@ -219,6 +223,45 @@ export default class Courses extends Component{
         ];
       }
 
+      const nameSym = symbol(this.state.nameDesc);
+      const nameSorter = (
+        <td class="sorter">
+          <a onClick={() => { 
+            this.setState({ nameDesc: !this.state.nameDesc });
+            this.handleSort("name")} 
+          }>
+            Name
+            <span class="symbol">{nameSym}</span>
+          </a> 
+        </td>
+      );
+
+      const cpdSym = symbol(this.state.cpdDesc);
+      const cpdSorter = (
+        <td class="sorter">
+          <a onClick={() => { 
+            this.setState({ cpdDesc: !this.state.cpdDesc });
+            this.handleSort("cpd")} 
+          }>
+            CPD
+            <span class="symbol">{cpdSym}</span>
+          </a> 
+        </td>
+      );
+
+      const dateSym = symbol(this.state.dateDesc);
+      const dateSorter = (
+        <td class="sorter">
+          <a onClick={() => { 
+            this.setState({ dateDesc: !this.state.dateDesc });
+            this.handleSort("date")} 
+          }>
+            Dates (2017)
+            <span class="symbol">{dateSym}</span>
+          </a> 
+        </td>
+      );
+
       result = (
         <div>
           {isTailored}
@@ -236,12 +279,12 @@ export default class Courses extends Component{
           <table class="pure-table course_table"
             ref={this.props.courseTableRef}>
             <thead>
-              <td>Name</td>
+              {nameSorter}
               <td>Cost</td>
-              <td>CPD</td>
+              {cpdSorter}
               <td>Level</td>
               <td>Format</td>
-              <td>Dates (2017)</td>
+              {dateSorter}
             </thead>
             <tbody>
               {rows}
