@@ -29,7 +29,7 @@ class Sorter extends Component{
     const cpdSym = symbol(this.state.cpdDesc);
 
     return (
-      <div class="sorter">
+      <div class="sorter mobile_only">
         <p>
           Sort: 
           <a onClick={() => {

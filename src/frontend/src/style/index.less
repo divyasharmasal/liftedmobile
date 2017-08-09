@@ -20,6 +20,10 @@
     font-weight:bold;
 }
 
+.mobile_only{
+    display:none;
+}
+
 h1{
     font-weight: normal;
     color: @sal_blue;
@@ -490,6 +494,10 @@ p{
 }
 
 @media (max-width: 768px) {
+    .mobile_only{
+        display:initial;
+    }
+
     p{
         font-size:1em;
     }
