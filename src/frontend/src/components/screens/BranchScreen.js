@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import { route } from 'preact-router';
 import Question from '../Question';
 import { authFetch } from '../fetch';
 import {
@@ -68,7 +69,15 @@ class BranchScreen extends Screen {
     if (Object.keys(selectedAnswers).length == 0 && storedSelectedAnswers){
       selectedAnswers = JSON.parse(storedSelectedAnswers);
     }
-    this.fetchAndStoreCourses(selectedAnswers);
+
+    if ((!selectedAnswers && !storedSelectedAnswers) ||
+         (Object.keys(selectedAnswers).length === 0 
+           && !storedSelectedAnswers)){
+      route("/");
+    }
+    else{
+      this.fetchAndStoreCourses(selectedAnswers);
+    }
   }
 
 

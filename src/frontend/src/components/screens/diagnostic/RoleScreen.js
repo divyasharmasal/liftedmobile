@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import { route } from 'preact-router';
 import Question from '../../Question';
 import { authFetch } from '../../fetch';
 import {
@@ -18,23 +19,31 @@ class RoleScreen extends Screen{
     //const verticalId = selectedAnswers[0][0] + 1;
     const verticalId = 3;
     const selectedAnswers = this.props.selectedAnswers;
-    const workplace = selectedAnswers[4][0];
-    let url = "/roles?";
-
-    if (this.props.isNextRole){
-      const role = selectedAnswers[5][0];
-      url += "&r=" + encodeURIComponent(role);
+    let storedSelectedAnswers = sessionStorage.getItem("selectedAnswers");
+    if ((!selectedAnswers && !storedSelectedAnswers) ||
+         (Object.keys(selectedAnswers).length === 0 
+           && !storedSelectedAnswers)){
+      route("/");
     }
+    else{
+      const workplace = selectedAnswers[4][0];
+      let url = "/roles?";
 
-    // law firm : 0
-    // corp/org : 1
-    url += "&o=" + encodeURIComponent(workplace) +
-           "&v=" + encodeURIComponent(verticalId)
-    authFetch(url).then(response => {
-      response.json().then(roles => {
-        this.setState({ roles });
+      if (this.props.isNextRole){
+        const role = selectedAnswers[5][0];
+        url += "&r=" + encodeURIComponent(role);
+      }
+
+      // law firm : 0
+      // corp/org : 1
+      url += "&o=" + encodeURIComponent(workplace) +
+             "&v=" + encodeURIComponent(verticalId)
+      authFetch(url).then(response => {
+        response.json().then(roles => {
+          this.setState({ roles });
+        });
       });
-    });
+    }
   }
 
 

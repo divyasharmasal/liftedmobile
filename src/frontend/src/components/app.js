@@ -137,7 +137,9 @@ export default class App extends Component {
     }
     // If neither state nor sessionStorage contains the selectedAnswers,
     // route to /
-    else if (!selectedAnswers && !storedSelectedAnswers){
+    else if ((!selectedAnswers && !storedSelectedAnswers) ||
+             (Object.keys(selectedAnswers).length === 0 
+               && !storedSelectedAnswers)){
       route("/");
     }
 

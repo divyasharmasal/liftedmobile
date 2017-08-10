@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import { route } from 'preact-router';
 import Question from '../../Question';
 import { authFetch } from '../../fetch';
 import {
@@ -17,36 +18,40 @@ class DiagResultsScreen extends Screen{
       answers = JSON.parse(sessionStorage.getItem("diagAnswers"));
     }
 
-    let url = "/results?";
-    Object.keys(answers).forEach(compId => {
-      let answer = answers[compId];
-        url += "&" + encodeURIComponent(compId) + "=" + 
-                     encodeURIComponent(answer);
-    });
-
-    authFetch(url).then(response => {
-      response.json().then(results => {
-        this.setState({ results });
+    //if (!answers){
+      //route("/")
+    //}
+    //else{
+      let url = "/results?";
+      Object.keys(answers).forEach(compId => {
+        let answer = answers[compId];
+          url += "&" + encodeURIComponent(compId) + "=" + 
+                       encodeURIComponent(answer);
       });
-    });
 
+      authFetch(url).then(response => {
+        response.json().then(results => {
+          this.setState({ results });
+        });
+      });
+    //}
   }
 
 
   renderCompetencies = comps => {
     let results = [];
     const colors = {
-      0: "rgb(169,169,169)",
-      0.1: "rgb(156,166,156)",
-      0.2: "rgb(142,163,142)",
-      0.3: "rgb(129,160,129)",
-      0.4: "rgb(115,157,115)",
-      0.5: "rgb(102,154,102)",
-      0.6: "rgb(88,151,88)",
-      0.7: "rgb(75,148,75)",
-      0.8: "rgb(61,145,61)",
-      0.9: "rgb(48,142,48)",
-      1: "rgb(34,139,34)",
+      0: "rgb(23,32,42)",
+      0.1: "rgb(25,47,48)",
+      0.2: "rgb(26,62,53)",
+      0.3: "rgb(28,76,59)",
+      0.4: "rgb(30,91,65)",
+      0.5: "rgb(32,106,71)",
+      0.6: "rgb(33,121,76)",
+      0.7: "rgb(35,136,82)",
+      0.8: "rgb(37,150,88)",
+      0.9: "rgb(38,165,93)",
+      1: "rgb(40,180,99)",
     };
 
     let competencies = [];

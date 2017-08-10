@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import { route } from 'preact-router';
 import Question from '../Question';
 import {Screen} from './Screen';
 

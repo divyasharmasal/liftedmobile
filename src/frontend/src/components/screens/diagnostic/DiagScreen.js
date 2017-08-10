@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import { route } from 'preact-router';
 import Question from '../../Question';
 import { authFetch } from '../../fetch';
 import {
@@ -17,26 +18,34 @@ class DiagScreen extends Screen{
 
   componentWillMount = () => {
     const selectedAnswers = this.props.selectedAnswers;
-    const currentRole = selectedAnswers[5][0];
-    let nextRole = null;
-    if (Object.keys(selectedAnswers).indexOf("7") > -1){
-      nextRole = selectedAnswers[7][0];
-    }
-
-    let role;
-    if (nextRole){
-      role = nextRole
+    let storedSelectedAnswers = sessionStorage.getItem("selectedAnswers");
+    if ((!selectedAnswers && !storedSelectedAnswers) ||
+         (Object.keys(selectedAnswers).length === 0 
+           && !storedSelectedAnswers)){
+      route("/");
     }
     else{
-      role = currentRole;
-    }
+      const currentRole = selectedAnswers[5][0];
+      let nextRole = null;
+      if (Object.keys(selectedAnswers).indexOf("7") > -1){
+        nextRole = selectedAnswers[7][0];
+      }
 
-    const url = "/diag?r=" + encodeURIComponent(role);
-    authFetch(url).then(response => {
-      response.json().then(diag => {
-        this.setState({ diag });
+      let role;
+      if (nextRole){
+        role = nextRole
+      }
+      else{
+        role = currentRole;
+      }
+
+      const url = "/diag?r=" + encodeURIComponent(role);
+      authFetch(url).then(response => {
+        response.json().then(diag => {
+          this.setState({ diag });
+        });
       });
-    });
+    }
   }
 
 
