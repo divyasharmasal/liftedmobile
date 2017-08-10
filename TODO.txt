@@ -1,9 +1,4 @@
 Treat industry specialisms differently in results - add a box or
 something
 
-Caveat about job roles that they are not mutually exclusive & you
-should go by the description, not the title.
-
-Display by date and allow a sort by CPD points
-
 Optimal num of characters for the Why screen: 30 characters

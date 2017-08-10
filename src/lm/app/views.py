@@ -283,11 +283,21 @@ def results(request):
             return HttpResponseServerError("Invalid answer provided for %s" % k)
         # score = key[v]
 
-        category = competencies.get(id=k).category.name
+        comp = competencies.get(id=k)
+        category = comp.category.name
+        special = False
+        if comp.specialism:
+            category = comp.specialism
+            special = True
 
         if category not in categorised_answers:
-            categorised_answers[category] = { "total": 0, "yes":0,
-                    "no": 0, "unsure": 0}
+            categorised_answers[category] = { 
+                    "total": 0, 
+                    "yes":0,
+                    "no": 0, 
+                    "unsure": 0,
+                    "special": special
+                    }
         if v == 0:
             categorised_answers[category]["yes"] += 1
         elif v == 1:
@@ -307,6 +317,9 @@ def results(request):
             (scores["no"] * unit * -1) + \
             (scores["unsure"] * unit * -0.5)
 
-        categorised_answers[category] = round(result)
+        categorised_answers[category] = {
+                "score": round(result),
+                "special": categorised_answers[category]["special"]
+                }
 
     return _json_response(categorised_answers)

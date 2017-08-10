@@ -65,27 +65,54 @@ class DiagResultsScreen extends Screen{
       return "Do better!";
     };
 
-    let c = [];
+    let ordinary = [];
+    let special = [];
     Object.keys(comps).forEach(k => {
-      c.push({
+      const item = {
         name: k,
-        score: comps[k]
-      })
+        score: comps[k].score,
+      };
+
+      if (comps[k].special){
+        item.special = comps[k].special;
+        special.push(item);
+      }
+      else{
+        ordinary.push(item);
+      }
     });
 
-    c.sort((a, b) => a.score - b.score).reverse();
+    ordinary.sort((a, b) => a.score - b.score).reverse();
+    special.sort((a, b) => a.score - b.score).reverse();
 
-    const rows = [];
-    c.forEach(r => {
-      rows.push(
-        <tr>
-          <td>{r.name}</td>
-          <td>{r.score}%</td>
-          <td>({congrat(r.score)})</td>
-          <td class="heatcell" style={heat(r.score)}></td>
-        </tr>
+    const renderRows = results => {
+      let rows = [];
+      results.forEach(r => {
+        rows.push(
+          <tr>
+            <td>{r.name}</td>
+            <td>{r.score}%</td>
+            <td>({congrat(r.score)})</td>
+            <td class="heatcell" style={heat(r.score)}></td>
+          </tr>
+        );
+      });
+      return rows;
+    };
+
+    const renderTable = (ordinary, special) => {
+      return (
+        <table>
+          {renderRows(ordinary)}
+          <tr>
+            <td class="special" colspan={4}>
+              Areas of specialisation you may want to consider:
+            </td>
+          </tr>
+          {renderRows(special)}
+        </table>
       );
-    });
+    }
 
     let cells = [];
     for (let i=0; i<=100; i+=10){
@@ -106,9 +133,7 @@ class DiagResultsScreen extends Screen{
 
     return (
       <div>
-        <table>
-          {rows}
-        </table>
+        {renderTable(ordinary, special)}
         <p>Legend</p>
         {legend}
       </div>
