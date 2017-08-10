@@ -351,43 +351,15 @@ p{
 
 .results {
     .competencies{
-        margin-left:auto;
-        margin-right:auto;
-
-        h2{
-            font-size:2.5em;
-        }
-
-        ul{
-            /*width:70%;*/
-            /*margin-left:30%;*/
-            list-style: none;
-            li{
-                font-size:2em;
-                /*text-align:left;*/
-                list-style-position: inside;
-                /*text-indent: -1em;*/
-                /*margin-left: 1em;*/
+        table{
+            margin:auto;
+            font-size:2em;
+            td{
+                text-align:left;
+                padding:0.25em;
             }
-
-            li:before{
-                font-weight:bold;
-                color:mediumspringgreen;
-            }
-        }
-
-        .improve ul{
-            list-style-type: circle;
-        }
-
-        .good ul li{
-            span{
-                position: relative;
-                left: 10px;
-            }
-
-            &:before{
-                content: "✓ ";
+            td.heatcell{
+                width:0.5em;
             }
         }
     }
@@ -396,17 +368,8 @@ p{
 @media (max-width: 568px) {
     .results {
         .competencies{
-            width:initial;
-            margin-left:auto;
-
-            h2{
-                font-size:1.5em;
-            }
-            .improve ul,
-            .good ul{
-                li{
-                    font-size:1.5em;
-                }
+            table{
+                font-size:1em;
             }
         }
     }

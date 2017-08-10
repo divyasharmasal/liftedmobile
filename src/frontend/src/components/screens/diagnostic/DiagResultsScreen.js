@@ -39,65 +39,70 @@ class DiagResultsScreen extends Screen{
 
 
   renderCompetencies = comps => {
-    let results = [];
-    const colors = {
-      0: "rgb(23,32,42)",
-      0.1: "rgb(25,47,48)",
-      0.2: "rgb(26,62,53)",
-      0.3: "rgb(28,76,59)",
-      0.4: "rgb(30,91,65)",
-      0.5: "rgb(32,106,71)",
-      0.6: "rgb(33,121,76)",
-      0.7: "rgb(35,136,82)",
-      0.8: "rgb(37,150,88)",
-      0.9: "rgb(38,165,93)",
-      1: "rgb(40,180,99)",
-    };
+    const heat = score => {
+      const colors = {
+        1: "rgb(247,117,140)",
+        0.9: "rgb(245,121,126)",
+        0.8: "rgb(244,125,112)",
+        0.7: "rgb(242,130,98)",
+        0.6: "rgb(240,134,84)",
+        0.5: "rgb(239,138,70)",
+        0.4: "rgb(237,142,56)",
+        0.3: "rgb(235,146,42)",
+        0.2: "rgb(233,151,28)",
+        0.1: "rgb(232,155,14)",
+        0: "rgb(230,159,0)",
+      };
 
-    let competencies = [];
-    Object.keys(comps).forEach(key => {
-      competencies.push({
-        score: comps[key],
-        text: key,
-      });
-    });
-
-    competencies.sort((a, b) => a.score - b.score).reverse();
-    let min = Math.min(...competencies.map(x => x.score));
-    if (min > 0){
-      min = 0;
+      score = Math.round(score / 10) / 10;
+      return { backgroundColor: colors[score] };
     }
 
-    competencies.forEach((c, i) => {
-      competencies[i].score += Math.abs(min);
+    let c = [];
+    Object.keys(comps).forEach(k => {
+      c.push({
+        name: k,
+        score: comps[k]
+      })
     });
 
-    const scores = competencies.map(x => x.score);
-    const total = scores.reduce((acc, cur) => acc + cur);
-    const colorVals = scores.map(x => Math.round(x / total * 10) / 10);
+    c.sort((a, b) => a.score - b.score).reverse();
 
-    competencies.forEach((c, i) => {
-      results.push(
-        <p>
-          <span style={{ 
-            color: colors[colorVals[i]] 
-          }}>
-            {c.text}
-          </span>
-        </p>
+    const rows = [];
+    c.forEach(r => {
+      rows.push(
+        <tr>
+          <td>{r.name}</td>
+          <td>{r.score}%</td>
+          <td class="heatcell" style={heat(r.score)}></td>
+        </tr>
       );
     });
-    return <div>{results}</div>;
-  }
 
+    let cells = [];
+    for (let i=0; i<100; i+=10){
+      cells.push(
+        <td class="heatcell" style={heat(i)}></td>
+      );
+    }
 
-  renderResults = results => {
+    const legend = (
+      <table>
+        <tr>
+          <td>Weak</td>
+          {cells}
+          <td>Strong</td>
+        </tr>
+      </table>
+    );
+
     return (
       <div>
-        <div class="competencies">
-          <p>In order of strength:</p>
-          {this.renderCompetencies(results)}
-        </div>
+        <table>
+          {rows}
+        </table>
+        <p>Legend</p>
+        {legend}
       </div>
     );
   }
@@ -112,7 +117,9 @@ class DiagResultsScreen extends Screen{
         <div className="pure-u-1">
           <div className="question results">
             <h1>Your competencies</h1>
-            {this.renderResults(this.state.results)}
+            <div class="competencies">
+              {this.renderCompetencies(this.state.results)}
+            </div>
           </div>
         </div>
       </div>

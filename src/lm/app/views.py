@@ -271,21 +271,39 @@ def results(request):
     categories = [x.category for x in competencies]
 
     categorised_answers = {}
+
+    key = {0: 2, 1: -1, 2: -2}
+
     for k, v in answers.items():
         # Scores:
         # 0 - yes - +2
         # 1 - unsure - -1
         # 2 - no - -2
-        key = {0: 2, 1: -1, 2: -2}
-        score = key[v]
-
-        if score not in [2, -1, -2]:
+        if v not in key.keys():
             return HttpResponseServerError("Invalid answer provided for %s" % k)
+        # score = key[v]
 
         category = competencies.get(id=k).category.name
 
         if category not in categorised_answers:
-            categorised_answers[category] = 0
-        categorised_answers[category] += score
+            categorised_answers[category] = { "total": 0, "yes":0,
+                    "no": 0, "unsure": 0}
+        if v == 0:
+            categorised_answers[category]["yes"] += 1
+        elif v == 1:
+            categorised_answers[category]["unsure"] += 1
+        elif v == 2:
+            categorised_answers[category]["no"] += 1
+        categorised_answers[category]["total"] += 1
+
+    for category, scores in categorised_answers.items():
+        base = 50
+        unit = base / scores["total"]
+        result = base + \
+            (scores["yes"] * unit) + \
+            (scores["no"] * unit * -1) + \
+            (scores["unsure"] * unit * -0.5)
+
+        categorised_answers[category] = round(result)
 
     return _json_response(categorised_answers)
