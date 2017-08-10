@@ -41,17 +41,17 @@ class DiagResultsScreen extends Screen{
   renderCompetencies = comps => {
     const heat = score => {
       const colors = {
-        1: "rgb(247,117,140)",
-        0.9: "rgb(245,121,126)",
-        0.8: "rgb(244,125,112)",
-        0.7: "rgb(242,130,98)",
-        0.6: "rgb(240,134,84)",
-        0.5: "rgb(239,138,70)",
-        0.4: "rgb(237,142,56)",
-        0.3: "rgb(235,146,42)",
-        0.2: "rgb(233,151,28)",
-        0.1: "rgb(232,155,14)",
-        0: "rgb(230,159,0)",
+        0: "rgb(0,0,0)",
+        0.1: "rgb(5,21,5)",
+        0.2: "rgb(10,41,10)",
+        0.3: "rgb(15,62,15)",
+        0.4: "rgb(20,82,20)",
+        0.5: "rgb(25,103,25)",
+        0.6: "rgb(30,123,30)",
+        0.7: "rgb(35,144,35)",
+        0.8: "rgb(40,164,40)",
+        0.9: "rgb(45,185,45)",
+        1: "rgb(50,205,50)",
       };
 
       score = Math.round(score / 10) / 10;
@@ -80,7 +80,7 @@ class DiagResultsScreen extends Screen{
     });
 
     let cells = [];
-    for (let i=0; i<100; i+=10){
+    for (let i=0; i<=100; i+=10){
       cells.push(
         <td class="heatcell" style={heat(i)}></td>
       );
