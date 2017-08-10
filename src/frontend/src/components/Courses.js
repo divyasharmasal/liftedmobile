@@ -163,7 +163,7 @@ export default class Courses extends Component{
         let x = parseDate(a.start_dates[0]);
         let y = parseDate(b.start_dates[0]);
 
-        if (x > y){
+        if (x < y){
           return 1;
         }
         return 0;
