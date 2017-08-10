@@ -297,6 +297,9 @@ def results(request):
         categorised_answers[category]["total"] += 1
 
     for category, scores in categorised_answers.items():
+        # final result will be upon 100
+        # base score is 50
+        # Yes answers add to base and others deduct from it
         base = 50
         unit = base / scores["total"]
         result = base + \

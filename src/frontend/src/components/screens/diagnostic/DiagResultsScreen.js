@@ -58,6 +58,13 @@ class DiagResultsScreen extends Screen{
       return { backgroundColor: colors[score] };
     }
 
+    const congrat = score => {
+      if (score > 50){
+        return "Great!";
+      }
+      return "Do better!";
+    };
+
     let c = [];
     Object.keys(comps).forEach(k => {
       c.push({
@@ -74,6 +81,7 @@ class DiagResultsScreen extends Screen{
         <tr>
           <td>{r.name}</td>
           <td>{r.score}%</td>
+          <td>({congrat(r.score)})</td>
           <td class="heatcell" style={heat(r.score)}></td>
         </tr>
       );
