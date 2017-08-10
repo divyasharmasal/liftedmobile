@@ -18,10 +18,10 @@ class DiagResultsScreen extends Screen{
       answers = JSON.parse(sessionStorage.getItem("diagAnswers"));
     }
 
-    //if (!answers){
-      //route("/")
-    //}
-    //else{
+    if (!answers){
+      route("/")
+    }
+    else{
       let url = "/results?";
       Object.keys(answers).forEach(compId => {
         let answer = answers[compId];
@@ -34,7 +34,7 @@ class DiagResultsScreen extends Screen{
           this.setState({ results });
         });
       });
-    //}
+    }
   }
 
 
