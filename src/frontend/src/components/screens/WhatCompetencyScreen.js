@@ -1,7 +1,10 @@
 import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import Question from '../Question';
-import {Screen} from './Screen';
+import {
+  renderLoader,
+  Screen, 
+} from './Screen';
 
 export {WhatCompetencyScreen};
 class WhatCompetencyScreen extends Screen{
@@ -30,7 +33,7 @@ class WhatCompetencyScreen extends Screen{
 
   render = () => {
     if (!this.state.qnData){
-      return <p>Loading...</p>;
+      return renderLoader();
     }
     return (
       <div className="pure-g">

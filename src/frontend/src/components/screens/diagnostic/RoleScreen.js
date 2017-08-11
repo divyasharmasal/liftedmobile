@@ -3,6 +3,7 @@ import { route } from 'preact-router';
 import Question from '../../Question';
 import { authFetch } from '../../fetch';
 import {
+  renderLoader,
   Screen, 
 } from '../Screen';
 
@@ -81,15 +82,7 @@ class RoleScreen extends Screen{
 
   render() {
     if (!this.state.roles){
-      return (
-        <div class="pure-g">
-          <div class="pure-u-1">
-            <div class="load1">
-              <div class="loader">Loading courses...</div>;
-            </div>
-          </div>
-        </div>
-      )
+      return renderLoader();
     }
     return (
       <div class="pure-g">
