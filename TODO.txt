@@ -1,4 +1,1 @@
-Treat industry specialisms differently in results - add a box or
-something
-
 Optimal num of characters for the Why screen: 30 characters

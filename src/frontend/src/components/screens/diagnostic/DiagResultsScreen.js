@@ -104,12 +104,18 @@ class DiagResultsScreen extends Screen{
       return (
         <table>
           {renderRows(ordinary)}
-          <tr>
-            <td class="special" colspan={4}>
-              Areas of specialisation you may want to consider:
-            </td>
-          </tr>
-          {renderRows(special)}
+          {special.length > 0 && 
+            <tr>
+              <td class="special" colspan={4}>
+                Areas of specialisation you may want to consider:
+              </td>
+            </tr>
+          }
+          {special.length > 0 && 
+            <tbody>
+              {renderRows(special)}
+            </tbody>
+          }
         </table>
       );
     }
