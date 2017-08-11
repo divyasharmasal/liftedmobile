@@ -4,6 +4,7 @@ import Question from '../../Question';
 import { authFetch } from '../../fetch';
 import {
   Screen, 
+  renderLoader,
 } from '../Screen';
 
 export {DiagScreen};
@@ -76,7 +77,7 @@ class DiagScreen extends Screen{
 
   render(){
     if (!this.state.diag){
-      return [];
+      return renderLoader();
     }
 
     // Only show the button if at least one answer has been selected

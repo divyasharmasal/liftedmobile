@@ -3,6 +3,7 @@ import { route } from 'preact-router';
 import Question from '../../Question';
 import { authFetch } from '../../fetch';
 import {
+  renderLoader,
   Screen, 
 } from '../Screen';
 
@@ -149,7 +150,7 @@ class DiagResultsScreen extends Screen{
 
   render(){
     if (!this.state.results){
-      return [];
+      return renderLoader();
     }
     return(
       <div className="pure-g">

@@ -15,6 +15,8 @@ import {
   DiagResultsScreen,
 } from './screens';
 
+import { renderLoader } from './screens/Screen';
+
 
 export default class App extends Component {
   constructor(props){
@@ -118,13 +120,7 @@ export default class App extends Component {
 
   render = () => {
     if (!this.state.qns){
-      return (
-        <div class="pure-g">
-          <div class="pure-u-1-1">
-            <p>Loading...</p>
-          </div>
-        </div>
-      );
+      return renderLoader();
     }
 
     let selectedAnswers = this.state.selectedAnswers;
