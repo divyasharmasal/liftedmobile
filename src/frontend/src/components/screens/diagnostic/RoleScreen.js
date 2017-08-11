@@ -81,7 +81,15 @@ class RoleScreen extends Screen{
 
   render() {
     if (!this.state.roles){
-      return <p>Loading...</p>;
+      return (
+        <div class="pure-g">
+          <div class="pure-u-1">
+            <div class="load1">
+              <div class="loader">Loading courses...</div>;
+            </div>
+          </div>
+        </div>
+      )
     }
     return (
       <div class="pure-g">
