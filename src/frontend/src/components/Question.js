@@ -81,12 +81,6 @@ export default class Question extends Component{
       let optionDesc;
       let currentLevel = option.level;
 
-      if (this.props.isRoleQn){
-        optionDesc = (
-          <span class="desc">{option.desc}</span>
-        );
-      }
-
       let answerClass = "answer";
 
       if (this.props.useTiles){
@@ -117,6 +111,29 @@ export default class Question extends Component{
 
       levelAnchors.add(currentLevel);
 
+      let optionElm;
+
+      if (this.props.isRoleQn){
+        optionDesc = (
+          <span class="desc">{option.desc}</span>
+        );
+
+        optionElm = (
+          <div class={optionTextClass}>
+            {optionDesc}
+            <span class="role">{option.text}</span>
+          </div>
+        );
+      }
+      else{
+        optionElm = (
+          <div class={optionTextClass}>
+            {option.text}
+            {optionDesc}
+          </div>
+        );
+      }
+
       optionBtns.push(
         <div>
           {this.props.isRoleQn && levelAnchor}
@@ -126,10 +143,7 @@ export default class Question extends Component{
             <div class="option_tick">
               {tick}
             </div>
-            <div class={optionTextClass}>
-              {option.text}
-              {optionDesc}
-            </div>
+            {optionElm}
           </div>
         </div>
       );
