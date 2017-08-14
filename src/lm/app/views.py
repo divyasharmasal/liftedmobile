@@ -6,7 +6,11 @@ from django.contrib.auth.decorators import login_required
 from app import models
 import sys
 import json
-import time
+import secrets
+
+
+def gen_cache_bust_str():
+    return secrets.token_urlsafe(32)
 
 
 def _print(*args, **kwargs):
@@ -27,8 +31,7 @@ def _json_response(obj):
 @login_required
 def index(request):
     return render(request, "app/base.html", 
-            {"time": str(time.time())})
-
+            {"cache_bust": gen_cache_bust_str()}) 
 
 @login_required
 def qns_and_opts(request):
@@ -72,11 +75,7 @@ def qns_and_opts(request):
                ]
     qn5 = create_qn("I want to...", qn5_opts)
 
-    qns.append(qn1)
-    qns.append(qn2)
-    qns.append(qn3)
-    qns.append(qn4)
-    qns.append(qn5)
+    qns = [qn1, qn2, qn3, qn4, qn5]
 
     return _json_response(qns)
 

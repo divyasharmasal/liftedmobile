@@ -6,18 +6,18 @@
                        maximum-scale=1.0, user-scalable=no" 
                        name="viewport"/>
         <meta charset="utf-8">
-        <link rel="manifest" href="{% static "/app/dist/manifest.json" %}?v={{ time }}" />
+        <link rel="manifest" href="{% static "/app/dist/manifest.json" %}?v={{ cache_bust }}" />
         <meta name="theme-color" content="#0060a2"/>
-        <link rel="stylesheet" href="{% static "/app/dist/style.css" %}?v={{ time }}" />
+        <link rel="stylesheet" href="{% static "/app/dist/style.css" %}?v={{ cache_bust }}" />
         {% block head %}{% endblock %}
     </head>
     <body>
         <noscript><p>This page requires Javascript.</p></noscript>
         {% block body %}{% endblock %}
         <script defer 
-        src="{% static "/app/dist/bundle.js" %}?v={{ time }}"></script>
+            src="{% static "/app/dist/bundle.js" %}?v={{ cache_bust }}"></script>
         <script>
-            window.fetch||document.write('<script src="{% static "/app/dist/polyfills.js" %}?v={{ time }}"><\/script>')
+            window.fetch||document.write('<script src="{% static "/app/dist/polyfills.js" %}?v={{ cache_bus }}"><\/script>')
         </script>
         <div class="preload_lato_bold">&nbsp;</div>
 

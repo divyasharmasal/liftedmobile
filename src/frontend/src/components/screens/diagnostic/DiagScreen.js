@@ -52,7 +52,12 @@ class DiagScreen extends Screen{
 
   handleAnswerSelect = (qnId, answerNum) => {
     let answers = this.state.answers;
-    answers[qnId] = answerNum;
+    if (answerNum !== null){
+      answers[qnId] = answerNum;
+    }
+    else{
+      delete answers[qnId];
+    }
     this.setState({ answers });
   }
 
