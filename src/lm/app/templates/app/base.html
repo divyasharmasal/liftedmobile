@@ -1,28 +1,24 @@
-{% load static %}
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="en">
     <head>
         <title>LIFTED Mobile</title>
-        <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" 
-              name="viewport"/>
+        <meta content="width=device-width, initial-scale=1.0, 
+                       maximum-scale=1.0, user-scalable=no" 
+                       name="viewport"/>
         <meta charset="utf-8">
         <link rel="manifest" href="{% static "/app/dist/manifest.json" %}" />
         <meta name="theme-color" content="#0060a2"/>
         <link rel="stylesheet" href="{% static "/app/dist/style.css" %}" />
-        {% block head %}
-        {% endblock %}
+        {% block head %}{% endblock %}
     </head>
     <body>
-        <noscript>
-            <p>This page requires Javascript.</p>
-        </noscript>
-        {% block body %}
-        {% endblock %}
+        <noscript><p>This page requires Javascript.</p></noscript>
+        {% block body %}{% endblock %}
         <script defer src="{% static "/app/dist/bundle.js" %}"></script>
-        <script>window.fetch||document.write('<script src="{% static "/polyfills.js" %}"><\/script>')</script>
+        <script>
+            window.fetch||document.write('<script src="{% static "/app/dist/polyfills.js" %}"><\/script>')
+        </script>
         <div class="preload_lato_bold">&nbsp;</div>
 
     </body>
 </html>
-
-

@@ -1,1 +1,40 @@
 Optimal num of characters for the Why screen: 30 characters
+
+Make all diag qns compulsory to answer. Highlight where the missing
+answers are
+
+Stars 
+0% = blank star outlines
+100% = fully filled star oublank sar outlines
+
+If there are 5 stars, prompt: you might want to check out competencies
+for the next level
+
+Flip the role title and desc, slightly enlarge desc text, make the job
+role titles smaller than the desc.
+Desc = bold, title = smaller & bold
+
+Course table in results
+Manually code the courses based on the competencies
+
+"Take the full learning diagnostic 
+
+(takes approx 8 minutes)"
+
+Bug in WhyScreen:
+"...or choose more goals if you wish." 
+
+------------------------
+
+Reconfirm on Monday morning:
+Course levels for legal practitioners and in-house counsels should be
+considered as one step above legal support.
+The levels in the sheet refer to legal prac & in-house.
+e.g. a Foundational course in the sheet would be Intermediate for a
+legal support officer.
+
+Different legal perspectives -> Conferences
+Skills -> Workshops
+Knowledge -> Lectures / Seminars / Roundtables
+Updates about my own niche. -> Seminars / Lectures / e-Learning
+

@@ -40,31 +40,25 @@ class DiagResultsScreen extends Screen{
 
 
   renderCompetencies = comps => {
-    const heat = score => {
-      const colors = {
-        0: "rgb(0,0,0)",
-        0.1: "rgb(5,21,5)",
-        0.2: "rgb(10,41,10)",
-        0.3: "rgb(15,62,15)",
-        0.4: "rgb(20,82,20)",
-        0.5: "rgb(25,103,25)",
-        0.6: "rgb(30,123,30)",
-        0.7: "rgb(35,144,35)",
-        0.8: "rgb(40,164,40)",
-        0.9: "rgb(45,185,45)",
-        1: "rgb(50,205,50)",
-      };
 
-      score = Math.round(score / 10) / 10;
-      return { backgroundColor: colors[score] };
+    const stars = score => {
+      const empty = <span class="empty star">☆</span>;
+      const full = <span class="star">★</span>;
+      const max = 5;
+      const numFull = Math.round(score / 20);
+      const numEmpty = max - numFull;
+
+      let stars = [];
+      for (let i=0; i<numFull; i++){
+        stars.push(full);
+      }
+      for (let i=0; i<numEmpty; i++){
+        stars.push(empty);
+      }
+
+      return stars;
     }
 
-    const congrat = score => {
-      if (score > 50){
-        return "Great!";
-      }
-      return "Do better!";
-    };
 
     let ordinary = [];
     let special = [];
@@ -92,9 +86,7 @@ class DiagResultsScreen extends Screen{
         rows.push(
           <tr>
             <td>{r.name}</td>
-            <td>{r.score}%</td>
-            <td>({congrat(r.score)})</td>
-            <td class="heatcell" style={heat(r.score)}></td>
+            <td>{stars(r.score)}</td>
           </tr>
         );
       });
@@ -121,28 +113,9 @@ class DiagResultsScreen extends Screen{
       );
     }
 
-    let cells = [];
-    for (let i=0; i<=100; i+=10){
-      cells.push(
-        <td class="heatcell" style={heat(i)}></td>
-      );
-    }
-
-    const legend = (
-      <table>
-        <tr>
-          <td>Weak</td>
-          {cells}
-          <td>Strong</td>
-        </tr>
-      </table>
-    );
-
     return (
       <div>
         {renderTable(ordinary, special)}
-        <p>Legend</p>
-        {legend}
       </div>
     );
   }
