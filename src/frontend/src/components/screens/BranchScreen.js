@@ -111,7 +111,7 @@ class BranchScreen extends Screen {
     // find out which item the user selected in the previous screen
     const preSelected = this.props.selectedAnswers[this.props.qnNum - 1];
 
-    let qnData = this.props.qnData;
+    let qnData = JSON.parse(JSON.stringify(this.props.qnData));
     qnData.text = "...or choose more goals if you wish.";
 
     const courseNotice = (
@@ -126,6 +126,7 @@ class BranchScreen extends Screen {
         {courseNotice}
         <div class="take_test_prompt pure-u-1 pure-u-md-10-24">
           <h1>Take a full learning needs diagnostic test.</h1>
+         <p>(It only takes about 8 minutes)</p>
           <a href={this.props.nextScreenPath} 
              class="take_test_button">Take the test</a>
         </div>
