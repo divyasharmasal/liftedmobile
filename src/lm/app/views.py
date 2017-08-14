@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from app import models
 import sys
 import json
+import time
 
 
 def _print(*args, **kwargs):
@@ -25,7 +26,8 @@ def _json_response(obj):
 
 @login_required
 def index(request):
-    return render(request, "app/index.html")
+    return render(request, "app/base.html", 
+            {"time": str(time.time())})
 
 
 @login_required
