@@ -9,6 +9,53 @@ import {
 
 export {DiagScreen};
 
+
+class DiagQuestion extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      selectedAnswerId: null,
+    };
+  }
+
+  handleAnswerSelect = answerNum => {
+    if (this.state.selectedAnswerId === answerNum){
+      answerNum = null;
+    }
+    this.setState({
+      selectedAnswerId: answerNum,
+    }, () => {
+      this.props.handleAnswerSelect(this.props.qn.id, answerNum);
+    });
+  }
+
+
+  render(){
+    let qn = this.props.qn;
+    const answers = ["Yes", "I'm not sure", "No"];
+    let ansElms = [];
+    answers.forEach((answer, i) => {
+      let answerClass = "answer";
+      if (i === this.state.selectedAnswerId){
+        answerClass += " selected";
+      }
+      ansElms.push(
+        <div onClick={() => {this.handleAnswerSelect(i)}} 
+          data-answer-id={i}
+          class={answerClass}>{answer}</div>
+      );
+    });
+
+    return (
+      <div class="diag_qn">
+        <p>{qn.desc}</p>
+        {ansElms}
+      </div>
+    );
+  }
+}
+
+
 class DiagScreen extends Screen{
   constructor(props){
     super(props);
@@ -87,9 +134,20 @@ class DiagScreen extends Screen{
 
     // Only show the button if at least one answer has been selected
     let btn;
-    if (Object.keys(this.state.answers).length > 0){
-      btn = <a onClick={this.handleSubmitBtnClick}
-               class="diag_button">Find out my learning needs</a>;
+    const numAnswered = Object.keys(this.state.answers).length
+    const numQns = Object.keys(this.state.diag).length
+    if (numAnswered === numQns){
+      btn = (
+        <a onClick={this.handleSubmitBtnClick}
+                class="diag_button">
+                Find out my learning needs
+        </a>
+      );
+    }
+    else{
+      btn = (
+        <p>Please complete all the questions to continue.</p>
+      );
     }
 
     return(
@@ -101,52 +159,6 @@ class DiagScreen extends Screen{
             {btn}
           </div>
         </div>
-      </div>
-    );
-  }
-}
-
-
-class DiagQuestion extends Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      selectedAnswerId: null,
-    };
-  }
-
-  handleAnswerSelect = answerNum => {
-    if (this.state.selectedAnswerId === answerNum){
-      answerNum = null;
-    }
-    this.setState({
-      selectedAnswerId: answerNum,
-    }, () => {
-      this.props.handleAnswerSelect(this.props.qn.id, answerNum);
-    });
-  }
-
-
-  render(){
-    let qn = this.props.qn;
-    const answers = ["Yes", "I'm not sure", "No"];
-    let ansElms = [];
-    answers.forEach((answer, i) => {
-      let answerClass = "answer";
-      if (i === this.state.selectedAnswerId){
-        answerClass += " selected";
-      }
-      ansElms.push(
-        <div onClick={() => {this.handleAnswerSelect(i)}} 
-          data-answer-id={i}
-          class={answerClass}>{answer}</div>
-      );
-    });
-
-    return (
-      <div class="diag_qn">
-        <p>{qn.desc}</p>
-        {ansElms}
       </div>
     );
   }
