@@ -15,7 +15,17 @@ class DiagQuestion extends Component{
     super(props);
     this.state = {
       selectedAnswerId: null,
+      shouldHighlight: false,
+      highlight: this.props.highlight,
     };
+  }
+
+  componentWillReceiveProps(nextProps){
+    if (this.props.highlight !== nextProps.highlight){
+      this.setState({ 
+        highlight: nextProps.highlight 
+      });
+    }
   }
 
   handleAnswerSelect = answerNum => {
@@ -41,14 +51,18 @@ class DiagQuestion extends Component{
       }
       ansElms.push(
         <div onClick={() => {this.handleAnswerSelect(i)}} 
-          data-answer-id={i}
           class={answerClass}>{answer}</div>
       );
     });
 
+    let highlightClass;
+    if (this.state.highlight){
+      highlightClass = "highlight";
+    }
+
     return (
       <div class="diag_qn">
-        <p>{qn.desc}</p>
+        <p class={highlightClass}>{qn.desc}</p>
         {ansElms}
       </div>
     );
@@ -61,6 +75,7 @@ class DiagScreen extends Screen{
     super(props);
     this.state = {
       answers: {},
+      toHighlight: [],
     };
   }
 
@@ -99,22 +114,33 @@ class DiagScreen extends Screen{
 
   handleAnswerSelect = (qnId, answerNum) => {
     let answers = this.state.answers;
+    let toHighlight = this.state.toHighlight;
     if (answerNum !== null){
       answers[qnId] = answerNum;
+      const index = toHighlight.indexOf(qnId);
+      if (index > -1){
+        toHighlight.splice(index, 1);
+      }
     }
     else{
+      if (this.state.shouldHighlight){
+        toHighlight.push(qnId);
+      };
       delete answers[qnId];
     }
-    this.setState({ answers });
+    this.setState({ answers, toHighlight });
   }
 
 
-  renderQns = qns => {
+  renderQns = (qns, toHighlight) => {
     let result = [];
-    this.state.diag.forEach(qn => {
+
+    qns.forEach(qn => {
+      const highlight = toHighlight.indexOf(qn.id) > -1;
       result.push(
         <DiagQuestion 
           handleAnswerSelect={this.handleAnswerSelect}
+          highlight={highlight}
           qn={qn} />
       );
     });
@@ -127,35 +153,65 @@ class DiagScreen extends Screen{
   }
 
 
+  highlightUnanswered = () => {
+    const answeredQns = Object.keys(this.state.answers)
+                              .map(x => parseInt(x, 10));
+    const qns = this.state.diag;
+    let unanswered = [];
+
+    qns.map(x => x.id).forEach(qnId => {
+      if (answeredQns.indexOf(qnId) === -1){
+        unanswered.push(qnId);
+      }
+    });
+    this.setState({ 
+      toHighlight: unanswered,
+      shouldHighlight: true,
+    });
+  }
+
   render(){
     if (!this.state.diag){
       return renderLoader();
     }
 
-    // Only show the button if at least one answer has been selected
-    let btn;
     const numAnswered = Object.keys(this.state.answers).length
     const numQns = Object.keys(this.state.diag).length
-    if (numAnswered === numQns){
-      btn = (
-        <a onClick={this.handleSubmitBtnClick}
-                class="diag_button">
-                Find out my learning needs
-        </a>
+
+    let warning;
+    let disabled;
+
+    if (this.state.toHighlight.length > 0 && numAnswered < numQns){
+      warning = (
+        <p class="highlight warning">
+          Please complete all questions to continue.
+        </p>
       );
+
+      disabled = "disabled";
     }
-    else{
-      btn = (
-        <p>Please complete all the questions to continue.</p>
-      );
-    }
+
+    let btn = (
+      <a onClick={() => {
+        if (numAnswered === numQns){
+          this.handleSubmitBtnClick();
+        }
+        else{
+          this.highlightUnanswered();
+        }
+      }}
+        class={"diag_button " + disabled}>
+        Find out my learning needs
+      </a>
+    );
 
     return(
       <div class="pure-g">
         <div class="pure-u-1">
           <div className="diag question">
             <h1>Are you confident doing these tasks?</h1>
-            {this.renderQns(this.state.diag)}
+            {this.renderQns(this.state.diag, this.state.toHighlight)}
+            {warning}
             {btn}
           </div>
         </div>

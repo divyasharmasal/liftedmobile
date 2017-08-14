@@ -296,6 +296,19 @@ p{
 }
 
 .diag{
+    .highlight{
+        background-color:#ffe6e6;
+        border-radius: @border_radius;
+    }
+
+    p.highlight.warning{
+        margin-bottom:50px;
+        padding:10px;
+        width:50%;
+        margin-left:auto;
+        margin-right:auto;
+    }
+
     .diag_qn{
         margin-bottom:80px;
         p{
@@ -311,8 +324,13 @@ p{
         &:last-of-type{
             margin-bottom:50px;
         }
+
     }
 
+    .diag_button.disabled{
+        color:grey;
+        cursor: default;
+    }
 
     .diag_button{
         -webkit-touch-callout: none;
@@ -321,13 +339,14 @@ p{
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
+
+        display:inline-block;
         cursor: pointer;
         font-size: 2em;
         font-weight:bold;
-        height: 5em;
         line-height: 3em;
-        padding-top:1.5em;
-        padding-bottom:1.5em;
+        padding-top:1em;
+        padding-bottom:1em;
         padding-left:2em;
         padding-right:2em;
         color: @sal_blue;
@@ -355,6 +374,11 @@ p{
             }
         }
         .star{
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
             user-select:none;
             cursor:default;
         }
