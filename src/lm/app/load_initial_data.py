@@ -38,6 +38,7 @@ def load(apps, schema_editor):
     CourseFunding = apps.get_model("app", "CourseFunding")
     CourseVerticalCategory = apps.get_model("app", "CourseVerticalCategory")
     Competency = apps.get_model("app", "Competency")
+    CourseCompetency = apps.get_model("app", "CourseCompetency")
     CompetencyCategory = apps.get_model("app", "CompetencyCategory")
     JobRole = apps.get_model("app", "JobRole")
     JobRoleCompetency = apps.get_model("app", "JobRoleCompetency")
@@ -48,34 +49,34 @@ def load(apps, schema_editor):
     categories = []
 
     for vertical in extract_framework_data.parse_verticals():
-        v = Vertical(id=i, name=vertical["Vertical"], 
-                     option=vertical["Vertical option text"])
-        verticals.append(v)
+        vert = Vertical(id=i, name=vertical["Vertical"],
+                        option=vertical["Vertical option text"])
+        verticals.append(vert)
 
         for category in vertical["categories"]:
-            c = VerticalCategory(id=j, vertical=v,
-                                 key=category["Category key"],
-                                 name=category["Category title"],
-                                 option=category["Option text"])
-            categories.append(c)
+            vert_cat = VerticalCategory(id=j, vertical=vert,
+                                        key=category["Category key"],
+                                        name=category["Category title"],
+                                        option=category["Option text"])
+            categories.append(vert_cat)
             j += 1
         i += 1
 
     levels = []
-    for l in extract_framework_data.parse_levels():
-        levels.append(Level(name=l["Level"], acronym=l["Acronym"]))
+    for lvl in extract_framework_data.parse_levels():
+        levels.append(Level(name=lvl["Level"], acronym=lvl["Acronym"]))
 
     venues = []
-    for v in extract_framework_data.parse_venues():
-        venues.append(Venue(name=v["Venue"], acronym=v["Acronym"]))
+    for venue in extract_framework_data.parse_venues():
+        venues.append(Venue(name=venue["Venue"], acronym=venue["Acronym"]))
 
     formats = []
-    for f in extract_framework_data.parse_formats():
-        formats.append(Format(name=f["Format"], acronym=f["Acronym"]))
+    for fmt in extract_framework_data.parse_formats():
+        formats.append(Format(name=fmt["Format"], acronym=fmt["Acronym"]))
 
     funding_types = []
-    for f in extract_framework_data.parse_funding_types():
-        funding_types.append(Funding(funding_type=f))
+    for funding_type in extract_framework_data.parse_funding_types():
+        funding_types.append(Funding(funding_type=funding_type))
 
     db_alias = schema_editor.connection.alias
     Vertical.objects.using(db_alias).bulk_create(verticals)
@@ -97,27 +98,67 @@ def load(apps, schema_editor):
     need_levels = []
     need_formats = []
 
-    for n in parsed_needs:
-        for need_level in n["Levels"]:
+    for parsed_need in parsed_needs:
+        for need_level in parsed_need["Levels"]:
             for level in levels:
                 if level.acronym == need_level:
-                    need = Need.objects.get(name__exact=n["Need"])
+                    need = Need.objects.get(name__exact=parsed_need["Need"])
                     need_levels.append(NeedLevel(need=need, level=level))
                     break
 
-        for need_format in n["Formats"]:
-            for format in formats:
-                if format.acronym == need_format:
-                    need = Need.objects.get(name__exact=n["Need"])
-                    need_formats.append(NeedFormat(need=need, format=format))
+        for need_format in parsed_need["Formats"]:
+            for fmt in formats:
+                if fmt.acronym == need_format:
+                    need = Need.objects.get(name__exact=parsed_need["Need"])
+                    need_formats.append(NeedFormat(need=need, format=fmt))
                     break
 
     NeedLevel.objects.using(db_alias).bulk_create(need_levels)
     NeedFormat.objects.using(db_alias).bulk_create(need_formats)
 
+    # CompetencyCategory
+    comp_categories = extract_framework_data.parse_competency_categories()
+    for vertical, categories in comp_categories.items():
+        vertical = Vertical.objects.get(name=vertical)
+        for category in categories:
+            comp_cat = CompetencyCategory(vertical=vertical, name=category)
+            comp_cat.save()
+
+    # Competencies
+    competencies = extract_framework_data.parse_competencies()
+    for competency in competencies:
+        vertical = Vertical.objects.get(name=competency["Vertical"])
+        competency_category = \
+            CompetencyCategory.objects.get(vertical=vertical,
+                                           name=competency["Competency Category"])
+        competency = Competency(id=competency["ID"],
+                                vertical=vertical,
+                                specialism=competency["Specialism"],
+                                copy_desc=competency["Copyedited description"],
+                                category=competency_category,
+                                full_desc=competency["Competency description"])
+        competency.save()
+
+    # Job Roles
+    job_roles = extract_framework_data.parse_job_roles()
+    for job_role in job_roles:
+        vertical = Vertical.objects.get(name=job_role["Vertical"])
+        jr_obj = JobRole(name=job_role["Role"],
+                         role_level=job_role["Level"],
+                         org_type=job_role["In-house or law firm?"],
+                         vertical=vertical,
+                         thin_desc=job_role["Thin Description"])
+        jr_obj.save()
+
+        for competency_id in job_role["Competency IDs"]:
+            comp = Competency.objects.get(id=competency_id)
+            jrc = JobRoleCompetency(job_role=jr_obj, competency=comp)
+            jrc.save()
+
+    # Courses
     parsed_courses = extract_framework_data.parse_courses()
     for c in parsed_courses:
-        course = Course(name=c["Name"], cost=c["Cost"], 
+        course = Course(name=c["Name"], cost=c["Cost"],
                         duration=c["Duration (days)"])
         course.save()
 
@@ -132,9 +173,10 @@ def load(apps, schema_editor):
         if cpd_points == "Pte":
             cpd_points = None
             is_private = True
+        elif cpd_points == "":
+            cpd_points = None
 
-        course_cpd_points = CourseCpdPoints(course=course, 
-                                            points=cpd_points, 
+        course_cpd_points = CourseCpdPoints(course=course, points=cpd_points,
                                             is_private=is_private)
         course_cpd_points.save()
 
@@ -145,73 +187,41 @@ def load(apps, schema_editor):
 
         # Start dates
         for start_date in c["Start dates (2017)"]:
-            sd = CourseStartDate(course=course, start_date=start_date)
-            sd.save()
-        
+            csd = CourseStartDate(course=course, start_date=start_date)
+            csd.save()
+
         # Funding
         for funding in c["Available Funding"]:
             funding_type = Funding.objects.get(funding_type=funding)
-            f = CourseFunding(course=course, funding_type=funding_type)
-            f.save()
-            
+            course_funding = CourseFunding(course=course, funding_type=funding_type)
+            course_funding.save()
+
         # Format
-        f = Format.objects.get(acronym=c["Format"])
-        cf = CourseFormat(course=course, format=f)
-        cf.save()
+        fmt = Format.objects.get(acronym=c["Format"])
+        course_format = CourseFormat(course=course, format=fmt)
+        course_format.save()
 
         # Level
-        l = Level.objects.get(acronym=c["Training Level"])
-        cl = CourseLevel(course=course, level=l)
-        cl.save()
-        
+        lvl = Level.objects.get(acronym=c["Training Level"])
+        course_level = CourseLevel(course=course, level=lvl)
+        course_level.save()
+
         # Vertical categories
         vertical_names = ["Legal Practitioner", "In-House Counsel",
                           "Legal Support"]
 
-        for vn in vertical_names:
-            key = c[vn]
+        for name in vertical_names:
+            key = c[name]
             if key:
-                vertical = Vertical.objects.get(name=vn)
-                vc = VerticalCategory.objects.get(key=key, vertical=vertical)
+                vertical = Vertical.objects.get(name=name)
+                vert_cat = VerticalCategory.objects.get(key=key, vertical=vertical)
                 cvc = CourseVerticalCategory(course=course,
-                                             vertical_category=vc)
+                                             vertical_category=vert_cat)
                 cvc.save()
 
-    # CompetencyCategory
-    comp_categories = extract_framework_data.parse_competency_categories()
-    for vertical, categories in comp_categories.items():
-        vertical = Vertical.objects.get(name=vertical)
-        for category in categories:
-            cc = CompetencyCategory(vertical=vertical, name=category)
-            cc.save()
-
-    # Competencies
-    competencies = extract_framework_data.parse_competencies()
-    for c in competencies:
-        vertical = Vertical.objects.get(name=c["Vertical"])
-        competency_category = \
-            CompetencyCategory.objects.get(vertical=vertical,
-                                           name=c["Competency Category"])
-        competency = Competency(id=c["ID"], 
-                                vertical=vertical, 
-                                specialism=c["Specialism"], 
-                                copy_desc=c["Copyedited description"], 
-                                category=competency_category,
-                                full_desc=c["Competency description"])
-        competency.save()
-
-    # Job Roles
-    job_roles = extract_framework_data.parse_job_roles()
-    for job_role in job_roles:
-        vertical = Vertical.objects.get(name=job_role["Vertical"])
-        jr = JobRole(name=job_role["Role"], 
-                     role_level=job_role["Level"], 
-                     org_type=job_role["In-house or law firm?"],
-                     vertical=vertical,
-                     thin_desc=job_role["Thin Description"])
-        jr.save()
-
-        for competency_id in job_role["Competency IDs"]:
-            c = Competency.objects.get(id=competency_id)
-            jrc = JobRoleCompetency(job_role=jr, competency=c)
-            jrc.save()
+        # Competencies
+        competencies = c["Competencies"]
+        for competency_id in competencies:
+            competency = Competency.objects.get(id=competency_id)
+            course_comp = CourseCompetency(course=course, competency=competency)
+            course_comp.save()

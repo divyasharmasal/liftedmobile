@@ -178,6 +178,14 @@ class Migration(migrations.Migration):
                 ('vertical', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Vertical')),
             ],
         ),
+        migrations.CreateModel(
+            name='CourseCompetency',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('competency', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Competency')),
+                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
+            ],
+        ),
         migrations.AddField(
             model_name='jobrole',
             name='vertical',
@@ -262,5 +270,13 @@ class Migration(migrations.Migration):
         migrations.AlterUniqueTogether(
             name='competencycategory',
             unique_together=set([('vertical', 'name')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='jobrolecompetency',
+            unique_together=set([('job_role', 'competency')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='coursecompetency',
+            unique_together=set([('course', 'competency')]),
         ),
     ]

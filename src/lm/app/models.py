@@ -142,6 +142,14 @@ class Competency(models.Model):
     full_desc = models.TextField()
 
 
+class CourseCompetency(models.Model):
+    class Meta:
+        unique_together = (("course", "competency"))
+    id = models.AutoField(primary_key=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    competency = models.ForeignKey(Competency, on_delete=models.CASCADE)
+
+
 class JobRole(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.TextField(unique=True)
@@ -152,5 +160,7 @@ class JobRole(models.Model):
 
 
 class JobRoleCompetency(models.Model):
+    class Meta:
+        unique_together = (("job_role", "competency"))
     job_role = models.ForeignKey(JobRole, on_delete=models.CASCADE)
     competency = models.ForeignKey(Competency, on_delete=models.CASCADE)
