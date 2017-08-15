@@ -1,38 +1,37 @@
-from django.shortcuts import render
-from django.http import HttpResponseServerError
-from django.http import HttpResponse
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required 
-from app import models
-import sys
+"""
+Views for liftedmobile
+"""
 import json
 import os
 import base64
+import hashids
+from django.shortcuts import render
+from django.http import HttpResponseServerError
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from app import models
 
 
 def gen_cache_bust_str():
+    """
+    Returns a URL-friendly, 32-bit random string
+    """
     return base64.urlsafe_b64encode(os.urandom(32)).rstrip(b'=').decode('ascii')
 
 
-def _print(*args, **kwargs):
-    """
-    Helps to debug command-line output as viewed through Docker logs.
-    sys.stdout.flush() ensures that the output is displayed as soon as it's
-    printed.
-    """
-    print(*args, **kwargs)
-    sys.stdout.flush()
-
-
 def _json_response(obj):
-    return HttpResponse(json.dumps(obj, separators=(',', ':')), 
-            content_type="application/json")
+    return HttpResponse(json.dumps(obj, separators=(',', ':')),
+                        content_type="application/json")
 
 
 @login_required
 def index(request):
-    return render(request, "app/base.html", 
-            {"cache_bust": gen_cache_bust_str()}) 
+    """
+    View for /
+    """
+    return render(request, "app/base.html",
+                  {"cache_bust": gen_cache_bust_str()})
+
 
 @login_required
 def qns_and_opts(request):
@@ -48,7 +47,7 @@ def qns_and_opts(request):
     qns = []
 
     qn1 = create_qn("What is your job?", 
-            [{"text": v.option} for v in models.Vertical.objects.all()])
+                    [{"text": v.option} for v in models.Vertical.objects.all()])
 
     qn2_opts = {}
     for row in models.VerticalCategory.objects.all():
@@ -64,16 +63,12 @@ def qns_and_opts(request):
         qn3_opts.append({"text": row.option})
     qn3 = create_qn("I want...", qn3_opts)
 
-    qn4_opts = [
-                    {"text": "A law firm."}, 
-                    {"text": "A corporation or organisation."}
-               ]
+    qn4_opts = [{"text": "A law firm."},
+                {"text": "A corporation or organisation."}]
     qn4 = create_qn("I work at...", qn4_opts)
 
-    qn5_opts = [
-                    {"text": "Prepare for my next job or role."}, 
-                    {"text": "Get better at my current job."}
-               ]
+    qn5_opts = [{"text": "Prepare for my next job or role."},
+                {"text": "Get better at my current job."}]
     qn5 = create_qn("I want to...", qn5_opts)
 
     qns = [qn1, qn2, qn3, qn4, qn5]
@@ -139,34 +134,36 @@ def courses(request):
                 courselevel__level_id__needlevel__need_id__in=need_ids)
         except e:
             return HttpResponseServerError("Error code 3")
-    
+
     courses = []
-    for c in course_query.distinct():
-        start_dates = models.CourseStartDate.objects.filter(course=c)
-        course_level = models.CourseLevel.objects.get(course=c)
-        level = models.Level.objects.get(acronym=course_level.level_id)
-        course_format = models.CourseFormat.objects.get(course=c)
-        format_name  = models.Format.objects.get(
-                acronym=course_format.format_id).name
-        points = models.CourseCpdPoints.objects.get(course=c)
-
-
-        cpd_points = points.points
-        if cpd_points is None:
-            cpd_points = 0
-
-        courses.append({
-            "name": c.name,
-            "cost": float(c.cost),
-            "start_dates": [x.start_date for x in start_dates],
-            "level": level.name,
-            "format": format_name,
-            "cpd": {
-                "points": float(cpd_points),
-                "is_private": points.is_private
-                }
-            })
+    for course in course_query.distinct():
+        courses.append(_course_json(course))
     return _json_response(courses)
+
+
+def _course_json(course):
+    start_dates = models.CourseStartDate.objects.filter(course=course)
+    course_level = models.CourseLevel.objects.get(course=course)
+    level = models.Level.objects.get(acronym=course_level.level_id)
+    course_format = models.CourseFormat.objects.get(course=course)
+    format_name  = models.Format.objects.get(
+            acronym=course_format.format_id).name
+    points = models.CourseCpdPoints.objects.get(course=course)
+    cpd_points = points.points
+    if cpd_points is None:
+        cpd_points = 0
+    result = {
+        "name": course.name,
+        "cost": float(course.cost),
+        "start_dates": [x.start_date for x in start_dates],
+        "level": level.name,
+        "format": format_name,
+        "cpd": {
+            "points": float(cpd_points),
+            "is_private": points.is_private
+            }
+        }
+    return result
 
 
 @login_required
@@ -219,15 +216,15 @@ def roles(request):
 
     # if it's not, it's from /test/
     else:
-        job_role_query = models.JobRole.objects.filter(
-                org_type=org_type_name, vertical=vertical)
+        job_role_query = models.JobRole.objects.filter(org_type=org_type_name,
+                                                       vertical=vertical)
 
 
-    job_roles = sorted([{ "name": job_role.name, 
-                          "desc": job_role.thin_desc,
-                          "level": job_role.role_level,
-                          "id": job_role.id} \
-                               for job_role in job_role_query.distinct()
+    job_roles = sorted([{"name": job_role.name,
+                         "desc": job_role.thin_desc,
+                         "level": job_role.role_level,
+                         "id": job_role.id} \
+                              for job_role in job_role_query.distinct()
                        ], key=lambda j: j["level"])
     return _json_response(job_roles)
 
@@ -247,10 +244,10 @@ def diag(request):
     competencies = models.JobRoleCompetency.objects.filter(job_role=role)
 
     result = []
-    for c in competencies:
+    for comp in competencies:
         result.append({
-            "id": c.competency.id,
-            "desc": c.competency.copy_desc,
+            "id": comp.competency.id,
+            "desc": comp.competency.copy_desc,
         })
 
     return _json_response(result)
@@ -262,19 +259,32 @@ def results(request):
     Retrieve data for the diagnostic results page
     """
     answers = {}
+    vertical_id = request.GET["v"]
+    vertical = None
+    try:
+        vertical_id = int(vertical_id)
+        vertical = models.Vertical.objects.get(id=vertical_id)
+    except:
+        return HttpResponseServerError("Invalid vertical ID.")
+
+    keys = []
     for k, v in request.GET.items():
+        if k == "v":
+            continue
         try:
             answers[k] = int(v)
+            keys.append(k)
         except:
             return HttpResponseServerError("Invalid answer provided for %s" % k)
 
     # get competency categories
-    competencies = models.Competency.objects.filter(id__in=answers.keys())
+    competencies = models.Competency.objects.filter(id__in=keys)
     categories = [x.category for x in competencies]
 
-    categorised_answers = {}
-
     key = {0: 2, 1: -1, 2: -2}
+
+    categorised_answers = {}
+    cat_names = {}
 
     for k, v in answers.items():
         # Scores:
@@ -287,10 +297,14 @@ def results(request):
 
         comp = competencies.get(id=k)
         category = comp.category.name
+
+
         special = False
         if comp.specialism:
             category = comp.specialism
             special = True
+
+        cat_names[category] = comp.category
 
         if category not in categorised_answers:
             categorised_answers[category] = { 
@@ -308,6 +322,8 @@ def results(request):
             categorised_answers[category]["no"] += 1
         categorised_answers[category]["total"] += 1
 
+    cat_scores = {}
+
     for category, scores in categorised_answers.items():
         # final result will be upon 100
         # base score is 50
@@ -319,9 +335,43 @@ def results(request):
             (scores["no"] * unit * -1) + \
             (scores["unsure"] * unit * -0.5)
 
+        score = round(result)
+        cat_scores[cat_names[category]] = score
         categorised_answers[category] = {
-                "score": round(result),
+                "score": score,
                 "special": categorised_answers[category]["special"]
                 }
 
-    return _json_response(categorised_answers)
+    response = {
+        "competencies": categorised_answers,
+        "courses": courses_from_categories(cat_scores, vertical),
+    }
+    return _json_response(response)
+
+
+def courses_from_categories(cat_scores, vertical):
+    salt = gen_cache_bust_str()
+    hash_func = hashids.Hashids(min_length=4,
+            salt=gen_cache_bust_str()).encode
+
+    result = {
+        "map": {},
+        "courses": {},
+    }
+
+    for category, score in cat_scores.items():
+        if score < 50:
+            comps = models.Competency.objects.filter(category=category)
+            courses = models.Course.objects.filter(
+                coursecompetency__competency__in=comps,
+                courseverticalcategory__vertical_category__id=vertical.id).distinct()
+
+            for course in courses:
+                course_id = hash_func(course.id)
+                if category.name in result["map"]:
+                    result["map"][category.name].append(course_id)
+                else:
+                    result["map"][category.name] = [course_id]
+
+                result["courses"][course_id] = _course_json(course)
+    return result

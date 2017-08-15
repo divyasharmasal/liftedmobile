@@ -24,6 +24,10 @@ class DiagResultsScreen extends Screen{
     }
     else{
       let url = "/results?";
+      // Append vertical ID
+      const verticalId = this.props.selectedAnswers[0][0] + 1;
+      url += "v=" + encodeURIComponent(verticalId);
+      // Append answer data
       Object.keys(answers).forEach(compId => {
         let answer = answers[compId];
           url += "&" + encodeURIComponent(compId) + "=" + 
@@ -32,7 +36,10 @@ class DiagResultsScreen extends Screen{
 
       authFetch(url).then(response => {
         response.json().then(results => {
-          this.setState({ results });
+          this.setState({ 
+            results: results.competencies,
+            courses: results.courses,
+          });
         });
       });
     }
@@ -96,6 +103,12 @@ class DiagResultsScreen extends Screen{
     const renderTable = (ordinary, special) => {
       return (
         <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
           {renderRows(ordinary)}
           {special.length > 0 && 
             <tr>

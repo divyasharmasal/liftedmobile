@@ -358,10 +358,19 @@ hr{
         table{
             margin:auto;
             font-size:2em;
+            thead{
+                line-height:1.5em;
+                th{
+                    text-align:left;
+                    padding:0.25em;
+                }
+            }
+
             td{
                 text-align:left;
                 padding:0.25em;
             }
+
             td.special{
                 padding-top:1em;
                 padding-bottom:1em;
@@ -369,6 +378,7 @@ hr{
                 font-weight:bold;
             }
         }
+
         .star{
             -webkit-touch-callout: none;
             -webkit-user-select: none;
@@ -378,8 +388,9 @@ hr{
             user-select:none;
             cursor:default;
         }
+
         .empty{
-            color:lightgrey;
+            color:grey;
         }
     }
 }
@@ -399,6 +410,7 @@ hr{
             p{
                 font-size:1.5em;
             }
+
             p, 
             .answer{
                 width: auto;
@@ -585,7 +597,6 @@ hr{
                 width:100%;
                 margin-right:0;
             }
-
 
             td:first-child {
                 font-size: 0.7em;

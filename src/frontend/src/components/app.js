@@ -212,6 +212,7 @@ export default class App extends Component {
         
         <DiagResultsScreen
           path="/test/results"
+          selectedAnswers={selectedAnswers} 
           answers={this.state.diagAnswers} />
 
       </Router>
