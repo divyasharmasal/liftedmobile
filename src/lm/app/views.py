@@ -6,11 +6,12 @@ from django.contrib.auth.decorators import login_required
 from app import models
 import sys
 import json
-import secrets
+import os
+import base64
 
 
 def gen_cache_bust_str():
-    return secrets.token_urlsafe(32)
+    return base64.urlsafe_b64encode(os.urandom(32)).rstrip(b'=').decode('ascii')
 
 
 def _print(*args, **kwargs):

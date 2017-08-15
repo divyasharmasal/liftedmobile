@@ -140,9 +140,11 @@ export default class Question extends Component{
           <div key={i} 
               class={answerClass}
               onClick={() => {this.onAnswerClick(i)}}>
-            <div class="option_tick">
-              {tick}
-            </div>
+            {this.props.isMultiQn &&
+              <div class="option_tick">
+                {tick}
+              </div>
+            }
             {optionElm}
           </div>
         </div>

@@ -104,6 +104,13 @@ def parse_courses():
                 funding_types.append(funding_type.strip())
         row["Available Funding"] = funding_types
 
+        competencies = []
+        comps = str(row["Competencies"]).split(",")
+        for comp in comps:
+            c = comp.strip()
+            competencies.append(int(c))
+        row["Competencies"] = competencies
+
     return rows
 
 
@@ -241,4 +248,4 @@ def parse_job_roles():
 
 if __name__ == "__main__":
     import pprint
-    pprint.pprint(parse_job_roles())
+    pprint.pprint(parse_courses())
