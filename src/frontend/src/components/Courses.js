@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import {renderLoader} from './screens/Screen';
 
 export { Courses };
 
@@ -181,16 +182,11 @@ export default class Courses extends Component{
 
   render(){
     let courses = this.state.courses;
-    let result;
     if (!courses){
-      result = (
-        <div class="load1">
-          <div class="loader">Loading courses...</div>;
-        </div>
-      );
+      return renderLoader();
     }
     else if (courses.courses.length === 0){
-      result = (
+      return (
         <div class="pure-u-1">
           <p>No courses found.</p>
         </div>
@@ -262,7 +258,7 @@ export default class Courses extends Component{
         </td>
       );
 
-      result = (
+      return (
         <div>
           {isTailored}
 
@@ -293,7 +289,5 @@ export default class Courses extends Component{
         </div>
       );
     }
-
-    return result;
   }
 }
