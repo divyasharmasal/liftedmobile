@@ -2,6 +2,9 @@ from django.db import models
 
 
 class Vertical(models.Model):
+    """
+    Practicing lawyer, in-house counsel, legal support
+    """
     id = models.IntegerField(primary_key=True)
     name = models.TextField(unique=True)
     option = models.TextField(unique=True)

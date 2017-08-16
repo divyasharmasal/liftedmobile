@@ -256,20 +256,38 @@ def diag(request):
 @login_required
 def results(request):
     """
-    Retrieve data for the diagnostic results page
+    Calculate the user's diagnostic scores and provide a list of
+    recommended courses.
+
+    GET params:
+    v: vertical ID
+    r: job role ID
+    0, 1, 2, ...: competency ID. Remember, competencies are rephrased
+    as questions.
     """
+
     answers = {}
     vertical_id = request.GET["v"]
+    role_id = request.GET["r"]
+
     vertical = None
+    job_role = None
+
     try:
         vertical_id = int(vertical_id)
         vertical = models.Vertical.objects.get(id=vertical_id)
     except:
         return HttpResponseServerError("Invalid vertical ID.")
 
+    try:
+        role_id = int(role_id)
+        job_role = models.JobRole.objects.get(id=role_id)
+    except:
+        return HttpResponseServerError("Invalid job role ID.")
+
     keys = []
     for k, v in request.GET.items():
-        if k == "v":
+        if k == "v" or k == "r":
             continue
         try:
             answers[k] = int(v)
@@ -344,34 +362,64 @@ def results(request):
 
     response = {
         "competencies": categorised_answers,
-        "courses": courses_from_categories(cat_scores, vertical),
+        "courses": _diag_course_recommendations(cat_scores, vertical, job_role),
     }
     return _json_response(response)
 
 
-def courses_from_categories(cat_scores, vertical):
-    salt = gen_cache_bust_str()
-    hash_func = hashids.Hashids(min_length=4,
-            salt=gen_cache_bust_str()).encode
+def _diag_course_recommendations(cat_scores, vertical, job_role):
+    """
+    Provides course recommendations based on:
+    @cat_scores: the scores for each competency category
+    @vertical: the user's job vertical
+    @job_role: the user's selected job role
+    """
+
+    # Obsfucate course IDs with a hashids function seeded with a
+    # random salt
+    hash_func = hashids.Hashids(min_length=4, salt=gen_cache_bust_str()).encode
 
     result = {
         "map": {},
         "courses": {},
     }
 
+    # add courses to the result dict for each
+    # competency-category/score pair
     for category, score in cat_scores.items():
-        if score < 50:
-            comps = models.Competency.objects.filter(category=category)
+        courses = None
+
+        # Generate course recommendations if the user doesn't get 100%
+        if score < 100:
+            competencies = models.Competency.objects.filter(category=category)
             courses = models.Course.objects.filter(
-                coursecompetency__competency__in=comps,
-                courseverticalcategory__vertical_category__id=vertical.id).distinct()
+                coursecompetency__competency__jobrolecompetency__job_role=job_role,
+                coursecompetency__competency__in=competencies,
+                courseverticalcategory__vertical_category__vertical__id=vertical.id).distinct()
 
-            for course in courses:
-                course_id = hash_func(course.id)
-                if category.name in result["map"]:
-                    result["map"][category.name].append(course_id)
-                else:
-                    result["map"][category.name] = [course_id]
+        # Get competencies for all jobs in the next level (or the
+        # same level for level 5) which share the same competency
+        # category
+        else:
 
-                result["courses"][course_id] = _course_json(course)
+            level = job_role.role_level
+            if level < 5:
+                level += 1
+
+            competencies = models.Competency.objects.filter(
+                    category=category,
+                    jobrolecompetency__job_role__role_level=level).distinct()
+
+            courses = models.Course.objects.filter(
+                coursecompetency__competency__in=competencies,
+                courseverticalcategory__vertical_category__vertical__id=vertical.id).distinct()
+
+        for course in courses:
+            course_id = hash_func(course.id)
+            if category.name in result["map"]:
+                result["map"][category.name].append(course_id)
+            else:
+                result["map"][category.name] = [course_id]
+
+            result["courses"][course_id] = _course_json(course)
     return result

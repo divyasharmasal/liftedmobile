@@ -20,13 +20,31 @@ class DiagResultsScreen extends Screen{
     }
 
     if (!answers){
-      route("/")
+      route("/");
     }
     else{
       let url = "/results?";
+
+      let roleId;
+      if (Object.keys(this.props.selectedAnswers).length >= 7){
+        roleId = this.props.selectedAnswers[7][0];
+      }
+      else if (Object.keys(this.props.selectedAnswers).length >= 5){
+        roleId = this.props.selectedAnswers[5][0];
+      }
+      else{
+        route("/");
+      }
+
       // Append vertical ID
-      const verticalId = this.props.selectedAnswers[0][0] + 1;
+      //TODO: verticalId should be dynamic, as such:
+      //const verticalId = this.props.selectedAnswers[0][0] + 1;
+      const verticalId = 3;
       url += "v=" + encodeURIComponent(verticalId);
+
+      // Append job role ID
+      url += "&r=" + encodeURIComponent(roleId);
+
       // Append answer data
       Object.keys(answers).forEach(compId => {
         let answer = answers[compId];
@@ -100,8 +118,9 @@ class DiagResultsScreen extends Screen{
       return rows;
     };
 
-    const renderTable = (ordinary, special) => {
-      return (
+
+    return (
+      <div>
         <table>
           <thead>
             <tr>
@@ -123,12 +142,6 @@ class DiagResultsScreen extends Screen{
             </tbody>
           }
         </table>
-      );
-    }
-
-    return (
-      <div>
-        {renderTable(ordinary, special)}
       </div>
     );
   }
