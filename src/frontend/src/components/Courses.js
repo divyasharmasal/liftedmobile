@@ -221,12 +221,12 @@ export default class Courses extends Component{
 
       const nameSym = symbol(this.state.nameDesc);
       const nameSorter = (
-        <td class="sorter">
-          <a onClick={() => { 
-            this.setState({ nameDesc: !this.state.nameDesc });
-            this.handleSort("name")} 
-          }>
-            Name
+        <td onClick={() => { 
+              this.setState({ nameDesc: !this.state.nameDesc });
+              this.handleSort("name")} 
+            }
+          class="sorter">
+          <a>Name
             <span class="symbol">{nameSym}</span>
           </a> 
         </td>
@@ -234,12 +234,12 @@ export default class Courses extends Component{
 
       const cpdSym = symbol(this.state.cpdDesc);
       const cpdSorter = (
-        <td class="sorter">
-          <a onClick={() => { 
-            this.setState({ cpdDesc: !this.state.cpdDesc });
-            this.handleSort("cpd")} 
-          }>
-            CPD
+        <td onClick={() => { 
+              this.setState({ cpdDesc: !this.state.cpdDesc });
+              this.handleSort("cpd")} 
+            }
+          class="sorter">
+          <a>CPD
             <span class="symbol">{cpdSym}</span>
           </a> 
         </td>
@@ -247,21 +247,20 @@ export default class Courses extends Component{
 
       const dateSym = symbol(this.state.dateDesc);
       const dateSorter = (
-        <td class="sorter">
-          <a onClick={() => { 
-            this.setState({ dateDesc: !this.state.dateDesc });
-            this.handleSort("date")} 
-          }>
-            Dates (2017)
+        <td onClick={() => { 
+              this.setState({ dateDesc: !this.state.dateDesc });
+              this.handleSort("date")} 
+            }
+          class="sorter">
+          <a>Dates (2017)
             <span class="symbol">{dateSym}</span>
           </a> 
         </td>
       );
 
       return (
-        <div>
+        <div class="courses">
           {isTailored}
-
           {/*
             <p class="for_better_results">
               <a class="scroll_link" 

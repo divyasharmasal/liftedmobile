@@ -25,8 +25,10 @@
 }
 
 h1{
+    text-align:center;
     font-weight: normal;
     color: @sal_blue;
+    font-size: 4em;
 }
 
 p{
@@ -104,10 +106,6 @@ hr{
 	margin-bottom: 50px;
     text-align:center;
 
-    h1{
-        font-size:4em;
-    }
-
     .answer{
         -webkit-touch-callout: none;
         -webkit-user-select: none;
@@ -182,6 +180,7 @@ hr{
     margin-bottom:64px;
 }
 
+.competency_anchor,
 .select_level a,
 .select_level a:visited,
 .scroll_link:visited,
@@ -238,10 +237,17 @@ hr{
 
         thead{
             font-weight:bold;
+            td{
+                white-space: nowrap;
+                &:first-of-type{
+                    width:400px;
+                }
+            }
             .sorter{
                 text-align:left;
                 padding-left:0.7em;
                 margin-left:0;
+                cursor:pointer;
                 a{
                     color:black;
                     margin-left:5px;
@@ -251,6 +257,7 @@ hr{
 
         tr{
             border-bottom: 1px solid #cbcbcb;
+                text-align:left;
         }
     }
 }
@@ -399,7 +406,7 @@ hr{
     .results {
         .competencies{
             table{
-                font-size:0.7em;
+                font-size:0.8em;
             }
         }
     }
@@ -484,6 +491,28 @@ hr{
         }
     }
 }
+
+
+.diag_courses{
+    .category_name{
+        font-weight:bold;
+        display:inline-block;
+        margin-top:48px;
+        margin-bottom:0;
+    }
+
+    .not_found{
+        width:75%;
+        margin:auto;
+    }
+
+    p.back_to_top{
+        text-align:right;
+        font-size:1.2em;
+        margin-top:0px;
+    }
+}
+
 
 @media (max-width: 768px) {
     .mobile_only{

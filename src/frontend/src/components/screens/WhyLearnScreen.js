@@ -98,14 +98,15 @@ class WhyLearnScreen extends Screen{
             qnData={this.props.qnData} 
           />
         </div>
-        <div class="courses">
-          <a name="courses" />
-          <div class="pure-u-1">
-            <h2>Recommend courses</h2>
-          </div>
-          <div class="pure-u-1" ref={courses => this.courses = courses}>
-            {courses}
-          </div>
+
+        <a name="courses" />
+
+        <div class="pure-u-1">
+          <h1>Recommend courses</h1>
+        </div>
+
+        <div class="pure-u-1" ref={courses => this.courses = courses}>
+          {courses}
         </div>
       </div>
     );
