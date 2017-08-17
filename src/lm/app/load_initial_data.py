@@ -159,7 +159,7 @@ def load(apps, schema_editor):
     parsed_courses = extract_framework_data.parse_courses()
     for c in parsed_courses:
         course = Course(name=c["Name"], cost=c["Cost"],
-                        duration=c["Duration (days)"])
+                        url=c["URL"], duration=c["Duration (days)"])
         course.save()
 
         # CPD points

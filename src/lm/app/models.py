@@ -71,6 +71,7 @@ class Course(models.Model):
     name = models.TextField()
     cost = models.DecimalField(decimal_places=2, max_digits=11)
     duration = models.DecimalField(decimal_places=1, max_digits=6)
+    url = models.TextField(null=True)
 
 
 class CourseVerticalCategory(models.Model):

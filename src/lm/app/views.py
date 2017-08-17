@@ -157,6 +157,7 @@ def _course_json(course):
         "cost": float(course.cost),
         "start_dates": [x.start_date for x in start_dates],
         "level": level.name,
+        "url": course.url,
         "format": format_name,
         "cpd": {
             "points": float(cpd_points),

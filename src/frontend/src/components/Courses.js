@@ -199,7 +199,11 @@ export default class Courses extends Component{
         rows.push(
           <tr key={i}>
             <td data-title="Name">
-              {course.name}
+              {course.url ?
+                <a href={course.url} target="_blank">{course.name}</a>
+                :
+                course.name
+              }
             </td>
             <td data-title="Cost">{this.format_cost(course.cost)}</td>
             <td data-title="CPD">{this.format_cpd(course.cpd)}</td>
