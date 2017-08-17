@@ -74,6 +74,7 @@ hr{
             padding-left: 2.5em;
             padding-right: 2.5em;
         }
+
     }
 }
 
@@ -161,9 +162,9 @@ hr{
         font-weight:bold;
 
         .option_tick{
+            display:initial;
             visibility:visible;
             color:@sal_blue;
-            /*display:initial;*/
         }
 
         .option_text{
@@ -247,6 +248,9 @@ hr{
                 white-space: nowrap;
                 &:first-of-type{
                     width:400px;
+                }
+                &:last-of-type{
+                    width:200px;
                 }
             }
             .sorter{
@@ -474,6 +478,9 @@ hr{
                 font-size:1.25em;
                 padding: 15px 10px;
             }
+            .answer.tile{
+                padding: 10px 6px; 
+            }
         }
     }
 
@@ -552,9 +559,15 @@ hr{
         .tile{
             font-size: 1em;
             margin-bottom:5px;
+            padding: 10px 6px; 
             
             .option_tick{
-                display:none;
+                visibility:hidden;
+            }
+        }
+        .selected{
+            .option_tick{
+                visibility:visible;
             }
         }
     }

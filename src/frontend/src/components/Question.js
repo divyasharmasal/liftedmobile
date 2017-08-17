@@ -83,14 +83,14 @@ export default class Question extends Component{
 
       let answerClass = "answer";
 
-      if (this.props.useTiles){
-        answerClass += " tile";
-      }
-
       if (this.state.preSelected){
         if (this.state.preSelected.indexOf(i) > -1){
-          answerClass = "answer selected";
+          answerClass += " selected";
         }
+      }
+
+      if (this.props.useTiles){
+        answerClass += " tile";
       }
 
       if (this.props.isRoleQn){

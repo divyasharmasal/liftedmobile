@@ -138,6 +138,7 @@ class BranchScreen extends Screen {
             isMultiQn={true}
             preSelected={preSelected}
             scrollDownMsg={false}
+            useTiles={true}
             handleAnswerSelect={this.handleAnswerSelect}
             qnData={qnData} 
           />
@@ -145,14 +146,9 @@ class BranchScreen extends Screen {
 
         <a name="courses" />
 
-        <div class="pure-u-1">
-          <h1>Recommend courses</h1>
-        </div>
-
-        <div class="pure-u-1" ref={courses => this.courses = courses}>
-          <div class="courses">
-            {courses}
-          </div>
+        <div class="rec_courses pure-u-1" ref={courses => this.courses = courses}>
+          <h1>Recommended courses</h1>
+          {courses}
         </div>
       </div>
     );
