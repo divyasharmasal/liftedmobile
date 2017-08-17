@@ -10,6 +10,8 @@ External DB
 
 License page generator
 
+Add stars to category titles above course tables in diag
+
 ------------------------
 
 Reconfirm on Monday morning:

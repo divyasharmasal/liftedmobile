@@ -101,11 +101,8 @@ class WhyLearnScreen extends Screen{
 
         <a name="courses" />
 
-        <div class="pure-u-1">
+        <div class="rec_courses pure-u-1" ref={courses => this.courses = courses}>
           <h1>Recommend courses</h1>
-        </div>
-
-        <div class="pure-u-1" ref={courses => this.courses = courses}>
           {courses}
         </div>
       </div>
