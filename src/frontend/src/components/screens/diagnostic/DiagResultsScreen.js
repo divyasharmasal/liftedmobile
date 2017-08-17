@@ -147,6 +147,41 @@ class DiagResultsScreen extends Screen{
   }
 
 
+  renderCourses = (results, courseMapAndList) => {
+    const courses = courseMapAndList.courses;
+    const courseMap = courseMapAndList.map;
+    const categories = Object.keys(courseMap);
+    let goodCats = [];
+    let badCats = [];
+
+    Object.keys(results).forEach(cat => {
+      const result = results[cat];
+      let catName;
+      if (result.special){
+        catName = "Specialisms";
+      }
+      else{
+        catName = cat;
+      }
+
+      if (result.score === 100){
+        goodCats.push(catName);
+      }
+      else{
+        badCats.push(catName);
+      }
+      console.log(goodCats, badCats);
+    });
+
+    console.log(goodCats, badCats);
+
+    return (
+      <div>
+      </div>
+    );
+  };
+
+
   render(){
     if (!this.state.results){
       return renderLoader();
@@ -158,6 +193,9 @@ class DiagResultsScreen extends Screen{
             <h1>Your competencies</h1>
             <div class="competencies">
               {this.renderCompetencies(this.state.results)}
+            </div>
+            <div class="diag_courses">
+              {this.renderCourses(this.state.results, this.state.courses)}
             </div>
           </div>
         </div>

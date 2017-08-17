@@ -340,8 +340,6 @@ def results(request):
             categorised_answers[category]["no"] += 1
         categorised_answers[category]["total"] += 1
 
-    cat_scores = {}
-
     for category, scores in categorised_answers.items():
         # final result will be upon 100
         # base score is 50
@@ -354,7 +352,6 @@ def results(request):
             (scores["unsure"] * unit * -0.5)
 
         score = round(result)
-        cat_scores[cat_names[category]] = score
         categorised_answers[category] = {
                 "score": score,
                 "special": categorised_answers[category]["special"]
@@ -362,12 +359,19 @@ def results(request):
 
     response = {
         "competencies": categorised_answers,
-        "courses": _diag_course_recommendations(cat_scores, vertical, job_role),
+        "courses": _diag_course_recommendations(categorised_answers, vertical, job_role),
     }
     return _json_response(response)
 
 
-def _diag_course_recommendations(cat_scores, vertical, job_role):
+def _get_courses_from_comps(job_role, vertical_id, competencies):
+    return models.Course.objects.filter(
+        coursecompetency__competency__jobrolecompetency__job_role=job_role,
+        coursecompetency__competency__in=competencies,
+        courseverticalcategory__vertical_category__vertical__id=vertical_id).distinct()
+
+
+def _diag_course_recommendations(categorised_answers, vertical, job_role):
     """
     Provides course recommendations based on:
     @cat_scores: the scores for each competency category
@@ -384,42 +388,44 @@ def _diag_course_recommendations(cat_scores, vertical, job_role):
         "courses": {},
     }
 
-    # add courses to the result dict for each
-    # competency-category/score pair
-    for category, score in cat_scores.items():
-        courses = None
+    def _next_level(job_role):
+        level = job_role.role_level
+        if level < 5:
+            level += 1
+        return level
 
-        # Generate course recommendations if the user doesn't get 100%
-        if score < 100:
-            competencies = models.Competency.objects.filter(category=category)
-            courses = models.Course.objects.filter(
-                coursecompetency__competency__jobrolecompetency__job_role=job_role,
-                coursecompetency__competency__in=competencies,
-                courseverticalcategory__vertical_category__vertical__id=vertical.id).distinct()
-
-        # Get competencies for all jobs in the next level (or the
-        # same level for level 5) which share the same competency
-        # category
+    for category_name, score_info in categorised_answers.items():
+        courses = []
+        if score_info["special"]:
+            if score_info["score"] == 100:
+                level = _next_level(job_role)
+                competencies = models.Competency.objects.filter(
+                        specialism=category_name,
+                        jobrolecompetency__job_role__role_level=level).distinct()
+                courses = _get_courses_from_comps(job_role, vertical.id, competencies)
+            else:
+                competencies = models.Competency.objects.filter(
+                        specialism=category_name).distinct()
+                courses = _get_courses_from_comps(job_role, vertical.id, competencies)
         else:
-
-            level = job_role.role_level
-            if level < 5:
-                level += 1
-
-            competencies = models.Competency.objects.filter(
-                    category=category,
-                    jobrolecompetency__job_role__role_level=level).distinct()
-
-            courses = models.Course.objects.filter(
-                coursecompetency__competency__in=competencies,
-                courseverticalcategory__vertical_category__vertical__id=vertical.id).distinct()
+            if score_info["score"] == 100:
+                level = _next_level(job_role)
+                competencies = models.Competency.objects.filter(
+                        category=category,
+                        jobrolecompetency__job_role__role_level=level).distinct()
+                courses = _get_courses_from_comps(job_role, vertical.id, competencies)
+            else:
+                category = models.CompetencyCategory.objects.get(name=category_name)
+                competencies = models.Competency.objects.filter(category=category)
+                courses = _get_courses_from_comps(job_role, vertical.id, competencies)
 
         for course in courses:
             course_id = hash_func(course.id)
-            if category.name in result["map"]:
-                result["map"][category.name].append(course_id)
+            if category_name in result["map"]:
+                result["map"][category_name].append(course_id)
             else:
-                result["map"][category.name] = [course_id]
+                result["map"][category_name] = [course_id]
 
             result["courses"][course_id] = _course_json(course)
+
     return result

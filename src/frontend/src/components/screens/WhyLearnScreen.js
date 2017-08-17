@@ -5,7 +5,6 @@ import { authFetch } from '../fetch';
 import {
   Screen, 
   createCoursesUrl, 
-  //renderCourses,
   renderCourseFoundNotice,
 } from './Screen';
 
@@ -74,8 +73,6 @@ class WhyLearnScreen extends Screen{
 
   render = () => {
     const courseTableRef = courseTable => {this.courseTable = courseTable};
-    //let courses = renderCourses(this.state.courses, courseTableRef, 
-                                //this.unPadCourses);
     
     const courses = <Courses courses={this.state.courses}
                              courseTableRef={courseTableRef}

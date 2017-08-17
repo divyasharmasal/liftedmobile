@@ -1,8 +1,14 @@
+Optimal num of characters for the Why screen: 30 characters
+
 Unit testing
 
-License page generator
+Server logging
 
-Optimal num of characters for the Why screen: 30 characters
+Docker secrets
+
+External DB
+
+License page generator
 
 If there are 5 stars, prompt: you might want to check out competencies
 for the next level
