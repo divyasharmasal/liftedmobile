@@ -170,7 +170,7 @@ class DiagResultsScreen extends Screen{
               <a name={encodeURIComponent(cat)}></a>
               <p class="category_name">{cat}</p>
               {isPerfect ?
-                  <p>You did great, so you might like to check out these courses too:</p>
+                  <p>Good job! You might like to check out these courses too:</p>
                   :
                   <p>You might like to try these courses to improve:</p>
               }

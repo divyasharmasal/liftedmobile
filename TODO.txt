@@ -10,12 +10,6 @@ External DB
 
 License page generator
 
-If there are 5 stars, prompt: you might want to check out competencies
-for the next level
-
-Course table in results
-Manually code the courses based on the competencies
-
 ------------------------
 
 Reconfirm on Monday morning:
