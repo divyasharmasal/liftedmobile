@@ -79,7 +79,7 @@ class DiagResultsScreen extends Screen{
         stars.push(empty);
       }
 
-      return stars;
+      return <span class="stars">{stars}</span>;
     }
 
 

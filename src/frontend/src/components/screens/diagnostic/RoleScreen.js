@@ -2,12 +2,13 @@ import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import Question from '../../Question';
 import { authFetch } from '../../fetch';
+import { RolePicker } from './RolePicker';
 import {
   renderLoader,
   Screen, 
 } from '../Screen';
 
-export {RoleScreen};
+export { RoleScreen };
 
 class RoleScreen extends Screen{
   constructor(props){
@@ -70,13 +71,19 @@ class RoleScreen extends Screen{
       options = options.concat(r);
     });
 
-    return (<Question
-      qnNum={this.props.qnNum}
-      isMultiQn={false}
-      isRoleQn={true}
-      handleAnswerSelect={this.handleAnswerSelect}
-      qnData={{options: options}}
-    />);
+    //return (<Question
+      //qnNum={this.props.qnNum}
+      //isMultiQn={false}
+      //isRoleQn={true}
+      //handleAnswerSelect={this.handleAnswerSelect}
+      //qnData={{options: options}}
+    ///>);
+    return (
+      <RolePicker
+        handleAnswerSelect={this.handleAnswerSelect}
+        qnData={{options: options}} 
+      />
+    );
   }
 
 

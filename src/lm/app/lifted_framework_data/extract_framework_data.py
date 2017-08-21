@@ -110,7 +110,6 @@ def parse_courses():
             c = comp.strip()
             competencies.append(int(c))
         row["Competencies"] = competencies
-        print(row["URL"])
 
     return rows
 

@@ -19,6 +19,8 @@ export default class Question extends Component{
   componentWillMount = () => {
     this.setState({
       preSelected: this.props.preSelected,
+      showOptions: false,
+      showToggle: true,
     });
   }
 
@@ -48,6 +50,14 @@ export default class Question extends Component{
   }
 
 
+  toggleOptions = () => {
+    this.setState({
+      showOptions: !this.state.showOptions,
+      showToggle: false,
+    });
+  }
+
+
   render(){
     const qnData = this.props.qnData;
     const onAnswerClick = this.onAnswerClick;
@@ -56,30 +66,14 @@ export default class Question extends Component{
 
     let optionBtns = [];
 
-    // Only show this message if props.scrollDownMsg is true
-    let scrollDownMsg;
     let optionTextClass = "option text";
     if (this.props.isMultiQn){
       optionTextClass += " multi_option_text";
     }
-    else if (this.props.isRoleQn){
-      optionTextClass += " role_option_text";
-    }
-
-    //if (this.props.scrollDownMsg){
-      //let msg = <p>Scroll down to see courses we've picked for you.</p>;
-      //scrollDownMsg = 
-        //<div className="scroll_down_msg">
-          //{msg}
-        //</div>
-    //}
-
 
     // Display questions and options.
-    let levelAnchors = new Set();
     options.forEach((option, i) => {
       let optionDesc;
-      let currentLevel = option.level;
 
       let answerClass = "answer";
 
@@ -93,53 +87,20 @@ export default class Question extends Component{
         answerClass += " tile";
       }
 
-      if (this.props.isRoleQn){
-        // override i with the ID of the role
-        // TODO: refactor the code to make handleAnswerSelect
-        // deal with IDs, not indices
-        i = option.id;
-      }
-
-      let levelAnchor;
-      if (this.props.isRoleQn && !levelAnchors.has(currentLevel)){
-        levelAnchor = (
-          <div class="level">
-            <a name={"level_" + currentLevel}>Level {currentLevel} roles</a>
-          </div>
-        );
-      }
-
-      levelAnchors.add(currentLevel);
-
       let optionElm;
 
-      if (this.props.isRoleQn){
-        optionDesc = (
-          <span class="desc">{option.desc}</span>
-        );
-
-        optionElm = (
-          <div class={optionTextClass}>
-            {optionDesc}
-            <span class="role">{option.text}</span>
-          </div>
-        );
-      }
-      else{
-        optionElm = (
-          <div class={optionTextClass}>
-            {option.text}
-            {optionDesc}
-          </div>
-        );
-      }
+      optionElm = (
+        <div class={optionTextClass}>
+          {option.text}
+          {optionDesc}
+        </div>
+      );
 
       optionBtns.push(
         <div>
-          {this.props.isRoleQn && levelAnchor}
           <div key={i} 
-              class={answerClass}
-              onClick={() => {this.onAnswerClick(i)}}>
+               class={answerClass}
+               onClick={() => {this.onAnswerClick(i)}}>
             {this.props.isMultiQn &&
               <div class="option_tick">
                 {tick}
@@ -151,22 +112,36 @@ export default class Question extends Component{
       );
     });
 
-    let levelAnchorLinks = [];
-    Array.from(levelAnchors).sort().forEach(levelNum => {
-      levelAnchorLinks.push(
-        <a href={"#level_" + levelNum}>{levelNum}</a>
-      );
-    });
+    if (this.props.clickToShow && qnData.text){
+      let optionsClass = "goals";
+      if (this.state.showOptions){
+        optionsClass += "show";
+      }
+      return (
+        <div className="question">
+          <h1>{qnData.text}</h1>
 
-    return (
-      <div className="question">
-        {qnData.text && <h1>{qnData.text}</h1>}
-        {scrollDownMsg}
-        {(this.props.isRoleQn && levelAnchorLinks.length > 1) && 
-            <p class="select_level">Select level: {levelAnchorLinks}</p>
-        }
-        {optionBtns}
-      </div>
-    );
+          {this.state.showToggle && 
+            <div class="toggle" onClick={this.toggleOptions}>
+              <div class="toggle_title">
+                <p>Click to choose: ▼</p>
+              </div>
+            </div>
+          }
+
+          <div class={optionsClass}>
+            {optionBtns}
+          </div>
+        </div>
+      );
+    }
+    else{
+      return (
+        <div className="question">
+          {qnData.text && <h1>{qnData.text}</h1>}
+          {optionBtns}
+        </div>
+      );
+    }
   }
 }

@@ -11,7 +11,7 @@ lxml==3.8.0
 psycopg2==2.7.3
 pycparser==2.18
 pyexcel-io==0.4.2
-pyexcel-odsr==0.4.1
+pyexcel-odsr==0.4.2
 pytz==2017.2
 six==1.10.0
 uWSGI==2.0.15

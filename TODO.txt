@@ -1,3 +1,46 @@
+Demo day: 23 Aug
+
+For the job role screen, darken the background color
+for alternate job levels. -> used lines instead.
+
+I am...
+I want to develop my abilities in...
+I want to focus on...
+I work at...
+My job role is...
+I want to...
+I can...
+
+Intro box above first question
+Use language from
+http://www.sal.org.sg/Resources-Tools/Legal-Education/LIFTED/Learning-Tools
+
+Jump to start button
+
+-----------------------------
+Record of discussion (don't do):
+
+    Change "what is your job" to "What do you do?" and 
+    the options accordingly
+    I practice in a law firm.
+    I work as in-house counsel.
+    I provide legal support.
+
+    Questions, no "I" statements
+
+    WhyScreen and Branchscreen -> Change to: 
+    "What do you want to focus on?" and 
+    "What else do you want to focus on?" respectively
+
+    Change "Updates about my own niche" to
+    "Updates about my specialism"
+
+    Change "I work at..." to "Where do you work?"
+-----------------------------
+
+----
+
+
 Optimal num of characters for the Why screen: 30 characters
 
 Unit testing

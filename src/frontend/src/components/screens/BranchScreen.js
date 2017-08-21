@@ -125,16 +125,18 @@ class BranchScreen extends Screen {
         <a name="top" />
         {courseNotice}
         <div class="take_test_prompt pure-u-1 pure-u-md-10-24">
-          <h1>Take a full learning needs diagnostic test.</h1>
-         <p>(It only takes about 8 minutes)</p>
           <a href={this.props.nextScreenPath} 
-             class="take_test_button">Take the test</a>
+             class="take_test_button">
+            Click here for a holistic learning review
+          </a>
+          <p>It takes less than 8 minutes.</p>
         </div>
 
         <div class="pure-u-md-2-24"></div>
 
         <div class="question_small pure-u-1 pure-u-md-10-24">
           <Question
+            clickToShow={true}
             isMultiQn={true}
             preSelected={preSelected}
             scrollDownMsg={false}
@@ -144,9 +146,9 @@ class BranchScreen extends Screen {
           />
         </div>
 
-        <a name="courses" />
 
         <div class="rec_courses pure-u-1" ref={courses => this.courses = courses}>
+          <a name="courses" />
           <h1>Recommended courses</h1>
           {courses}
         </div>
