@@ -209,7 +209,7 @@ class DiagScreen extends Screen{
       <div class="pure-g">
         <div class="pure-u-1">
           <div className="diag question">
-            <h1>Are you confident doing these tasks?</h1>
+            <h1>I can...</h1>
             {this.renderQns(this.state.diag, this.state.toHighlight)}
             {warning}
             {btn}

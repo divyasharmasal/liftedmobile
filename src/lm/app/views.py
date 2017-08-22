@@ -46,7 +46,7 @@ def qns_and_opts(request):
 
     qns = []
 
-    qn1 = create_qn("What is your job?", 
+    qn1 = create_qn("I am...", 
                     [{"text": v.option} for v in models.Vertical.objects.all()])
 
     qn2_opts = {}
@@ -56,12 +56,12 @@ def qns_and_opts(request):
             qn2_opts[opt_num] = []
         qn2_opts[opt_num].append(row.option)
 
-    qn2 = create_qn("What do you want to learn?", qn2_opts)
+    qn2 = create_qn("I want to develop my abilities in...", qn2_opts)
 
     qn3_opts = []
     for row in models.Need.objects.all():
         qn3_opts.append({"text": row.option})
-    qn3 = create_qn("I want...", qn3_opts)
+    qn3 = create_qn("I want to focus on...", qn3_opts)
 
     qn4_opts = [{"text": "A law firm."},
                 {"text": "A corporation or organisation."}]
