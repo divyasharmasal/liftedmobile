@@ -7,6 +7,7 @@ import {
   createCoursesUrl, 
   //renderCourses,
   renderCourseFoundNotice,
+  renderStartOver,
 } from './Screen';
 
 import { Courses } from '../Courses';
@@ -123,7 +124,10 @@ class BranchScreen extends Screen {
     return (
       <div class="pure-g">
         <a name="top" />
-        {courseNotice}
+        {/*courseNotice*/}
+        <div class="pure-u-1">
+          {renderStartOver()}
+        </div>
         <div class="take_test_prompt pure-u-1 pure-u-md-10-24">
           <a href={this.props.nextScreenPath} 
              class="take_test_button">

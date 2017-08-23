@@ -4,6 +4,7 @@ import Question from '../Question';
 import { authFetch } from '../fetch';
 import {
   Screen, 
+  renderStartOver,
   createCoursesUrl, 
   renderCourseFoundNotice,
 } from './Screen';
@@ -90,6 +91,7 @@ class WhyLearnScreen extends Screen{
         <a name="top" />
         {/*courseNotice*/}
         <div class="pure-u-1 why_learn_qn">
+          {renderStartOver()}
           <Question
             isMultiQn={false}
             useTiles={true}

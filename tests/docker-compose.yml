@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+    tests:
+        container_name: liftedmobile_tests
+        build:
+            context: ./
+            dockerfile: ./Dockerfile
+        volumes:
+            - ./screenshots:/screenshots

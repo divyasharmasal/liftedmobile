@@ -9,7 +9,16 @@ export {
   renderCourses, 
   renderCourseFoundNotice,
   renderLoader,
+  renderStartOver,
 };
+
+const renderStartOver = () => {
+  return (
+    <a class="start_over" onClick={() => { route("/") }}>
+      ⟲ start over
+    </a>
+  );
+}
 
 const renderLoader = () => {
   return (
@@ -93,9 +102,7 @@ const renderCourses = (courses, courseTableRef, unPadCourses) => {
     let isTailored;
     if (!courses.tailored){
       isTailored = [
-        <p>We didn't find any courses that matched every option you've 
-        selected.</p>,
-        <p>Not to worry, you may like the following courses.</p>
+        <p>Here's what we could find based on available courses.</p>
       ];
     }
 

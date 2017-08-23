@@ -20,7 +20,7 @@ export default class Question extends Component{
     this.setState({
       preSelected: this.props.preSelected,
       showOptions: false,
-      showToggle: true,
+      optionsVisible: true,
     });
   }
 
@@ -53,7 +53,7 @@ export default class Question extends Component{
   toggleOptions = () => {
     this.setState({
       showOptions: !this.state.showOptions,
-      showToggle: false,
+      optionsVisible: !this.state.optionsVisible,
     });
   }
 
@@ -121,13 +121,15 @@ export default class Question extends Component{
         <div className="question">
           <h1>{qnData.text}</h1>
 
-          {this.state.showToggle && 
             <div class="toggle" onClick={this.toggleOptions}>
               <div class="toggle_title">
-                <p>Click to choose: ▼</p>
+              {this.state.optionsVisible ?
+                <p>Click to view: <span class="toggle_arrow">▼</span></p>
+                :
+                <p>Click to hide: <span class="toggle_arrow">▲</span></p>
+              }
               </div>
             </div>
-          }
 
           <div class={optionsClass}>
             {optionBtns}

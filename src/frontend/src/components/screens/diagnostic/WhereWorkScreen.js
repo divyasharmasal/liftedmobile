@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import Question from '../../Question';
 import {
+  renderStartOver,
   Screen, 
 } from '../Screen';
 
@@ -11,6 +12,7 @@ class WhereWorkScreen extends Screen{
     return (
       <div className="pure-g">
         <div className="pure-u-1">
+          {renderStartOver()}
 					<Question
             qnNum={this.props.qnNum}
 						isMultiQn={false}

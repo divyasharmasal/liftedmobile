@@ -5,6 +5,7 @@ import { authFetch } from '../../fetch';
 import { RolePicker } from './RolePicker';
 import {
   renderLoader,
+  renderStartOver,
   Screen, 
 } from '../Screen';
 
@@ -94,6 +95,7 @@ class RoleScreen extends Screen{
     return (
       <div class="pure-g">
         <div class="pure-u-1">
+          {renderStartOver()}
           <div class="question">
             <h1>My job role is...</h1>
             <p>Please select what best describes what you do at work.</p>

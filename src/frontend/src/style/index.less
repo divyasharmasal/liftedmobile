@@ -20,8 +20,30 @@
     font-weight:bold;
 }
 
-.mobile_only{
-    display:none;
+.intro{
+    padding:10px;
+    color:@sal_blue;
+    border:solid 1px @sal_blue;
+    margin-top:35px;
+    text-align:center;
+}
+
+.credits{
+    font-size:1.2em;
+    text-align:center;
+    margin-top:30vh;
+}
+
+.start_over{
+    cursor:pointer;
+    display:block;
+    font-size: 1.5em;
+    text-decoration:none;
+    margin-top:5px;
+    color:@sal_blue;
+    &:visited{
+        color:@sal_blue;
+    }
 }
 
 h1{
@@ -298,9 +320,9 @@ hr{
         .level_block{
             /*background-color:#efefef;*/
             /*border-radius:@border_radius;*/
-            border-top:solid 1px;
+            /*border-top:solid 1px;*/
             padding-top:30px;
-            padding-bottom:60px;
+            padding-bottom:30px;
         }
         .level_block:first-of-type{
             border:none;
@@ -434,6 +456,10 @@ hr{
 }
 
 @media (max-width: 568px) {
+    .credits{
+        font-size:0.8em;
+    }
+
     .results {
         .competencies{
             table{
@@ -561,8 +587,8 @@ hr{
 
 
 @media (max-width: 768px) {
-    .mobile_only{
-        display:initial;
+    .start_over{
+        font-size:1em;
     }
 
     p{
@@ -586,9 +612,6 @@ hr{
             display:inline-block;
             .toggle_arrow{
                 color:@sal_blue;
-            }
-            p{
-                margin-bottom:0;
             }
         }
 
