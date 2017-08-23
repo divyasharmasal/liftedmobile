@@ -10,6 +10,7 @@
 @border_radius: .4rem;
 @link_blue: rgb(0, 0, 238);
 
+
 *, html, body {
     font-family: Lato, Arial;
     /*font-weight: 300;*/
@@ -63,6 +64,37 @@ hr{
     margin-left:10%;
 	margin-top:30px;
 	margin-bottom:30px;
+}
+
+.notification{
+    position: fixed;
+    bottom:0px;
+    width: 100%;
+    background-color:@sal_blue;
+    color:white;
+    z-index:999;
+    opacity:1;
+    text-align:center;
+}
+
+.flash{
+    -webkit-animation-name: demo;
+    -webkit-animation-duration: 500ms;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-name: demo;
+    -moz-animation-duration: 500ms;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-timing-function: linear;
+}
+
+@-webkit-keyframes demo {
+    0% {
+        background-color: #008BEB;
+    }
+    100% {
+        background-color: @sal_blue;
+    }
 }
 
 .rec_courses{

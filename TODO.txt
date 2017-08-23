@@ -1,8 +1,5 @@
 Links should go straight to SAL-E so they can add to cart directly.
 
-BranchScreen - make a true toggle
-BranchScreen - flash when new courses are found when you tap
-
 Here's what we could find based on available courses.
 
 Red tick?? Samsung J Prime 7

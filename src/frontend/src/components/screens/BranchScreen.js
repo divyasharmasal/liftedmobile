@@ -5,7 +5,6 @@ import { authFetch } from '../fetch';
 import {
   Screen, 
   createCoursesUrl, 
-  //renderCourses,
   renderCourseFoundNotice,
   renderStartOver,
 } from './Screen';
@@ -21,6 +20,13 @@ class BranchScreen extends Screen {
         courses: courses, 
         tailored: tailored,
       },
+      flash:true,
+    }, () => {
+      setTimeout(() => {
+        this.setState({
+          flash:false,
+        });
+      }, 500);
     });
   }
 
@@ -103,8 +109,6 @@ class BranchScreen extends Screen {
 
   render = () => {
     const courseTableRef = courseTable => {this.courseTable = courseTable};
-    //let courses = renderCourses(this.state.courses, courseTableRef, 
-      //this.unPadCourses);
     const courses = <Courses courses={this.state.courses}
                              courseTableRef={courseTableRef}
                              unPadCourses={this.unPadCourses} />;
@@ -121,10 +125,35 @@ class BranchScreen extends Screen {
       </div>
     );
 
+    let notification;
+    
+    if (this.state.courses){
+      const numCourses = this.state.courses.courses.length;
+      let courseText;
+      if (numCourses > 1){
+        courseText = "Found " + numCourses + " courses!";
+      }
+      else{
+        courseText = "Found " + numCourses + " course!";
+      }
+
+      let flash = "";
+      if (this.state.flash){
+        flash = "flash";
+      }
+
+      notification= (
+        <div key={0} class={"notification pure-u-1 " + flash}>
+          <p>{courseText}</p>
+        </div>
+      );
+    }
+
     return (
       <div class="pure-g">
         <a name="top" />
         {/*courseNotice*/}
+        {notification}
         <div class="pure-u-1">
           {renderStartOver()}
         </div>
