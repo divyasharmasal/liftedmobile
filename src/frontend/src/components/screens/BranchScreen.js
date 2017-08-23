@@ -14,13 +14,21 @@ import { Courses } from '../Courses';
 export {BranchScreen};
 
 class BranchScreen extends Screen {
+
   storeCourses = (courses, tailored) => {
+    let shouldFlash = false;
+    if (this.state.courses){
+      if (this.state.courses.courses.length !== courses.length){
+        shouldFlash = true;
+      }
+    }
+
     this.setState({
       courses: {
         courses: courses, 
         tailored: tailored,
       },
-      flash:true,
+      flash:shouldFlash,
     }, () => {
       setTimeout(() => {
         this.setState({
@@ -144,7 +152,7 @@ class BranchScreen extends Screen {
 
       notification= (
         <div key={0} class={"notification pure-u-1 " + flash}>
-          <p>{courseText}</p>
+          <a href="#courses"><p>{courseText}</p></a>
         </div>
       );
     }
