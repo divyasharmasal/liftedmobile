@@ -17,11 +17,10 @@ class JobScreen extends Screen{
         <div className="pure-u-1">
           <div class="intro">
             <p>
-              Are you part of the legal industry?
+              Part of the legal community?
             </p>
             <p>
-              Use this tool to hone your career development and
-              professional learning choices.
+              Find out what to learn.
             </p>
           </div>
 					<Question
