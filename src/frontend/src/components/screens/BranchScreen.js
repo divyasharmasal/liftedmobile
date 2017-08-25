@@ -34,7 +34,7 @@ class BranchScreen extends Screen {
         this.setState({
           flash:false,
         });
-      }, 500);
+      }, 600);
     });
   }
 

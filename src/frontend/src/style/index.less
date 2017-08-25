@@ -69,8 +69,9 @@ hr{
 .notification{
     position: fixed;
     bottom:0px;
-    left:0px;
-    width: 100%;
+    /*left:0px;*/
+    /*width: 100%;*/
+    width:1280px;
     background-color:@sal_blue;
     color:white;
     z-index:999;
@@ -83,6 +84,11 @@ hr{
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+
+    p{
+        margin-top:10px;
+        margin-bottom:10px;
+    }
 
     a{
         color:white;
@@ -628,6 +634,10 @@ hr{
 
 
 @media (max-width: 768px) {
+    .notification{
+        width:100%;
+        left:0px;
+    }
     .start_over{
         font-size:1em;
     }
