@@ -292,9 +292,9 @@ hr{
     }
 }
 
-.for_better_results{
-    margin-bottom:64px;
-}
+/*.for_better_results{*/
+    /*margin-bottom:64px;*/
+/*}*/
 
 .competency_anchor,
 .select_level a,
@@ -533,11 +533,19 @@ hr{
 }
 
 .diag_courses{
+    .result_category{
+        margin-bottom:40px;
+    }
+
+    .result_courses{
+        .hide{
+            display:none;
+        }
+    }
     .category_name{
+        cursor:pointer;
         font-weight:bold;
         display:inline-block;
-        margin-top:48px;
-        margin-bottom:0;
     }
 
     .not_found{
@@ -689,6 +697,7 @@ hr{
         }
     }
 }
+
 
 @media (max-width: 768px) {
     .sal_logo{

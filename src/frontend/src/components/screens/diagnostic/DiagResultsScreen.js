@@ -11,7 +11,69 @@ import {
 
 export { DiagResultsScreen };
 
+
+class CategoryCourses extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      show: this.props.showByDefault,
+    };
+  }
+
+
+  componentWillReceiveProps = nextProps => {
+    if (this.props.anchorSelected === false && 
+        nextProps.anchorSelected === true){
+      this.setState({
+        show: true,
+      });
+    }
+  }
+
+
+  render(){
+    const toggleArrow = this.state.show ? "▲" : "▼";
+    const showHide = this.state.show ? "" : "hide";
+
+    return(
+      <div class="result_category">
+        <a name={encodeURIComponent(this.props.categoryName)}></a>
+
+        <div class="course_category">
+          <p class="category_name"
+            onClick={() => {
+              this.setState({
+                show: !this.state.show,
+              });
+            }}>
+            {this.props.categoryName + " " + toggleArrow}
+          </p>
+        </div>
+
+        <div class={"course_table " + showHide}>
+          {/*this.props.results[this.props.categoryName].score === 100 ?
+            <p>Good job! You might like to check out these courses too:</p>
+            :
+            <p>You might like to try these courses to improve:</p>
+            */}
+          <p>Here are some courses to consider based on what's available.</p>
+          <p class="back_to_top"><a href="#top">back to top</a></p>
+          <Courses courses={{courses: this.props.courseList, tailored: true}} />
+        </div>
+      </div>
+    );
+  }
+}
+
 class DiagResultsScreen extends Screen{
+  constructor(props){
+    super(props);
+    this.state = {
+      selectedCategory: null,
+    };
+  }
+
+
   componentWillMount = () => {
     let answers = this.props.answers;
     if (this.props.answers){
@@ -109,7 +171,17 @@ class DiagResultsScreen extends Screen{
       results.forEach(r => {
         let name;
         if (map[r.name].length > 0){
-          name = <a class="competency_anchor" href={"#" + encodeURIComponent(r.name)}>{r.name}</a>;
+          name = (
+            <a class="competency_anchor" 
+              onClick={() => {
+                this.setState({
+                  selectedCategory: r.name,
+                });
+              }}
+              href={"#" + encodeURIComponent(r.name)}>
+              {r.name}
+            </a>
+          );
         }
         else{
           name = r.name;
@@ -155,29 +227,29 @@ class DiagResultsScreen extends Screen{
 
 
   renderCourses = (results, courseMapAndList) => {
+
     const renderTables = (categoryNames, courses, courseMap, isGood) => {
       let recs = [];
       let notFound = [];
-      categoryNames.forEach(cat => {
-        let courseList = []
-        courseMap[cat].forEach(courseHid => {
-          courseList.push(courses[courseHid]);
-        });
+
+      // sort categoryNames
+      categoryNames.sort((a, b) => 
+        results[a].score - results[b].score
+      );
+
+      categoryNames.forEach((cat, i) => {
+        const courseList = courseMap[cat].map(courseHid => 
+          courses[courseHid]
+        );
 
         if (courseList.length > 0){
-          const isPerfect = results[cat].score === 100;
           recs.push(
-            <div>
-              <a name={encodeURIComponent(cat)}></a>
-              <p class="category_name">{cat}</p>
-              {isPerfect ?
-                  <p>Good job! You might like to check out these courses too:</p>
-                  :
-                  <p>You might like to try these courses to improve:</p>
-              }
-              <p class="back_to_top"><a href="#top">back to top</a></p>
-              <Courses courses={{courses: courseList, tailored: true}} />
-            </div>
+            <CategoryCourses
+              showByDefault={i === 0}
+              courseList={courseList}
+              results={results}
+              anchorSelected={cat === this.state.selectedCategory}
+              categoryName={cat} />
           );
         }
         else{
@@ -222,7 +294,7 @@ class DiagResultsScreen extends Screen{
     const categories = sortCategories(results);
 
     return (
-      <div>
+      <div class="result_courses">
         <h1>Courses tailored for you</h1>
         {renderTables(categories, courses, courseMap)}
       </div>

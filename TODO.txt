@@ -1,13 +1,14 @@
-Funnel for job roles - 2 clicks
-    - choose level, then job
-
 Results
     - "Here are some courses to consider based on what's available."
     - For competency catgories with the biggest gap, expand the course
       list by default. For the rest, minimize by default
 
 User acceptance testing -> report back during next week's meeting
-Send login details to Anita
+
+
+End Sept: figure out an integration framework
+CMS
+2 other verticals + technology
 
 
 -----------

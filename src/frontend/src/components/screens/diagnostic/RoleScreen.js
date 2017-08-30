@@ -75,8 +75,7 @@ class RoleScreen extends Screen{
     return (
       <RolePicker
         handleAnswerSelect={this.handleAnswerSelect}
-        qnData={{options: options}} 
-      />
+        qnData={{options: options}} />
     );
   }
 

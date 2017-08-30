@@ -29,12 +29,9 @@ class RoleLevelPicker extends Component{
     let roles = [];
     if (this.state.showRoles){
       roles = this.props.roles.map(role =>
-        <div class="roles answer"
-          onClick={
-            () => {
-              this.props.handleRoleSelect(role.id);
-            }
-          }>
+        <div class="roles answer" onClick={ () => {
+            this.props.handleRoleSelect(role.id);
+          }}>
           <p class="role_name">{role.text}</p>
           <p>{role.desc}</p>
         </div>
