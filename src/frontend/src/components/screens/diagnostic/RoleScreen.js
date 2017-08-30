@@ -72,13 +72,6 @@ class RoleScreen extends Screen{
       options = options.concat(r);
     });
 
-    //return (<Question
-      //qnNum={this.props.qnNum}
-      //isMultiQn={false}
-      //isRoleQn={true}
-      //handleAnswerSelect={this.handleAnswerSelect}
-      //qnData={{options: options}}
-    ///>);
     return (
       <RolePicker
         handleAnswerSelect={this.handleAnswerSelect}
@@ -98,12 +91,8 @@ class RoleScreen extends Screen{
           {renderStartOver()}
           <div class="question">
             <h1>My job role is...</h1>
-            <p>Please select what best describes what you do at work.</p>
-            <p>Note: these are legal support roles only, and roles for the
-              other verticals will be added soon.</p>
-            <div class="role_picker">
-              {this.renderRolePicker(this.state.roles)}
-            </div>
+            <p>Note: only legal support roles are available for now.</p>
+            {this.renderRolePicker(this.state.roles)}
           </div>
         </div>
       </div>

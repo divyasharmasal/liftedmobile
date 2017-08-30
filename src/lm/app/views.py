@@ -248,6 +248,7 @@ def diag(request):
     for comp in competencies:
         result.append({
             "id": comp.competency.id,
+            "expln": comp.competency.full_desc,
             "desc": comp.competency.copy_desc,
         })
 
@@ -330,14 +331,15 @@ def results(request):
                     "total": 0, 
                     "yes":0,
                     "no": 0, 
-                    "unsure": 0,
+                    # "unsure": 0,
                     "special": special
                     }
         if v == 0:
             categorised_answers[category]["yes"] += 1
+        # elif v == 1:
+            # categorised_answers[category]["unsure"] += 1
+        # elif v == 2:
         elif v == 1:
-            categorised_answers[category]["unsure"] += 1
-        elif v == 2:
             categorised_answers[category]["no"] += 1
         categorised_answers[category]["total"] += 1
 
@@ -349,8 +351,8 @@ def results(request):
         unit = base / scores["total"]
         result = base + \
             (scores["yes"] * unit) + \
-            (scores["no"] * unit * -1) + \
-            (scores["unsure"] * unit * -0.5)
+            (scores["no"] * unit * -1) #+ \
+            # (scores["unsure"] * unit * -0.5)
 
         score = round(result)
         categorised_answers[category] = {

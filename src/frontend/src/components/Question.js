@@ -30,22 +30,23 @@ export default class Question extends Component{
       this.props.handleAnswerSelect(selectedIndex, this.props.isMultiQn);
     }
     else if (this.type === this.QN_TYPES.MULTI){
-      let index = this.state.preSelected.indexOf(selectedIndex);
-      let preSelected;
+      let preSelected = this.state.preSelected;
+      if (preSelected == null){
+        preSelected = [];
+      }
+      let index = preSelected.indexOf(selectedIndex);
 
       if (index > -1){
-        preSelected = this.state.preSelected.concat();
         preSelected.splice(index, 1);
       }
       else if (index === -1){
-        preSelected = this.state.preSelected.concat([selectedIndex])
+        preSelected = preSelected.concat([selectedIndex])
       }
 
-      this.setState({
-        preSelected: preSelected
-      }, () => {
-        this.props.handleAnswerSelect(preSelected, this.props.isMultiQn);
-      });
+      this.setState({ preSelected: preSelected }, 
+        () => {
+          this.props.handleAnswerSelect(preSelected, this.props.isMultiQn);
+        });
     }
   }
 
@@ -120,16 +121,19 @@ export default class Question extends Component{
       return (
         <div className="question">
           <h1>{qnData.text}</h1>
+					{this.props.isMultiQn &&
+						<p>(you can choose more than one)</p>
+					}
 
-            <div class="toggle" onClick={this.toggleOptions}>
-              <div class="toggle_title">
-              {this.state.optionsVisible ?
-                <p>Click to view: <span class="toggle_arrow">▼</span></p>
-                :
-                <p>Click to hide: <span class="toggle_arrow">▲</span></p>
-              }
-              </div>
-            </div>
+					<div class="toggle" onClick={this.toggleOptions}>
+						<div class="toggle_title">
+						{this.state.optionsVisible ?
+							<p>Click to view: <span class="toggle_arrow">▼</span></p>
+							:
+							<p>Click to hide: <span class="toggle_arrow">▲</span></p>
+						}
+						</div>
+					</div>
 
           <div class={optionsClass}>
             {optionBtns}
@@ -141,6 +145,9 @@ export default class Question extends Component{
       return (
         <div className="question">
           {qnData.text && <h1>{qnData.text}</h1>}
+					{this.props.isMultiQn &&
+						<p>(you can choose more than one)</p>
+					}
           {optionBtns}
         </div>
       );

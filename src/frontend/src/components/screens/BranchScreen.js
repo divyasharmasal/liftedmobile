@@ -14,21 +14,22 @@ import { Courses } from '../Courses';
 export {BranchScreen};
 
 class BranchScreen extends Screen {
-
   storeCourses = (courses, tailored) => {
-    let shouldFlash = false;
-    if (this.state.courses){
-      if (this.state.courses.courses.length !== courses.length){
-        shouldFlash = true;
-      }
-    }
+		const shouldFlash = this.state.courses && 
+			this.state.courses.courses.length !== courses.length;
+    //let shouldFlash = false;
+    //if (this.state.courses){
+      //if (this.state.courses.courses.length !== courses.length){
+        //shouldFlash = true;
+      //}
+    //}
 
     this.setState({
       courses: {
         courses: courses, 
         tailored: tailored,
       },
-      flash:shouldFlash,
+      flash: shouldFlash,
     }, () => {
       setTimeout(() => {
         this.setState({
@@ -39,14 +40,14 @@ class BranchScreen extends Screen {
   }
 
 
-  fetchAndStoreCourses = (selectedAnswers) => {
+  fetchAndStoreCourses = (selectedNeeds) => {
     // The IDs in the database start from 1, so increment the selectedAnswer
     // indices which start from 0
-    let verticalId = selectedAnswers[0][0] + 1;
-    let categoryId = selectedAnswers[1][0] + 1;
-    let selectedNeeds = selectedAnswers[2].map(x => x+1);
+    const verticalId = this.props.selectedAnswers[0][0] + 1;
+    const categoryId = this.props.selectedAnswers[1][0] + 1;
 
-    authFetch(createCoursesUrl(verticalId, categoryId, selectedNeeds)).then(response => {
+    authFetch(createCoursesUrl(verticalId, categoryId, selectedNeeds))
+    .then(response => {
       // authFetch courses with verticalId, categoryId, and needIds
       response.json().then(courses => {
         if (courses.length > 0){
@@ -54,14 +55,17 @@ class BranchScreen extends Screen {
         }
         else{
           // if there are no courses, fetch with categoryId = "any"
-          authFetch(createCoursesUrl(verticalId, null, selectedNeeds)).then(response => {
+          authFetch(createCoursesUrl(verticalId, null, selectedNeeds))
+          .then(response => {
             response.json().then(courses => {
               if (courses.length > 0){
                 this.storeCourses(courses, false);
               }
               else{
-                // if there are still no courses, fetch with categoryId and needIds = "any"
-                authFetch(createCoursesUrl(verticalId, null, null)).then(response => {
+                // if there are still no courses, fetch with
+                // categoryId and needIds = "any"
+                authFetch(createCoursesUrl(verticalId, null, null))
+                .then(response => {
                   response.json().then(courses => {
                     this.storeCourses(courses, false);
                   });
@@ -77,7 +81,7 @@ class BranchScreen extends Screen {
 
   componentWillMount = () => {
     let selectedAnswers = this.props.selectedAnswers;
-    let storedSelectedAnswers = sessionStorage.getItem("selectedAnswers");
+    const storedSelectedAnswers = sessionStorage.getItem("selectedAnswers");
 
     // Use answers stored in session storage instead of state if 
     // state.selectedanswers == {}
@@ -91,27 +95,20 @@ class BranchScreen extends Screen {
       route("/");
     }
     else{
-      this.fetchAndStoreCourses(selectedAnswers);
+      if (selectedAnswers[this.props.qnNum]){
+        this.fetchAndStoreCourses(selectedAnswers[this.props.qnNum]);
+      }
     }
   }
 
 
   handleAnswerSelect = (selectedNeeds, isMultiQn) => {
     let selectedAnswers = this.props.selectedAnswers;
-    selectedAnswers[this.props.qnNum - 1] = selectedNeeds;
-    this.fetchAndStoreCourses(selectedAnswers);
+    selectedAnswers[this.props.qnNum] = selectedNeeds;
+    this.fetchAndStoreCourses(selectedNeeds);
 
     // Store selectedAnswers to sessionStorage and the state
     sessionStorage.setItem("selectedAnswers", JSON.stringify(selectedAnswers));
-  }
-
-  padCourses = () => {
-    // Make the course list to take up the whole screen
-    this.courses.style["minHeight"] = "100vh";
-  }
-
-  unPadCourses = () => {
-    this.courses.style["minHeight"] = "initial";
   }
 
 
@@ -122,10 +119,10 @@ class BranchScreen extends Screen {
                              unPadCourses={this.unPadCourses} />;
 
     // find out which item the user selected in the previous screen
-    const preSelected = this.props.selectedAnswers[this.props.qnNum - 1];
+    const preSelected = this.props.selectedAnswers[this.props.qnNum];
 
     let qnData = JSON.parse(JSON.stringify(this.props.qnData));
-    qnData.text = "...or choose more goals if you wish.";
+    //qnData.text = "...or choose more goals if you wish.";
 
     const courseNotice = (
       <div class="course_notice pure-u-1">
@@ -164,7 +161,12 @@ class BranchScreen extends Screen {
         {notification}
         <div class="pure-u-1">
           {renderStartOver()}
+          <a class="top_nav_link full_review"
+            onClick={() => {route("/test")}}>
+            Full review ➜
+          </a>
         </div>
+				{/*
         <div class="take_test_prompt pure-u-1 pure-u-md-10-24">
           <a href={this.props.nextScreenPath} 
              class="take_test_button">
@@ -176,8 +178,10 @@ class BranchScreen extends Screen {
         <div class="pure-u-md-2-24"></div>
 
         <div class="question_small pure-u-1 pure-u-md-10-24">
+				*/}
+        <div class="pure-u-1">
           <Question
-            clickToShow={true}
+            clickToShow={false}
             isMultiQn={true}
             preSelected={preSelected}
             scrollDownMsg={false}
@@ -187,12 +191,13 @@ class BranchScreen extends Screen {
           />
         </div>
 
-
-        <div class="rec_courses pure-u-1" ref={courses => this.courses = courses}>
-          <a name="courses" />
-          <h1>Recommended courses</h1>
-          {courses}
-        </div>
+        {this.state.courses &&
+          <div class="rec_courses pure-u-1" ref={courses => this.courses = courses}>
+            <a name="courses" />
+            <h1>Recommended courses</h1>
+            {courses}
+          </div>
+        }
       </div>
     );
   }

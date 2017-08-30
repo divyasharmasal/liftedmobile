@@ -1,23 +1,17 @@
-Update server DB
-SAL and LIFTED logos
-Add "full review" link to branch screen
-Scrap WhyLearn / merge Branch and Why
-    - "You can choose more than one" - small font text
-Guest account for public
-User acceptance testing
 Funnel for job roles - 2 clicks
     - choose level, then job
-Diagnostic
-    - smiley/frowny/info
-Active voice for competency text
+
 Results
     - "Here are some courses to consider based on what's available."
     - For competency catgories with the biggest gap, expand the course
       list by default. For the rest, minimize by default
 
+User acceptance testing -> report back during next week's meeting
+Send login details to Anita
+
+
 -----------
 
-Links should go straight to SAL-E so they can add to cart directly.
 
 Here's what we could find based on available courses.
 

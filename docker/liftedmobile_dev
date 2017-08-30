@@ -22,6 +22,7 @@ ENV DEV 1
 CMD cd /src/lm && \
     sh /src/lm/sleep_until_dev_pg_isready.sh && \
 
+   #python3 manage.py collectstatic --no-input && \
    #python3 manage.py makemigrations && \
     python3 manage.py migrate && \
     echo && \

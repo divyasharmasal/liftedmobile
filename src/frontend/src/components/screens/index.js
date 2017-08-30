@@ -1,7 +1,7 @@
 import {JobScreen} from './JobScreen';
 import {WhatCompetencyScreen} from './WhatCompetencyScreen';
 import {BranchScreen} from './BranchScreen';
-import {WhyLearnScreen} from './WhyLearnScreen';
+//import {WhyLearnScreen} from './WhyLearnScreen';
 import {WhereWorkScreen} from './diagnostic/WhereWorkScreen';
 import {RoleScreen} from './diagnostic/RoleScreen';
 import {GoalScreen} from './diagnostic/GoalScreen';
@@ -10,7 +10,7 @@ import {DiagResultsScreen} from './diagnostic/DiagResultsScreen';
 
 export { 
   BranchScreen,
-  WhyLearnScreen, 
+  //WhyLearnScreen, 
   WhatCompetencyScreen, 
   JobScreen, 
   WhereWorkScreen,

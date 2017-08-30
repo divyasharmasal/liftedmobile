@@ -18,6 +18,7 @@ class DiagQuestion extends Component{
       selectedAnswerId: null,
       shouldHighlight: false,
       highlight: this.props.highlight,
+      showHelp: false,
     };
   }
 
@@ -33,6 +34,7 @@ class DiagQuestion extends Component{
     if (this.state.selectedAnswerId === answerNum){
       answerNum = null;
     }
+
     this.setState({
       selectedAnswerId: answerNum,
     }, () => {
@@ -41,9 +43,17 @@ class DiagQuestion extends Component{
   }
 
 
+  showHelp = () => {
+    this.setState({
+      showHelp: !this.state.showHelp,
+    });
+  }
+
+
   render(){
     let qn = this.props.qn;
-    const answers = ["Yes", "I'm not sure", "No"];
+    //const answers = ["Yes", "I'm not sure", "No"];
+    const answers = ["😃", "☹"];
     let ansElms = [];
     answers.forEach((answer, i) => {
       let answerClass = "answer";
@@ -51,20 +61,53 @@ class DiagQuestion extends Component{
         answerClass += " selected";
       }
       ansElms.push(
-        <div onClick={() => {this.handleAnswerSelect(i)}} 
-          class={answerClass}>{answer}</div>
+        <div class={answerClass} onClick={() => {this.handleAnswerSelect(i)}}>
+          {answer}
+        </div>
       );
     });
 
-    let highlightClass;
+    let highlightClass = "";
     if (this.state.highlight){
       highlightClass = "highlight";
     }
 
+    let expln = [];
+    qn.expln.split("\n").forEach(row => {
+      expln.push(
+        <li>{row}</li>
+      );
+    });
+
+    let desc_prompt;
+    if (this.state.showHelp){
+      desc_prompt = "Hide description ▲";
+    }
+    else{
+      desc_prompt = "Show description ▼";
+    }
+
     return (
       <div class="diag_qn">
-        <p class={highlightClass}>{qn.desc}</p>
-        {ansElms}
+        <div class="diag_left">
+          <p class={highlightClass}>{qn.desc}</p>
+          <p class="diag_whatsthis"
+            onClick={this.showHelp}>
+            {desc_prompt}
+          </p>
+          {this.state.showHelp && 
+            <div class="diag_help">
+              <ul>
+                {expln}
+              </ul>
+            </div>
+          }
+        </div>
+        <div class="diag_right">
+          <div class="diag_opts">
+            {ansElms}
+          </div>
+        </div>
       </div>
     );
   }

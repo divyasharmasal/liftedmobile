@@ -214,15 +214,6 @@ export default class Courses extends Component{
         );
       });
 
-      let isTailored;
-      if (!courses.tailored){
-        isTailored = [
-          <p>We didn't find any courses that matched every option you've 
-            selected.</p>,
-          <p>Not to worry, you may like the following courses.</p>
-        ];
-      }
-
       const nameSym = symbol(this.state.nameDesc);
       const nameSorter = (
         <td onClick={() => { 
@@ -264,7 +255,10 @@ export default class Courses extends Component{
 
       return (
         <div class="courses">
-          {isTailored}
+          {!courses.tailored &&
+            <p>We didn't find any courses that matched every option you've 
+              selected, but you may like the following courses:</p>
+          }
           {/*
             <p class="for_better_results">
               <a class="scroll_link" 
@@ -272,8 +266,7 @@ export default class Courses extends Component{
                 For better results, answer more questions &#10548;</a>
             </p>,
           */}
-          <Sorter 
-            handleSort={this.handleSort} />
+          <Sorter handleSort={this.handleSort} />
 
           <table class="pure-table course_table"
             ref={this.props.courseTableRef}>

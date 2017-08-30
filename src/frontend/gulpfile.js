@@ -32,7 +32,9 @@ gulp.task('build', shell.task([
    'preact build --clean --production false --dest ../lm/app/static/app/dist/',
    'mv ../lm/app/static/app/dist/bundle*.js ../lm/app/static/app/dist/bundle.js',
    'mv ../lm/app/static/app/dist/polyfills*.js ../lm/app/static/app/dist/polyfills.js',
-   'mv ../lm/app/static/app/dist/style*.css ../lm/app/static/app/dist/style.css'
+   'mv ../lm/app/static/app/dist/style*.css ../lm/app/static/app/dist/style.css',
+   'rm -rf ../lm/app/static/app/dist/images',
+   'cp -r ../lm/static/app/images ../lm/app/static/app/dist/images',
   ],
   {
     env: {
@@ -48,9 +50,11 @@ gulp.task('build-prod', shell.task([
   'echo "Deleting sourcemaps..."',
   'rm -rf ../lm/app/static/app/dist/*.map',
   'rm -rf ../lm/app/static/app/dist/ssr-build',
+  'rm ../lm/app/static/app/dist/index.html',
   'mv ../lm/app/static/app/dist/bundle*.js ../lm/app/static/app/dist/bundle.js',
   'mv ../lm/app/static/app/dist/polyfills*.js ../lm/app/static/app/dist/polyfills.js',
   'mv ../lm/app/static/app/dist/style*.css ../lm/app/static/app/dist/style.css',
+   'cp -r ../lm/static/app/images ../lm/app/static/app/dist/images',
 ],
   {
     env: {

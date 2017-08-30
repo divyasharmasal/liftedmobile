@@ -14,7 +14,7 @@ export {
 
 const renderStartOver = () => {
   return (
-    <a class="start_over" onClick={() => { route("/") }}>
+    <a class="top_nav_link start_over" onClick={() => { route("/") }}>
       ⟲ start over
     </a>
   );
@@ -36,10 +36,10 @@ const renderLoader = () => {
 
 
 const createCoursesUrl = (verticalId, categoryId, needIds) => {
-  let prefix = "/courses?";
-  let vert = "v=" + encodeURIComponent(verticalId);
-  let cat = "&c=" + (categoryId ? encodeURIComponent(categoryId) : "any");
-  let needs = "&n=" + (needIds ? encodeURIComponent(needIds.join(",")) : "any");
+  const prefix = "/courses?";
+  const vert = "v=" + encodeURIComponent(verticalId);
+  const cat = "&c=" + (categoryId ? encodeURIComponent(categoryId) : "any");
+  const needs = "&n=" + (needIds ? encodeURIComponent(needIds.join(",")) : "any");
   return prefix + vert + cat + needs;
 }
 
@@ -138,7 +138,7 @@ const renderCourses = (courses, courseTableRef, unPadCourses) => {
 
 const renderCourseFoundNotice = (courses, padCourses) => {
   if (courses && courses.courses.length > 0){
-    let c = courses.courses.length == 1 ? "course" : "courses";
+    const c = courses.courses.length == 1 ? "course" : "courses";
     return (
       <p>
         <a 
@@ -154,6 +154,7 @@ const renderCourseFoundNotice = (courses, padCourses) => {
     return [];
   }
 }
+
 
 // Screen parent class
 class Screen extends Component{

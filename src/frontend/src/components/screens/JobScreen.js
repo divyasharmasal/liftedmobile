@@ -15,14 +15,20 @@ class JobScreen extends Screen{
     return (
       <div className="pure-g">
         <div className="pure-u-1">
-          <div class="intro">
-            <p>
-              Part of the legal community?
-            </p>
-            <p>
-              Find out what to learn.
-            </p>
+
+          <div class="sal_logo">
+            <a href="http://www.sal.org.sg/" target="_blank">
+              <img src="/static/app/dist/images/sal_logo.png" />
+            </a>
           </div>
+
+          <div class="intro">
+            <div class="text">
+              <p>Part of the legal community?</p>
+              <p>Find out what to learn.</p>
+            </div>
+          </div>
+
 					<Question
             qnNum={this.props.qnNum}
 						isMultiQn={false}

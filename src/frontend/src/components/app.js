@@ -5,7 +5,7 @@ import { authFetch } from './fetch';
 
 import { 
   BranchScreen,
-  WhyLearnScreen, 
+  //WhyLearnScreen, 
   WhatCompetencyScreen, 
   JobScreen, 
   WhereWorkScreen,
@@ -155,8 +155,9 @@ export default class App extends Component {
           path={"/what"}
           handleAnswerSelect={this.handleAnswerSelect}
           selectedAnswers={selectedAnswers}
-          nextScreenPath="/why" />
+          nextScreenPath="/choose" />
 
+        {/*
         <WhyLearnScreen
           qnNum={2}
           qnData={this.state.qns[2]}
@@ -164,9 +165,10 @@ export default class App extends Component {
           handleAnswerSelect={this.handleAnswerSelect}
           selectedAnswers={selectedAnswers}
           nextScreenPath="/choose" />
+          */}
 
         <BranchScreen
-          qnNum={3}
+          qnNum={2}
           qnData={this.state.qns[2]}
           path="/choose"
           handleAnswerSelect={this.handleAnswerSelect}

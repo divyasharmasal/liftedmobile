@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 
 LIFTED_TEMP_DEMO_USERNAME = 'demo'
-LIFTED_TEMP_DEMO_PASSWORD = 'akan datang terima kasih'
+LIFTED_TEMP_DEMO_PASSWORD = 'botanical gravitate flashbulb thicken copper'
 
 LIFTED_TEMP_USERNAME = 'lifted'
 LIFTED_TEMP_PASSWORD = '***REMOVED***'
