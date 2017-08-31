@@ -32,16 +32,13 @@ LOGIN_REDIRECT_URL = '/'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECURITY WARNING: don't run with debug turned on in production!
-SECRET_KEY = 'G-:Gglp?"ayxKD(urwBxbmd%,.PfiF9Ark.cw#iIc#*H$&J\<l9yV]|1"Z6[z}/'
 DEBUG = False
 
 if 'DEV' in os.environ:
     SECRET_KEY = 'kw!3bqy4e39x0@xhoor4uvpwj!hgofxh9p5=j7^9$x-i*41vc_'
     DEBUG = True
-
-elif 'DJANGO_SECRET_KEY' in os.environ:
-    # if DJANGO_SECRET_KEY is set in ENV, then assume it's a production server
-    SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+else:
+    SECRET_KEY = open("/run/secrets/django_secret").read()
     DEBUG = False
 
 

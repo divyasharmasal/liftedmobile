@@ -20,3 +20,9 @@ services:
             - "80"
         environment:
             - DB_PWD=fGWJTw2Dbpa2p547brXEVjXyzHZu9puytcAaA9mY 
+        secrets:
+            - django_secret
+
+secrets:
+    django_secret:
+        file: ./secrets/DJANGO_SECRET

@@ -120,6 +120,15 @@ for my editor, one for `gulp.sh`, and one for the `build_dev.sh`.
 
 ## Deployment
 
+### Secrets
+
+The Docker images can access secret strings stored in
+`docker/secrets/` via `/run/secrets/<secret name>` within the
+container.
+
+The production container uses the string stored in
+`docker/secrets/DJANGO_SECRET` for the Django secret key.
+
 ### Building the Docker image
 
 Run:
