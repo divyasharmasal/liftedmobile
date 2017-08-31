@@ -1,8 +1,3 @@
-Results
-    - "Here are some courses to consider based on what's available."
-    - For competency catgories with the biggest gap, expand the course
-      list by default. For the rest, minimize by default
-
 User acceptance testing -> report back during next week's meeting
 
 

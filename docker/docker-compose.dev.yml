@@ -21,6 +21,10 @@ services:
             - "8000:8000"
         expose:
             - "8000"
+        secrets:
+            - django_secret:
+                file: ./secrets/django_secret
+
         environment:
             - DEV=true
             - DB_PWD=password
