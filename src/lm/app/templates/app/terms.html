@@ -1,0 +1,27 @@
+{% extends "app/base.html" %}
+{% block head %}
+<title>LIFTED Mobile - Terms and Licenses</title>
+{% endblock %}
+
+{% block body %}
+  <div class="pure-g">
+    <div class="pure-u-1">
+        <a class="top_nav_link" href="/">
+           ⟲ Go back
+        </a>
+
+      <div class="sal_logo center">
+        <a href="http://www.sal.org.sg/" target="_blank">
+          <img src="/static/app/dist/images/sal_logo.png" />
+        </a>
+      </div>
+
+      <h1>Terms of Use for LIFTED Mobile</h1>
+      <p>...</p>
+      <h1>Software Licenses</h1>
+      <div>
+          {% include "app/license_table.html" %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -9,17 +9,17 @@
         <link rel="manifest" href="{% static "/app/dist/manifest.json" %}?v={{ cache_bust }}" />
         <meta name="theme-color" content="#0060a2"/>
         <link rel="stylesheet" href="{% static "/app/dist/style.css" %}?v={{ cache_bust }}" />
+
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static "/app/dist/favicons/apple-touch-icon.png" %}?v={{ cache_bust }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static "/app/dist/favicons/favicon-32x32.png" %}?v={{ cache_bust }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static "/app/dist/favicons/favicon-16x16.png" %}?v={{ cache_bust }}">
+        <link rel="mask-icon" href="{% static "/app/dist/favicons/safari-pinned-tab.svg" %}?v={{ cache_bust }}" color="#176fc1">
+        <link rel="shortcut icon" href="{% static "/app/dist/favicons/favicon.ico" %}?v={{ cache_bust }}">
+        <meta name="msapplication-config" content="{% static "/app/dist/favicons/browserconfig.xml" %}?v={{ cache_bust }}">
         {% block head %}{% endblock %}
     </head>
     <body>
         <noscript><p>This page requires Javascript.</p></noscript>
         {% block body %}{% endblock %}
-        <script defer 
-            src="{% static "/app/dist/bundle.js" %}?v={{ cache_bust }}"></script>
-        <script>
-            window.fetch||document.write('<script src="{% static "/app/dist/polyfills.js" %}?v={{ cache_bus }}"><\/script>')
-        </script>
-        <div class="preload_lato_bold">&nbsp;</div>
-
     </body>
 </html>

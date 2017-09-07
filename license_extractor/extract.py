@@ -35,8 +35,6 @@ def parse_yolk_output(yolk_output):
         elif name == "setuptools":
             license = "MIT"
 
-
-
         parsed.append({
             "name": name,
             "version": version,
@@ -60,6 +58,7 @@ def process_node_licenses(node_licenses):
         version = name_ver_s[1]
         url = None
         licenses = data["licenses"]
+
         if isinstance(licenses, list):
             licenses = ", ".join(licenses)
 
@@ -75,7 +74,7 @@ def process_node_licenses(node_licenses):
         result.append({
             "name": name,
             "version": version,
-            "licenses": data["licenses"],
+            "licenses": licenses,
             "url": url,
         })
     return result
@@ -103,7 +102,7 @@ if __name__ == "__main__":
                 cwd="../src/frontend/", stdout=subprocess.PIPE)\
                         .stdout.decode("utf-8")))
 
-    python_licenses = []
+    # python_licenses = []
     python_licenses = parse_yolk_output(subprocess.run(["../src/venv/bin/yolk", "-l",
         "-f", "license"], stdout=subprocess.PIPE).stdout.decode("utf-8"))
     

@@ -89,7 +89,11 @@ class RoleScreen extends Screen{
         <div class="pure-u-1">
           {renderStartOver()}
           <div class="question">
-            <h1>My job role is...</h1>
+            {this.props.isNextRole ?
+              <h1>I aspire to work as a...</h1>
+              :
+              <h1>My job role is...</h1>
+            }
             <p>Note: only legal support roles are available for now.</p>
             {this.renderRolePicker(this.state.roles)}
           </div>

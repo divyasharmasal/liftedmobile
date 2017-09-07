@@ -8,3 +8,9 @@ services:
             dockerfile: ./Dockerfile
         volumes:
             - ./screenshots:/screenshots
+        networks:
+            - liftedmobile_test_dockernet
+
+networks:
+    liftedmobile_test_dockernet:
+        external: true

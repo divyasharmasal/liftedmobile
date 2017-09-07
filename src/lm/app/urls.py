@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^accounts/login/$', auth_views.login, name='login'),
     url(r'^accounts/logout/$', auth_views.logout, {'next_page': '/accounts/login'}, name='logout'),
     url(r'^$', views.index, name='index'),
+    url(r'^terms/$', views.terms_of_use, name='index'),
     url(r'^.*/$', views.index, name='index'),
     url(r'^qns$', views.qns_and_opts, name='qns_and_opts'),
     url(r'^courses$', views.courses, name='courses'),

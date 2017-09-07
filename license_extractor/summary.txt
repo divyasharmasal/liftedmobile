@@ -1,0 +1,37 @@
+MPL-2.0
+BSD
+Apache 2.0
+Apache License, Version 2.0
+Apache License 2.0
+BSD-2-Clause
+BSD-3-Clause
+(MIT AND CC-BY-3.0)
+MIT*
+LGPL
+LGPL-2.1+
+BSD (with exceptions: 
+BSD*
+BSD-like
+AFLv2.1, BSD
+SIL Open Font License
+New BSD
+(WTFPL OR MIT)
+PostgreSQL Licence
+LGPL with exceptions or ZPL
+ISC
+GPL2
+GPL-3.0
+(GPL-2.0 OR MIT)
+MIT License
+Apache-2.0
+Custom: https://github.com/dominictarr/event-stream
+Public Domain
+PSF
+MIT, Apache2
+BSD 2-clause "Simplified" License
+(BSD-2-Clause OR MIT OR Apache-2.0)
+Unlicense
+BSD License
+ISC*
+CC-BY-4.0
+MIT

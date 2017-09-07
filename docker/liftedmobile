@@ -21,6 +21,7 @@ RUN apk update                                                              && \
     pip3 --no-cache-dir install --upgrade pip                               && \
     pip3 --no-cache-dir install -r /requirements.txt                        && \
     pip3 --no-cache-dir install gunicorn                                    && \
+    yes | pip3 --no-cache-dir uninstall yolk3k                              && \
 
 # Link the yarn binary to /bin. The command to create ~/.profile is only to
 # quash an inconsequential error message from yarn's installation script that
@@ -47,7 +48,7 @@ RUN apk update                                                              && \
            /usr/lib/node_modules /var/cache/apk/* /usr/share/man /tmp/*        \
            /root/.node-gyp /root/.gnupg /root/.npm /src/frontend/node_modules  \
            /src/frontend/src/fonts /src/lm/static/app/fonts/                   \
-           /src/lm/static/app/dist/ssr-build/
+           /src/lm/static/app/dist/ssr-build/                               
 
 EXPOSE 80
 

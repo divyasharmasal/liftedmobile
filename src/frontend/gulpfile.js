@@ -35,6 +35,7 @@ gulp.task('build', shell.task([
    'mv ../lm/app/static/app/dist/style*.css ../lm/app/static/app/dist/style.css',
    'rm -rf ../lm/app/static/app/dist/images',
    'cp -r ../lm/static/app/images ../lm/app/static/app/dist/images',
+   'cp -r ../lm/static/app/favicons ../lm/app/static/app/dist/favicons',
   ],
   {
     env: {
@@ -54,7 +55,8 @@ gulp.task('build-prod', shell.task([
   'mv ../lm/app/static/app/dist/bundle*.js ../lm/app/static/app/dist/bundle.js',
   'mv ../lm/app/static/app/dist/polyfills*.js ../lm/app/static/app/dist/polyfills.js',
   'mv ../lm/app/static/app/dist/style*.css ../lm/app/static/app/dist/style.css',
-   'cp -r ../lm/static/app/images ../lm/app/static/app/dist/images',
+  'cp -r ../lm/static/app/images ../lm/app/static/app/dist/images',
+  'cp -r ../lm/static/app/favicons ../lm/app/static/app/dist/favicons',
 ],
   {
     env: {

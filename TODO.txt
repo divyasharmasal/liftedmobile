@@ -1,29 +1,20 @@
 User acceptance testing -> report back during next week's meeting
 
-
 End Sept: figure out an integration framework
-CMS
-2 other verticals + technology
 
+CMS
+
+2 other verticals + technology
 
 -----------
 
-
-Here's what we could find based on available courses.
-
 Red tick?? Samsung J Prime 7
-
-Do not run web server as root
 
 Unit testing
 
 Server logging
 
-Docker secrets
-
 External DB
-
-License page generator
 
 Add stars to category titles above course tables in diag
 

@@ -36,10 +36,22 @@ class JobScreen extends Screen{
 						qnData={this.props.qnData} 
 					/>
 
-          <p class="credits">
-            This app is part of the <a href="http://www.sal.org.sg/Resources-Tools/Legal-Education/LIFTED/Overview">Legal Industry Framework for Training and Education</a>, an initiative of the <a 
-              href="http://www.sal.org.sg">Singapore Academy of Law</a>.
-          </p>
+          <div class="credits">
+            <p>
+            This app is part of the <a href="http://www.sal.org.sg/Resources-Tools/Legal-Education/LIFTED/Overview">Legal Industry Framework for Training and Education
+              </a>, an initiative of the <a href="http://www.sal.org.sg">
+                Singapore Academy of Law
+              </a>.
+            </p>
+            {/*
+            <p>
+              <a href="/terms" target="_blank">
+                Click here to view this site's terms of use and
+                associated software licenses.
+              </a>
+            </p>
+            */}
+          </div>
 				</div>
       </div>
     );

@@ -19,7 +19,7 @@ LIFTED_TEMP_USERNAME = 'lifted'
 LIFTED_TEMP_PASSWORD = '***REMOVED***'
 
 LIFTED_TEMP_SUPER_USERNAME = 'admin'
-LIFTED_TEMP_SUPER_PASSWORD = 'uCZN3xocaSWHXTEGNDFhVWbZB7NicYLfYnjvGicuMTUYALxF7uc99pbo9QNAjGvpb7NhR3aMY5T8wUMGyHYaQgbVFitn4hGeM2HM'
+LIFTED_TEMP_SUPER_PASSWORD = '***REMOVED***'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -38,9 +38,12 @@ if 'DEV' in os.environ:
     SECRET_KEY = 'kw!3bqy4e39x0@xhoor4uvpwj!hgofxh9p5=j7^9$x-i*41vc_'
     DEBUG = True
 else:
-    SECRET_KEY = open("/run/secrets/django_secret").read()
+    SECRET_KEY = open("/run/secrets/django_secret").read().strip()
     DEBUG = False
 
+    LIFTED_TEMP_SUPER_PASSWORD = open("/run/secrets/django_admin_pwd").read().strip()
+    LIFTED_TEMP_DEMO_PASSWORD = open("/run/secrets/django_demo_pwd").read().strip()
+    LIFTED_TEMP_PASSWORD = open("/run/secrets/django_team_pwd").read().strip()
 
 print("Debug set to", str(DEBUG))
 
@@ -55,7 +58,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_extensions',
     'app',
 ]
 

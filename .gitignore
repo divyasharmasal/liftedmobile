@@ -2,6 +2,7 @@ docker/secrets/*
 # compiled frontend files 
 src/lm/app/frontend/dist/
 src/lm/app/lifted_framework_data/.~lock*
+license_extractor/licenses.json
 
 # node
 

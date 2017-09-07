@@ -12,16 +12,20 @@ from django.contrib.auth.decorators import login_required
 from app import models
 
 
-def gen_cache_bust_str():
+def gen_cache_bust_str(length=32):
     """
     Returns a URL-friendly, 32-bit random string
     """
-    return base64.urlsafe_b64encode(os.urandom(32)).rstrip(b'=').decode('ascii')
+    return base64.urlsafe_b64encode(os.urandom(length)).rstrip(b'=').decode('ascii')
 
 
 def _json_response(obj):
     return HttpResponse(json.dumps(obj, separators=(',', ':')),
                         content_type="application/json")
+
+@login_required
+def terms_of_use(request):
+    return render(request, "app/terms.html")
 
 
 @login_required
@@ -29,8 +33,8 @@ def index(request):
     """
     View for /
     """
-    return render(request, "app/base.html",
-                  {"cache_bust": gen_cache_bust_str()})
+    return render(request, "app/index.html",
+            {"cache_bust": gen_cache_bust_str(10)})
 
 
 @login_required
