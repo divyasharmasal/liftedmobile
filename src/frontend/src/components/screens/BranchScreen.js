@@ -41,11 +41,19 @@ class BranchScreen extends Screen {
     const categoryId = this.props.selectedAnswers[1][0] + 1;
 
     if (selectedNeeds == null){
-      authFetch(createCoursesUrl(verticalId, categoryId, null))
+      authFetch(createCoursesUrl(verticalId, categoryId))
         .then(response => {
           response.json().then(courses => {
             if (courses.length > 0){
-              this.storeCourses(courses, false);
+              this.storeCourses(courses, true);
+            }
+            else{
+              authFetch(createCoursesUrl(verticalId))
+                .then(response => {
+                  response.json().then(courses => {
+                    this.storeCourses(courses, false);
+                  });
+                });
             }
           });   
         });
