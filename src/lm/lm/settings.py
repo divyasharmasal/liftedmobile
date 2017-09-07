@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 
 LIFTED_TEMP_DEMO_USERNAME = 'demo'
-LIFTED_TEMP_DEMO_PASSWORD = 'botanical gravitate flashbulb thicken copper'
+LIFTED_TEMP_DEMO_PASSWORD = '***REMOVED***'
 
 LIFTED_TEMP_USERNAME = 'lifted'
 LIFTED_TEMP_PASSWORD = '***REMOVED***'
@@ -38,12 +38,13 @@ if 'DEV' in os.environ:
     SECRET_KEY = 'kw!3bqy4e39x0@xhoor4uvpwj!hgofxh9p5=j7^9$x-i*41vc_'
     DEBUG = True
 else:
-    SECRET_KEY = open("/run/secrets/django_secret").read().strip()
+    SECRET_KEY = open("/run/secrets/django_secret").read().splitlines()[0]
     DEBUG = False
 
-    LIFTED_TEMP_SUPER_PASSWORD = open("/run/secrets/django_admin_pwd").read().strip()
-    LIFTED_TEMP_DEMO_PASSWORD = open("/run/secrets/django_demo_pwd").read().strip()
-    LIFTED_TEMP_PASSWORD = open("/run/secrets/django_team_pwd").read().strip()
+    LIFTED_TEMP_SUPER_PASSWORD = open("/run/secrets/django_admin_pwd").read().splitlines()[0]
+    LIFTED_TEMP_DEMO_PASSWORD = open("/run/secrets/django_demo_pwd").read().splitlines()[0]
+    LIFTED_TEMP_PASSWORD = open("/run/secrets/django_team_pwd").read().splitlines()[0]
+
 
 print("Debug set to", str(DEBUG))
 
