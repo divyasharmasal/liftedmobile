@@ -14,6 +14,6 @@ from app import models
 
 class CourseAdmin(admin.ModelAdmin):
     list_display = ("id", "name",)
-    fields = ("name",)
+    fields = ("name", "cost", "url")
 
 admin.site.register(models.Course, CourseAdmin)

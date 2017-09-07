@@ -8,21 +8,15 @@ import {
   renderCourseFoundNotice,
   renderStartOver,
 } from './Screen';
-
 import { Courses } from '../Courses';
 
 export {BranchScreen};
+
 
 class BranchScreen extends Screen {
   storeCourses = (courses, tailored) => {
 		const shouldFlash = this.state.courses && 
 			this.state.courses.courses.length !== courses.length;
-    //let shouldFlash = false;
-    //if (this.state.courses){
-      //if (this.state.courses.courses.length !== courses.length){
-        //shouldFlash = true;
-      //}
-    //}
 
     this.setState({
       courses: {
@@ -33,7 +27,7 @@ class BranchScreen extends Screen {
     }, () => {
       setTimeout(() => {
         this.setState({
-          flash:false,
+          flash: false,
         });
       }, 600);
     });
@@ -46,36 +40,48 @@ class BranchScreen extends Screen {
     const verticalId = this.props.selectedAnswers[0][0] + 1;
     const categoryId = this.props.selectedAnswers[1][0] + 1;
 
-    authFetch(createCoursesUrl(verticalId, categoryId, selectedNeeds))
-    .then(response => {
-      // authFetch courses with verticalId, categoryId, and needIds
-      response.json().then(courses => {
-        if (courses.length > 0){
-          this.storeCourses(courses, selectedNeeds.length > 0);
-        }
-        else{
-          // if there are no courses, fetch with categoryId = "any"
-          authFetch(createCoursesUrl(verticalId, null, selectedNeeds))
-          .then(response => {
-            response.json().then(courses => {
-              if (courses.length > 0){
-                this.storeCourses(courses, false);
-              }
-              else{
-                // if there are still no courses, fetch with
-                // categoryId and needIds = "any"
-                authFetch(createCoursesUrl(verticalId, null, null))
+    if (selectedNeeds == null){
+      authFetch(createCoursesUrl(verticalId, categoryId, null))
+        .then(response => {
+          response.json().then(courses => {
+            if (courses.length > 0){
+              this.storeCourses(courses, false);
+            }
+          });   
+        });
+    }
+    else{
+      authFetch(createCoursesUrl(verticalId, categoryId, selectedNeeds))
+        .then(response => {
+          // authFetch courses with verticalId, categoryId, and needIds
+          response.json().then(courses => {
+            if (courses.length > 0){
+              this.storeCourses(courses, selectedNeeds.length > 0);
+            }
+            else{
+              // if there are no courses, fetch with categoryId = "any"
+              authFetch(createCoursesUrl(verticalId, null, selectedNeeds))
                 .then(response => {
                   response.json().then(courses => {
-                    this.storeCourses(courses, false);
+                    if (courses.length > 0){
+                      this.storeCourses(courses, false);
+                    }
+                    else{
+                      // if there are still no courses, fetch with
+                      // categoryId and needIds = "any"
+                      authFetch(createCoursesUrl(verticalId, null, null))
+                        .then(response => {
+                          response.json().then(courses => {
+                            this.storeCourses(courses, false);
+                          });
+                        });
+                    }
                   });
                 });
-              }
-            });
+            }
           });
-        }
-      });
-    });
+        });
+    }
   }
 
 
@@ -95,9 +101,7 @@ class BranchScreen extends Screen {
       route("/");
     }
     else{
-      if (selectedAnswers[this.props.qnNum]){
-        this.fetchAndStoreCourses(selectedAnswers[this.props.qnNum]);
-      }
+      this.fetchAndStoreCourses(null);
     }
   }
 
@@ -166,19 +170,6 @@ class BranchScreen extends Screen {
             Full review ➜
           </a>
         </div>
-				{/*
-        <div class="take_test_prompt pure-u-1 pure-u-md-10-24">
-          <a href={this.props.nextScreenPath} 
-             class="take_test_button">
-            Click here for a holistic learning review
-          </a>
-          <p>It takes less than 8 minutes.</p>
-        </div>
-
-        <div class="pure-u-md-2-24"></div>
-
-        <div class="question_small pure-u-1 pure-u-md-10-24">
-				*/}
         <div class="pure-u-1">
           <Question
             clickToShow={false}
