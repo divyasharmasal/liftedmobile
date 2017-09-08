@@ -7,7 +7,6 @@ export {
   Screen, 
   createCoursesUrl, 
   renderCourses, 
-  renderCourseFoundNotice,
   renderLoader,
   renderStartOver,
 };
@@ -135,26 +134,6 @@ const renderCourses = (courses, courseTableRef, unPadCourses) => {
 
   return result;
 }
-
-const renderCourseFoundNotice = (courses, padCourses) => {
-  if (courses && courses.courses.length > 0){
-    const c = courses.courses.length == 1 ? "course" : "courses";
-    return (
-      <p>
-        <a 
-          onClick={padCourses}
-          class="scroll_link"
-          href="#courses">
-          We've found {courses.courses.length} {c} for you &#10549; 
-        </a>
-      </p>
-    );
-  }
-  else{
-    return [];
-  }
-}
-
 
 // Screen parent class
 class Screen extends Component{

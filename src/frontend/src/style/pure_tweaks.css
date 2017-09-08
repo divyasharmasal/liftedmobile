@@ -1,15 +1,8 @@
-/* Center pure-g */
-
 .pure-g {
 	padding-right: 15px;
 	padding-left: 15px;
 	margin-right: auto;
 	margin-left: auto;
-	/*letter-spacing: normal;*/
-	/*word-spacing: normal;*/
-	/*vertical-align: top;*/
-	/*text-rendering: auto;*/
-	/*zoom: 1;*/
 }
 
 @media (max-width: 767px) {

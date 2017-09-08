@@ -1,19 +1,41 @@
 from django.contrib import admin
+from django import forms
+
 from app import models
 
+class CourseStartDateForm(forms.ModelForm):
+    class Meta:
+        model = models.CourseStartDate
+        fields = ("start_date",)
+        widgets = {
+            "start_date": forms.Textarea(attrs={"rows": 1}),
+        }
 
-# Register your models here.
-# models_to_reg = [models.Course, models.CourseCpdPoints, models.CourseFormat,
-        # models.CourseFunding, models.CourseStartDate, models.CourseVenue,
-        # models.Vertical, models.VerticalCategory, models.CourseVerticalCategory,
-        # models.CourseLevel, models.Need, models.NeedFormat, models.NeedLevel,
-        # models.Venue]
 
-# for m in models_to_reg:
-    # admin.site.register(m)
+class CourseStartDateInlineAdmin(admin.TabularInline):
+    model = models.CourseStartDate
+    form = CourseStartDateForm
+    max_num = 2
+
+
+class CourseModelForm(forms.ModelForm):
+    class Meta:
+        model = models.Course
+        widgets = {
+            "name": forms.Textarea(attrs={"rows": 1}),
+            "url": forms.Textarea(attrs={"rows": 1, "cols":120}),
+        }
+
+        fields = ("name", "cost", "url", )
+
+
 
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ("id", "name",)
-    fields = ("name", "cost", "url")
+    form = CourseModelForm
+    list_display = ("id", "name")
+    list_display_links = list_display
+    inlines = [ CourseStartDateInlineAdmin ]
+
 
 admin.site.register(models.Course, CourseAdmin)
+admin.site.register(models.CourseStartDate)

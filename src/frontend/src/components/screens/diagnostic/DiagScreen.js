@@ -59,7 +59,7 @@ class DiagQuestion extends Component{
     ];
     let ansElms = [];
     answers.forEach((answer, i) => {
-      let answerClass = "answer";
+      let answerClass = "answer has_emoji";
       if (i === this.state.selectedAnswerId){
         answerClass += " selected";
       }

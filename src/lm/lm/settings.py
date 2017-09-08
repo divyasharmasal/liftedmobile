@@ -21,23 +21,16 @@ LIFTED_TEMP_PASSWORD = '***REMOVED***'
 LIFTED_TEMP_SUPER_USERNAME = 'admin'
 LIFTED_TEMP_SUPER_PASSWORD = '***REMOVED***'
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Redirect here after /login
-LOGIN_REDIRECT_URL = '/'
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
 if 'DEV' in os.environ:
+    # Quick-start development settings - unsuitable for production
+    # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
     SECRET_KEY = 'kw!3bqy4e39x0@xhoor4uvpwj!hgofxh9p5=j7^9$x-i*41vc_'
     DEBUG = True
 else:
+    # SECURITY WARNING: keep the secret key used in production secret!
     SECRET_KEY = open("/run/secrets/django_secret").read().splitlines()[0]
     DEBUG = False
 
@@ -45,8 +38,14 @@ else:
     LIFTED_TEMP_DEMO_PASSWORD = open("/run/secrets/django_demo_pwd").read().splitlines()[0]
     LIFTED_TEMP_PASSWORD = open("/run/secrets/django_team_pwd").read().splitlines()[0]
 
-
 print("Debug set to", str(DEBUG))
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Redirect here after /login
+LOGIN_REDIRECT_URL = '/'
+
 
 ALLOWED_HOSTS = ["*"]
 

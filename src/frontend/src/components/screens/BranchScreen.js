@@ -5,7 +5,6 @@ import { authFetch } from '../fetch';
 import {
   Screen, 
   createCoursesUrl, 
-  renderCourseFoundNotice,
   renderStartOver,
 } from './Screen';
 import { Courses } from '../Courses';
@@ -136,12 +135,6 @@ class BranchScreen extends Screen {
     let qnData = JSON.parse(JSON.stringify(this.props.qnData));
     //qnData.text = "...or choose more goals if you wish.";
 
-    const courseNotice = (
-      <div class="course_notice pure-u-1">
-        {renderCourseFoundNotice(this.state.courses, this.padCourses)}
-      </div>
-    );
-
     let notification;
     
     if (this.state.courses){
@@ -169,7 +162,6 @@ class BranchScreen extends Screen {
     return (
       <div class="pure-g">
         <a name="top" />
-        {/*courseNotice*/}
         {notification}
         <div class="pure-u-1">
           {renderStartOver()}
@@ -177,8 +169,6 @@ class BranchScreen extends Screen {
             onClick={() => {route("/test")}}>
             Full review ➜
           </a>
-        </div>
-        <div class="pure-u-1">
           <Question
             clickToShow={false}
             isMultiQn={true}
