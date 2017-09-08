@@ -1,10 +1,36 @@
+6 Oct - Committee Meeting - presentation of Lifted Mobile
+    - includes all verticals
+    - don't worry about anything not visible for demo
+
+Sort by cost
+
+All-in-one portal
+  - Introductory page with 2 choices: consolidated listing or filter
+    by learning needs
+  - End Sept: figure out an integration framework
+      - Scrape CALAS
+  - 2 other verticals + technology
+  - CMS
+
+Do not log IP addresses but do a geoip lookout. But log other
+non-identifiable data as per usual.
+
+--------------------------------------------
+
+Create way for Preyaz / Shanna to embed course tags -> create generator
+
+Title
+Date
+Price
+CPD points
+Format
+Level
+
+
+Resume function!
+
 User acceptance testing -> report back during next week's meeting
 
-End Sept: figure out an integration framework
-
-CMS
-
-2 other verticals + technology
 
 -----------
 
