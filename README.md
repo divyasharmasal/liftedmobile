@@ -126,10 +126,13 @@ The Docker images can access secret strings stored in
 `docker/secrets/` via `/run/secrets/<secret name>` within the
 container.
 
-The production container uses the string stored in
-`docker/secrets/DJANGO_SECRET` for the Django secret key.
+The production container uses the following secrets:
+ - `docker/secrets/DJANGO_SECRET`: the Django secret key.
+ - `./secrets/DJANGO_ADMIN_PWD`: the Django admin password
+ - `./secrets/DJANGO_DEMO_PWD`: the demo account password
+ - `./secrets/DJANGO_TEAM_PWD`: the team account password
 
-### Building the Docker image
+### To build the Docker image
 
 Run:
 
@@ -137,9 +140,11 @@ Run:
 ./build_prod.sh
 ```
 
-This spins up the following containers (which do not use volumes):
+This spins up the following containers:
 - `liftedmobile`: an Nginx server serving content from `gunicorn` and Django.
 - `liftedmobile_db`: a Postgres server
+
+These containers do not use volumes.
 
 To view the logs from the `liftedmobile` container, run:
 
@@ -151,11 +156,14 @@ Launch Lifted Mobile: http://localhost:80
 
 ## Database
 
-You can run `psql` on `liftedmobile_db` or `liftedmobile_db_dev` as such:
+For an interactive Postgres terminal on `liftedmobile_db` or
+`liftedmobile_db_dev`, run:
 
 ```
 docker exec -it liftedmobile_db psql -U postgres
 ```
+
+or 
 
 ```
 docker exec -it liftedmobile_db_dev psql -U postgres

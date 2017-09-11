@@ -10,9 +10,6 @@ All-in-one portal
   - 2 other verticals + technology
   - CMS
 
-Do not log IP addresses but do a geoip lookout. But log other
-non-identifiable data as per usual.
-
 Create way for Preyaz / Shanna to embed course tags -> create generator
 
 Title
