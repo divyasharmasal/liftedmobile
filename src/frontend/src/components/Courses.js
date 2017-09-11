@@ -20,14 +20,16 @@ class Sorter extends Component{
       nameDesc: true,
       cpdDesc: true,
       dateDesc: true,
+      costDesc: true,
     };
   }
 
 
   render(){
     const nameSym = symbol(this.state.nameDesc);
-    const dateSym = symbol(this.state.dateDesc);
+    const costSym = symbol(this.state.dateDesc);
     const cpdSym = symbol(this.state.cpdDesc);
+    const dateSym = symbol(this.state.dateDesc);
 
     return (
       <div class="sorter mobile_only">
@@ -38,6 +40,12 @@ class Sorter extends Component{
             this.props.handleSort("name")}
           }>
             Name <span class="symbol">{nameSym}</span></a> 
+
+          <a onClick={() => {
+            this.setState({ costDesc: !this.state.costDesc });
+            this.props.handleSort("cost")}
+          }>
+            Cost <span class="symbol">{costSym}</span></a> 
 
           <a onClick={() => {
             this.setState({ cpdDesc: !this.state.cpdDesc });
@@ -67,6 +75,7 @@ export default class Courses extends Component{
       nameDesc: true,
       cpdDesc: true,
       dateDesc: true,
+      costDesc: true,
     };
   }
 
@@ -119,6 +128,14 @@ export default class Courses extends Component{
         let x = a[field].toLowerCase();
         let y = b[field].toLowerCase();
         if (x > y){
+          return 1;
+        }
+        return 0;
+      });
+    }
+    else if (field === "cost"){
+      courses.courses.sort((a, b) => {
+        if (parseInt(a.cost) > parseInt(b.cost)){
           return 1;
         }
         return 0;
@@ -253,26 +270,33 @@ export default class Courses extends Component{
         </td>
       );
 
+      const costSym = symbol(this.state.costDesc);
+      const costSorter = (
+        <td onClick={() => { 
+              this.setState({ costDesc: !this.state.costDesc });
+              this.handleSort("cost")} 
+            }
+          class="sorter">
+          <a>Cost
+            <span class="symbol">{costSym}</span>
+          </a> 
+        </td>
+      );
+
       return (
         <div class="courses">
           {!courses.tailored &&
             <p>We didn't find any courses that matched every option you've 
               selected, but you may like the following courses:</p>
           }
-          {/*
-            <p class="for_better_results">
-              <a class="scroll_link" 
-                href="#top" onClick={this.props.unPadCourses}>
-                For better results, answer more questions &#10548;</a>
-            </p>,
-          */}
+
           <Sorter handleSort={this.handleSort} />
 
           <table class="pure-table course_table"
             ref={this.props.courseTableRef}>
             <thead>
               {nameSorter}
-              <td>Cost</td>
+              {costSorter}
               {cpdSorter}
               <td>Level</td>
               <td>Format</td>

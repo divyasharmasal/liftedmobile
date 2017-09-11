@@ -12,10 +12,10 @@ All-in-one portal
   - 2 other verticals + technology
   - CMS
 
+Add stars to category titles above course tables in diag
+
 Do not log IP addresses but do a geoip lookout. But log other
 non-identifiable data as per usual.
-
---------------------------------------------
 
 Create way for Preyaz / Shanna to embed course tags -> create generator
 
@@ -26,11 +26,7 @@ CPD points
 Format
 Level
 
-
 Resume function!
-
-User acceptance testing -> report back during next week's meeting
-
 
 -----------
 
@@ -42,7 +38,6 @@ Server logging
 
 External DB
 
-Add stars to category titles above course tables in diag
 
 ------------------------
 
