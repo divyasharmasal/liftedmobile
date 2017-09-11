@@ -11,6 +11,24 @@ import {
 
 export { DiagResultsScreen };
 
+const stars = score => {
+  const empty = <span class="empty star">☆</span>;
+  const full = <span class="star">★</span>;
+  const max = 5;
+  const numFull = Math.round(score / 20);
+  const numEmpty = max - numFull;
+
+  let stars = [];
+  for (let i=0; i<numFull; i++){
+    stars.push(full);
+  }
+  for (let i=0; i<numEmpty; i++){
+    stars.push(empty);
+  }
+
+  return <span class="stars">{stars}</span>;
+}
+
 
 class CategoryCourses extends Component{
   constructor(props){
@@ -47,6 +65,9 @@ class CategoryCourses extends Component{
               });
             }}>
             {this.props.categoryName + " " + toggleArrow}
+          </p>
+          <p class="results">
+            {stars(this.props.results[this.props.categoryName].score)}
           </p>
         </div>
 
@@ -126,24 +147,8 @@ class DiagResultsScreen extends Screen{
   }
 
 
+
   renderCompetencies = (results, courses) => {
-    const stars = score => {
-      const empty = <span class="empty star">☆</span>;
-      const full = <span class="star">★</span>;
-      const max = 5;
-      const numFull = Math.round(score / 20);
-      const numEmpty = max - numFull;
-
-      let stars = [];
-      for (let i=0; i<numFull; i++){
-        stars.push(full);
-      }
-      for (let i=0; i<numEmpty; i++){
-        stars.push(empty);
-      }
-
-      return <span class="stars">{stars}</span>;
-    }
 
 
     let ordinary = [];

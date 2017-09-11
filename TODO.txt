@@ -2,8 +2,6 @@
     - includes all verticals
     - don't worry about anything not visible for demo
 
-Sort by cost
-
 All-in-one portal
   - Introductory page with 2 choices: consolidated listing or filter
     by learning needs
@@ -11,8 +9,6 @@ All-in-one portal
       - Scrape CALAS
   - 2 other verticals + technology
   - CMS
-
-Add stars to category titles above course tables in diag
 
 Do not log IP addresses but do a geoip lookout. But log other
 non-identifiable data as per usual.

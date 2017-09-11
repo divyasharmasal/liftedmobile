@@ -25,8 +25,11 @@
     "preact-cli": "^1.4.1"
   },
   "dependencies": {
+    "ajv-keywords": "^2.1.0",
+    "less-loader": "^4.0.5",
     "preact": "^8.2.1",
     "preact-compat": "^3.16.0",
-    "preact-router": "^2.5.5"
+    "preact-router": "^2.5.5",
+    "url-loader": "^0.5.9"
   }
 }
