@@ -17,7 +17,8 @@ RUN apk update                                                              && \
 # Install requirements and remove unneeded packages
     apk --no-cache add python3 python3-dev postgresql py-psycopg2              \
         curl gnupg nodejs linux-headers build-base                             \
-        libffi-dev bash py3-lxml geoip nginx-mod-http-geoip                 && \
+        libffi-dev bash py3-lxml geoip nginx-mod-http-geoip                 && \ 
+
     pip3 --no-cache-dir install --upgrade pip                               && \
     pip3 --no-cache-dir install -r /requirements.txt                        && \
 

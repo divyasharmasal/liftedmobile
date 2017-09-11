@@ -19,7 +19,7 @@ CPD points
 Format
 Level
 
-Resume function!
+Resume function
 
 -----------
 
@@ -28,9 +28,9 @@ Red tick?? Samsung J Prime 7
 Unit testing
 
 Server logging
+  - set up graylog
 
 External DB
-
 
 ------------------------
 

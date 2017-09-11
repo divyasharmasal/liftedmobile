@@ -25,6 +25,13 @@ services:
             - django_admin_pwd
             - django_demo_pwd
             - django_team_pwd
+        logging:
+            driver: "awslogs"
+            options:
+                awslogs-region: "ap-southeast-1"
+                awslogs-group: "liftedmobile_logs"
+                awslogs-stream: "liftedmobile_stream"
+                awslogs-create-group: "true"
 
 secrets:
     django_secret:

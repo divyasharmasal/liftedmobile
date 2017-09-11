@@ -105,12 +105,6 @@ export default class Courses extends Component{
 
 
   format_cost = cost => {
-    //if (cost % 1.0 > 0){
-      //return "$" + cost.toFixed(0);
-    //}
-    //else{
-      //return "$" + cost.toFixed(2);
-    //}
     return "$" + cost.toFixed(2);
   }
 
