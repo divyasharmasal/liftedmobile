@@ -21,16 +21,13 @@ Level
 
 Resume function
 
-GA/Piwik tracking
-
 -----------
-
-Red tick?? Samsung J Prime 7
 
 Unit testing
 
 Server logging
-  - set up graylog
+  - Set up graylog server
+  - Link CloudWatch to graylog
 
 External DB
 

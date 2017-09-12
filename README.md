@@ -114,6 +114,15 @@ for my editor, one for `watch.sh`, and one for the `build_dev.sh`.
 -----------------------------
 ```
 
+### Images and other static assets
+
+Store static assets in `src/lm/static/app/`, and then run this command
+to move images to the Django staticfiles directory:
+
+```
+./gulp.sh
+```
+
 
 ## Deployment
 

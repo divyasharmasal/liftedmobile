@@ -62,7 +62,8 @@ export default class Question extends Component{
   render(){
     const qnData = this.props.qnData;
     const onAnswerClick = this.onAnswerClick;
-    const tick = "✔";
+    //const tick = "✔";
+    const tick = <img src="/static/app/dist/images/tick.png" />
     const options = qnData.options;
 
     let optionBtns = [];
