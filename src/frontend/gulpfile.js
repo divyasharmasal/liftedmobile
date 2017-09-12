@@ -22,9 +22,7 @@ gulp.task('deploy', ['build-prod']);
 gulp.task('watch', function () {
   gulp.watch(['./gulpfile.js'], ['build']);
   gulp.watch(['./preact.config.js'], ['build']);
-  gulp.watch([
-    './src/**/*',
-  ], ['build'])
+  gulp.watch(['./src/**/*'], ['build'])
 });
 
 // Run preact build in development mode

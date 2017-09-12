@@ -2,7 +2,6 @@ import { h, Component } from 'preact';
 import { Router, route } from 'preact-router';
 import 'preact/devtools';
 import { authFetch } from './fetch';
-
 import { 
   BranchScreen,
   WhatCompetencyScreen, 
@@ -16,6 +15,10 @@ import {
 
 import { renderLoader } from './screens/Screen';
 
+//if (window.location.host.endsWith(":8000")){
+  //console.log("devtools")
+  //require('preact/devtools');
+//}
 
 export default class App extends Component {
   constructor(props){

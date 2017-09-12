@@ -37,6 +37,7 @@ else:
     LIFTED_TEMP_SUPER_PASSWORD = open("/run/secrets/django_admin_pwd").read().splitlines()[0]
     LIFTED_TEMP_DEMO_PASSWORD = open("/run/secrets/django_demo_pwd").read().splitlines()[0]
     LIFTED_TEMP_PASSWORD = open("/run/secrets/django_team_pwd").read().splitlines()[0]
+    assert(DEBUG == False)
 
 print("Debug set to", str(DEBUG))
 
@@ -59,6 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app',
+    'cms',
 ]
 
 MIDDLEWARE = [
@@ -86,6 +88,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'app.context_processors.export_vars',
             ],
         },
     },

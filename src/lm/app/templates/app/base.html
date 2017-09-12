@@ -6,9 +6,18 @@
                        maximum-scale=1.0, user-scalable=no" 
                        name="viewport"/>
         <meta charset="utf-8">
-        <link rel="manifest" href="{% static "/app/dist/manifest.json" %}?v={{ cache_bust }}" />
+        {% if DEV %}
+            <link rel="manifest" href="http://0.0.0.0:8080/manifest.json?v={{ cache_bust }}" />
+        {% else %}
+            <link rel="manifest" href="{% static "/app/dist/manifest.json" %}?v={{ cache_bust }}" />
+        {% endif %}
         <meta name="theme-color" content="#0060a2"/>
-        <link rel="stylesheet" href="{% static "/app/dist/style.css" %}?v={{ cache_bust }}" />
+
+        {% if DEV %}
+            <!-- Styles are embedded by webpack-dev-server -->
+        {% else %}
+            <link rel="stylesheet" href="{% static "/app/dist/style.css" %}?v={{ cache_bust }}" />
+        {% endif %}
 
         <link rel="apple-touch-icon" sizes="180x180" href="{% static "/app/dist/favicons/apple-touch-icon.png" %}?v={{ cache_bust }}">
         <link rel="icon" type="image/png" sizes="32x32" href="{% static "/app/dist/favicons/favicon-32x32.png" %}?v={{ cache_bust }}">

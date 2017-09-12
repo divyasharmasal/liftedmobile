@@ -1,6 +1,7 @@
 """
-URL patterns for the app.
+URL patterns for the frontend.
 """
+
 from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 

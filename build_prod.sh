@@ -5,6 +5,6 @@ docker-compose -f docker/docker-compose.prod.yml build --no-cache
 docker-compose -f docker/docker-compose.prod.yml up -d --force-recreate
 
 echo
-echo "Logs from the liftedmobile Docker container:"
+echo "View logs at https://ap-southeast-1.console.aws.amazon.com/cloudwatch/home?region=ap-southeast-1#logEventViewer:group=liftedmobile_logs;stream=liftedmobile_stream"
 echo
 docker logs -f liftedmobile

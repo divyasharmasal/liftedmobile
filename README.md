@@ -79,37 +79,34 @@ To view the logs from the container, run:
 docker logs -f liftedmobile_dev
 ```
 
-Launch Lifted Mobile: http://localhost:8000
+Launch the app: http://0.0.0.0:8000
 
 ### Frontend
 
 The frontend is a single-page application written in Preact. 
 
-`gulp` automates the process of running `preact build` while developing the
-frontend code. Any changes to `src/frontend/gulpfile.js` or any files in the
-frontend/src directory will trigger `preact build`, as defined in the build
-task below.
-
 If you wish to modify the frontend code, run this command in the `liftedmobile`
-root directory to make `gulp` watch the `src/frontend/src` directory and
-rebuild using `preact-build` when any change is made:
+root directory to run `preact watch` on the frontend source code. This
+allows any changes to be quickly compiled. 
+
+`preact watch` will say that you can view the app at
+on port `8080`, but you should instead use
+http://0.0.0.0:8000. This is because the webpack development server
+that `preact watch` launches does not contain any backend server code.
+That is the role of the Django server, which is configured to load the
+JS bundle from the webpack dev server in development mode, and from
+static files in production.
 
 ```
-./gulp.sh
+./watch.sh
 ```
 
-To run `preact build` once and **not** monitor for file changes:
-
-```
-./gulp.sh deploy
-```
-
-I personally use a [`tmux`](https://tmux.github.io/) screen with 3 panes: one
-for my editor, one for `gulp.sh`, and one for the `build_dev.sh`.
+You can use a [`tmux`](https://tmux.github.io/) screen with 3 panes: one
+for my editor, one for `watch.sh`, and one for the `build_dev.sh`.
 
 ```
 -----------------------------
-| vim        | gulp.sh      |
+| vim        | watch.sh      |
 |            |              |
 |            |--------------|
 |            | build_dev.sh |
@@ -206,9 +203,45 @@ Now, `ssh` into the remote server.  Install `docker`, `docker-compose`, and
 
 Clone the `liftedmobile` repository and `git checkout` to the `mvp` branch.
 
+Next, set up the AWS CloudWatch credentials:
+
+```
+sudo mkdir -p /etc/systemd/system/docker.service.d/
+sudo vim /etc/systemd/system/docker.service.d/aws-credentials.conf
+```
+
+Add these lines to the file.
+
+```
+[Service]
+Environment="AWS_ACCESS_KEY_ID=<aws_access_key_id>"
+Environment="AWS_SECRET_ACCESS_KEY=<aws_secret_access_key>"
+```
+
+These access keys should correspond to an AWS IAM user with the
+following access policy:
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+
 Run these commands to start the docker containers which you just pushed:
 
 ```
 cd liftedmobile
-docker-compose -f docker/docker-compose.prod.yml up -d
+./run_prod.sh
 ```

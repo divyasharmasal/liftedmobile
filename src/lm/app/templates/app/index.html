@@ -4,10 +4,18 @@
 {% endblock %}
 
 {% block body %}
-    <script defer 
-        src="{% static "/app/dist/bundle.js" %}?v={{ cache_bust }}"></script>
-    <script>
-        window.fetch||document.write('<script src="{% static "/app/dist/polyfills.js" %}?v={{ cache_bus }}"><\/script>')
-    </script>
+    {% if DEV %}
+        <script defer src="http://0.0.0.0:8080/bundle.js?v={{ cache_bust }}"></script>
+        <script>
+            window.fetch||document.write('<script src="http://0.0.0.0:8080/polyfills.js?v={{ cache_bus }}"><\/script>')
+        </script>
+    {% else %}
+        <script defer src="{% static "/app/dist/bundle.js" %}?v={{ cache_bust }}"></script>
+        <script>
+            window.fetch||document.write('<script src="{% static "/app/dist/polyfills.js" %}?v={{ cache_bus }}"><\/script>')
+        </script>
+    {% endif %}
+
     <div class="preload_lato_bold">&nbsp;</div>
+
 {% endblock %}

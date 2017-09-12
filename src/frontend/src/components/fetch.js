@@ -1,4 +1,4 @@
-let authFetch = function(url){
+const authFetch = function(url){
   return fetch(url, {
     method: "GET",
     headers: {
