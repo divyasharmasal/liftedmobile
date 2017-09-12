@@ -10,8 +10,7 @@ All-in-one portal
   - 2 other verticals + technology
   - CMS
     - Course CRUD
-
-Create way for Preyaz / Shanna to embed course tags -> create generator
+    - Create way for Preyaz / Shanna to embed course tags -> create generator
 
 Title
 Date
@@ -22,7 +21,7 @@ Level
 
 Resume function
 
-Piwik tracking
+GA/Piwik tracking
 
 -----------
 
