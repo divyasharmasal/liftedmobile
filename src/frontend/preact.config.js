@@ -9,7 +9,8 @@
  **/
 
 export default function (config, env, helpers) {
-  extractPlugin.plugin.options.disable = false
+  let extractPlugin = helpers.getPluginsByName(config, "ExtractTextPlugin")[0];
+  extractPlugin.plugin.options.disable = false;
 
   if (process.env.PREACT_PROD === "true"){
     // Mutate config if in production 

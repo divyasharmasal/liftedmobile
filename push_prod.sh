@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 if [ -z "${1}" ]
 then
     echo "Usage: ./push_prod.sh \"<ssh command>\""

@@ -17,9 +17,8 @@ class JobScreen extends Screen{
         <div className="pure-u-1">
 
           <div class="sal_logo">
-            <img 
-              alt="LIFTED Mobile - Singapore Academy of Law"
-              src="/static/app/dist/images/sal_logo.png" />
+            <img alt="LIFTED Mobile - Singapore Academy of Law"
+                 src="/static/app/dist/images/sal_logo.png" />
           </div>
 
           <div class="intro">

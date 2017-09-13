@@ -36,27 +36,28 @@ RUN apk update                                                              && \
     cd /src/frontend                                                        && \
     yarn install                                                            && \
     yarn add gulp                                                           && \
-    echo "Running gulp deploy"                                              && \
+    echo "Running gulp deploy on frontend"                                  && \
     gulp deploy --gulpfile /src/frontend/gulpfile.js                        && \
 
+# Build the CMS
+    cd /src/cms                                                             && \
+    yarn install                                                            && \
+    yarn add gulp                                                           && \
+    echo "Running gulp deploy on CMS"                                       && \
+    gulp deploy --gulpfile /src/cms/gulpfile.js                             && \
+
+# Delete unused files to minimise the image size
     yarn cache clean                                                        && \
     apk del build-base python3-dev linux-headers                               \
             gnupg libffi-dev binutils-gold gcc g++ curl make                && \
-    
     wget -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz \
         -O /tmp/GeoIP.dat.gz                                                && \
-
     gunzip /tmp/GeoIP.dat.gz && \
-
     mv /tmp/GeoIP.dat /usr/share/GeoIP/                                     && \
-
     wget -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz \
         -O /tmp/GeoLiteCity.dat.gz                                          && \
-    
     gunzip /tmp/GeoLiteCity.dat.gz && \
-
     mv /tmp/GeoLiteCity.dat /usr/share/GeoIP/                               && \
-
     rm -rf /src/frontend/node_modules /usr/local/share/.config/yarn            \
            /root/.config/yarn/global/node_modules                              \
            /usr/lib/node_modules /var/cache/apk/* /usr/share/man /tmp/*        \
