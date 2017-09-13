@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>LIFTED Mobile - Login</title>
+        <title>LIFTED Mobile CMS - Login</title>
         <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" 
               name="viewport"/>
         <meta charset="utf-8">
@@ -12,34 +12,32 @@
             <link rel="stylesheet" href="{% static "/app/dist/style.css" %}" />
         {% endif %}
     </head>
+
     <body>
         <div class="pure-g login_form">
             <div class="pure-u-1">
-                <form method="post" action="{% url 'login' %}" class="pure-form">
+                <form method="post" action="/cms/login/" class="pure-form">
+
                     {% csrf_token %}
-                    <input type="hidden" name="next" value="{{ next }}" />
-                    {% if form.errors %}
-                        <p>Your username and password didn't match. Please try again.</p>
+
+                    <input type="hidden" name="next" value="cms_index" />
+
+                    <h1>Log in to the LIFTED Mobile CMS</h1>
+
+                    {% if login_failed %}
+                        <div class="login_failed">
+                            <p>Could not log you in. Please try again.</p>
+                        </div>
                     {% endif %}
 
-                    {% if next %}
-                        {% if user.is_authenticated %}
-                            <p>Your account doesn't have access to this page.</p>
-                        {% else %}
-                            <h1>Please log in to see this page.</h1>
-                        {% endif %}
-                    {% endif %}
                     <p>{{ form.username.label_tag }}</p>
-                    <!--<p>{{ form.username }}</p>-->
                     <p><input type="text" name="username" autofocus required 
                            id="id_username" 
-
                            maxlength="254" /></p>
+
                     <p>{{ form.password.label_tag }}</p>
-                    <!--<p>{{ form.password }}</p>-->
                     <p><input type="password" name="password" required 
                               id="id_password" /></p>
-
                     <input class="pure-button pure-button-primary button-large" 
                        id="submit_btn"
                         type="submit" value="Login" />

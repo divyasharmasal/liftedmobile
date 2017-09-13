@@ -3,9 +3,6 @@ Loaded by 0001_initial.py to load initial data from ODS files in
 lifted_framework_data/
 """
 from app.lifted_framework_data import extract_framework_data
-from django.contrib.auth.models import User
-from django.utils import timezone
-from lm import settings
 
 
 def load(apps, schema_editor):
@@ -13,15 +10,6 @@ def load(apps, schema_editor):
     Parse data from the ODS files in lifted_framework_data/ and store
     it in the DB
     """
-    User.objects.create_superuser(username=settings.LIFTED_TEMP_SUPER_USERNAME,
-                                  password=settings.LIFTED_TEMP_SUPER_PASSWORD,
-                                  last_login=timezone.now(), email='')
-    User.objects.create_user(username=settings.LIFTED_TEMP_USERNAME,
-                             password=settings.LIFTED_TEMP_PASSWORD,
-                             last_login=timezone.now(), email='')
-    User.objects.create_user(username=settings.LIFTED_TEMP_DEMO_USERNAME,
-                             password=settings.LIFTED_TEMP_DEMO_PASSWORD,
-                             last_login=timezone.now(), email='')
 
     Vertical = apps.get_model("app", "Vertical")
     VerticalCategory = apps.get_model("app", "VerticalCategory")

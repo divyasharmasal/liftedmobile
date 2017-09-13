@@ -47,7 +47,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Redirect here after /login
 LOGIN_REDIRECT_URL = '/'
 
-
 ALLOWED_HOSTS = ["*"]
 
 # Application definition
@@ -89,6 +88,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'app.context_processors.export_vars',
+                'cms.context_processors.export_vars',
             ],
         },
     },

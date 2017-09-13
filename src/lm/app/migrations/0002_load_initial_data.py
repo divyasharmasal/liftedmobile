@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from django.db import migrations
 from .. import load_initial_data
+from .. import create_temp_users
 
 
 class Migration(migrations.Migration):
@@ -13,5 +14,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(load_initial_data.load)
+        migrations.RunPython(load_initial_data.load),
+        migrations.RunPython(create_temp_users.create)
     ]

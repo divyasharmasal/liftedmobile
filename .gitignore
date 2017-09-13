@@ -1,8 +1,14 @@
 docker/secrets/*
+
 # compiled frontend files 
-src/lm/app/frontend/dist/
+src/lm/cms/static/cms/dist/
+src/lm/app/static/app/dist/
+
 src/lm/app/lifted_framework_data/.~lock*
 license_extractor/licenses.json
+
+# Django
+src/lm/static/
 
 # node
 
@@ -26,11 +32,6 @@ pids
 *.pid
 *.seed
 *.pid.lock
-
-
-
-# Django
-src/lm/static/
 
 # Swap
 [._]*.s[a-v][a-z]

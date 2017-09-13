@@ -9,8 +9,13 @@ All-in-one portal
       - Scrape CALAS
   - 2 other verticals + technology
   - CMS
-    - Course CRUD
-    - Create way for Preyaz / Shanna to embed course tags -> create generator
+    - Full auth system
+    - Course CRUD + tagging
+    - Scrape controller
+      - Monitor
+      - Start / stop
+    - Show untagged courses
+      - Email reminders about untagged courses
 
 Title
 Date

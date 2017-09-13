@@ -98,7 +98,13 @@ JS bundle from the webpack dev server in development mode, and from
 static files in production.
 
 ```
-./watch.sh
+./watch-frontend.sh
+```
+
+The same idea applies to the CMS:
+
+```
+./watch-cms.sh
 ```
 
 You can use a [`tmux`](https://tmux.github.io/) screen with 3 panes: one
