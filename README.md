@@ -98,7 +98,7 @@ JS bundle from the webpack dev server in development mode, and from
 static files in production.
 
 ```
-./watch-frontend.sh
+./watch-app.sh
 ```
 
 The same idea applies to the CMS:
@@ -126,7 +126,13 @@ Store static assets in `src/lm/static/app/`, and then run this command
 to move images to the Django staticfiles directory:
 
 ```
-./gulp.sh
+./gulp-app.sh
+```
+
+To do the same for the CMS:
+
+```
+./gulp-cms.sh
 ```
 
 
