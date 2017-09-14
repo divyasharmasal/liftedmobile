@@ -77,7 +77,7 @@ export default class Question extends Component{
     options.forEach((option, i) => {
       let optionDesc;
 
-      let answerClass = "answer";
+      let answerClass = "no_user_select answer";
 
       if (this.state.preSelected){
         if (this.state.preSelected.indexOf(i) > -1){

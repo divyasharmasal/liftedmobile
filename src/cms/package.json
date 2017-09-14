@@ -26,6 +26,7 @@
     "gulp-shell": "^0.6.3",
     "preact": "^8.2.5",
     "preact-compat": "^3.17.0",
-    "preact-router": "^2.5.7"
+    "preact-router": "^2.5.7",
+    "react-simple-dropdown": "^3.2.0"
   }
 }

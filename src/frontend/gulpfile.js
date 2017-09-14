@@ -23,6 +23,7 @@ gulp.task('watch', function () {
   gulp.watch(['./gulpfile.js'], ['build']);
   gulp.watch(['./preact.config.js'], ['build']);
   gulp.watch(['./src/**/*'], ['build'])
+  gulp.watch(['../lm/static/app/images'], ['build'])
 });
 
 // Run preact build in development mode

@@ -30,6 +30,8 @@ Resume function
 
 Make push_prod do all deployment work
 
+2FA!
+
 Unit testing
 
 Server logging

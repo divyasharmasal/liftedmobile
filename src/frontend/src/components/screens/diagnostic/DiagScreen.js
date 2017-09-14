@@ -59,7 +59,7 @@ class DiagQuestion extends Component{
     ];
     let ansElms = [];
     answers.forEach((answer, i) => {
-      let answerClass = "answer has_emoji";
+      let answerClass = "no_user_select answer has_emoji";
       if (i === this.state.selectedAnswerId){
         answerClass += " selected";
       }
@@ -247,7 +247,7 @@ class DiagScreen extends Screen{
           this.highlightUnanswered();
         }
       }}
-        class={"diag_button " + disabled}>
+        class={"no_user_select diag_button " + disabled}>
         Find out my learning needs
       </a>
     );

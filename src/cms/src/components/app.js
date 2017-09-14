@@ -1,6 +1,11 @@
-import { h, Component } from 'preact';
-import { Router } from 'preact-router';
-import { Nav } from './nav/Nav';
+import { h, Component } from "preact";
+import { Router } from "preact-router";
+import { Navbar } from "./Navbar";
+import { Topbar } from "./Topbar";
+import { HomePage } from "./pages/HomePage";
+import { CoursesPage } from "./pages/CoursesPage";
+import { ScrapersPage } from "./pages/ScrapersPage";
+import { StaffPage } from "./pages/StaffPage";
 
 export default class App extends Component {
   /** 
@@ -19,15 +24,24 @@ export default class App extends Component {
 
 	render() {
 		return (
-			<div class="pure-g">
-        <div class="pure-u-1">
-          <Nav />
-          <Router onChange={this.handleRoute}>
-            <p path="/cms/">Home</p>
-            <p path="/cms/courses/">Courses</p>
-            <p path="/cms/courses/scraping/">Course Scraping</p>
-          </Router>
-        </div>
+			<div class="cms pure-g">
+          <div class="topbar pure-u-1-1">
+            <Topbar />
+          </div>
+
+          <div class="navbar pure-u-1 pure-u-sm-1-5">
+            <Navbar />
+          </div>
+
+          <div class="content pure-u-1 pure-u-sm-1-5">
+            <Router onChange={this.handleRoute}>
+              <HomePage path="/cms/" />
+              <CoursesPage path="/cms/courses/" />
+              <ScrapersPage path="/cms/scrapers/" />
+              <StaffPage path="/cms/staff/" />
+            </Router>
+          </div>
+
 			</div>
 		);
 	}

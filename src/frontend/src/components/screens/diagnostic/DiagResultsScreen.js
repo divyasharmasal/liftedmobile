@@ -12,8 +12,8 @@ import {
 export { DiagResultsScreen };
 
 const stars = score => {
-  const empty = <span class="empty star">☆</span>;
-  const full = <span class="star">★</span>;
+  const empty = <span class="empty star no_user_select">☆</span>;
+  const full = <span class="star no_user_select">★</span>;
   const max = 5;
   const numFull = Math.round(score / 20);
   const numEmpty = max - numFull;

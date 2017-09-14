@@ -9,7 +9,10 @@
  **/
 
 export default function (config, env, helpers) {
-  let extractPlugin = helpers.getPluginsByName(config, "ExtractTextPlugin")[0];
+  // Make style.css an external file
+  let extractPlugin = helpers.getPluginsByName(
+    config, "ExtractTextPlugin")[0];
+
   extractPlugin.plugin.options.disable = false;
 
   if (process.env.PREACT_PROD === "true"){

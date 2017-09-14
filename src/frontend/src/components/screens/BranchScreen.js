@@ -153,7 +153,7 @@ class BranchScreen extends Screen {
       }
 
       notification= (
-        <div key={0} class={"notification pure-u-1 " + flash}>
+        <div key={0} class={"no_user_select notification pure-u-1 " + flash}>
           <a href="#courses"><p>{courseText}</p></a>
         </div>
       );

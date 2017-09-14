@@ -1,29 +1,141 @@
 @import (once, css) "../../../frontend/src/style/pure-min.css";
-@import (once, css) "../../../frontend/src/style//grids-responsive-min.css";
-@import (once, css) "../../../frontend/src/style//pure_tweaks.css";
-@import (once, css) "../../../frontend/src/style//fonts.css";
-@import (once, css) "../../../frontend/src/style//loading_anim.css";
+@import (once, css) "../../../frontend/src/style/grids-responsive-min.css";
+@import (once, css) "../../../frontend/src/style/pure_tweaks.css";
+@import (once, css) "../../../frontend/src/style/fonts.css";
+@import (once, css) "../../../frontend/src/style/loading_anim.css";
 
 @hover_bg_color: #edf3fb;
 @selected_bg_color: #dde3eb;
 @sal_blue: #0063a7;
+@sal_lightblue: #1a8bd8;
+@sal_dropdown_blue: #0d7ac4;
 @border_radius: .4rem;
 @link_blue: rgb(0, 0, 238);
+@navbar_grey: #333645;
+@navbar_lightgrey: #494d63;
+@navbar_hover: #6c7393;
 
 *, html, body {
     font-family: Lato, Arial;
 }
 
-// Nav
-.nav{
-    a{
-        margin-right:5px;
-        &:last-child{
-            margin-right:0;
+a{
+    text-decoration:none;
+}
+
+.cms{
+    width:100%;
+    padding:0;
+    margin:0;
+}
+
+.topbar{
+    width:100%;
+    background:@sal_blue;
+    color:white;
+
+    *, .logo{
+        color:white;
+    }
+
+    .logo{
+        padding-left:10px;
+        padding-right:10px;
+        padding-top:15px;
+        padding-bottom:15px;
+    }
+
+    .section{
+        float:left;
+        height:100%;
+        cursor:pointer;
+        img{
+            height:13px;
+            margin-right:10px;
+        }
+        &:hover{
+            background: @sal_lightblue;
+        }
+    }
+
+    .account{
+        float:right;
+        .dropdown__trigger{
+            display:inline-block;
+            padding-left:10px;
+            padding-right:10px;
+            padding-top:15px;
+            padding-bottom:15px;
         }
 
+        .dropdown__content{
+            right:0px;
+            top:49px;
+        }
+        .subsection{
+            background: @sal_dropdown_blue;
+            padding-left:10px;
+            padding-right:10px;
+            padding-top:15px;
+            padding-bottom:15px;
+
+            &:hover{
+                background: @sal_lightblue;
+            }
+        }
+    }
+}
+
+.navbar{
+    background: @navbar_grey;
+    min-width:250px;
+    height:100vh;
+    display:block;
+    float:left;
+
+    *{
+        color: white;
+    }
+
+    .section{
+        cursor:pointer;
+
+        &:nth-child(odd){
+            background: @navbar_grey;
+        }
+        &:hover{
+            background: @navbar_hover;
+        }
+        
+        a{
+            display:block;
+            padding-top:15px;
+            padding-bottom:15px;
+            padding-left:10px;
+            padding-right:10px;
+            width:100%;
+            height:100%;
+        }
+    }
+}
+
+.content{
+    float:left;
+}
+
+@media (max-width: 767px) {
+    .cms{
+        width:100% !important;
     }
 }
 
 @media (max-width: 568px) {
+    .navbar{
+        height:initial;
+        display:block;
+        .section{
+            width:initial;
+            display:inline-block;
+        }
+    }
 }

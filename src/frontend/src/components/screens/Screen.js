@@ -13,7 +13,8 @@ export {
 
 const renderStartOver = () => {
   return (
-    <a class="top_nav_link start_over" onClick={() => { route("/") }}>
+    <a class="no_user_select top_nav_link start_over" 
+       onClick={() => { route("/") }}>
       ⟲ start over
     </a>
   );

@@ -29,7 +29,7 @@ class RoleLevelPicker extends Component{
     let roles = [];
     if (this.state.showRoles){
       roles = this.props.roles.map(role =>
-        <div class="roles answer" onClick={ () => {
+        <div class="roles answer no_user_select" onClick={ () => {
             this.props.handleRoleSelect(role.id);
           }}>
           <p class="role_name">{role.text}</p>
@@ -45,7 +45,7 @@ class RoleLevelPicker extends Component{
 
     let boxClass = "";
     if (!this.state.showRoles){
-      boxClass = "answer";
+      boxClass = "answer no_user_select";
     }
     return (
       <div class={"roles " + boxClass}

@@ -9,6 +9,12 @@
  **/
 
 export default function (config, env, helpers) {
+  // Make style.css an external file
+  let extractPlugin = helpers.getPluginsByName(
+    config, "ExtractTextPlugin")[0];
+
+  extractPlugin.plugin.options.disable = false;
+
   if (process.env.PREACT_PROD === "true"){
     // Mutate config if in production 
     config.output.publicPath = "/static/cms/dist/";

@@ -10,6 +10,14 @@
 @border_radius: .4rem;
 @link_blue: rgb(0, 0, 238);
 
+.no_user_select{
+    user-select:none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
 
 *, html, body {
     font-family: Lato, Arial;
@@ -36,13 +44,18 @@
 .intro{
     display:block;
     background-color:#0071bb;
-    background-image: url(/static/app/dist/images/lifted_planes.png);
-    background-size: 233px 250px;
-    background-repeat:no-repeat;
-    background-position: right;
+    /*background-image: url(/static/app/dist/images/lifted_planes.png);*/
+    /*background-size: 233px 250px;*/
+    /*background-repeat:no-repeat;*/
+    /*background-position: right;*/
     border-radius:@border_radius;
     width:100%;
     height:250px;
+
+    .planes img{
+        height:250px;
+        float:right;
+    }
 
     .text{
         font-size:1.25em;
@@ -119,12 +132,6 @@ hr{
     opacity:1;
     text-align:center;
     cursor:pointer;
-    user-select:none;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
 
     p{
         margin-top:10px;
@@ -196,38 +203,6 @@ hr{
     }
 }
 
-.take_test_prompt{
-    margin-top:80px;
-    text-align:center;
-
-    h1{
-        font-size:2em;
-    }
-
-    .take_test_button{
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        cursor: pointer;
-        font-size: 2em;
-        font-weight:bold;
-        padding-top:1.5em;
-        padding-bottom:1.5em;
-        padding-left:2em;
-        padding-right:2em;
-        color: @sal_blue;
-        margin-bottom: 1.0rem;
-        border: 1px solid;
-        border-radius: @border_radius;
-        display:block;
-        /*height: 5em;*/
-        /*line-height: 6em;*/
-    }
-}
-
 .question{
     margin-top: 100px;
 	/*margin-bottom: 50px;*/
@@ -238,12 +213,6 @@ hr{
     }
 
     .answer{
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
         cursor:pointer;
         color:black;
         font-size: 2.5em;
@@ -352,7 +321,6 @@ hr{
         user-select:none;
 
         text-align:center;
-        /*display:none;*/
 
         a{
             display:inline-block;
@@ -448,9 +416,9 @@ hr{
 
         .diag_whatsthis{
             cursor:pointer;
-            font-size:1.25em;
             margin-top:0px;
             margin-bottom:30px;
+            font-size:2em;
         }
 
         .diag_opts{
@@ -460,7 +428,7 @@ hr{
 
         .diag_help{
             text-align:left;
-            font-size:1.5em;
+            font-size:2em;
         }
 
         .diag_left{
@@ -499,13 +467,6 @@ hr{
     }
 
     .diag_button{
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-
         display:inline-block;
         cursor: pointer;
         font-size: 2em;
@@ -553,12 +514,6 @@ hr{
         }
 
         .star{
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select:none;
             cursor:default;
         }
 
@@ -655,6 +610,10 @@ hr{
 
             .answer{
                 width:50px;
+            }
+
+            .diag_whatsthis{
+                font-size:1em;
             }
 
             .diag_help{
