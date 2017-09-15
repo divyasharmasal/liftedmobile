@@ -16,12 +16,17 @@ def gen_cache_bust_str(length=32):
     """
     Returns a URL-friendly, 32-bit random string
     """
-    return base64.urlsafe_b64encode(os.urandom(length)).rstrip(b'=').decode('ascii')
+    return base64.urlsafe_b64encode(os.urandom(length))\
+        .rstrip(b'=').decode('ascii')
 
 
-def _json_response(obj):
+def json_response(obj):
+    """
+    Returns @obj in JSON format, wrapped in a HttpResponse
+    """
     return HttpResponse(json.dumps(obj, separators=(',', ':')),
                         content_type="application/json")
+
 
 @login_required
 def terms_of_use(request):
@@ -34,24 +39,24 @@ def index(request):
     View for /
     """
     return render(request, "app/index.html",
-            {"cache_bust": gen_cache_bust_str(10)})
+                  {"cache_bust": gen_cache_bust_str(10)})
 
 
 @login_required
 def qns_and_opts(request):
     """
     Respond with a JSON representation of the quiz questions
-    [{ "text": question_text, 
+    [{ "text": question_text,
        "options": [ { "text": option_text }, ... ]}, ...]
     """
 
     def create_qn(qn_text, options):
-        return { "text": qn_text, "options": options }
+        return {"text": qn_text, "options": options}
 
     qns = []
+    qn1_opts = [{"text": v.option} for v in models.Vertical.objects.all()]
 
-    qn1 = create_qn("I am...", 
-                    [{"text": v.option} for v in models.Vertical.objects.all()])
+    qn1 = create_qn("I am...", qn1_opts)
 
     qn2_opts = {}
     for row in models.VerticalCategory.objects.all():
@@ -77,7 +82,7 @@ def qns_and_opts(request):
 
     qns = [qn1, qn2, qn3, qn4, qn5]
 
-    return _json_response(qns)
+    return json_response(qns)
 
 
 @login_required
@@ -102,7 +107,6 @@ def courses(request):
             need_ids = [int(x) for x in need_ids.split(",")]
         except:
             return HttpResponseServerError("Invalid need IDs")
-
 
     if (vertical_category == "any" and need_ids == "any"):
         try:
@@ -136,13 +140,13 @@ def courses(request):
                 courseverticalcategory__vertical_category__key=vertical_category,
                 courseverticalcategory__vertical_category__vertical_id=vertical_id,
                 courselevel__level_id__needlevel__need_id__in=need_ids)
-        except e:
+        except:
             return HttpResponseServerError("Error code 3")
 
     courses = []
     for course in course_query.distinct():
         courses.append(_course_json(course))
-    return _json_response(courses)
+    return json_response(courses)
 
 
 def _course_json(course):
@@ -150,18 +154,19 @@ def _course_json(course):
     course_level = models.CourseLevel.objects.get(course=course)
     level = models.Level.objects.get(acronym=course_level.level_id)
     course_format = models.CourseFormat.objects.get(course=course)
-    format_name  = models.Format.objects.get(
+    format_name = models.Format.objects.get(
             acronym=course_format.format_id).name
     points = models.CourseCpdPoints.objects.get(course=course)
     cpd_points = points.points
     if cpd_points is None:
         cpd_points = 0
+
     result = {
         "name": course.name,
         "cost": float(course.cost),
+        "url": course.url,
         "start_dates": [x.start_date for x in start_dates],
         "level": level.name,
-        "url": course.url,
         "format": format_name,
         "cpd": {
             "points": float(cpd_points),
@@ -210,28 +215,27 @@ def roles(request):
 
     job_role_query = None
     vertical = models.Vertical.objects.get(id=vertical_id)
-    
+
     # if the role num is specified, it's from /test/nextrole
     if role_num is not None:
         role = models.JobRole.objects.get(id=role_num)
         job_role_query = models.JobRole.objects \
-                .filter(role_level__gte=role.role_level,
-                        role_level__lte=role.role_level+1) \
-                .exclude(id=role_num)
+            .filter(role_level__gte=role.role_level,
+                    role_level__lte=role.role_level+1) \
+            .exclude(id=role_num)
 
     # if it's not, it's from /test/
     else:
         job_role_query = models.JobRole.objects.filter(org_type=org_type_name,
                                                        vertical=vertical)
 
-
     job_roles = sorted([{"name": job_role.name,
                          "desc": job_role.thin_desc,
                          "level": job_role.role_level,
-                         "id": job_role.id} \
-                              for job_role in job_role_query.distinct()
-                       ], key=lambda j: j["level"])
-    return _json_response(job_roles)
+                         "id": job_role.id}
+                       for job_role in job_role_query.distinct()
+                        ], key=lambda j: j["level"])
+    return json_response(job_roles)
 
 
 @login_required
@@ -256,7 +260,7 @@ def diag(request):
             "desc": comp.competency.copy_desc,
         })
 
-    return _json_response(result)
+    return json_response(result)
 
 
 @login_required
@@ -299,11 +303,11 @@ def results(request):
             answers[k] = int(v)
             keys.append(k)
         except:
-            return HttpResponseServerError("Invalid answer provided for %s" % k)
+            return HttpResponseServerError(
+                    "Invalid answer provided for %s" % k)
 
     # get competency categories
     competencies = models.Competency.objects.filter(id__in=keys)
-    categories = [x.category for x in competencies]
 
     key = {0: 2, 1: -1, 2: -2}
 
@@ -316,12 +320,12 @@ def results(request):
         # 1 - unsure - -1
         # 2 - no - -2
         if v not in key.keys():
-            return HttpResponseServerError("Invalid answer provided for %s" % k)
+            return HttpResponseServerError(
+                    "Invalid answer provided for %s" % k)
         # score = key[v]
 
         comp = competencies.get(id=k)
         category = comp.category.name
-
 
         special = False
         if comp.specialism:
@@ -332,9 +336,9 @@ def results(request):
 
         if category not in categorised_answers:
             categorised_answers[category] = { 
-                    "total": 0, 
-                    "yes":0,
-                    "no": 0, 
+                    "total": 0,
+                    "yes": 0,
+                    "no": 0,
                     # "unsure": 0,
                     "special": special
                     }
@@ -355,8 +359,8 @@ def results(request):
         unit = base / scores["total"]
         result = base + \
             (scores["yes"] * unit) + \
-            (scores["no"] * unit * -1) #+ \
-            # (scores["unsure"] * unit * -0.5)
+            (scores["no"] * unit * -1)  # + \
+        # (scores["unsure"] * unit * -0.5)
 
         score = round(result)
         categorised_answers[category] = {
@@ -366,9 +370,10 @@ def results(request):
 
     response = {
         "competencies": categorised_answers,
-        "courses": _diag_course_recommendations(categorised_answers, vertical, job_role),
+        "courses": _diag_course_recommendations(
+            categorised_answers, vertical, job_role),
     }
-    return _json_response(response)
+    return json_response(response)
 
 
 def _get_courses_from_comps(job_role, vertical_id, competencies):
@@ -416,24 +421,31 @@ def _diag_course_recommendations(categorised_answers, vertical, job_role):
                 competencies = models.Competency.objects.filter(
                         specialism=category_name,
                         jobrolecompetency__job_role__role_level=level).distinct()
-                courses = _get_courses_from_comps(None, vertical.id, competencies)
+                courses = _get_courses_from_comps(
+                        None, vertical.id, competencies)
             else:
                 competencies = models.Competency.objects.filter(
                         specialism=category_name).distinct()
-                courses = _get_courses_from_comps(job_role, vertical.id, competencies)
+                courses = _get_courses_from_comps(
+                        job_role, vertical.id, competencies)
         else:
             if score_info["score"] == 100:
                 level = _next_level(job_role)
-                category = models.CompetencyCategory.objects.get(name=category_name)
+                category = models.CompetencyCategory.objects.get(
+                        name=category_name)
                 competencies = models.Competency.objects.filter(
                         category=category,
                         jobrolecompetency__job_role__role_level=level
                         ).distinct()
-                courses = _get_courses_from_comps(None, vertical.id, competencies)
+                courses = _get_courses_from_comps(
+                        None, vertical.id, competencies)
             else:
-                category = models.CompetencyCategory.objects.get(name=category_name)
-                competencies = models.Competency.objects.filter(category=category)
-                courses = _get_courses_from_comps(job_role, vertical.id, competencies)
+                category = models.CompetencyCategory.objects.get(
+                        name=category_name)
+                competencies = models.Competency.objects.filter(
+                        category=category)
+                courses = _get_courses_from_comps(
+                        job_role, vertical.id, competencies)
 
         for course in courses:
             course_id = hash_func(course.id)

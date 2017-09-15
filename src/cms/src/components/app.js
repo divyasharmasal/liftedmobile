@@ -6,6 +6,7 @@ import { HomePage } from "./pages/HomePage";
 import { CoursesPage } from "./pages/CoursesPage";
 import { ScrapersPage } from "./pages/ScrapersPage";
 import { StaffPage } from "./pages/StaffPage";
+import { ModifyAccountPage } from "./pages/ModifyAccountPage";
 
 export default class App extends Component {
   /** 
@@ -19,7 +20,6 @@ export default class App extends Component {
 	 */
 	handleRoute = e => {
 		this.currentUrl = e.url;
-    console.log(this.currentUrl)
 	};
 
 	render() {
@@ -33,13 +33,16 @@ export default class App extends Component {
             <Navbar />
           </div>
 
-          <div class="content pure-u-1 pure-u-sm-1-5">
-            <Router onChange={this.handleRoute}>
-              <HomePage path="/cms/" />
-              <CoursesPage path="/cms/courses/" />
-              <ScrapersPage path="/cms/scrapers/" />
-              <StaffPage path="/cms/staff/" />
-            </Router>
+          <div class="pure-u-1 pure-u-sm-4-5">
+            <div class="content">
+              <Router onChange={this.handleRoute}>
+                <HomePage path="/cms/" />
+                <CoursesPage path="/cms/courses/" />
+                <ScrapersPage path="/cms/scrapers/" />
+                <StaffPage path="/cms/staff/" />
+                <ModifyAccountPage path="/cms/modify_account/" />
+              </Router>
+            </div>
           </div>
 
 			</div>

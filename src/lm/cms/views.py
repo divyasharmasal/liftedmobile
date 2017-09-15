@@ -1,13 +1,55 @@
-import os
-import base64
-
 from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
+from django.http import HttpResponseServerError
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
+from app.views import gen_cache_bust_str, json_response
+from app import models as app_models
+
+
+@staff_member_required(login_url=None)
+def cms_get_courses(request):
+    result = []
+    courses = app_models.Course.objects.all()
+
+    for course in courses:
+        course_level = app_models.CourseLevel.objects.get(course=course)
+        level = app_models.Level.objects.get(acronym=course_level.level_id)
+        start_dates = app_models.CourseStartDate.objects.filter(course=course)
+        course_format = app_models.CourseFormat.objects.get(course=course)
+        format_name = app_models.Format.objects.get(
+                acronym=course_format.format_id).name
+        points = app_models.CourseCpdPoints.objects.get(course=course)
+        cpd_points = points.points
+        if cpd_points is None:
+            cpd_points = 0
+
+        result.append({
+            "name": course.name,
+            "cost": float(course.cost),
+            "url": course.url,
+            "start_dates": [x.start_date for x in start_dates],
+            "level": level.name,
+            "format": format_name,
+            "cpd": {
+                "points": float(cpd_points),
+                "is_private": points.is_private
+                }
+        })
+    return json_response(result)
+
+
+@staff_member_required(login_url=None)
+def cms_account_name(request):
+    user = request.user
+    if user.is_staff:
+        return json_response({
+            "username": user.username
+        })
+    else:
+        return HttpResponseServerError("Invalid user.")
 
 
 def cms_login(request):
@@ -28,15 +70,6 @@ def _render_login_failed(request):
                   "../../cms/templates/registration/login.html",
                   {"login_failed": True}
                   )
-
-
-def gen_cache_bust_str(length=32):
-    """
-    Returns a URL-friendly, 32-bit random string
-    """
-
-    return base64.urlsafe_b64encode(
-            os.urandom(length)).rstrip(b'=').decode('ascii')
 
 
 @staff_member_required(login_url=None)

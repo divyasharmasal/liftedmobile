@@ -4,7 +4,7 @@ export class StaffPage extends Component {
   render(){
     return(
       <div>
-        Staff
+        <h1>Staff</h1>
       </div>
     );
   }

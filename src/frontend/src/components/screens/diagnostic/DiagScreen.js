@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import Question from '../../Question';
-import { authFetch } from '../../fetch';
+import { authFetch } from '../../../lib/fetch';
 import {
   Screen, 
   renderStartOver,

@@ -3,20 +3,15 @@
 @import (once, css) "../../../frontend/src/style/pure_tweaks.css";
 @import (once, css) "../../../frontend/src/style/fonts.css";
 @import (once, css) "../../../frontend/src/style/loading_anim.css";
-
-@hover_bg_color: #edf3fb;
-@selected_bg_color: #dde3eb;
-@sal_blue: #0063a7;
-@sal_lightblue: #1a8bd8;
-@sal_dropdown_blue: #0d7ac4;
-@border_radius: .4rem;
-@link_blue: rgb(0, 0, 238);
-@navbar_grey: #333645;
-@navbar_lightgrey: #494d63;
-@navbar_hover: #6c7393;
+@import (once, css) "../../../lib/styles/constants.less";
 
 *, html, body {
     font-family: Lato, Arial;
+}
+
+h1, h2, h3, h4, h5, h6{
+    color:@sal_blue;
+    font-weight:normal;
 }
 
 a{
@@ -43,6 +38,9 @@ a{
         padding-right:10px;
         padding-top:15px;
         padding-bottom:15px;
+        &:hover{
+            background: @sal_lightblue;
+        }
     }
 
     .section{
@@ -53,8 +51,8 @@ a{
             height:13px;
             margin-right:10px;
         }
-        &:hover{
-            background: @sal_lightblue;
+        a{
+            display:block;
         }
     }
 
@@ -66,6 +64,9 @@ a{
             padding-right:10px;
             padding-top:15px;
             padding-bottom:15px;
+            &:hover{
+                background: @sal_lightblue;
+            }
         }
 
         .dropdown__content{
@@ -88,10 +89,10 @@ a{
 
 .navbar{
     background: @navbar_grey;
-    min-width:250px;
-    height:100vh;
-    display:block;
-    float:left;
+    min-width: 175px;
+    min-height: 100vh;
+    display: block;
+    float: left;
 
     *{
         color: white;
@@ -99,10 +100,8 @@ a{
 
     .section{
         cursor:pointer;
+        background: @navbar_grey;
 
-        &:nth-child(odd){
-            background: @navbar_grey;
-        }
         &:hover{
             background: @navbar_hover;
         }
@@ -120,7 +119,9 @@ a{
 }
 
 .content{
-    float:left;
+    padding-left:2em;
+    padding-right:2em;
+    padding-bottom:2em;
 }
 
 @media (max-width: 767px) {
@@ -139,3 +140,6 @@ a{
         }
     }
 }
+
+@import (once, less) "./course_page.less";
+@import (once, less) "./scrapers_page.less";

@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import Question from '../Question';
-import { authFetch } from '../fetch';
+import { renderLoader } from "../../../../lib/js/loader_anim";
 
 export { 
   Screen, 
@@ -19,21 +19,6 @@ const renderStartOver = () => {
     </a>
   );
 }
-
-const renderLoader = () => {
-  return (
-    <div class="pure-g">
-      <div class="pure-u-1">
-        <div class="spinner">
-          <div class="bounce1"></div>
-          <div class="bounce2"></div>
-          <div class="bounce3"></div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 
 const createCoursesUrl = (verticalId, categoryId, needIds) => {
   const prefix = "/courses?";

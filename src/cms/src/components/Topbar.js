@@ -6,10 +6,10 @@ export class Topbar extends Component {
     return(
       <div>
         <div class="section">
-          <div class="logo">
+          <a href="/cms" class="logo">
             <img src="/static/cms/dist/images/plane.png" />
-            <a href="/cms">LIFTED Mobile CMS</a>
-          </div>
+            LIFTED Mobile CMS
+          </a>
         </div>
 
         <AccountDropdown />

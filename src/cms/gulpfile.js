@@ -10,9 +10,9 @@ gulp.task('deploy', ['build-prod']);
 // Watch the following files & directories, and run the build task upon any
 // change
 gulp.task('watch', function () {
-  gulp.watch(['./gulpfile.js'], ['build']);
-  gulp.watch(['./preact.config.js'], ['build']);
-  gulp.watch(['./src/**/*'], ['build'])
+  gulp.watch(['gulpfile.js'], ['build']);
+  gulp.watch(['preact.config.js'], ['build']);
+  gulp.watch(['src/**/*'], ['build'])
   gulp.watch(['../lm/static/cms/'], ['build'])
 });
 
@@ -36,7 +36,7 @@ gulp.task('build', shell.task([
 
 // Run preact build in production mode, and delete JS sourcemaps
 gulp.task('build-prod', shell.task([
-  'preact build --clean --production true --dest ../lm/cms/static/cms/dist/',
+  'preact build --clean --production true --no-prerender --dest ../lm/cms/static/cms/dist/',
   'echo "Deleting sourcemaps..."',
   'rm -rf ../lm/cms/static/cms/dist/*.map',
   'rm -rf ../lm/cms/static/cms/dist/ssr-build',

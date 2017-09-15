@@ -1,7 +1,8 @@
 import { h, Component } from 'preact';
 import {renderLoader} from './screens/Screen';
 
-export { Courses };
+export { Courses, parseCourseDate };
+import { sortCoursesByDate } from "../../../lib/js/courses";
 
 const symbol = isDesc => {
   const desc = "▼";
@@ -12,6 +13,7 @@ const symbol = isDesc => {
   }
   return asc;
 }
+
 
 class Sorter extends Component{
   constructor(props){
@@ -154,33 +156,7 @@ export default class Courses extends Component{
       });
     }
     else if (field === "date"){
-      const parseDate = date => {
-        if (date === "Q1"){
-          return new Date("1 Jan");
-        }
-        else if (date === "Q2"){
-          return new Date("1 Apr");
-        }
-        else if (date === "Q3"){
-          return new Date("1 Jul");
-        }
-        else if (date === "Q4"){
-          return new Date("1 Oct");
-        }
-        else{
-          return new Date(date);
-        }
-      };
-
-      courses.courses.sort((a, b) => {
-        let x = parseDate(a.start_dates[0]);
-        let y = parseDate(b.start_dates[0]);
-
-        if (x < y){
-          return 1;
-        }
-        return 0;
-      });
+      courses.courses = sortCoursesByDate(courses.courses);
     }
 
     if (!sortDesc){
