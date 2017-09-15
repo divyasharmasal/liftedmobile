@@ -46,11 +46,11 @@ class ScraperControl extends Component {
         </p>
 
         {this.state.isActive ?
-          <button onClick={this.toggleActive} class="pure-button pause_button">
+          <button onClick={this.toggleActive} class="pure-button button-red">
             <span>pause</span> 
           </button>
           :
-          <button onClick={this.toggleActive} class="pure-button start_button">
+          <button onClick={this.toggleActive} class="pure-button button-green">
             <span>start</span> 
           </button>
         }
