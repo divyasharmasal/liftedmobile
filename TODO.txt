@@ -17,6 +17,16 @@ All-in-one portal
     - Show untagged courses
       - Email reminders about untagged courses
 
+
+Technology competence diagnostic - standalone?
+Monday late afternoon
+
+
+SCCA
+SkillsFuture
+CALAS
+LawSoc
+
 Title
 Date
 Price
