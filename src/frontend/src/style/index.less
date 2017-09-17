@@ -72,6 +72,7 @@
 .credits{
     margin-top:30vh;
     text-align:center;
+    float:left;
     p{
         font-size:1.2em;
     }
@@ -119,9 +120,9 @@ hr{
 .notification{
     position: fixed;
     bottom:0px;
-    /*left:0px;*/
-    /*width: 100%;*/
-    width:1280px;
+    left:0px;
+    width: 100%;
+    /*width:1280px;*/
     background-color:@sal_blue;
     color:white;
     z-index:999;
@@ -390,6 +391,8 @@ hr{
 
 .diag{
     .highlight{
+        width:100%;
+        display:inline-block;
         background-color:#ffe6e6;
         border-radius: @border_radius;
     }
@@ -397,7 +400,7 @@ hr{
     p.highlight.warning{
         margin-bottom:50px;
         padding:10px;
-        width:50%;
+        /*width:50%;*/
         margin-left:auto;
         margin-right:auto;
     }
@@ -573,19 +576,17 @@ hr{
 }
 
 @media (max-width: 568px) {
-    *, html, body {
-        font-family: Lato, Arial;
-        font-size:1em;
-    }
-
     .intro{
-        .planes img{
-            height:130px;
-            float:right;
-        }
-        background-position-x:105%;
+        height:130px;
         .text{
-            max-width: 190px;
+            padding-left:15px;
+            max-width: 150px !important;
+        }
+        .planes {
+            width:0%;
+            img{
+                height:130px;
+            }
         }
     }
 
@@ -593,63 +594,19 @@ hr{
         font-size:0.8em;
     }
 
-    .results {
-        .competencies{
-            table{
-                font-size:0.8em;
-            }
-        }
-    }
-
-    .diag{
-        .diag_qn{
-            margin-bottom:30px;
-            p{
-                font-size:1.5em;
-            }
-
-            .answer{
-                width:50px;
-            }
-
-            .diag_whatsthis{
-                font-size:1em;
-            }
-
-            .diag_help{
-                font-size:1em;
-            }
-
-            .diag_left{
-                float:none;
-                width:100%;
-                text-align:center;
-                p{
-                    margin-top:24px;
-                }
-            }
-
-            .diag_right{
-                float:none;
-            }
-        }
-
-        .diag_button{
-            padding: .5em .5em;
-            line-height: 1.2em;
-            display: inline-block;
-            height: initial;
-        }
-    }
-
     .question {
         .role_option_text{
             font-size:0.8em;
         }
 
+        h1{
+            font-size:2em;
+        }
+
         .answer{
             padding-top:0.3em;
             padding-bottom:0.3em;
+            font-size:1.25em;
         }
 
         .goals{
@@ -706,11 +663,22 @@ hr{
 
 
 @media (max-width: 768px) {
+    *, html, body {
+        font-family: Lato, Arial;
+        font-size:1em;
+    }
+
     .login_form{
         h1{
             font-size:2em;
         }
     }
+
+    .notification{
+        width:100%;
+        left:0px;
+    }
+
 
     .sal_logo{
         img{
@@ -720,17 +688,16 @@ hr{
 
     .intro{
         height:130px;
-        background-size:130px;
         .text{
             padding-left:15px;
-            max-width: 250px;
-            font-size:1em;
+            max-width: 100%;
         }
-    }
-
-    .notification{
-        width:100%;
-        left:0px;
+        .planes {
+            width:0%;
+            img{
+                height:130px;
+            }
+        }
     }
 
 	.full_review,
@@ -738,6 +705,10 @@ hr{
         font-size:0.8em;
     }
 
+    h1{
+        font-size:2em;
+    }
+    
     p{
         font-size:1em;
     }
@@ -753,6 +724,47 @@ hr{
     .rec_courses{
         h1{
             font-size:1.5em;
+        }
+    }
+
+    .diag{
+        .diag_qn{
+            margin-bottom:30px;
+            p{
+                font-size:1.5em;
+            }
+
+            .answer{
+                width:50px;
+            }
+
+            .diag_whatsthis{
+                font-size:1em;
+            }
+
+            .diag_help{
+                font-size:1em;
+            }
+
+            .diag_left{
+                float:none;
+                width:100%;
+                text-align:center;
+                p{
+                    margin-top:24px;
+                }
+            }
+
+            .diag_right{
+                float:none;
+            }
+        }
+
+        .diag_button{
+            padding: .5em .5em;
+            line-height: 1.2em;
+            display: inline-block;
+            height: initial;
         }
     }
 
@@ -773,7 +785,7 @@ hr{
         margin-top: 10px;
 
         h1{
-            font-size:2em;
+            /*font-size:2em;*/
             margin-bottom:15px;
         }
 
@@ -804,6 +816,9 @@ hr{
     .courses{
         .sorter{
             display:initial;
+            p{
+                font-size:1em;
+            }
 
             .symbol{
                 margin-left:3px;
@@ -890,10 +905,13 @@ hr{
             font-size:0.8em;
         }
     }
-}
 
-@media (max-width: 320px) {
-    .intro .text{
-        font-size:1em;
+    .results {
+        .competencies{
+            table{
+                font-size:0.8em;
+            }
+        }
     }
+
 }
