@@ -39,7 +39,7 @@ class RoleLevelPicker extends Component{
     }
     else{
       roles = this.props.roles.map(role =>
-        <p>{role.text}</p>
+        <p class="role_name">{role.text}</p>
       );
     }
 
@@ -57,7 +57,7 @@ class RoleLevelPicker extends Component{
         }
         {roles}
         {this.props.roles.length == 1 &&
-          <p class="desc">
+          <p>
             {this.props.roles[0].desc}
           </p>
         }

@@ -61,6 +61,7 @@ RUN apk update                                                              && \
     rm -rf /src/frontend/node_modules /usr/local/share/.config/yarn            \
            /root/.config/yarn/global/node_modules                              \
            /usr/lib/node_modules /var/cache/apk/* /usr/share/man /tmp/*        \
+           /src/cms/node_modules/                                              \
            /root/.node-gyp /root/.gnupg /root/.npm /src/frontend/node_modules  \
            /src/frontend/src/fonts /src/lm/static/app/fonts/                   \
            /src/lm/static/app/dist/ssr-build/ /bin/yarn /bin/yarnpkg           \
