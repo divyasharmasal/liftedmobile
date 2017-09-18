@@ -9,17 +9,22 @@ import { StaffPage } from "./pages/StaffPage";
 import { ModifyAccountPage } from "./pages/ModifyAccountPage";
 
 export default class App extends Component {
-  /** 
-   * Gets fired when the route changes.  
-   *
-   * @param {Object} event
-   * "change" event from [preact-router](http://git.io/preact-router)
-   *
-   * @param {string} event.url	
-   * The newly routed URL
+	/** Gets fired when the route changes.
+   *	@param {Object} event	"change" event from 
+   *	[preact-router](http://git.io/preact-router)
+	 *	@param {string} event.url	The newly routed URL
 	 */
 	handleRoute = e => {
 		this.currentUrl = e.url;
+
+    // Update Google Analytics
+    if (typeof window !== "undefined"){
+      if (window.ga !== null){
+        ga("set", "page", e.url);
+        ga("send", "pageview");
+      }
+    }
+
 	};
 
 	render() {

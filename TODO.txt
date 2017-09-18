@@ -2,7 +2,7 @@
     - includes all verticals
     - don't worry about anything not visible for demo
 
-All-in-one portal
+All-in-one CMS
   - Introductory page with 2 choices: consolidated listing or filter
     by learning needs
   - End Sept: figure out an integration framework

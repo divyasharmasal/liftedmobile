@@ -1,7 +1,7 @@
-import { h, Component } from 'preact';
-import { Router, route } from 'preact-router';
-import 'preact/devtools';
-import { authFetch } from '../lib/fetch';
+import { h, Component } from "preact";
+import { Router, route } from "preact-router";
+import "preact/devtools";
+import { authFetch } from "../lib/fetch";
 import { 
   BranchScreen,
   WhatCompetencyScreen, 
@@ -11,9 +11,9 @@ import {
   GoalScreen,
   DiagScreen,
   DiagResultsScreen,
-} from './screens';
+} from "./screens";
 
-import { renderLoader } from './screens/Screen';
+import { renderLoader } from "./screens/Screen";
 
 export default class App extends Component {
   constructor(props){
@@ -88,7 +88,7 @@ export default class App extends Component {
     sessionStorage.setItem("selectedAnswers", 
       JSON.stringify(selectedAnswers));
     this.setState({ selectedAnswers }, () => {
-      // Run the callback, unless it's on the branch screen
+      // Run the callback, unless it"s on the branch screen
       if (qnNum !== 3){ 
         callback();
       }
@@ -103,6 +103,15 @@ export default class App extends Component {
 	 */
 	handleRoute = e => {
 		this.currentUrl = e.url;
+
+    // Update Google Analytics
+    if (typeof window !== "undefined"){
+      if (window.ga !== null){
+        ga("set", "page", e.url);
+        ga("send", "pageview");
+      }
+    }
+
 	};
 
 
@@ -137,7 +146,7 @@ export default class App extends Component {
     }
 
 		return (
-      <Router>
+      <Router onChange={this.handleRoute}>
 
         <JobScreen 
           qnNum={0}
