@@ -138,17 +138,24 @@ a{
     .cms{
         width:100% !important;
     }
-}
 
-@media (max-width: 568px) {
+    .content{
+    }
+
     .navbar{
         height:initial;
+        min-height:initial;
+        width:100%;
         display:block;
         .section{
             width:initial;
             display:inline-block;
+            float:left;
         }
     }
+}
+
+@media (max-width: 568px) {
 }
 
 @import (once, less) "./course_page.less";

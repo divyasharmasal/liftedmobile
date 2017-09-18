@@ -331,6 +331,7 @@ def results(request):
         if comp.specialism:
             category = comp.specialism
             special = True
+        print(comp.copy_desc, comp.specialism)
 
         cat_names[category] = comp.category
 

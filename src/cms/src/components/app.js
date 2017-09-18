@@ -19,7 +19,7 @@ export default class App extends Component {
 
     // Update Google Analytics
     if (typeof window !== "undefined"){
-      if (window.ga !== null){
+      if (window.ga && window.ga !== null){
         ga("set", "page", e.url);
         ga("send", "pageview");
       }

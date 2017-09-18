@@ -1,12 +1,25 @@
+22nd - don't break the server!!
+
+Show out the legal support specialisms in results
+
+Nevertheless - do a code generator for 3rd party
+
 6 Oct - Committee Meeting - presentation of Lifted Mobile
-    - includes all verticals
+    - includes all verticals + technology diagnostic
     - don't worry about anything not visible for demo
+    - if Anita doesn't send the LP framework by the 22nd, don't worry
 
 All-in-one CMS
-  - Introductory page with 2 choices: consolidated listing or filter
-    by learning needs
+  - Introductory page with 3 choices: consolidated listing, filter by
+    learning needs, and technology diagnostic
+
+    - Tech diagnostic will have 2 steps:
+        1. Role picker
+        2. Competency questions
+
   - End Sept: figure out an integration framework
-      - Scrape CALAS
+      - Scrape CALAS, SCCA, SkillsFuture, LawSoc
+
   - 2 other verticals + technology
   - CMS
     - Full auth system
@@ -17,15 +30,7 @@ All-in-one CMS
     - Show untagged courses
       - Email reminders about untagged courses
 
-
 Technology competence diagnostic - standalone?
-Monday late afternoon
-
-
-SCCA
-SkillsFuture
-CALAS
-LawSoc
 
 Title
 Date
@@ -35,8 +40,6 @@ Format
 Level
 
 Resume function
-
------------
 
 Make push_prod do all deployment work
 
@@ -49,19 +52,3 @@ Server logging
   - Link CloudWatch to graylog
 
 External DB
-
-------------------------
-
-Reconfirm for next iteration:
-Course levels for legal practitioners and in-house counsels should be
-considered as one step above those for legal support.
-
-The levels in the sheet refer to legal prac & in-house.
-
-e.g. a Foundational course in the sheet would be Intermediate for a
-legal support officer.
-
-Different legal perspectives -> Conferences
-Skills -> Workshops
-Knowledge -> Lectures / Seminars / Roundtables
-Updates about my own niche. -> Seminars / Lectures / e-Learning
