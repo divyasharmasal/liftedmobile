@@ -61,45 +61,25 @@ export class CoursesPage extends Component {
           </button>
         </div>
 
-        <CourseEditor courses={this.state.courses} />
+        <CourseList courses={this.state.courses} />
       </div>
     );
   }
 }
 
-export class CourseEditor extends Component {
-  renderRows = courses => {
-    return courses.map(course => 
-      <CourseRowEditor course={course} />
-    );
-  }
 
-
+export class CourseList extends Component {
   render(){
     return (
-      <div class="editor">
-        <table class="course_table pure-table">
-          <thead>
-            <td>Name</td>
-            <td>Cost</td>
-            <td>CPD</td>
-            <td>Level</td>
-            <td>Format</td>
-            <td>Dates</td>
-            <td class="edit_cell">Edit</td>
-          </thead>
-
-          <tbody>
-            {this.renderRows(this.props.courses)}
-          </tbody>
-        </table>
+      <div>
+        {this.props.courses.map(course => <CourseEditor course={course} />)}
       </div>
     );
   }
 }
 
 
-class CourseRowEditor extends Component{
+class CourseEditor extends Component{
   format_cpd = cpd => {
     if (cpd.is_private){
       return "Private";
@@ -118,22 +98,60 @@ class CourseRowEditor extends Component{
   render(){
     const course = this.props.course;
     return(
-      <tr>
-        <td data-title="Name">{course.name}</td>
-        <td data-title="Cost">{"$" + course.cost.toFixed(2)}</td>
-        <td data-title="CPD">{this.format_cpd(course.cpd)}</td>
-        <td data-title="Level">{course.level}</td>
-        <td data-title="Format">{course.format}</td>
-        <td data-title="Dates">{this.format_dates(course.start_dates)}</td>
-        <td class="edit_cell" data-title="Edit">
+      <div class="editor">
+        <div class="name pure-u-1">
+          <input type="text" 
+            placeholder="Name"
+            value={course.name}>
+          </input>
+        </div>
+        <div class="pure-u-1">
+          <input type="text" 
+            placeholder="(missing URL)"
+            value={course.url}>
+          </input>
+        </div>
+
+        <div class="pure-u-1-2 pure-u-sm-1-3">
+          Cost: {"$" + course.cost.toFixed(2)}
+        </div>
+
+        <div class="pure-u-1-2 pure-u-sm-1-3">
+          CPD: {this.format_cpd(course.cpd)}
+        </div>
+
+        <br />
+
+        <div class="pure-u-1-2 pure-u-sm-1-3">
+          Level: {course.level}
+        </div>
+
+        <div class="pure-u-1-2 pure-u-sm-1-3">
+          Format: {course.format}
+        </div>
+
+        <br />
+
+        <div class="pure-u-1">
+          Dates: {this.format_dates(course.start_dates)}
+        </div>
+
+        <div class="buttons">
+
+          <button class="pure-button button-green save_button">
+            <img src="/static/cms/dist/images/tick.png" alt="save"/>
+          </button>
+
           <button class="pure-button pure-button-primary edit_button">
             <img src="/static/cms/dist/images/pencil.png" alt="edit"/>
           </button>
+
           <button class="pure-button button-red delete_button">
             <img src="/static/cms/dist/images/trash.png" alt="delete"/>
           </button>
-        </td>
-      </tr>
+
+        </div>
+      </div>
     );
   }
 }

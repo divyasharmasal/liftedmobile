@@ -17,32 +17,65 @@
     }
 
     .editor{
-        table{
-            font-size:1em;
-            thead {
-                td{
-                    font-weight:bold;
-                }
-                td.edit_cell{
-                    width:135px;
+        margin-bottom:1em;
+        padding:0.5em;
+        margin-left:-0.5em;
+
+        &>div{
+            margin-bottom:0.5em;
+            input{
+                background-color:transparent;
+                width:100%;
+                border:solid transparent 1px;
+                padding:0.2em;
+                margin-left:-0.2em;
+                &:hover{
+                    width:100%;
+                    box-sizing: border-box;
+                    background-color:white;
+                    border: 1px solid #ccc;
+                    box-shadow: inset 0 1px 3px #ddd;
+                    border-radius: 4px;
                 }
             }
+        }
 
-            tbody tr{
-                &:nth-of-type(even){
-                    background:#efefef;
-                }
-            }
+        &:nth-of-type(even){
+            background-color:#f3f3f3
+        }
 
-            .edit_button, .delete_button{
-                img{
-                    height:13px;
-                }
-            }
+        .name{
+            font-size:1.2em;
+            font-weight:bold;
+        }
 
-            .delete_button{
+        .buttons{
+            margin-top:1em;
+            width:100%;
+
+            button{
+                @button_width: 43px;
+
                 margin-left:10px;
+                padding: .5em 0.9em;
+                width:@button_width;
+                height:35.2px;
+
+                &:first-of-type{
+                    margin-left:0px;
+                }
+
+                img{
+                    height:auto;
+                    width:100%;
+                }
+
+                &:hover{
+                    box-shadow: inset 0 0 @button_width @button_width
+                                rgba(255, 255, 255, 0.25);
+                }
             }
+
         }
     }
 }
@@ -58,33 +91,6 @@
         }
 
         .editor{
-            table{
-                font-size:1.5em;
-
-                .edit_cell{
-                    margin-top:1em;
-                    width:100%;
-                    &:before{
-                        display:none;
-                    }
-                }
-
-                .options{
-                    width:100%;
-                    text-align:right;
-                    display:initial;
-
-                    .edit_button{
-                        float:right;
-                    }
-
-                    .delete_button{
-                        float:left;
-                        margin-left:0;
-                    }
-
-                }
-            }
         }
     }
 }
