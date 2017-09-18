@@ -1,6 +1,7 @@
 22nd - don't break the server!!
 
-Show out the legal support specialisms in results
+Check with Inga about L3 specialist roles not having specialism
+competencies...
 
 Nevertheless - do a code generator for 3rd party
 

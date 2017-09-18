@@ -34,11 +34,11 @@ export default class App extends Component {
             <Topbar />
           </div>
 
-          <div class="navbar pure-u-1 pure-u-sm-1-5">
+          <div class="navbar pure-u-1 pure-u-lg-1-5">
             <Navbar />
           </div>
 
-          <div class="pure-u-1 pure-u-sm-4-5">
+          <div class="pure-u-1 pure-u-lg-4-5">
             <div class="content">
               <Router onChange={this.handleRoute}>
                 <HomePage path="/cms/" />

@@ -181,9 +181,11 @@ class BranchScreen extends Screen {
         </div>
 
         {this.state.courses &&
-          <div class="rec_courses pure-u-1" ref={courses => this.courses = courses}>
+          <div class="rec_courses" ref={courses => this.courses = courses}>
             <a name="courses" />
-            <h1>Recommended courses</h1>
+            <div class="pure-u-1">
+              <h1>Recommended courses</h1>
+            </div>
             {courses}
           </div>
         }

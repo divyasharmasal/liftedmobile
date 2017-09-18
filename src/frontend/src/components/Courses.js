@@ -235,8 +235,7 @@ export default class Courses extends Component{
               this.handleSort("date")} 
             }
           class="sorter">
-          <a>Dates (2017)
-            <span class="symbol">{dateSym}</span>
+          <a>Dates <span class="symbol">{dateSym}</span>
           </a> 
         </td>
       );
@@ -255,7 +254,7 @@ export default class Courses extends Component{
       );
 
       return (
-        <div class="courses">
+        <div class="courses pure-u-1">
           {!courses.tailored &&
             <p>We didn't find any courses that matched every option you've 
               selected, but you may like the following courses:</p>

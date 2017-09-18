@@ -1,3 +1,4 @@
+@import (once, less) "../../../lib/styles/course_table.less";
 .course_manager{
     .search{
         margin-bottom:1em;
@@ -17,8 +18,14 @@
 
     .editor{
         table{
-            thead td{
-                font-weight:bold;
+            font-size:1em;
+            thead {
+                td{
+                    font-weight:bold;
+                }
+                td.edit_cell{
+                    width:135px;
+                }
             }
 
             tbody tr{
@@ -26,11 +33,21 @@
                     background:#efefef;
                 }
             }
+
+            .edit_button, .delete_button{
+                img{
+                    height:13px;
+                }
+            }
+
+            .delete_button{
+                margin-left:10px;
+            }
         }
     }
 }
 
-@media (max-width: 568px) {
+@media (max-width: 768px) {
     .course_manager{
         .search{
             .search_input{
@@ -41,6 +58,33 @@
         }
 
         .editor{
+            table{
+                font-size:1.5em;
+
+                .edit_cell{
+                    margin-top:1em;
+                    width:100%;
+                    &:before{
+                        display:none;
+                    }
+                }
+
+                .options{
+                    width:100%;
+                    text-align:right;
+                    display:initial;
+
+                    .edit_button{
+                        float:right;
+                    }
+
+                    .delete_button{
+                        float:left;
+                        margin-left:0;
+                    }
+
+                }
+            }
         }
     }
 }
