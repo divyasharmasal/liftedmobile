@@ -10,8 +10,16 @@ from app import models as app_models
 
 
 @staff_member_required(login_url=None)
-def cms_get_courses(request):
-    result = []
+def cms_get_coursespage_data(request):
+    result = {
+        "courses": [],
+        "levels": [],
+        "formats": [],
+    }
+
+    result["levels"] = [c.name for c in app_models.Level.objects.all()]
+    result["formats"] = [c.name for c in app_models.Format.objects.all()]
+
     courses = app_models.Course.objects.all()
 
     for course in courses:
@@ -26,7 +34,7 @@ def cms_get_courses(request):
         if cpd_points is None:
             cpd_points = 0
 
-        result.append({
+        result["courses"].append({
             "name": course.name,
             "cost": float(course.cost),
             "url": course.url,

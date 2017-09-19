@@ -23,12 +23,14 @@
 
         &>div{
             margin-bottom:0.5em;
+
             input{
                 background-color:transparent;
                 width:100%;
                 border:solid transparent 1px;
                 padding:0.2em;
                 margin-left:-0.2em;
+
                 &:hover{
                     width:100%;
                     box-sizing: border-box;
@@ -36,6 +38,13 @@
                     border: 1px solid #ccc;
                     box-shadow: inset 0 1px 3px #ddd;
                     border-radius: 4px;
+                }
+            }
+
+            input.invalid{
+                background-color:#ffe6e6;
+                &:hover{
+                    background-color:#ffe6e6;
                 }
             }
         }
@@ -49,48 +58,94 @@
             font-weight:bold;
         }
 
-        .buttons{
-            margin-top:1em;
-            width:100%;
+        .url_input{
+            display:flex;
+            label{
+                padding:0.2em;
+                margin-right:1em;
+                float:left;
+            }
+            input{
+                flex-grow:100;
+            }
+        }
 
-            button{
-                @button_width: 43px;
+        .custom_input{
+            label{
+                float:left;
+                width:60px;
+                padding:0.2em;
+                margin-right:1em;
+            }
 
-                margin-left:10px;
-                padding: .5em 0.9em;
-                width:@button_width;
-                height:35.2px;
+            .cpd_points_private{
+                width:auto;
+            }
 
-                &:first-of-type{
-                    margin-left:0px;
-                }
-
-                img{
-                    height:auto;
-                    width:100%;
-                }
+            input{
+                float:left;
+                width:30%;
 
                 &:hover{
-                    box-shadow: inset 0 0 @button_width @button_width
-                                rgba(255, 255, 255, 0.25);
+                    width:30%;
                 }
             }
 
-        }
-    }
-}
-
-@media (max-width: 768px) {
-    .course_manager{
-        .search{
-            .search_input{
-            }
-
-            .search_button{
+            .dates_picker,
+            select{
+                padding:0.2em;
+                margin-top:0.2em;
             }
         }
 
-        .editor{
+        .custom_input .cpd_is_private_input{
+            @checkbox_width: 17px;
+            width: @checkbox_width;
+            height:25.6px;
+            margin-top:0.1em;
+            margin-left:0.1em;
+
+            &:hover{
+                width: @checkbox_width;
+                border:none;
+                box-shadow: none;
+            }
+        }
+
+        .custom_input .cpd_points_input{
+            &:hover{
+                &:disabled{
+                    box-shadow:none;
+                }
+            }
+        }
+
+        .actions{
+            margin-top:1em;
+            .buttons{
+                button{
+                    @button_width: 43px;
+                    margin-left:10px;
+                    padding: .5em 0.9em;
+                    width:@button_width;
+                    height:35.2px;
+
+                    &:first-of-type{
+                        margin-left:0px;
+                    }
+
+                    img{
+                        height:auto;
+                        width:100%;
+                    }
+
+                    &:hover{
+                        box-shadow: inset 0 0 @button_width @button_width
+                        rgba(255, 255, 255, 0.25);
+                    }
+                }
+            }
+
         }
     }
 }

@@ -7,7 +7,8 @@ from . import views
 
 urlpatterns = [
     url(r'^account_name/$', views.cms_account_name, name='cms_account_name'),
-    url(r'^get_courses/$', views.cms_get_courses, name='cms_get_courses'),
+    url(r'^get_coursespage_data/$', views.cms_get_coursespage_data,
+        name='cms_get_coursespage_data'),
     url(r'^.*$', views.index, name='cms_index'),
     url(r'^login/$', views.cms_login, name='cms_login'),
 
