@@ -90,6 +90,42 @@ class CourseEditor extends Component{
   handleCostChange = ({ value, isValid}) => {
     this.setState({
       invalid: !isValid,
+      hasChanged: true,
+    });
+  }
+
+
+  handleCpdChange = (value, isPrivate) => {
+    this.setState({
+      hasChanged: true,
+    });
+  }
+
+
+  handleFormatChange = format => {
+    this.setState({
+      hasChanged: true,
+    });
+  }
+
+
+  handleLevelChange = level => {
+    this.setState({
+      hasChanged: true,
+    });
+  }
+  
+
+  handleDatesChange = dates => {
+    this.setState({
+      hasChanged: true,
+    });
+  }
+
+
+  handleUrlChange = url => {
+    this.setState({
+      hasChanged: true,
     });
   }
 
@@ -104,12 +140,10 @@ class CourseEditor extends Component{
             value={course.name}>
           </input>
         </div>
-        <div class="pure-u-1 url_input">
-          <label>URL:</label>
-          <input type="text" 
-            placeholder="(none)"
-            value={course.url}>
-          </input>
+        <div class="pure-u-1">
+          <UrlInput
+            handleValueChange={this.handleUrlChange}
+            value={course.url} />
         </div>
 
         <div class="pure-u-1-2 pure-u-sm-2-5">
@@ -119,40 +153,46 @@ class CourseEditor extends Component{
         </div>
 
         <div class="pure-u-1-2 pure-u-sm-2-5">
-          <CpdInput value={course.cpd} />
+          <CpdInput 
+            handleValueChange={this.handleCpdChange}
+            value={course.cpd} />
         </div>
 
         <br />
 
         <div class="pure-u-1-2 pure-u-sm-2-5">
-          <LevelDropdown value={course.level} levels={this.props.levels} />
+          <LevelDropdown 
+            handleValueChange={this.handleLevelChange}
+            value={course.level} levels={this.props.levels} />
         </div>
 
         <div class="pure-u-1-2 pure-u-sm-2-5">
-          <FormatDropdown value={course.format} formats={this.props.formats} />
+          <FormatDropdown 
+            handleValueChange={this.handleFormatChange}
+            value={course.format} formats={this.props.formats} />
         </div>
 
         <br />
 
         <div class="pure-u-1">
-          <DatesInput values={course.start_dates} />
+          <DatesInput 
+            handleValueChange={this.handleDatesChange}
+            values={course.start_dates} />
         </div>
 
 
         <div class="actions">
           <div class="buttons pure-u-1-2 pure-u-sm-2-5">
 
-            <button class="pure-button button-green save_button">
-              <img src="/static/cms/dist/images/tick.png" alt="save"/>
+            <button class="pure-button button-red delete_button" title="Delete event">
+              <img src="/static/cms/dist/images/trash.png" alt="delete"/> Delete
             </button>
 
-            <button class="pure-button pure-button-primary edit_button">
-              <img src="/static/cms/dist/images/pencil.png" alt="edit"/>
-            </button>
-
-            <button class="pure-button button-red delete_button">
-              <img src="/static/cms/dist/images/trash.png" alt="delete"/>
-            </button>
+            {this.state.hasChanged &&
+              <button class="pure-button button-green save_button" title="Save">
+                <img src="/static/cms/dist/images/tick.png" alt="save"/> Save
+              </button>
+            }
 
           </div>
 
@@ -160,6 +200,38 @@ class CourseEditor extends Component{
             {this.state.invalid && "Please enter valid information."}
           </div>
         </div>
+      </div>
+    );
+  }
+}
+
+
+class UrlInput extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      value: this.props.value,
+    }
+  }
+
+
+  handleValueChange = value => {
+    if (this.state.value !== value){
+      this.setState({ value }, () => {
+        this.props.handleValueChange(value);
+      });
+    }
+  }
+
+
+  render(){
+    return(
+      <div class="custom_input url_input">
+        <label>URL:</label>
+        <input type="text" 
+          onKeyUp={e => this.handleValueChange(e.target.value)}
+          placeholder="(none)"
+          value={this.state.value} />
       </div>
     );
   }
@@ -211,6 +283,7 @@ class CostInput extends Component{
           class={!this.state.isValid && "invalid"}
           type="number" 
           onKeyUp={e => {this.handleValueChange(e.target.value)}}
+          onChange={e => {this.handleValueChange(e.target.value)}}
           placeholder="(missing cost)" 
           value={this.state.value} />
       </div>
@@ -222,37 +295,48 @@ class CostInput extends Component{
 class CpdInput extends Component{
   constructor(props){
     super(props);
-    
+
     this.state = {
       points: this.props.value.points,
-      is_private: this.props.value.is_private,
+      isPrivate: this.props.value.isPrivate,
     };
   }
 
 
   handlePrivateInputCheck = e => {
-    this.setState({
-      is_private: e.target.checked
+    const isPrivate = e.target.checked;
+
+    this.setState({ isPrivate: isPrivate }, () => {
+      this.props.handleValueChange(this.state.points, isPrivate);
     });
   }
 
 
-  render(){
-    if (this.state.is_private){
+  handlePointsChange = points => {
+    if (this.state.points !== points){
+      this.setState({ points }, () => {
+        this.props.handleValueChange(points, this.state.isPrivate);
+      });
     }
+  }
+
+
+  render(){
     return(
       <div class="custom_input">
         <div class="pure-u-1-2">
-          {/*<label>{this.state.is_private ? "CPD" : "CPD points"}:</label>*/}
           <label>CPD:</label>
 
-          {this.state.is_private ?
-            <label class="cpd_points_private">Private</label>
-            :
-            <input class="cpd_points_input" 
-              disabled={this.state.is_private}
-              type="number" placeholder={this.state.is_private ? "Private" : "(points)"} 
-              value={this.state.is_private ? "Private" : this.state.points} />
+          {this.state.isPrivate ?
+              <label class="cpd_points_private">Private</label>
+              :
+              <input class="cpd_points_input" 
+                disabled={this.state.isPrivate}
+                type="number" placeholder={this.state.isPrivate ? "Private" : "(points)"} 
+                onKeyUp={e => {this.handlePointsChange(e.target.value)}}
+                onChange={e => {this.handlePointsChange(e.target.value)}}
+                onClick={e => {this.handlePointsChange(e.target.value)}}
+                value={this.state.isPrivate ? "Private" : this.state.points} />
           }
         </div>
 
@@ -261,7 +345,7 @@ class CpdInput extends Component{
           <input class="cpd_is_private_input"
             type="checkbox" 
             onChange={this.handlePrivateInputCheck}
-            checked={this.state.is_private} />
+            checked={this.state.isPrivate} />
         </div>
       </div>
     );
@@ -274,9 +358,9 @@ class LevelDropdown extends Component{
     return (
       <div class="custom_input">
         <label>Level:</label>
-        <select
-          selectedIndex={this.props.levels.indexOf(this.props.value)}
-        >
+        <select 
+          onChange={e => this.props.handleValueChange(e.target.value)}
+          selectedIndex={this.props.levels.indexOf(this.props.value)} >
           {this.props.levels.map(level => 
             <option>{level}</option>
           )}
@@ -293,8 +377,8 @@ class FormatDropdown extends Component{
       <div class="custom_input">
         <label>Format:</label>
         <select
-          selectedIndex={this.props.formats.indexOf(this.props.value)}
-        >
+          onChange={e => this.props.handleValueChange(e.target.value)}
+          selectedIndex={this.props.formats.indexOf(this.props.value)} >
           {this.props.formats.map(format => 
             <option>{format}</option>
           )}
@@ -308,11 +392,91 @@ class FormatDropdown extends Component{
 class DatesInput extends Component{
   render(){
     return(
-      <div class="custom_input">
+      <div class="dates_input">
         <label>Dates:</label>
-        <div class="dates_picker">
-          {this.props.values.join(", ")}
+        <ListInput
+          handleValueChange={this.props.handleValueChange}
+          values={this.props.values}
+        />
+      </div>
+    );
+  }
+}
+
+
+class ListInput extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      items: this.props.values,
+    };
+  }
+
+
+  addItem = e => {
+    const items = this.state.items.concat("");
+    this.setState({ items }, () => {
+      this.props.handleValueChange(items);
+    });
+  }
+
+
+  removeItem = index => {
+    let items = this.state.items;
+    items.splice(index, 1);
+    this.setState({ items }, () => {
+      this.props.handleValueChange(items);
+    });
+  }
+
+
+  updateItem = (index, value) => {
+    let items = this.state.items;
+    items[index] = value;
+    this.setState({ items }, () => {
+      this.props.handleValueChange(items);
+    });
+  }
+
+
+  render(){
+    return(
+      <div class="list_input">
+        <div class="button_col">
+          <button 
+            title="Add date"
+            onClick={this.addItem}
+            class="add_button pure-button pure-button-primary">
+            +
+          </button>
         </div>
+        <div class="list_input_col">
+
+          {this.state.items.map((item, index) => 
+            <ListInputItem 
+              handleValueChange={value => this.updateItem(index, value)}
+              handleRemoveItem={() => this.removeItem(index)}
+              value={item} 
+            />
+          )}
+        </div>
+      </div>
+    );
+  }
+}
+
+
+class ListInputItem extends Component{
+  render(){
+    return(
+      <div class="list_input_item">
+        <input 
+          onKeyUp={e => this.props.handleValueChange(e.target.value)}
+          type="text" 
+          maxlength="10" placeholder="dd/mm/yyyy" value={this.props.value} />
+        <span 
+          onClick={this.props.handleRemoveItem}
+          title="Remove date" class="remove_btn">✕</span>
       </div>
     );
   }
