@@ -5,7 +5,7 @@ export class Navbar extends Component {
     return(
       <div>
         <div class="section">
-          <a href="/cms/">Dashboard</a>
+          <a href="/cms/">Home</a>
         </div>
         <div class="section">
           <a href="/cms/courses/">Courses</a>

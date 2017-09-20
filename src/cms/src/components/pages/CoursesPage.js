@@ -87,13 +87,11 @@ export class CourseList extends Component {
 
 
 class CourseEditor extends Component{
-  handleCostChange = ({ value, isValid}) => {
+  handleCostChange = value => {
     this.setState({
-      invalid: !isValid,
       hasChanged: true,
     });
   }
-
 
   handleCpdChange = (value, isPrivate) => {
     this.setState({
@@ -130,16 +128,27 @@ class CourseEditor extends Component{
   }
 
 
+  handleNameChange = name => {
+    this.setState({
+      hasChanged: true,
+    });
+  }
+
+
+  handleSaveClick = () => {
+  }
+
+
   render(){
     const course = this.props.course;
     return(
       <div class="editor">
         <div class="name pure-u-1">
-          <input type="text" 
-            placeholder="Name"
-            value={course.name}>
-          </input>
+          <NameInput
+            handleValueChange={this.handleNameChange}
+            value={course.name} />
         </div>
+
         <div class="pure-u-1">
           <UrlInput
             handleValueChange={this.handleUrlChange}
@@ -182,22 +191,21 @@ class CourseEditor extends Component{
 
 
         <div class="actions">
-          <div class="buttons pure-u-1-2 pure-u-sm-2-5">
+          <div class="buttons pure-u-1">
 
             <button class="pure-button button-red delete_button" title="Delete event">
               <img src="/static/cms/dist/images/trash.png" alt="delete"/> Delete
             </button>
 
             {this.state.hasChanged &&
-              <button class="pure-button button-green save_button" title="Save">
+              <button 
+                onClick={this.handleSaveClick}
+                class="pure-button button-green save_button" 
+                title="Save">
                 <img src="/static/cms/dist/images/tick.png" alt="save"/> Save
               </button>
             }
 
-          </div>
-
-          <div class="pure-u-1-2 pure-u-sm-2-5">
-            {this.state.invalid && "Please enter valid information."}
           </div>
         </div>
       </div>
@@ -205,6 +213,35 @@ class CourseEditor extends Component{
   }
 }
 
+class NameInput extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      value: this.props.value,
+    }
+  }
+
+
+  handleValueChange = value => {
+    if (this.state.value !== value){
+      this.setState({ value }, () => {
+        this.props.handleValueChange(value);
+      });
+    }
+  }
+
+
+  render(){
+    return(
+      <div class="custom_input url_input">
+        <input type="text" 
+          placeholder="Name" 
+          onKeyUp={e => this.handleValueChange(e.target.value)}
+          value={this.state.value} />
+      </div>
+    );
+  }
+}
 
 class UrlInput extends Component{
   constructor(props){
@@ -243,44 +280,22 @@ class CostInput extends Component{
     super(props);
     this.state = {
       value: this.props.value,
-      isValid: this.validate(this.props.value)
     };
-  }
-
-  decimalPlaces = num => {
-    var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-    if (!match) { 
-      return 0; 
-    }
-
-    return Math.max( 0,
-      // Number of digits right of decimal point.
-      (match[1] ? match[1].length : 0)
-      // Adjust for scientific notation.
-      - (match[2] ? +match[2] : 0));
-  }
-
-  validate = value => {
-    return this.decimalPlaces(value) < 3;
   }
 
 
   handleValueChange = value => {
-    const isValid = this.validate(value);
-
-    this.setState({ value, isValid });
-
-    this.props.handleValueChange({ value, isValid });
+    this.setState({ value }, () =>{
+      this.props.handleValueChange(value);
+    });
   }
 
 
   render(){
-
     return(
       <div class="custom_input">
         <label>Cost ($):</label>
         <input 
-          class={!this.state.isValid && "invalid"}
           type="number" 
           onKeyUp={e => {this.handleValueChange(e.target.value)}}
           onChange={e => {this.handleValueChange(e.target.value)}}
