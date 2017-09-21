@@ -4,7 +4,6 @@ import Question from '../../Question';
 import { authFetch } from '../../../lib/fetch';
 import {
   Screen, 
-  renderStartOver,
   renderLoader,
 } from '../Screen';
 
@@ -255,7 +254,7 @@ class DiagScreen extends Screen{
     return(
       <div class="pure-g">
         <div class="pure-u-1">
-          {renderStartOver()}
+          {this.renderStartOver()}
           <div className="diag question">
             <h1>I can...</h1>
             {this.renderQns(this.state.diag, this.state.toHighlight)}

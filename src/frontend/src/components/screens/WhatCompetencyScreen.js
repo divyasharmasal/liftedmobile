@@ -3,7 +3,6 @@ import { route } from 'preact-router';
 import Question from '../Question';
 import {
   renderLoader,
-  renderStartOver,
   Screen, 
 } from './Screen';
 
@@ -39,7 +38,7 @@ class WhatCompetencyScreen extends Screen{
     return (
       <div className="pure-g">
         <div className="pure-u-1">
-          {renderStartOver()}
+          {this.renderStartOver()}
 					<Question
 						isMultiQn={false}
 						handleAnswerSelect={this.handleAnswerSelect}

@@ -1,18 +1,15 @@
 import { h, Component } from 'preact';
 import Question from '../../Question';
-import {
-  renderStartOver,
-  Screen, 
-} from '../Screen';
+import { Screen, } from '../Screen';
 
-export {WhereWorkScreen};
+export { WhereWorkScreen };
 
 class WhereWorkScreen extends Screen{
   render() {
     return (
       <div className="pure-g">
         <div className="pure-u-1">
-          {renderStartOver()}
+          {this.renderStartOver()}
 					<Question
             qnNum={this.props.qnNum}
 						isMultiQn={false}

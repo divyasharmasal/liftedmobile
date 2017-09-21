@@ -5,7 +5,6 @@ import { authFetch } from '../../../lib/fetch';
 import { RolePicker } from './RolePicker';
 import {
   renderLoader,
-  renderStartOver,
   Screen, 
 } from '../Screen';
 
@@ -87,7 +86,7 @@ class RoleScreen extends Screen{
     return (
       <div class="pure-g">
         <div class="pure-u-1">
-          {renderStartOver()}
+          {this.renderStartOver()}
           <div class="question">
             {this.props.isNextRole ?
               <h1>I aspire to work as a...</h1>

@@ -2,14 +2,19 @@ import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import Question from '../Question';
 import { authFetch } from '../../lib/fetch';
-import {
-  Screen, 
-  createCoursesUrl, 
-  renderStartOver,
-} from './Screen';
+import { Screen, } from './Screen';
 import { Courses } from '../Courses';
 
 export {BranchScreen};
+
+
+const createCoursesUrl = (verticalId, categoryId, needIds) => {
+  const prefix = "/courses?";
+  const vert = "v=" + encodeURIComponent(verticalId);
+  const cat = "&c=" + (categoryId ? encodeURIComponent(categoryId) : "any");
+  const needs = "&n=" + (needIds ? encodeURIComponent(needIds.join(",")) : "any");
+  return prefix + vert + cat + needs;
+}
 
 
 class BranchScreen extends Screen {
@@ -164,7 +169,7 @@ class BranchScreen extends Screen {
         <a name="top" />
         {notification}
         <div class="pure-u-1">
-          {renderStartOver()}
+          {this.renderStartOver()}
           <a class="top_nav_link full_review"
             onClick={() => {route("/test")}}>
             Full review ➜

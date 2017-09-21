@@ -5,7 +5,6 @@ import { authFetch } from '../../../lib/fetch';
 import { Courses } from '../../Courses';
 import {
   renderLoader,
-  renderStartOver,
   Screen, 
 } from '../Screen';
 
@@ -315,7 +314,7 @@ class DiagResultsScreen extends Screen{
       <div className="pure-g">
         <a name="top"></a>
         <div className="pure-u-1">
-          {renderStartOver()}
+          {this.renderStartOver()}
           <div className="question results">
             <h1>Your competencies</h1>
             <p>Click on each name below to jump to courses that help you to improve.</p>

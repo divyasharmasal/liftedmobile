@@ -133,7 +133,7 @@ export default class App extends Component {
     let storedSelectedAnswers = sessionStorage.getItem("selectedAnswers");
 
     // Use answers stored in session storage instead of state if 
-    // state.selectedanswers == {}
+    // state.selectedAnswers == {}
     if (Object.keys(selectedAnswers).length == 0 && storedSelectedAnswers){
       selectedAnswers = JSON.parse(storedSelectedAnswers);
     }
