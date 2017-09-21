@@ -2,10 +2,11 @@ import { h, Component } from "preact";
 import { Router, route } from "preact-router";
 import "preact/devtools";
 import { authFetch } from "../lib/fetch";
+import { getSelectedOpts, storeSelectedOpts, clearSelectedItems } from "../lib/store";
 import { 
   BranchScreen,
   WhatCompetencyScreen, 
-  JobScreen, 
+  VerticalScreen, 
   WhereWorkScreen,
   RoleScreen,
   GoalScreen,
@@ -20,28 +21,26 @@ export default class App extends Component {
     super(props);
 
     this.state = {
-      selectedAnswers: {},
+      selectedOptions: {},
     };
   }
 
 
   componentWillMount = () => {
-    if (typeof window !== "undefined"){
-      let storedSelectedAnswers = JSON.parse(
-        sessionStorage.getItem("selectedAnswers"));
-      if (storedSelectedAnswers){
-        this.setState({
-          selectedAnswers: storedSelectedAnswers,
-        });
-      }
+    const storedSelectedOpts = getSelectedOpts();
 
-      let storedDiagAnswers = JSON.parse(
-        sessionStorage.getItem("diagAnswers"));
-      if (storedDiagAnswers){
-        this.setState({
-          diagAnswers: storedDiagAnswers,
-        });
-      }
+    if (storedSelectedOpts){
+      this.setState({
+        selectedOptions: storedSelectedOpts,
+      });
+    }
+
+    let storedDiagAnswers = JSON.parse(
+      sessionStorage.getItem("diagAnswers"));
+    if (storedDiagAnswers){
+      this.setState({
+        diagAnswers: storedDiagAnswers,
+      });
     }
   }
 
@@ -59,40 +58,60 @@ export default class App extends Component {
   }
 
 
-  handleAnswerSelect = (qnNum, answer, isMultiQn, callback) => {
-    let selectedAnswers = this.state.selectedAnswers;
-
-    // Multi-select qns
-    if (isMultiQn && qnNum === 3){
-      let index = selectedAnswers[qnNum-1].indexOf(answer);
-      if (index > -1){
-        selectedAnswers[qnNum-1].splice(index, 1);
-      }
-      else{
-        selectedAnswers[qnNum-1].push(answer);
-      }
+  handleOptionSelect = (name, answer, isMultiQn, callback) => {
+    // Store answer to sessionStorage and the component state
+    if (isMultiQn){
+      console.log(name, answer, isMultiQn);
     }
-    // Single-select qns
     else{
-      selectedAnswers[qnNum] = [answer];
+      let selectedOptions = this.state.selectedOptions;
+      selectedOptions[name] = answer;
+
+      storeSelectedOpts(selectedOptions);
+
+      this.setState({ selectedOptions }, () => {
+        callback();
+      });
+
     }
 
-    // Remove items selectedAnswers for higher qnNums
-    Object.keys(selectedAnswers).forEach(q => {
-      if (q > qnNum){
-        delete selectedAnswers[q];
-      }
-    });
+  }
 
-    // Store selectedAnswers to sessionStorage and the state
-    sessionStorage.setItem("selectedAnswers", 
-      JSON.stringify(selectedAnswers));
-    this.setState({ selectedAnswers }, () => {
-      // Run the callback, unless it"s on the branch screen
-      if (qnNum !== 3){ 
-        callback();
-      }
-    });
+
+  handleAnswerSelect = (qnNum, answer, isMultiQn, callback) => {
+    //let selectedAnswers = this.state.selectedAnswers;
+
+    //// Multi-select qns
+    //if (isMultiQn && qnNum === 3){
+      //let index = selectedAnswers[qnNum-1].indexOf(answer);
+      //if (index > -1){
+        //selectedAnswers[qnNum-1].splice(index, 1);
+      //}
+      //else{
+        //selectedAnswers[qnNum-1].push(answer);
+      //}
+    //}
+    //// Single-select qns
+    //else{
+      //selectedAnswers[qnNum] = [answer];
+    //}
+
+    //// Remove items selectedAnswers for higher qnNums
+    //Object.keys(selectedAnswers).forEach(q => {
+      //if (q > qnNum){
+        //delete selectedAnswers[q];
+      //}
+    //});
+
+    //// Store selectedAnswers to sessionStorage and the state
+    //sessionStorage.setItem("selectedAnswers", 
+      //JSON.stringify(selectedAnswers));
+    //this.setState({ selectedAnswers }, () => {
+      //// Run the callback, unless it's on the branch screen
+      //if (qnNum !== 3){ 
+        //callback();
+      //}
+    //});
   }
 
 
@@ -103,6 +122,14 @@ export default class App extends Component {
 	 */
 	handleRoute = e => {
 		this.currentUrl = e.url;
+
+    if (e.url === "/"){
+      this.setState({
+        selectedOptions: {}
+      }, () => {
+        clearSelectedItems();
+      });
+    }
 
     // Update Google Analytics
     if (typeof window !== "undefined"){
@@ -129,48 +156,35 @@ export default class App extends Component {
       return renderLoader();
     }
 
-    let selectedAnswers = this.state.selectedAnswers;
-    let storedSelectedAnswers = sessionStorage.getItem("selectedAnswers");
-
-    // Use answers stored in session storage instead of state if 
-    // state.selectedAnswers == {}
-    if (Object.keys(selectedAnswers).length == 0 && storedSelectedAnswers){
-      selectedAnswers = JSON.parse(storedSelectedAnswers);
-    }
-    // If neither state nor sessionStorage contains the selectedAnswers,
-    // route to /
-    else if ((!selectedAnswers && !storedSelectedAnswers) ||
-             (Object.keys(selectedAnswers).length === 0 
-               && !storedSelectedAnswers)){
-      route("/");
-    }
-
 		return (
       <Router onChange={this.handleRoute}>
 
-        <JobScreen 
-          qnNum={0}
-          qnData={this.state.qns[0]}
-          path="/"
+        <VerticalScreen 
           default
-          handleAnswerSelect={this.handleAnswerSelect}
+          name="vertical"
+          deps={[]}
+          qnData={this.state.qns["Vertical"]}
+          path="/"
+          handleOptionSelect={this.handleOptionSelect}
           nextScreenPath="/what" />
 
         <WhatCompetencyScreen
-          qnNum={1}
-          qnData={this.state.qns[1]}
+          name="comp_category"
+          qnData={this.state.qns["CompetencyCategory"]}
           path={"/what"}
-          handleAnswerSelect={this.handleAnswerSelect}
-          selectedAnswers={selectedAnswers}
+          handleOptionSelect={this.handleOptionSelect}
+          selectedOptions={this.state.selectedOptions}
           nextScreenPath="/choose" />
 
         <BranchScreen
-          qnNum={2}
-          qnData={this.state.qns[2]}
+          name="needs"
+          qnData={this.state.qns["Need"]}
           path="/choose"
-          handleAnswerSelect={this.handleAnswerSelect}
-          selectedAnswers={selectedAnswers} 
+          handleOptionSelect={this.handleOptionSelect}
+          selectedOptions={this.state.selectedOptions}
           nextScreenPath="/test" />
+
+        {/*
 
         <WhereWorkScreen
           qnNum={4}
@@ -214,6 +228,7 @@ export default class App extends Component {
           path="/test/results"
           selectedAnswers={selectedAnswers} 
           answers={this.state.diagAnswers} />
+        */}
 
       </Router>
 		);

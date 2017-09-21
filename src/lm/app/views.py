@@ -54,22 +54,27 @@ def qns_and_opts(request):
         return {"text": qn_text, "options": options}
 
     qns = []
-    qn1_opts = [{"text": v.option} for v in models.Vertical.objects.all()]
+    qn1_opts = [
+        {
+            "text": v.option,
+            "id": v.id
+        }
+        for v in models.Vertical.objects.all()]
 
     qn1 = create_qn("I am...", qn1_opts)
 
     qn2_opts = {}
     for row in models.VerticalCategory.objects.all():
-        opt_num = row.vertical_id - 1
+        opt_num = row.vertical_id
         if opt_num not in qn2_opts:
             qn2_opts[opt_num] = []
-        qn2_opts[opt_num].append(row.option)
+        qn2_opts[opt_num].append({"text": row.option, "id": row.id})
 
     qn2 = create_qn("I want to develop my abilities in...", qn2_opts)
 
     qn3_opts = []
     for row in models.Need.objects.all():
-        qn3_opts.append({"text": row.option})
+        qn3_opts.append({"text": row.option, "id": row.id})
     qn3 = create_qn("I want to focus on...", qn3_opts)
 
     qn4_opts = [{"text": "A law firm."},
@@ -80,7 +85,12 @@ def qns_and_opts(request):
                 {"text": "Get better at my current job."}]
     qn5 = create_qn("I want to...", qn5_opts)
 
-    qns = [qn1, qn2, qn3, qn4, qn5]
+    # qns = [qn1, qn2, qn3, qn4, qn5]
+    qns = {
+        "Vertical": qn1,
+        "CompetencyCategory": qn2,
+        "Need": qn3,
+    }
 
     return json_response(qns)
 

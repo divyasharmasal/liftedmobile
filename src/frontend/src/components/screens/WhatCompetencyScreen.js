@@ -6,21 +6,18 @@ import {
   Screen, 
 } from './Screen';
 
-export {WhatCompetencyScreen};
-class WhatCompetencyScreen extends Screen{
-  constructor(props){
-    super(props);
 
-    if (!this.props.selectedAnswers || 
-        Object.keys(this.props.selectedAnswers).length == 0){
-      route("/");
-    }
-    else{
-      let selectedVertical = this.props.selectedAnswers[0][0];
+export {WhatCompetencyScreen};
+
+class WhatCompetencyScreen extends Screen{
+  componentWillMount = () => {
+    let selectedVertical = this.props.selectedOptions["vertical"];
+    if (selectedVertical){
       let options = [];
       this.props.qnData.options[selectedVertical].forEach(x => {
-        options.push({text: x});
+        options.push({text: x.text, id: x.id});
       });
+
       this.state = {
         qnData: { 
           text: this.props.qnData.text,
@@ -41,7 +38,7 @@ class WhatCompetencyScreen extends Screen{
           {this.renderStartOver()}
 					<Question
 						isMultiQn={false}
-						handleAnswerSelect={this.handleAnswerSelect}
+						handleOptionSelect={this.handleOptionSelect}
 						qnData={this.state.qnData} 
 					/>
 				</div>

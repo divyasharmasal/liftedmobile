@@ -1,13 +1,13 @@
 import { h, Component } from 'preact';
 import Question from '../Question';
-import {Screen} from './Screen';
+import { Screen } from './Screen';
+import { clearSelectedItems } from "../../lib/store";
 
-export {JobScreen};
+export { VerticalScreen };
 
-class JobScreen extends Screen{
+class VerticalScreen extends Screen{
   constructor(props){
     super(props);
-    sessionStorage.removeItem("selectedAnswers");
   }
 
 
@@ -32,18 +32,18 @@ class JobScreen extends Screen{
           </div>
 
 					<Question
-            qnNum={this.props.qnNum}
+            screenName={this.props.name}
 						isMultiQn={false}
-						handleAnswerSelect={this.handleAnswerSelect}
+						handleOptionSelect={this.handleOptionSelect}
 						qnData={this.props.qnData} 
 					/>
 
           <div class="credits">
             <p>
-            This app is part of the <a href="http://www.sal.org.sg/Resources-Tools/Legal-Education/LIFTED/Overview">Legal Industry Framework for Training and Education
-              </a>, an initiative of the <a href="http://www.sal.org.sg">
-                Singapore Academy of Law
-              </a>.
+              This app is part of 
+              the <a href="http://www.sal.org.sg/Resources-Tools/Legal-Education/LIFTED/Overview">Legal Industry Framework for Training and Education</a>, an 
+              initiative of the <a href="http://www.sal.org.sg">
+                Singapore Academy of Law</a>.
             </p>
             {/*
             <p>

@@ -25,28 +25,28 @@ export default class Question extends Component{
   }
 
 
-  onAnswerClick = selectedIndex => {
+  handleOptionClick = id => {
     if (this.type === this.QN_TYPES.SINGLE){
-      this.props.handleAnswerSelect(selectedIndex, this.props.isMultiQn);
+      this.props.handleOptionSelect(id, this.props.isMultiQn);
     }
-    else if (this.type === this.QN_TYPES.MULTI){
+    else{
       let preSelected = this.state.preSelected;
       if (preSelected == null){
         preSelected = [];
       }
-      let index = preSelected.indexOf(selectedIndex);
+
+      let index = preSelected.indexOf(id);
 
       if (index > -1){
         preSelected.splice(index, 1);
       }
       else if (index === -1){
-        preSelected = preSelected.concat([selectedIndex])
+        preSelected = preSelected.concat([id])
       }
 
-      this.setState({ preSelected: preSelected }, 
-        () => {
-          this.props.handleAnswerSelect(preSelected, this.props.isMultiQn);
-        });
+      this.setState({ preSelected }, () => {
+        this.props.handleOptionSelect(preSelected, this.props.isMultiQn);
+      });
     }
   }
 
@@ -61,9 +61,6 @@ export default class Question extends Component{
 
   render(){
     const qnData = this.props.qnData;
-    const onAnswerClick = this.onAnswerClick;
-    //const tick = "✔";
-    const tick = <img src="/static/app/dist/images/tick.png" />
     const options = qnData.options;
 
     let optionBtns = [];
@@ -73,14 +70,12 @@ export default class Question extends Component{
       optionTextClass += " multi_option_text";
     }
 
-    // Display questions and options.
+    // Display questions and options
     options.forEach((option, i) => {
-      let optionDesc;
-
-      let answerClass = "no_user_select answer";
+      let answerClass = "answer no_user_select";
 
       if (this.state.preSelected){
-        if (this.state.preSelected.indexOf(i) > -1){
+        if (this.state.preSelected.indexOf(option.id) > -1){
           answerClass += " selected";
         }
       }
@@ -89,69 +84,29 @@ export default class Question extends Component{
         answerClass += " tile";
       }
 
-      let optionElm;
-
-      optionElm = (
-        <div class={optionTextClass}>
-          {option.text}
-          {optionDesc}
-        </div>
-      );
-
       optionBtns.push(
-        <div>
-          <div key={i} 
-               class={answerClass}
-               onClick={() => {this.onAnswerClick(i)}}>
-            {this.props.isMultiQn &&
-              <div class="option_tick">
-                {tick}
-              </div>
-            }
-            {optionElm}
+        <div class={answerClass}
+             onClick={() => {this.handleOptionClick(option.id)}}>
+          {this.props.isMultiQn &&
+            <div class="option_tick">
+              <img src="/static/app/dist/images/tick.png" />
+            </div>
+          }
+          <div class={optionTextClass}>
+            {option.text}
           </div>
         </div>
       );
     });
 
-    if (this.props.clickToShow && qnData.text){
-      let optionsClass = "goals";
-      if (this.state.showOptions){
-        optionsClass += "show";
-      }
-      return (
-        <div className="question">
-          <h1>{qnData.text}</h1>
-					{this.props.isMultiQn &&
-						<p>(you can choose more than one)</p>
-					}
-
-					<div class="toggle" onClick={this.toggleOptions}>
-						<div class="toggle_title">
-						{this.state.optionsVisible ?
-							<p>Click to view: <span class="toggle_arrow">▼</span></p>
-							:
-							<p>Click to hide: <span class="toggle_arrow">▲</span></p>
-						}
-						</div>
-					</div>
-
-          <div class={optionsClass}>
-            {optionBtns}
-          </div>
-        </div>
-      );
-    }
-    else{
-      return (
-        <div className="question">
-          {qnData.text && <h1>{qnData.text}</h1>}
-					{this.props.isMultiQn &&
-						<p>(you can choose more than one)</p>
-					}
-          {optionBtns}
-        </div>
-      );
-    }
+    return (
+      <div className="question">
+        {qnData.text && <h1>{qnData.text}</h1>}
+        {this.props.isMultiQn &&
+          <p>(you can choose more than one)</p>
+        }
+        {optionBtns}
+      </div>
+    );
   }
 }

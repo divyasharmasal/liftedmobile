@@ -4,6 +4,7 @@ import Question from '../Question';
 import { authFetch } from '../../lib/fetch';
 import { Screen, } from './Screen';
 import { Courses } from '../Courses';
+import { storeSelectedOpts } from "../../lib/store";
 
 export {BranchScreen};
 
@@ -39,10 +40,10 @@ class BranchScreen extends Screen {
 
 
   fetchAndStoreCourses = (selectedNeeds) => {
-    // The IDs in the database start from 1, so increment the selectedAnswer
-    // indices which start from 0
-    const verticalId = this.props.selectedAnswers[0][0] + 1;
-    const categoryId = this.props.selectedAnswers[1][0] + 1;
+    // The IDs in the database start from 1, so increment the
+    // selectedOption indices which start from 0
+    const verticalId = this.props.selectedOptions["vertical"];
+    const categoryId = this.props.selectedOptions["comp_category"];
 
     if (selectedNeeds == null){
       authFetch(createCoursesUrl(verticalId, categoryId))
@@ -98,44 +99,26 @@ class BranchScreen extends Screen {
 
 
   componentWillMount = () => {
-    let selectedAnswers = this.props.selectedAnswers;
-    const storedSelectedAnswers = sessionStorage.getItem("selectedAnswers");
-
-    // Use answers stored in session storage instead of state if 
-    // state.selectedanswers == {}
-    if (Object.keys(selectedAnswers).length == 0 && storedSelectedAnswers){
-      selectedAnswers = JSON.parse(storedSelectedAnswers);
-    }
-
-    if ((!selectedAnswers && !storedSelectedAnswers) ||
-         (Object.keys(selectedAnswers).length === 0 
-           && !storedSelectedAnswers)){
-      route("/");
-    }
-    else{
+    if (this.props.selectedOptions){
       this.fetchAndStoreCourses(null);
     }
   }
 
 
-  handleAnswerSelect = (selectedNeeds, isMultiQn) => {
-    let selectedAnswers = this.props.selectedAnswers;
-    selectedAnswers[this.props.qnNum] = selectedNeeds;
-    this.fetchAndStoreCourses(selectedNeeds);
+  handleOptionSelect = (selectedNeeds, isMultiQn) => {
+    let selectedOptions = this.props.selectedOptions;
+    selectedOptions[this.props.name] = selectedNeeds;
 
-    // Store selectedAnswers to sessionStorage and the state
-    sessionStorage.setItem("selectedAnswers", JSON.stringify(selectedAnswers));
+    // Store selectedOptions to sessionStorage and the state
+    storeSelectedOpts(selectedOptions);
+    this.fetchAndStoreCourses(selectedNeeds);
   }
 
 
   render = () => {
     const courseTableRef = courseTable => {this.courseTable = courseTable};
-    const courses = <Courses courses={this.state.courses}
-                             courseTableRef={courseTableRef}
-                             unPadCourses={this.unPadCourses} />;
-
-    // find out which item the user selected in the previous screen
-    const preSelected = this.props.selectedAnswers[this.props.qnNum];
+    // find out which item the user already selected
+    const preSelected = this.props.selectedOptions[this.props.name];
 
     let qnData = JSON.parse(JSON.stringify(this.props.qnData));
     //qnData.text = "...or choose more goals if you wish.";
@@ -175,12 +158,11 @@ class BranchScreen extends Screen {
             Full review ➜
           </a>
           <Question
-            clickToShow={false}
             isMultiQn={true}
             preSelected={preSelected}
             scrollDownMsg={false}
             useTiles={true}
-            handleAnswerSelect={this.handleAnswerSelect}
+            handleOptionSelect={this.handleOptionSelect}
             qnData={qnData} 
           />
         </div>
@@ -191,7 +173,9 @@ class BranchScreen extends Screen {
             <div class="pure-u-1">
               <h1>Recommended courses</h1>
             </div>
-            {courses}
+            <Courses courses={this.state.courses}
+              courseTableRef={courseTableRef}
+              unPadCourses={this.unPadCourses} />;
           </div>
         }
       </div>
