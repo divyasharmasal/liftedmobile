@@ -22,23 +22,17 @@
         margin-left:-0.5em;
 
         &>div{
-            margin-bottom:0.5em;
+            margin-bottom:1em;
 
             input{
-                background-color:transparent;
                 width:100%;
-                border:solid transparent 1px;
                 padding:0.2em;
                 margin-left:-0.2em;
-
-                &:hover{
-                    width:100%;
-                    box-sizing: border-box;
-                    background-color:white;
-                    border: 1px solid #ccc;
-                    box-shadow: inset 0 1px 3px #ddd;
-                    border-radius: 4px;
-                }
+                box-sizing: border-box;
+                background-color:white;
+                border: 1px solid #ccc;
+                box-shadow: inset 0 1px 3px #ddd;
+                border-radius: 4px;
             }
         }
 
@@ -78,15 +72,14 @@
             input{
                 float:left;
                 width:30%;
-
-                &:hover{
-                    width:30%;
-                }
             }
 
             select{
                 padding:0.2em;
                 margin-top:0.2em;
+                margin-left:-3px;
+                top:-2px;
+                position:relative;
             }
         }
 
@@ -121,10 +114,6 @@
                         border-color: #ccc;
                         box-shadow: inset 0 1px 3px #ddd;
                         margin-bottom:0.5em;
-
-                        &:hover{
-                            width:138px;
-                        }
                     }
 
                     .remove_btn{
@@ -165,12 +154,8 @@
             height:25.6px;
             margin-top:0.1em;
             margin-left:0.1em;
-
-            &:hover{
-                width: @checkbox_width;
-                border:none;
-                box-shadow: none;
-            }
+            border:none;
+            box-shadow: none;
         }
 
         .custom_input .cpd_points_input{

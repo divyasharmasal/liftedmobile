@@ -110,7 +110,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('name', models.TextField(unique=True)),
-                ('role_level', models.IntegerField()),
+                ('role_level', models.IntegerField(null=True)),
                 ('org_type', models.TextField()),
                 ('thin_desc', models.TextField()),
             ],

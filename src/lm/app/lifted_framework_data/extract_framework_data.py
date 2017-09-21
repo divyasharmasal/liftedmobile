@@ -241,11 +241,25 @@ def parse_job_roles():
 
     # parse competency IDs
     for row in data:
-        row["Competency IDs"] = [int(x.strip()) for x in row["Competency IDs "].split(",")]
+        comps = []
+        for x in row["Competency IDs "].split(","):
+            if "-" in x:
+                limits = [int(n.strip()) for n in x.split("-")]
+                for i in range(limits[0], limits[1] + 1):
+                    comps.append(i)
+            else:
+                comps.append(int(x.strip()))
+
+        row["Competency IDs"] = comps
         del row["Competency IDs "]
+
+        if row["Level"] == "":
+            row["Level"] = None
     return data
 
 
 if __name__ == "__main__":
     import pprint
-    pprint.pprint(parse_courses())
+    # pprint.pprint(parse_courses())
+    roles = parse_job_roles()
+    pprint.pprint(roles)

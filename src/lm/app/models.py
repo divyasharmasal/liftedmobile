@@ -157,7 +157,7 @@ class CourseCompetency(models.Model):
 class JobRole(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.TextField(unique=True)
-    role_level = models.IntegerField()
+    role_level = models.IntegerField(null=True)
     org_type = models.TextField()
     thin_desc = models.TextField()
     vertical = models.ForeignKey(Vertical, on_delete=models.CASCADE)
