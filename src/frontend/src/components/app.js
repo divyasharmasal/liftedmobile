@@ -2,7 +2,13 @@ import { h, Component } from "preact";
 import { Router, route } from "preact-router";
 import "preact/devtools";
 import { authFetch } from "../lib/fetch";
-import { getSelectedOpts, storeSelectedOpts, clearSelectedItems } from "../lib/store";
+
+import { 
+  getSelectedOpts, 
+  storeSelectedOpts, 
+  clearSelectedItems 
+} from "../lib/store";
+
 import { 
   BranchScreen,
   WhatCompetencyScreen, 
@@ -58,60 +64,18 @@ export default class App extends Component {
   }
 
 
-  handleOptionSelect = (name, answer, isMultiQn, callback) => {
+  handleOptionSelect = (name, answer, callback=null) => {
     // Store answer to sessionStorage and the component state
-    if (isMultiQn){
-      console.log(name, answer, isMultiQn);
-    }
-    else{
-      let selectedOptions = this.state.selectedOptions;
-      selectedOptions[name] = answer;
+    let selectedOptions = this.state.selectedOptions;
+    selectedOptions[name] = answer;
 
-      storeSelectedOpts(selectedOptions);
+    storeSelectedOpts(selectedOptions);
 
-      this.setState({ selectedOptions }, () => {
+    this.setState({ selectedOptions }, () => {
+      if (callback){
         callback();
-      });
-
-    }
-
-  }
-
-
-  handleAnswerSelect = (qnNum, answer, isMultiQn, callback) => {
-    //let selectedAnswers = this.state.selectedAnswers;
-
-    //// Multi-select qns
-    //if (isMultiQn && qnNum === 3){
-      //let index = selectedAnswers[qnNum-1].indexOf(answer);
-      //if (index > -1){
-        //selectedAnswers[qnNum-1].splice(index, 1);
-      //}
-      //else{
-        //selectedAnswers[qnNum-1].push(answer);
-      //}
-    //}
-    //// Single-select qns
-    //else{
-      //selectedAnswers[qnNum] = [answer];
-    //}
-
-    //// Remove items selectedAnswers for higher qnNums
-    //Object.keys(selectedAnswers).forEach(q => {
-      //if (q > qnNum){
-        //delete selectedAnswers[q];
-      //}
-    //});
-
-    //// Store selectedAnswers to sessionStorage and the state
-    //sessionStorage.setItem("selectedAnswers", 
-      //JSON.stringify(selectedAnswers));
-    //this.setState({ selectedAnswers }, () => {
-      //// Run the callback, unless it's on the branch screen
-      //if (qnNum !== 3){ 
-        //callback();
-      //}
-    //});
+      }
+    });
   }
 
 
@@ -163,14 +127,14 @@ export default class App extends Component {
           default
           name="vertical"
           deps={[]}
-          qnData={this.state.qns["Vertical"]}
+          qnData={this.state.qns["vertical"]}
           path="/"
           handleOptionSelect={this.handleOptionSelect}
           nextScreenPath="/what" />
 
         <WhatCompetencyScreen
           name="comp_category"
-          qnData={this.state.qns["CompetencyCategory"]}
+          qnData={this.state.qns["competency_category"]}
           path={"/what"}
           handleOptionSelect={this.handleOptionSelect}
           selectedOptions={this.state.selectedOptions}
@@ -178,54 +142,57 @@ export default class App extends Component {
 
         <BranchScreen
           name="needs"
-          qnData={this.state.qns["Need"]}
+          qnData={this.state.qns["need"]}
           path="/choose"
           handleOptionSelect={this.handleOptionSelect}
           selectedOptions={this.state.selectedOptions}
-          nextScreenPath="/test" />
-
-        {/*
+          nextScreenPaths={{
+            1: "review/role",
+            2: "review/role",
+            3: "review/where"
+          }} />
 
         <WhereWorkScreen
-          qnNum={4}
-          qnData={this.state.qns[3]}
-          path="/test"
-          handleAnswerSelect={this.handleAnswerSelect}
-          selectedAnswers={selectedAnswers}
-          nextScreenPath="/test/role" />
+          name="legalsupport_where"
+          qnData={this.state.qns["where"]}
+          path="/review/where"
+          handleOptionSelect={this.handleOptionSelect}
+          selectedOptions={this.state.selectedOptions}
+          nextScreenPath="/review/role" />
 
         <RoleScreen
-          qnNum={5}
-          path="/test/role"
+          name="role"
+          path="/review/role"
           isNextRole={false}
-          handleAnswerSelect={this.handleAnswerSelect}
-          selectedAnswers={selectedAnswers}
-          nextScreenPath="/test/goal" />
+          handleOptionSelect={this.handleOptionSelect}
+          selectedOptions={this.state.selectedOptions}
+          nextScreenPath="/review/goal" />
 
+        {/*
         <GoalScreen
           qnNum={6}
           qnData={this.state.qns[4]}
-          path="/test/goal"
+          path="/review/goal"
           handleAnswerSelect={this.handleAnswerSelect}
           selectedAnswers={selectedAnswers} />
 
         <RoleScreen
           qnNum={7}
-          path="/test/nextrole"
+          path="/review/nextrole"
           isNextRole={true}
           handleAnswerSelect={this.handleAnswerSelect}
           selectedAnswers={selectedAnswers}
-          nextScreenPath="/test/diag" />
+          nextScreenPath="/review/diag" />
 
         <DiagScreen
           qnNum={8}
-          path="/test/diag"
+          path="/review/diag"
           routeToDiagResults={this.routeToDiagResults}
           selectedAnswers={selectedAnswers}
-          nextScreenPath="/test/results" />
+          nextScreenPath="/review/results" />
         
         <DiagResultsScreen
-          path="/test/results"
+          path="/review/results"
           selectedAnswers={selectedAnswers} 
           answers={this.state.diagAnswers} />
         */}

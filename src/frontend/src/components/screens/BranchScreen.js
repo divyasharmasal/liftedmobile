@@ -105,13 +105,21 @@ class BranchScreen extends Screen {
   }
 
 
-  handleOptionSelect = (selectedNeeds, isMultiQn) => {
+  redirectToNext = () => {
+    const verticalId = this.props.selectedOptions["vertical"]
+    route(this.props.nextScreenPaths[verticalId]);
+  }
+
+
+  handleOptionSelect = selectedNeeds => {
     let selectedOptions = this.props.selectedOptions;
     selectedOptions[this.props.name] = selectedNeeds;
 
     // Store selectedOptions to sessionStorage and the state
     storeSelectedOpts(selectedOptions);
     this.fetchAndStoreCourses(selectedNeeds);
+
+    this.props.handleOptionSelect(this.props.name, selectedNeeds);
   }
 
 
@@ -154,7 +162,7 @@ class BranchScreen extends Screen {
         <div class="pure-u-1">
           {this.renderStartOver()}
           <a class="top_nav_link full_review"
-            onClick={() => {route("/test")}}>
+            onClick={this.redirectToNext}>
             Full review ➜
           </a>
           <Question

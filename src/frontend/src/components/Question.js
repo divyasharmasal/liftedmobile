@@ -27,7 +27,7 @@ export default class Question extends Component{
 
   handleOptionClick = id => {
     if (this.type === this.QN_TYPES.SINGLE){
-      this.props.handleOptionSelect(id, this.props.isMultiQn);
+      this.props.handleOptionSelect(id);
     }
     else{
       let preSelected = this.state.preSelected;
@@ -45,7 +45,7 @@ export default class Question extends Component{
       }
 
       this.setState({ preSelected }, () => {
-        this.props.handleOptionSelect(preSelected, this.props.isMultiQn);
+        this.props.handleOptionSelect(preSelected);
       });
     }
   }

@@ -37,9 +37,9 @@ class Screen extends Component{
     );
   }
 
-  handleOptionSelect = (answer, isMultiQn) => {
+  handleOptionSelect = answer => {
     this.props.handleOptionSelect(
-      this.props.name, answer, isMultiQn, this.routeToNextScreen);
+      this.props.name, answer, this.routeToNextScreen);
   }
 
 

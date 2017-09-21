@@ -11,41 +11,28 @@ import {
 export { RoleScreen };
 
 class RoleScreen extends Screen{
-  constructor(props){
-    super(props);
-  }
-
-
   componentWillMount = () => {
     //TODO: change once the framework provides data for verticals 1 and 2
-    //const verticalId = selectedAnswers[0][0] + 1;
+    //const verticalId = selectedOptions[0][0] + 1;
     const verticalId = 3;
-    const selectedAnswers = this.props.selectedAnswers;
-    let storedSelectedAnswers = sessionStorage.getItem("selectedAnswers");
-    if ((!selectedAnswers && !storedSelectedAnswers) ||
-         (Object.keys(selectedAnswers).length === 0 
-           && !storedSelectedAnswers)){
-      route("/");
+    const selectedOptions = this.props.selectedOptions;
+    const workplace = selectedOptions["legalsupport_where"];
+    let url = "/roles?";
+
+    if (this.props.isNextRole){
+      const role = selectedOptions["legalsupport_role"];
+      url += "&r=" + encodeURIComponent(role);
     }
-    else{
-      const workplace = selectedAnswers[4][0];
-      let url = "/roles?";
 
-      if (this.props.isNextRole){
-        const role = selectedAnswers[5][0];
-        url += "&r=" + encodeURIComponent(role);
-      }
-
-      // law firm : 0
-      // corp/org : 1
-      url += "&o=" + encodeURIComponent(workplace) +
-             "&v=" + encodeURIComponent(verticalId)
-      authFetch(url).then(response => {
-        response.json().then(roles => {
-          this.setState({ roles });
-        });
+    // law firm : 0
+    // corp/org : 1
+    url += "&o=" + encodeURIComponent(workplace) +
+           "&v=" + encodeURIComponent(verticalId)
+    authFetch(url).then(response => {
+      response.json().then(roles => {
+        this.setState({ roles });
       });
-    }
+    });
   }
 
 
@@ -73,7 +60,7 @@ class RoleScreen extends Screen{
 
     return (
       <RolePicker
-        handleAnswerSelect={this.handleAnswerSelect}
+        handleOptionSelect={this.handleOptionSelect}
         qnData={{options: options}} />
     );
   }

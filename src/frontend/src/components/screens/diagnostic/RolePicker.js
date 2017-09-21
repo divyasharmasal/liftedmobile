@@ -68,11 +68,6 @@ class RoleLevelPicker extends Component{
 
 
 class RolePicker extends Component{
-  onAnswerClick = selectedIndex => {
-    this.props.handleAnswerSelect(selectedIndex, false);
-  }
-
-
   renderLevelAnchorLinks = levelAnchors => {
     let levelAnchorLinks = [];
     Array.from(levelAnchors).sort().forEach(levelNum => {
@@ -85,10 +80,8 @@ class RolePicker extends Component{
 
 
   render(){
-    const qnData = this.props.qnData;
-    const onAnswerClick = this.onAnswerClick;
     let levelRoles = {};
-    qnData.options.forEach((option, i) => {
+    this.props.qnData.options.forEach((option, i) => {
       i = option.id;
       const currentLevel = option.level;
       if (!levelRoles[currentLevel]){
@@ -103,7 +96,7 @@ class RolePicker extends Component{
         <div class="level">
           <p class="level_text">Level {level}:</p>
           <RoleLevelPicker
-            handleRoleSelect={this.onAnswerClick}
+            handleRoleSelect={this.props.handleOptionSelect}
             level={level}
             roles={levelRoles[level]} />
         </div>

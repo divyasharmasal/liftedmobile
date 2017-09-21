@@ -77,8 +77,8 @@ def qns_and_opts(request):
         qn3_opts.append({"text": row.option, "id": row.id})
     qn3 = create_qn("I want to focus on...", qn3_opts)
 
-    qn4_opts = [{"text": "A law firm."},
-                {"text": "A corporation or organisation."}]
+    qn4_opts = [{"text": "A law firm.", "id": "Law firm"},
+                {"text": "A corporation or organisation.", "id": "In-house"}]
     qn4 = create_qn("I work at...", qn4_opts)
 
     qn5_opts = [{"text": "Prepare for my next job or role."},
@@ -87,9 +87,10 @@ def qns_and_opts(request):
 
     # qns = [qn1, qn2, qn3, qn4, qn5]
     qns = {
-        "Vertical": qn1,
-        "CompetencyCategory": qn2,
-        "Need": qn3,
+        "vertical": qn1,
+        "competency_category": qn2,
+        "need": qn3,
+        "where": qn4,
     }
 
     return json_response(qns)
@@ -189,39 +190,38 @@ def _course_json(course):
 @login_required
 def roles(request):
     """
-    Repsond with a list of roles given the organisation type, vertical, and 
-    (optionally) current role. Used by RoleScreen for the diagnostic.
+    Repsond with a list of roles given the organisation type, vertical, and
+    (optionally) current role. Used by RoleScreen for the diagnostic,
+    only for legal support roles.
     """
+
     if "o" not in request.GET or \
        "v" not in request.GET:
-        return HttpResponseServerError("Please provide the org type and "
-                                       "vertical params.")
-    org_type = request.GET["o"]
+        return HttpResponseServerError(
+                "Please provide the org type and vertical params.")
+
+    org_type_name = request.GET["o"]
     vertical_id = request.GET["v"]
-    org_type_name = None
 
     try:
-        org_type = int(org_type)
         vertical_id = int(vertical_id)
     except:
         return HttpResponseServerError("Please provide valid "
                                        "workplace/vertical params.")
 
-    if org_type == 0:
-        org_type_name = "Law firm"
-    elif org_type == 1:
-        org_type_name = "In-house"
-    else:
-        return HttpResponseServerError("Please provide org_type/vertical "
-                                       "params that correspond to the "
-                                       "right org_type.")
+    if org_type_name != "Law firm" and org_type_name != "In-house":
+        return HttpResponseServerError(
+                "Please provide org_type/vertical "
+                "params that correspond to the "
+                "right org_type.")
+
     role_num = None
     if "r" in request.GET:
         try:
             role_num = int(request.GET["r"])
         except:
-            return HttpResponseServerError("Please provide a valid "
-                                           "role number.")
+            return HttpResponseServerError(
+                    "Please provide a valid role number.")
 
     job_role_query = None
     vertical = models.Vertical.objects.get(id=vertical_id)

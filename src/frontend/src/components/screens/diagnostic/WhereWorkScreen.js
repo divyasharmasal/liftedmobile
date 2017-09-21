@@ -13,7 +13,7 @@ class WhereWorkScreen extends Screen{
 					<Question
             qnNum={this.props.qnNum}
 						isMultiQn={false}
-						handleAnswerSelect={this.handleAnswerSelect}
+						handleOptionSelect={this.handleOptionSelect}
 						qnData={this.props.qnData} 
 					/>
         </div>
