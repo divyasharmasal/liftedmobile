@@ -6,20 +6,12 @@ import { Screen, } from '../Screen';
 export {GoalScreen};
 
 class GoalScreen extends Screen{
-  handleAnswerSelect = selectedGoal => {
-    let selectedAnswers = this.props.selectedAnswers;
-    selectedAnswers[this.props.qnNum] = [selectedGoal];
-
-    // Store selectedAnswers to sessionStorage and the state
-    sessionStorage.setItem("selectedAnswers", JSON.stringify(selectedAnswers));
-
-    if (selectedGoal === 0){ // next role
-      route("/test/nextrole")
-    }
-    else if (selectedGoal === 1){ // current role
-      route("/test/diag")
-    }
+  handleOptionSelect = id => {
+    this.props.handleOptionSelect(this.props.name, id);
+    console.log(this.props.nextScreenPaths[id]);
+    route(this.props.nextScreenPaths[id]);
   }
+
 
   render(){
     return (
@@ -29,7 +21,7 @@ class GoalScreen extends Screen{
 					<Question
             qnNum={this.props.qnNum}
 						isMultiQn={false}
-						handleAnswerSelect={this.handleAnswerSelect}
+						handleOptionSelect={this.handleOptionSelect}
 						qnData={this.props.qnData} 
 					/>
 				</div>

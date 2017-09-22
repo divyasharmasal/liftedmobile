@@ -20,7 +20,7 @@ class RoleScreen extends Screen{
     let url = "/roles?";
 
     if (this.props.isNextRole){
-      const role = selectedOptions["legalsupport_role"];
+      const role = selectedOptions["role"];
       url += "&r=" + encodeURIComponent(role);
     }
 

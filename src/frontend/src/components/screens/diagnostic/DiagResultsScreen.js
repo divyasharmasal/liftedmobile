@@ -95,13 +95,7 @@ class DiagResultsScreen extends Screen{
 
 
   componentWillMount = () => {
-    let answers = this.props.answers;
-    if (this.props.answers){
-      sessionStorage.setItem("diagAnswers", JSON.stringify(answers));
-    }
-    else{
-      answers = JSON.parse(sessionStorage.getItem("diagAnswers"));
-    }
+    const answers = this.props.selectedOptions["diag"];
 
     if (!answers){
       route("/");
@@ -110,20 +104,16 @@ class DiagResultsScreen extends Screen{
       let url = "/results?";
 
       // Get role ID from prev answers
-      let roleId;
-      if (Object.keys(this.props.selectedAnswers).length >= 7){
-        roleId = this.props.selectedAnswers[7][0];
+      let roleId = this.props.selectedOptions["role"];
+      if (Object.keys(this.props.selectedOptions).indexOf("nextrole") > -1){
+        roleId = this.props.selectedOptions["nextrole"];
       }
-      else if (Object.keys(this.props.selectedAnswers).length >= 5){
-        roleId = this.props.selectedAnswers[5][0];
-      }
-      else{
+
+      if (!roleId){
         route("/");
       }
 
-      //TODO: verticalId should be dynamic, as such:
-      //const verticalId = this.props.selectedAnswers[0][0] + 1;
-      const verticalId = 3;
+      const verticalId = this.props.selectedOptions["vertical"];
       url += "v=" + encodeURIComponent(verticalId);
       url += "&r=" + encodeURIComponent(roleId);
 

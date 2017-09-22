@@ -40,14 +40,6 @@ export default class App extends Component {
         selectedOptions: storedSelectedOpts,
       });
     }
-
-    let storedDiagAnswers = JSON.parse(
-      sessionStorage.getItem("diagAnswers"));
-    if (storedDiagAnswers){
-      this.setState({
-        diagAnswers: storedDiagAnswers,
-      });
-    }
   }
 
 
@@ -106,15 +98,6 @@ export default class App extends Component {
 	};
 
 
-  routeToDiagResults = answers => {
-    this.setState({
-      diagAnswers: answers,
-    }, () => {
-      route("/test/results");
-    });
-  }
-
-
   render = () => {
     if (!this.state.qns){
       return renderLoader();
@@ -168,34 +151,35 @@ export default class App extends Component {
           selectedOptions={this.state.selectedOptions}
           nextScreenPath="/review/goal" />
 
-        {/*
         <GoalScreen
-          qnNum={6}
-          qnData={this.state.qns[4]}
+          name="goal"
+          qnData={this.state.qns["goal"]}
           path="/review/goal"
-          handleAnswerSelect={this.handleAnswerSelect}
-          selectedAnswers={selectedAnswers} />
+          handleOptionSelect={this.handleOptionSelect}
+          selectedOptions={this.state.selectedOptions}
+          nextScreenPaths={{
+            0: "/review/nextrole",
+            1: "/review/diag",
+          }} />
 
         <RoleScreen
-          qnNum={7}
+          name="nextrole"
           path="/review/nextrole"
           isNextRole={true}
-          handleAnswerSelect={this.handleAnswerSelect}
-          selectedAnswers={selectedAnswers}
+          handleOptionSelect={this.handleOptionSelect}
+          selectedOptions={this.state.selectedOptions}
           nextScreenPath="/review/diag" />
 
         <DiagScreen
-          qnNum={8}
+          name="diag"
           path="/review/diag"
-          routeToDiagResults={this.routeToDiagResults}
-          selectedAnswers={selectedAnswers}
+          handleOptionSelect={this.handleOptionSelect}
+          selectedOptions={this.state.selectedOptions}
           nextScreenPath="/review/results" />
         
         <DiagResultsScreen
           path="/review/results"
-          selectedAnswers={selectedAnswers} 
-          answers={this.state.diagAnswers} />
-        */}
+          selectedOptions={this.state.selectedOptions} />
 
       </Router>
 		);

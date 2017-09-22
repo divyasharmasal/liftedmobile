@@ -77,12 +77,16 @@ def qns_and_opts(request):
         qn3_opts.append({"text": row.option, "id": row.id})
     qn3 = create_qn("I want to focus on...", qn3_opts)
 
-    qn4_opts = [{"text": "A law firm.", "id": "Law firm"},
-                {"text": "A corporation or organisation.", "id": "In-house"}]
+    qn4_opts = [
+        {"text": "A law firm.", "id": "Law firm"},
+        {"text": "A corporation or organisation.", "id": "In-house"}
+    ]
     qn4 = create_qn("I work at...", qn4_opts)
 
-    qn5_opts = [{"text": "Prepare for my next job or role."},
-                {"text": "Get better at my current job."}]
+    qn5_opts = [
+        {"text": "Prepare for my next job or role.", "id": 0},
+        {"text": "Get better at my current job.", "id": 1}
+    ]
     qn5 = create_qn("I want to...", qn5_opts)
 
     # qns = [qn1, qn2, qn3, qn4, qn5]
@@ -91,6 +95,7 @@ def qns_and_opts(request):
         "competency_category": qn2,
         "need": qn3,
         "where": qn4,
+        "goal": qn5,
     }
 
     return json_response(qns)
@@ -341,7 +346,6 @@ def results(request):
         if comp.specialism:
             category = comp.specialism
             special = True
-        print(comp.copy_desc, comp.specialism)
 
         cat_names[category] = comp.category
 
