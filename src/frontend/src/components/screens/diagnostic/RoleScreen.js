@@ -12,22 +12,34 @@ export { RoleScreen };
 
 class RoleScreen extends Screen{
   componentWillMount = () => {
-    //TODO: change once the framework provides data for verticals 1 and 2
-    //const verticalId = selectedOptions[0][0] + 1;
-    const verticalId = 3;
-    const selectedOptions = this.props.selectedOptions;
-    const workplace = selectedOptions["legalsupport_where"];
-    let url = "/roles?";
-
-    if (this.props.isNextRole){
-      const role = selectedOptions["role"];
-      url += "&r=" + encodeURIComponent(role);
+    let verticalId = this.props.vertical;
+    if (verticalId == 1){
+      verticalId = 2;
     }
 
-    // law firm : 0
-    // corp/org : 1
-    url += "&o=" + encodeURIComponent(workplace) +
-           "&v=" + encodeURIComponent(verticalId)
+    let url = "/roles?";
+    
+    // Legal support
+    if (verticalId === 3){
+      const workplace = this.props.workplace;
+
+      if (this.props.isNextRole){
+        const role = this.props.selectedOptions["role"];
+        url += "&r=" + encodeURIComponent(role);
+      }
+
+      url += "&o=" + encodeURIComponent(workplace) +
+             "&v=" + encodeURIComponent(verticalId)
+    }
+    // In-house counsel and legal prac
+    else{
+      if (this.props.isNextRole){
+        const role = this.props.selectedOptions["role"];
+        url += "&r=" + encodeURIComponent(role);
+      }
+      url += "&v=" + encodeURIComponent(verticalId)
+    }
+
     authFetch(url).then(response => {
       response.json().then(roles => {
         this.setState({ roles });
@@ -66,6 +78,29 @@ class RoleScreen extends Screen{
   }
 
 
+  handleOptionSelect = (role, isSingle) => {
+    const levels = this.state.roles.map(r => r.level);
+    const maxLevel = Math.max(...levels);
+    if (this.props.nextScreenPath){
+        this.props.handleOptionSelect(this.props.name, role.id, () => {
+          route(this.props.nextScreenPath);
+        });
+    }
+    else{
+      if (role.level === maxLevel && isSingle){
+        this.props.handleOptionSelect(this.props.name, role.id, () => {
+          route(this.props.nextScreenPaths["atEnd"]);
+        });
+      }
+      else{
+        this.props.handleOptionSelect(this.props.name, role.id, () => {
+          route(this.props.nextScreenPaths["hasNext"]);
+        });
+      }
+    }
+  }
+
+
   render() {
     if (!this.state.roles){
       return renderLoader();
@@ -80,7 +115,10 @@ class RoleScreen extends Screen{
               :
               <h1>My job role is...</h1>
             }
-            <p>Note: only legal support roles are available for now.</p>
+            <p>
+              Note: only legal support and in-house counsel roles are
+              available for now.
+            </p>
             {this.renderRolePicker(this.state.roles)}
           </div>
         </div>

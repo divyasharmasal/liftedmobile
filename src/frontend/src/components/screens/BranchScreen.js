@@ -40,10 +40,8 @@ class BranchScreen extends Screen {
 
 
   fetchAndStoreCourses = (selectedNeeds) => {
-    // The IDs in the database start from 1, so increment the
-    // selectedOption indices which start from 0
-    const verticalId = this.props.selectedOptions["vertical"];
-    const categoryId = this.props.selectedOptions["comp_category"];
+    const verticalId = this.props.vertical;
+    const categoryId = this.props.compCategory;
 
     if (selectedNeeds == null){
       authFetch(createCoursesUrl(verticalId, categoryId))

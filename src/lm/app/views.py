@@ -92,7 +92,7 @@ def qns_and_opts(request):
     # qns = [qn1, qn2, qn3, qn4, qn5]
     qns = {
         "vertical": qn1,
-        "competency_category": qn2,
+        "comp_category": qn2,
         "need": qn3,
         "where": qn4,
         "goal": qn5,
@@ -127,14 +127,14 @@ def courses(request):
     if (vertical_category == "any" and need_ids == "any"):
         try:
             course_query = models.Course.objects.filter(
-                    courseverticalcategory__vertical_category__id=vertical_id)
+                    courseverticalcategory__vertical_category__vertical_id=vertical_id)
         except:
             return HttpResponseServerError("Error code 0")
 
     elif (vertical_category == "any" and need_ids != "any"):
         try:
             course_query = models.Course.objects.filter(
-                    courseverticalcategory__vertical_category__id=vertical_id,
+                    courseverticalcategory__vertical_category__vertical_id=vertical_id,
                     courselevel__level_id__needlevel__need_id__in=need_ids)
         except:
             return HttpResponseServerError("Error code 1")
@@ -144,7 +144,7 @@ def courses(request):
             vertical_id = int(vertical_id)
             vertical_category = int(vertical_category)
             course_query = models.Course.objects.filter(
-                courseverticalcategory__vertical_category__key=vertical_category,
+                courseverticalcategory__vertical_category__id=vertical_category,
                 courseverticalcategory__vertical_category__vertical_id=vertical_id)
         except:
             return HttpResponseServerError("Error code 2")
@@ -200,21 +200,21 @@ def roles(request):
     only for legal support roles.
     """
 
-    if "o" not in request.GET or \
-       "v" not in request.GET:
-        return HttpResponseServerError(
-                "Please provide the org type and vertical params.")
+    if "v" not in request.GET:
+        return HttpResponseServerError("Please provide the vertical id.")
 
-    org_type_name = request.GET["o"]
     vertical_id = request.GET["v"]
-
     try:
         vertical_id = int(vertical_id)
     except:
         return HttpResponseServerError("Please provide valid "
                                        "workplace/vertical params.")
 
-    if org_type_name != "Law firm" and org_type_name != "In-house":
+    org_type_name = "any"
+    if "o" in request.GET:
+        org_type_name = request.GET["o"]
+
+    if org_type_name not in ["Law firm", "In-house", "any"]:
         return HttpResponseServerError(
                 "Please provide org_type/vertical "
                 "params that correspond to the "
@@ -231,18 +231,31 @@ def roles(request):
     job_role_query = None
     vertical = models.Vertical.objects.get(id=vertical_id)
 
-    # if the role num is specified, it's from /test/nextrole
+    # if the role num is specified, it's from /review/nextrole
     if role_num is not None:
         role = models.JobRole.objects.get(id=role_num)
-        job_role_query = models.JobRole.objects \
-            .filter(role_level__gte=role.role_level,
-                    role_level__lte=role.role_level+1) \
-            .exclude(id=role_num)
+        if org_type_name == "any":
+            job_role_query = models.JobRole.objects \
+                .filter(role_level__gte=role.role_level,
+                        vertical=vertical,
+                        role_level__lte=role.role_level+1) \
+                .exclude(id=role_num)
+        else:
+            job_role_query = models.JobRole.objects \
+                .filter(role_level__gte=role.role_level,
+                        org_type=org_type_name,
+                        vertical=vertical,
+                        role_level__lte=role.role_level+1) \
+                .exclude(id=role_num)
 
-    # if it's not, it's from /test/
+    # if it's not, it's from /review/
     else:
-        job_role_query = models.JobRole.objects.filter(org_type=org_type_name,
-                                                       vertical=vertical)
+        if org_type_name == "any":
+            job_role_query = models.JobRole.objects.filter(
+                    vertical=vertical)
+        else:
+            job_role_query = models.JobRole.objects.filter(
+                    org_type=org_type_name, vertical=vertical)
 
     job_roles = sorted([{"name": job_role.name,
                          "desc": job_role.thin_desc,

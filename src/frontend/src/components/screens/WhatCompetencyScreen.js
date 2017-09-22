@@ -11,7 +11,7 @@ export {WhatCompetencyScreen};
 
 class WhatCompetencyScreen extends Screen{
   componentWillMount = () => {
-    let selectedVertical = this.props.selectedOptions["vertical"];
+    const selectedVertical = this.props.vertical;
     if (selectedVertical){
       let options = [];
       this.props.qnData.options[selectedVertical].forEach(x => {

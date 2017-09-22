@@ -117,10 +117,10 @@ export default class App extends Component {
 
         <WhatCompetencyScreen
           name="comp_category"
-          qnData={this.state.qns["competency_category"]}
+          qnData={this.state.qns["comp_category"]}
           path={"/what"}
           handleOptionSelect={this.handleOptionSelect}
-          selectedOptions={this.state.selectedOptions}
+          vertical={this.state.selectedOptions["vertical"]}
           nextScreenPath="/choose" />
 
         <BranchScreen
@@ -129,6 +129,8 @@ export default class App extends Component {
           path="/choose"
           handleOptionSelect={this.handleOptionSelect}
           selectedOptions={this.state.selectedOptions}
+          vertical={this.state.selectedOptions["vertical"]}
+          compCategory={this.state.selectedOptions["comp_category"]}
           nextScreenPaths={{
             1: "review/role",
             2: "review/role",
@@ -140,7 +142,6 @@ export default class App extends Component {
           qnData={this.state.qns["where"]}
           path="/review/where"
           handleOptionSelect={this.handleOptionSelect}
-          selectedOptions={this.state.selectedOptions}
           nextScreenPath="/review/role" />
 
         <RoleScreen
@@ -149,14 +150,18 @@ export default class App extends Component {
           isNextRole={false}
           handleOptionSelect={this.handleOptionSelect}
           selectedOptions={this.state.selectedOptions}
-          nextScreenPath="/review/goal" />
+          vertical={this.state.selectedOptions["vertical"]}
+          workplace={this.state.selectedOptions["legalsupport_where"]}
+          nextScreenPaths={{
+            "hasNext": "/review/goal",
+            "atEnd": "/review/diag",
+          }} />
 
         <GoalScreen
           name="goal"
           qnData={this.state.qns["goal"]}
           path="/review/goal"
           handleOptionSelect={this.handleOptionSelect}
-          selectedOptions={this.state.selectedOptions}
           nextScreenPaths={{
             0: "/review/nextrole",
             1: "/review/diag",
@@ -168,6 +173,8 @@ export default class App extends Component {
           isNextRole={true}
           handleOptionSelect={this.handleOptionSelect}
           selectedOptions={this.state.selectedOptions}
+          vertical={this.state.selectedOptions["vertical"]}
+          workplace={this.state.selectedOptions["legalsupport_where"]}
           nextScreenPath="/review/diag" />
 
         <DiagScreen

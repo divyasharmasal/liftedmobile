@@ -8,7 +8,6 @@ export {GoalScreen};
 class GoalScreen extends Screen{
   handleOptionSelect = id => {
     this.props.handleOptionSelect(this.props.name, id);
-    console.log(this.props.nextScreenPaths[id]);
     route(this.props.nextScreenPaths[id]);
   }
 
