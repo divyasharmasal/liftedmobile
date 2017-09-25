@@ -6,7 +6,6 @@
 @import (once, less) "../../../lib/styles/constants.less";
 @import (once, less) "../../../lib/styles/course_table.less";
 
-
 .no_user_select{
     user-select:none;
     -webkit-touch-callout: none;
@@ -27,42 +26,16 @@
     img{
         height:63px;
     }
+
+    @media (max-width: @medium_screen_width) {
+        img{
+            height:50px;
+        }
+    }
 }
 
 .sal_logo.center{
     text-align:center;
-}
-
-.intro{
-    display:block;
-    background-color:#0071bb;
-    /*background-image: url(/static/app/dist/images/lifted_planes.png);*/
-    /*background-size: 233px 250px;*/
-    /*background-repeat:no-repeat;*/
-    /*background-position: right;*/
-    border-radius:@border_radius;
-    width:100%;
-    height:250px;
-
-    .planes img{
-        height:250px;
-        float:right;
-    }
-
-    .text{
-        font-size:1.25em;
-        position: relative;
-        top: 50%;
-        transform: translateY(-50%);
-        float:left;;
-        color:white;
-        padding-left:30px;
-        text-align:left;
-    }
-
-    .planes{
-        float:right;
-    }
 }
 
 .credits{
@@ -70,10 +43,6 @@
     width:100%;
     text-align:center;
     margin-top:30vh;
-
-    p{
-        font-size:1.5em;
-    }
 }
 
 .top_nav_link{
@@ -528,20 +497,7 @@ hr{
     }
 }
 
-@media (max-width: 568px) {
-    .intro{
-        height:180px !important;
-        .text{
-            padding-left:15px;
-            max-width: 150px !important;
-        }
-        .planes {
-            width:0%;
-            img{
-                height:180px !important;
-            }
-        }
-    }
+@media (max-width: @small_screen_width) {
 
     .credits{
         font-size:0.8em;
@@ -607,7 +563,7 @@ hr{
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: @medium_screen_width) {
     *, html, body {
         font-family: Lato, Arial;
         font-size:1em;
@@ -622,27 +578,6 @@ hr{
     .notification{
         width:100%;
         left:0px;
-    }
-
-
-    .sal_logo{
-        img{
-            height:50px;
-        }
-    }
-
-    .intro{
-        height:130px;
-        .text{
-            padding-left:15px;
-            max-width: 100%;
-        }
-        .planes {
-            width:0%;
-            img{
-                height:130px;
-            }
-        }
     }
 
 	.full_review,
@@ -782,3 +717,5 @@ hr{
     }
 
 }
+
+@import (once, less) "./intro_page.less";

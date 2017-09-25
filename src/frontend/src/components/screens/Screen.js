@@ -16,9 +16,13 @@ class Screen extends Component{
   constructor(props){
     super(props);
 
-    const storedOpts = getSelectedOpts();
-    if (!storedOpts || Object.keys(storedOpts).length === 0){
-      route("/");
+    console.log(window.location.pathname);
+    if (window.location.pathname !== "/" &&
+      window.location.pathname !== "/analysis"){
+      const storedOpts = getSelectedOpts();
+      if (!storedOpts || Object.keys(storedOpts).length === 0){
+        route("/analysis");
+      }
     }
   }
 

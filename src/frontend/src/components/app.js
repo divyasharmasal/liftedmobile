@@ -10,6 +10,7 @@ import {
 } from "../lib/store";
 
 import { 
+  IntroScreen,
   BranchScreen,
   WhatCompetencyScreen, 
   VerticalScreen, 
@@ -105,13 +106,16 @@ export default class App extends Component {
 
 		return (
       <Router onChange={this.handleRoute}>
+        <IntroScreen
+          default
+          path="/"
+        />
 
         <VerticalScreen 
-          default
           name="vertical"
           deps={[]}
           qnData={this.state.qns["vertical"]}
-          path="/"
+          path="/analysis"
           handleOptionSelect={this.handleOptionSelect}
           nextScreenPath="/what" />
 
