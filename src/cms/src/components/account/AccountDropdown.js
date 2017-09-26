@@ -16,12 +16,12 @@ export class AccountDropdown extends Component {
 
   closeDropdown = event => {
       const dropdownElement = findDOMNode(this.dropdown);
-      const dd_content = dropdownElement.getElementsByClassName("dropdown__content")[0];
+      const ddContent = dropdownElement.getElementsByClassName("dropdown__content")[0];
 
       if (this.dropdown != null && 
           event.target !== dropdownElement &&
           (!dropdownElement.contains(event.target) ||
-          dd_content.contains(event.target)) &&
+          ddContent.contains(event.target)) &&
           this.dropdown.isActive()){
 
         this.dropdown.hide();

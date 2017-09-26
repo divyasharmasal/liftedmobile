@@ -21,6 +21,8 @@ import {
   DiagResultsScreen,
 } from "./screens";
 
+import { CourseBrowser } from "./course_browser";
+
 import { renderLoader } from "./screens/Screen";
 
 export default class App extends Component {
@@ -110,6 +112,9 @@ export default class App extends Component {
           default
           path="/"
         />
+
+        <CourseBrowser
+          path="/browse" />
 
         <VerticalScreen 
           name="vertical"
