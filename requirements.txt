@@ -3,6 +3,7 @@ beautifulsoup4==4.6.0
 cffi==1.10.0
 Django==1.11.5
 django-htmlmin==0.10.0
+django-querycount==0.7.0
 hashids==1.2.0
 html5lib==0.999999999
 lml==0.0.1

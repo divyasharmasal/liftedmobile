@@ -27,7 +27,6 @@ CMD cd /src/lm && \
     python3 manage.py migrate && \
     echo && \
     echo "Docker containers are up; server at: http://0.0.0.0:8000/" && \
-    echo "Run ./gulp-app.sh or ./gulp-cms.sh in a separate terminal to continually update the static files while you develop the frontend or CMS."
-&& \
+    echo "Run ./gulp-app.sh or ./gulp-cms.sh in a separate terminal to continually update the static files while you develop the frontend or CMS." && \
     echo && \
     python3 manage.py runserver 0.0.0.0:8000

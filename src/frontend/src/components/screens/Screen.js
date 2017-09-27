@@ -16,7 +16,6 @@ class Screen extends Component{
   constructor(props){
     super(props);
 
-    console.log(window.location.pathname);
     if (window.location.pathname !== "/" &&
       window.location.pathname !== "/analysis"){
       const storedOpts = getSelectedOpts();

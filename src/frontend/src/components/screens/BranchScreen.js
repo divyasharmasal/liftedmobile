@@ -181,7 +181,7 @@ class BranchScreen extends Screen {
             </div>
             <Courses courses={this.state.courses}
               courseTableRef={courseTableRef}
-              unPadCourses={this.unPadCourses} />;
+              unPadCourses={this.unPadCourses} />
           </div>
         }
       </div>

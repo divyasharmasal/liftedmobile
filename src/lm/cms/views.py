@@ -20,16 +20,22 @@ def cms_get_coursespage_data(request):
     result["levels"] = [c.name for c in app_models.Level.objects.all()]
     result["formats"] = [c.name for c in app_models.Format.objects.all()]
 
-    courses = app_models.Course.objects.all()
+    courses = app_models.Course.objects.all()\
+            .select_related("coursecpdpoints")\
+            # .prefetch_related("courselevel")
 
     for course in courses:
         course_level = app_models.CourseLevel.objects.get(course=course)
-        level = app_models.Level.objects.get(acronym=course_level.level_id)
+        # level = app_models.Level.objects.get(acronym=course_level.level_id)
+        level = course.courselevel
         start_dates = app_models.CourseStartDate.objects.filter(course=course)
-        course_format = app_models.CourseFormat.objects.get(course=course)
-        format_name = app_models.Format.objects.get(
-                acronym=course_format.format_id).name
-        points = app_models.CourseCpdPoints.objects.get(course=course)
+        # course_format = app_models.CourseFormat.objects.get(course=course)
+        # format_name = app_models.Format.objects.get(
+                # acronym=course_format.format_id).name
+        course_format = course.courseformat
+        format_name = course_format.name
+        # points = app_models.CourseCpdPoints.objects.get(course=course)
+        points = course.coursecpdpoints
         cpd_points = points.points
         if cpd_points is None:
             cpd_points = 0

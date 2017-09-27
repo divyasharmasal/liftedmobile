@@ -141,9 +141,9 @@ export default class App extends Component {
           vertical={this.state.selectedOptions["vertical"]}
           compCategory={this.state.selectedOptions["comp_category"]}
           nextScreenPaths={{
-            1: "review/role",
-            2: "review/role",
-            3: "review/where"
+            1: "/review/role",
+            2: "/review/role",
+            3: "/review/where"
           }} />
 
         <WhereWorkScreen

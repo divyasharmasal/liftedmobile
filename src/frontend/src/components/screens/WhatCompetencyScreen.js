@@ -30,7 +30,7 @@ class WhatCompetencyScreen extends Screen{
 
   render = () => {
     if (!this.state.qnData){
-      return renderLoader();
+      return (renderLoader());
     }
     return (
       <div className="pure-g">
@@ -46,5 +46,3 @@ class WhatCompetencyScreen extends Screen{
     );
   }
 }
-
-

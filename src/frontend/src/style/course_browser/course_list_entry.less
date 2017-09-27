@@ -1,0 +1,68 @@
+@import (once, less) "../../../../lib/styles/constants.less";
+.course{
+    &:nth-of-type(even){
+        background-color:#efefef;
+    }
+
+    text-align:left;
+    padding-top:10px;
+    padding-bottom:10px;
+    font-size:1.75em;
+
+    @media (max-width: @medium_screen_width) {
+        font-size:1em;
+    }
+
+    .title{
+        margin-bottom:1em;
+    }
+
+    .nums{
+        font-size:1em;
+
+        .num{
+            height:40px;
+            border-radius:5px;
+            color:white;
+            padding:5px;
+        }
+        .cpd{
+            .num{
+                background-color:@sal_blue;
+            }
+        }
+
+        .cost{
+            margin-bottom:15px;
+            .num{
+                background-color:#4C627B;
+            }
+        }
+
+        div{
+            margin-bottom:0.5em;
+        }
+    }
+
+    .toggle{
+        cursor:pointer;
+        img{
+            width:22px;
+        }
+    }
+
+    .toggle.show{
+        img{
+            -ms-transform: rotate(180deg);
+            -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
+        }
+    }
+
+    .details.hide{
+        display:none;
+    }
+    .details.show{
+        display:initial;
+    }
+}

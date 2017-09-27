@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^.*/$', views.index, name='index'),
     url(r'^qns$', views.qns_and_opts, name='qns_and_opts'),
     url(r'^courses$', views.courses, name='courses'),
+    url(r'^course_browse$', views.course_browse, name='course_browse'),
     url(r'^roles$', views.roles, name='roles'),
     url(r'^diag$', views.diag, name='diag'),
     url(r'^results$', views.results, name='results'),
