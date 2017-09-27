@@ -22,6 +22,7 @@
     "preact-cli": "^1.4.1"
   },
   "dependencies": {
+    "date-fns": "^1.28.5",
     "gulp": "^3.9.1",
     "gulp-shell": "^0.6.3",
     "preact": "^8.2.5",

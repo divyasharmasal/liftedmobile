@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "ajv-keywords": "^2.1.0",
+    "date-fns": "^1.28.5",
     "less-loader": "^4.0.5",
     "preact": "^8.2.1",
     "preact-compat": "^3.16.0",

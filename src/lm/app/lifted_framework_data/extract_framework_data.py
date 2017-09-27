@@ -7,6 +7,8 @@ the LIFTED framework and courses for 2017.
 
 #!/usr/bin/env python3
 import pyexcel_odsr
+import pytz
+import datetime
 import os
 
 
@@ -90,10 +92,26 @@ def parse_courses():
     rows = parse_item_rows(read_ods_file(COURSES_FILE))
     for row in rows:
         start_dates = []
-        for date in row["Start dates (2017)"].split("\n"):
-            d = date.strip()
-            if len(d) > 0:
-                start_dates.append(date.strip())
+        timezone = pytz.timezone("Asia/Singapore")
+        for date in [x.strip() for x in \
+            row["Start dates (2017)"].split("\n")]:
+            if len(date) > 0:
+                parsed_date = None
+                if date == "Q1":
+                    parsed_date = datetime.datetime(2017, 1, 1)
+                elif date == "Q2":
+                    parsed_date = datetime.datetime(2017, 4, 1)
+                elif date == "Q3":
+                    parsed_date = datetime.datetime(2017, 7, 1)
+                elif date == "Q4":
+                    parsed_date = datetime.datetime(2017, 10, 1)
+                else:
+                    parsed_date = datetime.datetime.strptime(
+                        date, "%d %b").replace(year=2017)
+
+                parsed_date = timezone.localize(parsed_date)
+                start_dates.append(parsed_date)
+
         row["Start dates (2017)"] = start_dates
 
         funding_types = []
@@ -260,6 +278,8 @@ def parse_job_roles():
 
 if __name__ == "__main__":
     import pprint
+    courses = parse_courses()
+    pprint.pprint(parse_levels())
     # pprint.pprint(parse_courses())
-    roles = parse_job_roles()
-    pprint.pprint(roles)
+    # roles = parse_job_roles()
+    # pprint.pprint(roles)

@@ -2,13 +2,17 @@ import { h, Component } from "preact";
 import { authFetch } from "../../lib/fetch";
 import { sortCoursesByDate } from "../../../../lib/js/courses";
 import { renderLoader } from "../../../../lib/js/loader_anim";
+import format from 'date-fns/format';
+
 
 export class CoursesPage extends Component {
   componentWillMount = () => {
     authFetch("/cms/get_coursespage_data/").then(response => {
       response.json().then(data => {
+
         // sort by date
         data.courses = sortCoursesByDate(data.courses)
+
         this.setState({ 
           courses: data.courses,
           levels: data.levels,
@@ -139,6 +143,11 @@ class CourseEditor extends Component{
   }
 
 
+  formatDate = date => {
+    return format(date, "DD/MM/YYYY")
+  }
+
+
   render(){
     const course = this.props.course;
     return(
@@ -186,7 +195,7 @@ class CourseEditor extends Component{
         <div class="pure-u-1">
           <DatesInput 
             handleValueChange={this.handleDatesChange}
-            values={course.start_dates} />
+            values={course.start_dates.map(this.formatDate)} />
         </div>
 
 

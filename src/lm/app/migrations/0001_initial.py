@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
             name='CourseFormat',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
+                ('course', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
             ],
         ),
         migrations.CreateModel(
@@ -67,14 +67,14 @@ class Migration(migrations.Migration):
             name='CourseLevel',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
+                ('course', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
             ],
         ),
         migrations.CreateModel(
             name='CourseStartDate',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('start_date', models.TextField()),
+                ('start_date', models.DateTimeField(null=True)),
                 ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
             ],
         ),

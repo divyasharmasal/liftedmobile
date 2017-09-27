@@ -5,12 +5,16 @@ import json
 import os
 import base64
 import hashids
+import datetime
+import pytz
 from django.shortcuts import render
 from django.http import HttpResponseServerError
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from app import models
 from django.db.models import Max
+from django import db
+
+from app import models
 
 
 def gen_cache_bust_str(length=32):
@@ -90,7 +94,6 @@ def qns_and_opts(request):
     ]
     qn5 = create_qn("I want to...", qn5_opts)
 
-    # qns = [qn1, qn2, qn3, qn4, qn5]
     qns = {
         "vertical": qn1,
         "comp_category": qn2,
@@ -125,20 +128,25 @@ def course_browse(request):
     separate course.
 
     GET params:
-    @s: sort by:
+    @c: filter by private/public CPD points (default: 0)
+        - 0: public (is_private=False)
+        - 1: private (is_private=True)
+        - 2: both
+    @s: sort by (default: asc date):
         - 0: date
         - 1: CPD points
         - 2: cost
-        - 3: format
-        - 4: level
-    @p: filter by provider
+    @o: sort order
+        - 0: asc (default)
+        - 1: desc
+    @p: TODO: filter by provider (default: none)
         - 0: SAL
         - 1: SILE CALAS
-    @sd: start date (inclusive)
+    @sd: start date in UTC (inclusive) (default: none)
         - YYYY-MM-DD format
-    @ed: end date (inclusive)
+    @ed: end date in UTC (inclusive) (default: none)
         - YYYY-MM-DD format
-    @pg: pagination
+    @pg: pagination (default: 0)
         - 0: results 1-30
         - 1: results 31-60
         - n: (30n + 1) to (30n + 30), index starting from 1
@@ -150,8 +158,105 @@ def course_browse(request):
         - @s is not an integer and falls outside the predefined keys
     """
 
-    courses = []
-    return json_response(courses)
+    def _option_param(request, default, key, opts, error_msg):
+        param = default
+        if key in request.GET:
+            try:
+                param = int(request.GET[key])
+                if param not in opts.keys():
+                    raise Exception(error_msg)
+            except Exception as e:
+                raise Exception(error_msg)
+        return param
+
+    def _numeric_param(request, default, key, error_msg, positive=True):
+        param = default
+        if key in request.GET:
+            try:
+                param = int(request.GET[key])
+                if positive and param < 0:
+                    raise Exception(error_msg)
+            except Exception as e:
+                raise Exception(error_msg)
+        return param
+
+    def _date_param(request, default, key, error_msg):
+        param = default
+        if key in request.GET:
+            timezone = pytz.timezone("UTC")
+            date_fmt = "%Y-%m-%d"
+            parsed_date = datetime.datetime.strptime(request.GET[key], date_fmt)
+            param = timezone.localize(parsed_date)
+
+        return param
+
+    PAGE_SIZE = 30
+
+    CPD_OPTS = {
+        0: False,
+        1: True,
+        2: "both"
+    }
+
+    SORT_OPTS = {
+        0: "start_date",
+        1: "course__coursecpdpoints__points",
+        2: "course__cost",
+    }
+
+    ORDER_OPTS = {
+        0: "",
+        1: "-"
+    }
+
+    sort_param = _option_param(request, 0, "s", SORT_OPTS,
+                                "Invalid sort param")
+    cpd_param = _option_param(request, 0, "c", CPD_OPTS,
+                               "Invalid CPD param")
+    order_param = _option_param(request, 0, "o", ORDER_OPTS,
+                                "Invalid order param")
+    page_param = _numeric_param(request, 0, "pg", "Invalid page param",
+                                positive=True)
+
+    start_page = PAGE_SIZE * page_param
+    end_page = start_page + PAGE_SIZE
+
+    start_date_param = _date_param(request, None, "sd", "Invalid start date")
+    end_date_param = _date_param(request, None, "ed", "Invalid end date")
+    
+    csd_query = (
+        models.CourseStartDate.objects.all()
+            .select_related("course")
+            .select_related("course__courseformat__format")
+            .select_related("course__courselevel__level")
+            .select_related("course__coursecpdpoints")
+            .prefetch_related("course__courselevel__level")
+            .prefetch_related("course__coursestartdate_set")
+            .prefetch_related("course__courseformat__format")
+            .prefetch_related("course__coursecpdpoints")
+            .order_by(ORDER_OPTS[order_param] + SORT_OPTS[sort_param],
+                "course__id")
+    )
+
+    if CPD_OPTS[cpd_param] != "both":
+        csd_query = csd_query.filter(
+                course__coursecpdpoints__is_private=CPD_OPTS[cpd_param])
+
+    if start_date_param is not None:
+        csd_query = csd_query.filter(start_date__gte=start_date_param)
+    if end_date_param is not None:
+        csd_query = csd_query.filter(start_date__lte=end_date_param)
+    
+    csd_query = csd_query[start_page:end_page]
+
+    return json_response([
+            _course_json(
+                csd.course,
+                index=index,
+                orig_start_dates=False,
+                custom_start_date=csd.start_date
+            )
+            for index, csd in enumerate(csd_query)])
 
 
 @login_required
@@ -181,16 +286,16 @@ def courses(request):
     if (vertical_category == "any" and need_ids == "any"):
         try:
             course_query = course_query.filter(
-                    courseverticalcategory__vertical_category__vertical_id=\
-                            vertical_id)
+                courseverticalcategory__vertical_category__vertical_id=
+                    vertical_id)
         except:
             return HttpResponseServerError("Error code 0")
 
     elif (vertical_category == "any" and need_ids != "any"):
         try:
             course_query = course_query.filter(
-                    courseverticalcategory__vertical_category__vertical_id=\
-                            vertical_id,
+                    courseverticalcategory__vertical_category__vertical_id=
+                        vertical_id,
                     courselevel__level_id__needlevel__need_id__in=need_ids)
         except:
             return HttpResponseServerError("Error code 1")
@@ -201,8 +306,8 @@ def courses(request):
             vertical_category = int(vertical_category)
             course_query = course_query.filter(
                 courseverticalcategory__vertical_category__id=vertical_category,
-                courseverticalcategory__vertical_category__vertical_id=\
-                        vertical_id)
+                courseverticalcategory__vertical_category__vertical_id=
+                    vertical_id)
         except:
             return HttpResponseServerError("Error code 2")
     else:
@@ -217,35 +322,56 @@ def courses(request):
         except:
             return HttpResponseServerError("Error code 3")
 
-    query = course_query.distinct()\
-        .select_related("coursecpdpoints")\
-        .prefetch_related("coursestartdate_set")\
+    return _course_query_to_json(course_query)
 
+
+def _optimise_course_query(courses):
+    return (
+        courses
+            .select_related("coursecpdpoints")
+            .select_related("courselevel__level")
+            .select_related("courseformat__format")
+            .prefetch_related("coursestartdate_set")
+    )
+
+
+def _course_query_to_json(course_query):
+    query = _optimise_course_query(course_query.distinct())
     return json_response([_course_json(course) for course in query])
 
 
-def _course_json(course):
-    start_dates = course.coursestartdate_set.all()
-    level = course.courselevel_set
-    format_name = course.courseformat_set.name
+def _course_json(course, index=None, orig_start_dates=True, custom_start_date=None):
+    start_dates = None
+    level_name = course.courselevel.level.name
+    format_name = course.courseformat.format.name
     points = course.coursecpdpoints
-    cpd_points = points.points
+    cpd_points = course.coursecpdpoints.points
 
-    if cpd_points is None:
-        cpd_points = 0
+    if cpd_points is not None:
+        cpd_points = float(cpd_points)
 
     result = {
         "name": course.name,
         "cost": float(course.cost),
         "url": course.url,
-        "start_dates": [x.start_date for x in start_dates],
-        "level": level.name,
+        "level": level_name,
         "format": format_name,
         "cpd": {
-            "points": float(cpd_points),
+            "points": cpd_points,
             "is_private": points.is_private
-            }
         }
+    }
+
+    if orig_start_dates:
+        start_dates = course.coursestartdate_set.all()
+        result["start_dates"] = [x.start_date.isoformat() for x in start_dates]
+
+    if custom_start_date is not None:
+        result["start_date"] = custom_start_date.isoformat()
+
+    if index is not None:
+        result["index"] = index
+
     return result
 
 
@@ -393,9 +519,11 @@ def results(request):
                     "Invalid answer provided for %s" % k)
 
     # get competency categories
-    competencies = models.Competency.objects\
-            .filter(id__in=keys)\
+    competencies = (
+        models.Competency.objects
+            .filter(id__in=keys)
             .select_related("category")
+    )
 
     key = {0: 2, 1: -1, 2: -2}
 
@@ -508,6 +636,7 @@ def _diag_course_recommendations(categorised_answers, vertical, job_role):
     for category_name, score_info in categorised_answers.items():
         courses = []
         result["map"][category_name] = []
+
         if score_info["special"]:
             if score_info["score"] == 100:
                 level = _next_level(job_role)
@@ -518,6 +647,7 @@ def _diag_course_recommendations(categorised_answers, vertical, job_role):
 
                 courses = _get_courses_from_comps(
                         None, vertical.id, competencies)
+
             else:
                 competencies = models.Competency.objects.filter(
                         specialism=category_name).distinct()
@@ -528,20 +658,18 @@ def _diag_course_recommendations(categorised_answers, vertical, job_role):
                 level = _next_level(job_role)
                 competencies = models.Competency.objects.filter(
                         category__name=category_name,
-                        jobrolecompetency__job_role__role_level=level
-                        ).distinct()
+                        jobrolecompetency__job_role__role_level=level)\
+                    .distinct()
                 courses = _get_courses_from_comps(
                         None, vertical.id, competencies)
+
             else:
                 competencies = models.Competency.objects.filter(
                         category__name=category_name)
                 courses = _get_courses_from_comps(
                         job_role, vertical.id, competencies)
 
-        courses = courses\
-            .select_related("coursecpdpoints")\
-            .prefetch_related("coursestartdate_set")
-
+        courses = _optimise_course_query(courses)
         for course in courses:
             course_id = hash_func(course.id)
             result["map"][category_name].append(course_id)

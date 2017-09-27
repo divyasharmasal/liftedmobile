@@ -1,8 +1,9 @@
 import { h, Component } from 'preact';
 import {renderLoader} from './screens/Screen';
 
-export { Courses, parseCourseDate };
+export { Courses };
 import { sortCoursesByDate } from "../../../lib/js/courses";
+import format from 'date-fns/format';
 
 const symbol = isDesc => {
   const desc = "▼";
@@ -112,7 +113,9 @@ export default class Courses extends Component{
 
 
   format_dates = dates => {
-    return dates.join(", ") + " 2017";
+    return dates
+      .map(d => format(new Date(d), "D MMM 'YY"))
+      .join(", ")
   }
 
 

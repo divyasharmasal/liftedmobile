@@ -5,7 +5,8 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponseServerError
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
-from app.views import gen_cache_bust_str, json_response
+from app.views import gen_cache_bust_str, json_response,\
+    _optimise_course_query, _course_json
 from app import models as app_models
 
 
@@ -20,38 +21,10 @@ def cms_get_coursespage_data(request):
     result["levels"] = [c.name for c in app_models.Level.objects.all()]
     result["formats"] = [c.name for c in app_models.Format.objects.all()]
 
-    courses = app_models.Course.objects.all()\
-            .select_related("coursecpdpoints")\
-            # .prefetch_related("courselevel")
+    courses = app_models.Course.objects.all()
+    courses = _optimise_course_query(courses)
 
-    for course in courses:
-        course_level = app_models.CourseLevel.objects.get(course=course)
-        # level = app_models.Level.objects.get(acronym=course_level.level_id)
-        level = course.courselevel
-        start_dates = app_models.CourseStartDate.objects.filter(course=course)
-        # course_format = app_models.CourseFormat.objects.get(course=course)
-        # format_name = app_models.Format.objects.get(
-                # acronym=course_format.format_id).name
-        course_format = course.courseformat
-        format_name = course_format.name
-        # points = app_models.CourseCpdPoints.objects.get(course=course)
-        points = course.coursecpdpoints
-        cpd_points = points.points
-        if cpd_points is None:
-            cpd_points = 0
-
-        result["courses"].append({
-            "name": course.name,
-            "cost": float(course.cost),
-            "url": course.url,
-            "start_dates": [x.start_date for x in start_dates],
-            "level": level.name,
-            "format": format_name,
-            "cpd": {
-                "points": float(cpd_points),
-                "is_private": points.is_private
-                }
-        })
+    result["courses"] = [_course_json(course) for course in courses]
     return json_response(result)
 
 

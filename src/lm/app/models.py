@@ -86,7 +86,7 @@ class CourseFormat(models.Model):
     class Meta:
         unique_together = (("course", "format"))
     id = models.AutoField(primary_key=True)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.OneToOneField(Course, on_delete=models.CASCADE)
     format = models.ForeignKey(Format, on_delete=models.CASCADE)
 
 
@@ -94,7 +94,7 @@ class CourseLevel(models.Model):
     class Meta:
         unique_together = (("course", "level"))
     id = models.AutoField(primary_key=True)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.OneToOneField(Course, on_delete=models.CASCADE)
     level = models.ForeignKey(Level, on_delete=models.CASCADE)
 
 
@@ -111,7 +111,7 @@ class CourseStartDate(models.Model):
         unique_together = (("course", "start_date"))
     id = models.AutoField(primary_key=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    start_date = models.TextField()
+    start_date = models.DateTimeField(null=True)
 
 
 class CourseFunding(models.Model):
