@@ -128,7 +128,7 @@ def course_browse(request):
     separate course.
 
     GET params:
-    @c: filter by private/public CPD points (default: 0)
+    @c: filter by private/public CPD points (default: 2)
         - 0: public (is_private=False)
         - 1: private (is_private=True)
         - 2: both
@@ -211,7 +211,7 @@ def course_browse(request):
 
     sort_param = _option_param(request, 0, "s", SORT_OPTS,
                                 "Invalid sort param")
-    cpd_param = _option_param(request, 0, "c", CPD_OPTS,
+    cpd_param = _option_param(request, 2, "c", CPD_OPTS,
                                "Invalid CPD param")
     order_param = _option_param(request, 0, "o", ORDER_OPTS,
                                 "Invalid order param")
@@ -349,6 +349,8 @@ def _course_json(course, index=None, orig_start_dates=True, custom_start_date=No
 
     if cpd_points is not None:
         cpd_points = float(cpd_points)
+    else:
+        cpd_points = 0
 
     result = {
         "name": course.name,

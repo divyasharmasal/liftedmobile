@@ -5,9 +5,10 @@ export class CourseList extends Component{
   render() {
     return(
       <div class="courses">
-        <CourseListEntry />
-        <CourseListEntry />
-        <CourseListEntry />
+        {this.props.courses.map(
+          course => <CourseListEntry course={course} />)
+        }
+        {this.props.children}
       </div>
     );
   }

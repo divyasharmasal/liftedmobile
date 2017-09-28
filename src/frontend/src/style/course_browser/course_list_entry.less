@@ -1,53 +1,75 @@
 @import (once, less) "../../../../lib/styles/constants.less";
-.course{
+
+.course_row{
+    float:left;
+    width:100%;
+
     &:nth-of-type(even){
         background-color:#efefef;
     }
+}
 
-    text-align:left;
-    padding-top:10px;
-    padding-bottom:10px;
-    font-size:1.75em;
+.course.mobile{
+    display:none;
+}
 
-    @media (max-width: @medium_screen_width) {
-        font-size:1em;
+@media (max-width: @small_screen_width) {
+    .course.desktop{
+        display:none;
     }
 
-    .title{
-        margin-bottom:1em;
-    }
-
-    .nums{
-        font-size:1em;
-
-        .num{
-            height:40px;
-            border-radius:5px;
-            color:white;
-            padding:5px;
-        }
-        .cpd{
-            .num{
-                background-color:@sal_blue;
-            }
+    .course.mobile{
+        float:left;
+        display:initial;
+        padding-left:0px;
+        padding-right:0px;
+        .title{
+            font-size:1.25em;
+            font-weight:bold;
         }
 
-        .cost{
-            margin-bottom:15px;
-            .num{
-                background-color:#4C627B;
-            }
+        .nums{
+            /*margin-left:5px;*/
+            float:left;
         }
 
         div{
             margin-bottom:0.5em;
         }
     }
+}
+
+.course{
+    text-align:left;
+    font-size:1.75em;
+    padding-top:10px;
+    padding-bottom:10px;
+    padding-left:5px;
+    padding-right:5px;
+
+    span, p{
+        font-size:1em;
+    }
+
+    em{
+        font-size:1em;
+        font-weight:bold;
+        font-style:normal;
+    }
+
+    p{
+        text-align:left;
+    }
+
+    @media (max-width: @medium_screen_width) {
+        font-size:1em;
+    }
 
     .toggle{
         cursor:pointer;
         img{
-            width:22px;
+            margin-top:5px;
+            width:18px;
         }
     }
 
@@ -59,10 +81,41 @@
         }
     }
 
-    .details.hide{
-        display:none;
+    .details{
+        .hide{
+            display:none;
+        }
+        .show{
+            display:initial;
+        }
     }
-    .details.show{
-        display:initial;
+}
+
+.course.desktop{
+    .nums{
+        font-size:1em;
+
+        margin-top:5px;
+
+        div{
+            margin-bottom:0.5em;
+        }
+
+        .cpd{
+            font-size:1em;
+        }
+    }
+
+    .details{
+        .title{
+            font-size:1.25em;
+        }
+
+        div{
+            margin-bottom:0.5em;
+        }
+    }
+    .toggle{
+        margin-top:15px;
     }
 }

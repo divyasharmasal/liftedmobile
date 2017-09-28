@@ -1,50 +1,9 @@
 import { h, Component } from "preact";
-import { findDOMNode } from "preact-compat";
+import { route } from "preact-router";
 
 export class Topbar extends Component{
   constructor(props){
     super(props);
-    this.menu = null;
-    this.menuBtn = null;
-    this.state = {
-      showMenu: false,
-    };
-  }
-
-
-  closeMenu = () => {
-    const menuElement = findDOMNode(this.menu);
-    const menuBtnElement = findDOMNode(this.menuBtn);
-
-    if (this.menu != null && 
-      this.menuBtn != null && 
-      this.state.showMenu &&
-      event.target !== menuElement &&
-      event.target !== menuBtnElement &&
-      !menuBtnElement.contains(event.target) &&
-      !menuElement.contains(event.target)){
-      this.setState({ showMenu: false });
-    }
-  }
-
-
-  componentWillMount = () => {
-    if (typeof window !== "undefined") {
-      window.addEventListener("click", event => {
-        this.closeMenu(event);
-      });
-
-      window.addEventListener("onTouchStart", event => {
-        this.closeMenu(event);
-      });
-    }
-  }
-
-
-  toggleMenu = () => {
-    this.setState({
-      showMenu: !this.state.showMenu,
-    });
   }
 
 
@@ -67,15 +26,13 @@ export class Topbar extends Component{
     return(
       <div>
         <div class="topbar">
-          <div onClick={this.toggleMenu}
-            ref={m => {this.menuBtn = m}}
-            class="menu_btn no_user_select">
-
-            <img src="/static/app/dist/images/courses/menu.png" 
-              alt="Menu" />
-
+          <div 
+            onClick={() => {
+              route("/");
+            }}
+            class="logo">
+            <img src="/static/app/dist/images/back.png" alt="back"/>
           </div>
-
           <div class="search">
             <input type="search" 
               placeholder="Search"
@@ -92,15 +49,7 @@ export class Topbar extends Component{
               <img src="/static/app/dist/images/search.png" alt="Search"/>
             </div>
           </div>
-
         </div>
-        {this.state.showMenu &&
-            <div 
-              ref={m => {this.menu = m}}
-              class="menu">
-              Menu
-            </div>
-        }
       </div>
 
     );
