@@ -1,3 +1,20 @@
+- When recommending courses, if there are no results, then don't show
+  results. Only show results for exactly what the user selects.
+
+- Diagnostic screen - leave out first line in the description since
+  it's the same as the comp. description
+
+
+- Preferred sorting metrics:
+    1. CPD points
+    2. Dates and cost - equally impt
+
+- Filter for price - not necessary - demand for price is not elastic,
+  and there are not enough programmes
+- Filter for date - more useful. People generally know when they are
+  free or not.
+- Filter for competency category - yes.
+
 Check with Inga about L3 specialist roles not having specialism
 competencies...
 
@@ -6,7 +23,7 @@ Nevertheless - do a code generator for 3rd party
 6 Oct - Committee Meeting - presentation of Lifted Mobile
     - includes all verticals + technology diagnostic
     - don't worry about anything not visible for demo
-    - if Anita doesn't send the LP framework by the 22nd, don't worry
+    - don't worry about the LP vertical yet...
 
 All-in-one CMS
   - Introductory page with 3 choices: consolidated listing, filter by
