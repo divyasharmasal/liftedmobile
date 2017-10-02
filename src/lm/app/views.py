@@ -105,6 +105,41 @@ def qns_and_opts(request):
     return json_response(qns)
 
 
+def _option_param(request, default, key, opts, error_msg):
+    param = default
+    if key in request.GET:
+        try:
+            param = int(request.GET[key])
+            if param not in opts.keys():
+                raise Exception(error_msg)
+        except Exception as e:
+            raise Exception(error_msg)
+    return param
+
+
+def _numeric_param(request, default, key, error_msg, positive=True):
+    param = default
+    if key in request.GET:
+        try:
+            param = int(request.GET[key])
+            if positive and param < 0:
+                raise Exception(error_msg)
+        except Exception as e:
+            raise Exception(error_msg)
+    return param
+
+
+def _date_param(request, default, key, error_msg):
+    param = default
+    if key in request.GET:
+        timezone = pytz.timezone("UTC")
+        date_fmt = "%Y-%m-%d"
+        parsed_date = datetime.datetime.strptime(request.GET[key], date_fmt)
+        param = timezone.localize(parsed_date)
+
+        return param
+
+
 @login_required
 def course_browse(request):
     """
@@ -157,38 +192,6 @@ def course_browse(request):
         - @p is not an integer and falls outside the predefined keys
         - @s is not an integer and falls outside the predefined keys
     """
-
-    def _option_param(request, default, key, opts, error_msg):
-        param = default
-        if key in request.GET:
-            try:
-                param = int(request.GET[key])
-                if param not in opts.keys():
-                    raise Exception(error_msg)
-            except Exception as e:
-                raise Exception(error_msg)
-        return param
-
-    def _numeric_param(request, default, key, error_msg, positive=True):
-        param = default
-        if key in request.GET:
-            try:
-                param = int(request.GET[key])
-                if positive and param < 0:
-                    raise Exception(error_msg)
-            except Exception as e:
-                raise Exception(error_msg)
-        return param
-
-    def _date_param(request, default, key, error_msg):
-        param = default
-        if key in request.GET:
-            timezone = pytz.timezone("UTC")
-            date_fmt = "%Y-%m-%d"
-            parsed_date = datetime.datetime.strptime(request.GET[key], date_fmt)
-            param = timezone.localize(parsed_date)
-
-        return param
 
     PAGE_SIZE = 30
 
@@ -260,7 +263,42 @@ def course_browse(request):
 
 
 @login_required
-def courses(request):
+def course_recs(request):
+    """
+    Respond with a list of courses that correspond to a given vertical and
+    category ID.
+    """
+    vertical_id = _numeric_param(
+            request, None, "v", "Invalid vertical param", True)
+    vertical_category_id = _numeric_param(
+            request, None, "c", "Invalid vertical category param", True)
+
+    need_ids = None
+    if "n" in request.GET and len(request.GET["n"]) > 0:
+        try:
+            need_ids = [int(x) for x in request.GET["n"].strip().split(",")]
+            for n in need_ids:
+                if n < 0:
+                    return HttpResponseServerError("Invalid need param")
+        except:
+            return HttpResponseServerError("Invalid need param")
+
+
+    course_query = models.Course.objects.all()
+    if need_ids is not None:
+        course_query = course_query.filter(
+            courseverticalcategory__vertical_category__key=vertical_category_id,
+            courseverticalcategory__vertical_category__vertical_id=vertical_id,
+            courselevel__level_id__needlevel__need_id__in=need_ids)
+    else:
+        course_query = course_query.filter(
+            courseverticalcategory__vertical_category__key=vertical_category_id,
+            courseverticalcategory__vertical_category__vertical_id=vertical_id)
+
+    return _course_query_to_json(course_query)
+
+
+def _old_courses(request):
     """
     Respond with a list of courses that correspond to a given vertical and
     category ID.

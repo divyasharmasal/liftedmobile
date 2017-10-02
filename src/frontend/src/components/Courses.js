@@ -124,7 +124,7 @@ export default class Courses extends Component{
     let sortDesc = this.state.sortDesc;
 
     if (field === "name"){
-      courses.courses.sort((a, b) => {
+      courses.sort((a, b) => {
         let x = a[field].toLowerCase();
         let y = b[field].toLowerCase();
         if (x > y){
@@ -134,7 +134,7 @@ export default class Courses extends Component{
       });
     }
     else if (field === "cost"){
-      courses.courses.sort((a, b) => {
+      courses.sort((a, b) => {
         if (parseInt(a.cost) > parseInt(b.cost)){
           return 1;
         }
@@ -142,7 +142,7 @@ export default class Courses extends Component{
       });
     }
     else if (field === "cpd"){
-      courses.courses.sort((a, b) => {
+      courses.sort((a, b) => {
         let x = a.cpd.points;
         let y = b.cpd.points;
 
@@ -159,11 +159,11 @@ export default class Courses extends Component{
       });
     }
     else if (field === "date"){
-      courses.courses = sortCoursesByDate(courses.courses);
+      courses = sortCoursesByDate(courses);
     }
 
     if (!sortDesc){
-      courses.courses.reverse();
+      courses.reverse();
     }
     sortDesc = !sortDesc;
 
@@ -176,7 +176,7 @@ export default class Courses extends Component{
     if (!courses){
       return renderLoader();
     }
-    else if (courses.courses.length === 0){
+    else if (courses.length === 0){
       return (
         <div class="pure-u-1">
           <p>No courses found.</p>
@@ -186,7 +186,7 @@ export default class Courses extends Component{
     else{
       let rows = [];
 
-      courses.courses.forEach((course, i) => {
+      courses.forEach((course, i) => {
         rows.push(
           <tr key={i}>
             <td data-title="Name">
@@ -258,11 +258,6 @@ export default class Courses extends Component{
 
       return (
         <div class="courses pure-u-1">
-          {!courses.tailored &&
-            <p>We didn't find any courses that matched every option you've 
-              selected, but you may like the following courses:</p>
-          }
-
           <Sorter handleSort={this.handleSort} />
 
           <table class="pure-table course_table"
