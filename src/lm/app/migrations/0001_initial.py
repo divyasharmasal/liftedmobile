@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.IntegerField(primary_key=True, serialize=False)),
                 ('specialism', models.TextField(null=True)),
-                ('copy_desc', models.TextField()),
+                ('copy_title', models.TextField()),
                 ('full_desc', models.TextField()),
             ],
         ),

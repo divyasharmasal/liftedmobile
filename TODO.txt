@@ -1,6 +1,3 @@
-- When recommending courses, if there are no results, then don't show
-  results. Only show results for exactly what the user selects.
-
 - Diagnostic screen - leave out first line in the description since
   it's the same as the comp. description
 

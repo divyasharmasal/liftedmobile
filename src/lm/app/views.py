@@ -509,7 +509,7 @@ def diag(request):
         result.append({
             "id": comp.competency.id,
             "expln": comp.competency.full_desc,
-            "desc": comp.competency.copy_desc,
+            "desc": comp.competency.copy_title,
         })
 
     return json_response(result)

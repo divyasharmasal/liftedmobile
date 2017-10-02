@@ -27,5 +27,3 @@ class VerticalScreen extends Screen{
     );
   }
 }
-
-

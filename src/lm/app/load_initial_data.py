@@ -125,9 +125,9 @@ def load(apps, schema_editor):
         competency = Competency(id=competency["ID"],
                                 vertical=vertical,
                                 specialism=competency["Specialism"],
-                                copy_desc=competency["Copyedited description"],
+                                copy_title=competency["Copyedited title"],
                                 category=competency_category,
-                                full_desc=competency["Competency description"])
+                                full_desc=competency["Description"])
         competency.save()
 
     # Job Roles

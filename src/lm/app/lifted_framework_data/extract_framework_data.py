@@ -227,6 +227,12 @@ def parse_competencies():
     """
     data = trim_values(parse_item_rows(read_ods_file(COMPETENCIES_FILE)))
 
+    for row in data:
+        title = row["Copyedited title"]
+        desc = row["Description"]
+        if desc.startswith(title):
+            row["Description"] = desc[len(title):].strip()
+
     # Make empty specialisms None
     for row in data:
         if row["Specialism"] == "":
@@ -278,8 +284,8 @@ def parse_job_roles():
 
 if __name__ == "__main__":
     import pprint
-    courses = parse_courses()
-    pprint.pprint(parse_levels())
+    # courses = parse_courses()
+    pprint.pprint(parse_competencies())
     # pprint.pprint(parse_courses())
     # roles = parse_job_roles()
     # pprint.pprint(roles)

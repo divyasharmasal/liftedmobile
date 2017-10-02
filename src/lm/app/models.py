@@ -142,7 +142,7 @@ class Competency(models.Model):
     vertical = models.ForeignKey(Vertical, on_delete=models.CASCADE)
     category = models.ForeignKey(CompetencyCategory, on_delete=models.CASCADE)
     specialism = models.TextField(null=True)
-    copy_desc = models.TextField()
+    copy_title = models.TextField()
     full_desc = models.TextField()
 
 
