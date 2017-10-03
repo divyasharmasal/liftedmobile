@@ -127,7 +127,13 @@ export default class App extends Component {
           name="tech_diag"
           techRole={this.state.selectedOptions["tech_role"]}
           handleOptionSelect={this.handleOptionSelect}
+          resultsPath="/tech/results"
           path="/tech/diag" />
+        
+        <DiagResultsScreen
+          path="/tech/results"
+          techRole={this.state.selectedOptions["tech_role"]}
+          selectedOptions={this.state.selectedOptions} />
 
         <VerticalScreen 
           name="vertical"
@@ -203,7 +209,7 @@ export default class App extends Component {
           path="/review/diag"
           handleOptionSelect={this.handleOptionSelect}
           selectedOptions={this.state.selectedOptions}
-          nextScreenPath="/review/results" />
+          resultsPath="/review/results" />
         
         <DiagResultsScreen
           path="/review/results"

@@ -82,6 +82,7 @@ class CategoryCourses extends Component{
   }
 }
 
+
 class DiagResultsScreen extends Screen{
   constructor(props){
     super(props);
@@ -92,51 +93,68 @@ class DiagResultsScreen extends Screen{
 
 
   componentWillMount = () => {
-    const answers = this.props.selectedOptions["diag"];
+    const answers = this.props.techRole != null ? 
+      this.props.selectedOptions["tech_diag"] :
+      this.props.selectedOptions["diag"];
 
-    if (!answers){
-      route("/");
-    }
-    else{
-      let url = "/results?";
+    let url;
 
-      // Get role ID from prev answers
-      let roleId = this.props.selectedOptions["role"];
-      if (Object.keys(this.props.selectedOptions).indexOf("nextrole") > -1){
-        roleId = this.props.selectedOptions["nextrole"];
-      }
-
-      if (!roleId){
-        route("/");
-      }
-
-      const verticalId = this.props.selectedOptions["vertical"];
-      url += "v=" + encodeURIComponent(verticalId);
-      url += "&r=" + encodeURIComponent(roleId);
+    if (this.props.techRole != null){
+      url = "/techdiagresults?r=" + encodeURIComponent(this.props.techRole);
 
       Object.keys(answers).forEach(compId => {
         let answer = answers[compId];
-          url += "&" + encodeURIComponent(compId) + "=" + 
-                       encodeURIComponent(answer);
+        url += "&" + encodeURIComponent(compId) + "=" + 
+          encodeURIComponent(answer);
       });
 
-      // Fetch recommended courses
-      authFetch(url).then(response => {
-        response.json().then(results => {
-          this.setState({ 
-            results: results.competencies,
-            courses: results.courses,
-          });
+      console.log(url);
+    }
+    else{
+      //const answers = this.props.selectedOptions["diag"];
+
+      if (!answers){
+        route("/");
+      }
+      else{
+        url = "/results?";
+
+        // Get role ID from prev answers
+        let roleId = this.props.selectedOptions["role"];
+        if (Object.keys(this.props.selectedOptions).indexOf("nextrole") > -1){
+          roleId = this.props.selectedOptions["nextrole"];
+        }
+
+        if (!roleId){
+          route("/");
+        }
+
+        const verticalId = this.props.selectedOptions["vertical"];
+        url += "v=" + encodeURIComponent(verticalId);
+        url += "&r=" + encodeURIComponent(roleId);
+
+        Object.keys(answers).forEach(compId => {
+          let answer = answers[compId];
+          url += "&" + encodeURIComponent(compId) + "=" + 
+            encodeURIComponent(answer);
+        });
+      }
+    }
+
+    // Fetch recommended courses
+    authFetch(url).then(response => {
+      response.json().then(results => {
+        this.setState({ 
+          results: results.competencies,
+          courses: results.courses,
         });
       });
-    }
+    });
   }
 
 
 
   renderCompetencies = (results, courses) => {
-
-
     let ordinary = [];
     let special = [];
     Object.keys(results).sort().reverse().forEach(k => {
@@ -228,15 +246,25 @@ class DiagResultsScreen extends Screen{
         results[a].score - results[b].score
       );
 
+      // Show the first category with items
+      let shown = false;
+
       categoryNames.forEach((cat, i) => {
         const courseList = courseMap[cat].map(courseHid => 
           courses[courseHid]
         );
 
+        let show = false;
+
+        if (shown === false && courseList.length > 0){
+          shown = true;
+          show = true;
+        }
+
         if (courseList.length > 0){
           recs.push(
             <CategoryCourses
-              showByDefault={i === 0}
+              showByDefault={show}
               courseList={courseList}
               results={results}
               anchorSelected={cat === this.state.selectedCategory}

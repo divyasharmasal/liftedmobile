@@ -15,6 +15,7 @@ def load(apps, schema_editor):
     TechCompetencyCategory = apps.get_model("app", "TechCompetencyCategory")
     TechCompetency = apps.get_model("app", "TechCompetency")
     TechRoleCompetency = apps.get_model("app", "TechRoleCompetency")
+    CourseTechCompetency = apps.get_model("app", "CourseTechCompetency")
     TechRole = apps.get_model("app", "TechRole")
     Vertical = apps.get_model("app", "Vertical")
     VerticalCategory = apps.get_model("app", "VerticalCategory")
@@ -42,8 +43,12 @@ def load(apps, schema_editor):
     # Parse and save the tech roles
     parsed_tech_roles = extract_framework_data.parse_tech_roles()
     for i, role in enumerate(parsed_tech_roles):
-        tech_role = TechRole(id=i, name=role["Role"],
-                             option=role["Copyedited role"])
+        tech_role = TechRole(
+                id=i,
+                name=role["Role"],
+                role_level=role["Level"],
+                option=role["Copyedited role"])
+
         tech_role.save()
 
     # parse and save the tech competencies
@@ -264,3 +269,10 @@ def load(apps, schema_editor):
             competency = Competency.objects.get(id=competency_id)
             course_comp = CourseCompetency(course=course, competency=competency)
             course_comp.save()
+
+        tech_competencies = c["Tech Competencies"]
+        for id in tech_competencies:
+            tech_competency = TechCompetency.objects.get(id=id)
+            course_tech_comp = CourseTechCompetency(course=course,
+                    tech_competency=tech_competency)
+            course_tech_comp.save()

@@ -21,8 +21,8 @@ def gen_cache_bust_str(length=32):
     """
     Returns a URL-friendly, 32-bit random string
     """
-    return base64.urlsafe_b64encode(os.urandom(length))\
-        .rstrip(b'=').decode('ascii')
+    return (base64.urlsafe_b64encode(os.urandom(length))
+            .rstrip(b'=').decode('ascii'))
 
 
 def json_response(obj):
@@ -295,89 +295,23 @@ def course_recs(request):
     course_query = models.Course.objects.all()
     if need_ids is not None:
         course_query = course_query.filter(
-            courseverticalcategory__vertical_category__key=vertical_category_id,
+            courseverticalcategory__vertical_category__id=vertical_category_id,
             courseverticalcategory__vertical_category__vertical_id=vertical_id,
             courselevel__level_id__needlevel__need_id__in=need_ids)
     else:
         course_query = course_query.filter(
-            courseverticalcategory__vertical_category__key=vertical_category_id,
+            courseverticalcategory__vertical_category__id=vertical_category_id,
             courseverticalcategory__vertical_category__vertical_id=vertical_id)
-
-    return _course_query_to_json(course_query)
-
-
-def _old_courses(request):
-    """
-    Respond with a list of courses that correspond to a given vertical and
-    category ID.
-    """
-
-    if "v" not in request.GET or "c" not in request.GET:
-        return HttpResponseServerError(
-                "Please provide the vertical and category IDs.")
-
-    vertical_id = request.GET["v"]
-    vertical_category = request.GET["c"]
-    need_ids = request.GET["n"].strip()
-    course_query = models.Course.objects.all()
-
-    if len(need_ids) == 0:
-        need_ids = "any"
-    elif need_ids != "any":
-        try:
-            need_ids = [int(x) for x in need_ids.split(",")]
-        except:
-            return HttpResponseServerError("Invalid need IDs")
-
-    if (vertical_category == "any" and need_ids == "any"):
-        try:
-            course_query = course_query.filter(
-                courseverticalcategory__vertical_category__vertical_id=
-                    vertical_id)
-        except:
-            return HttpResponseServerError("Error code 0")
-
-    elif (vertical_category == "any" and need_ids != "any"):
-        try:
-            course_query = course_query.filter(
-                    courseverticalcategory__vertical_category__vertical_id=
-                        vertical_id,
-                    courselevel__level_id__needlevel__need_id__in=need_ids)
-        except:
-            return HttpResponseServerError("Error code 1")
-
-    elif (vertical_category != "any" and need_ids == "any"):
-        try:
-            vertical_id = int(vertical_id)
-            vertical_category = int(vertical_category)
-            course_query = course_query.filter(
-                courseverticalcategory__vertical_category__id=vertical_category,
-                courseverticalcategory__vertical_category__vertical_id=
-                    vertical_id)
-        except:
-            return HttpResponseServerError("Error code 2")
-    else:
-        try:
-            vertical_id = int(vertical_id)
-            vertical_category = int(vertical_category)
-            course_query = course_query.filter(
-                courseverticalcategory__vertical_category__key=vertical_category,
-                courseverticalcategory__vertical_category__vertical_id=\
-                            vertical_id,
-                courselevel__level_id__needlevel__need_id__in=need_ids)
-        except:
-            return HttpResponseServerError("Error code 3")
 
     return _course_query_to_json(course_query)
 
 
 def _optimise_course_query(courses):
     return (
-        courses
-            .select_related("coursecpdpoints")
-            .select_related("courselevel__level")
-            .select_related("courseformat__format")
-            .prefetch_related("coursestartdate_set")
+        courses.select_related("coursecpdpoints")
+        .select_related("courselevel__level")
+        .select_related("courseformat__format")
+        .prefetch_related("coursestartdate_set")
     )
 
 
@@ -386,7 +320,8 @@ def _course_query_to_json(course_query):
     return json_response([_course_json(course) for course in query])
 
 
-def _course_json(course, index=None, orig_start_dates=True, custom_start_date=None):
+def _course_json(course, index=None, orig_start_dates=True,
+        custom_start_date=None):
     start_dates = None
     level_name = course.courselevel.level.name
     format_name = course.courseformat.format.name
@@ -503,6 +438,19 @@ def tech_diag(request):
     Given a tech role ID, respond with the tech diagnostic questions.
     """
     role_num = _numeric_param(request, None, "r", "Invalid role param", True)
+    tech_role = models.TechRole.objects.get(id=role_num)
+    tech_competencies = (models.TechCompetency.objects
+            .filter(category__tech_role=tech_role))
+
+    result = []
+    for comp in tech_competencies:
+        result.append({
+            "id": comp.id,
+            "expln": comp.full_desc,
+            "desc": comp.copy_title,
+        })
+
+    return json_response(result)
 
 
 @login_required
@@ -529,6 +477,144 @@ def diag(request):
         })
 
     return json_response(result)
+
+
+@login_required
+def tech_diag_results(request):
+    tech_role_id = _numeric_param(request, None, "r", "Invalid tech role param", True)
+    tech_role = models.TechRole.objects.get(id=tech_role_id)
+    answers = {}
+    keys = []
+    for k, v in request.GET.items():
+        if k == "r":
+            continue
+        try:
+            answers[k] = int(v)
+            keys.append(k)
+        except:
+            return HttpResponseServerError(
+                    "Invalid answer provided for %s" % k)
+    # get competency categories
+    tech_competencies = (
+        models.TechCompetency.objects
+            .filter(id__in=keys)
+            .select_related("category")
+    )
+
+    categorised_answers = {}
+    cat_names = {}
+
+    for k, v in answers.items():
+        # Scores:
+        # 0 - yes - +1
+        # 1 - no - -1
+        if v not in [0, 1]:
+            return HttpResponseServerError(
+                    "Invalid answer provided for %s" % k)
+        comp = None
+        for c in tech_competencies:
+            if c.id == int(k):
+                comp = c
+                break
+
+        category = comp.category.name
+
+        cat_names[category] = comp.category
+
+        if category not in categorised_answers:
+            categorised_answers[category] = {
+                "total": 0,
+                "yes": 0,
+                "no": 0,
+            }
+
+        if v == 0:
+            categorised_answers[category]["yes"] += 1
+        elif v == 1:
+            categorised_answers[category]["no"] += 1
+        categorised_answers[category]["total"] += 1
+
+    for category, scores in categorised_answers.items():
+        # final result will be upon 100
+        # base score is 50
+        # Yes answers add to base and others deduct from it
+        base = 50
+        unit = base / scores["total"]
+        result = base + \
+            (scores["yes"] * unit) + \
+            (scores["no"] * unit * -1)
+
+        score = round(result)
+        categorised_answers[category] = {
+            "score": score,
+        }
+
+    response = {
+        "competencies": categorised_answers,
+        "courses": _tech_diag_course_recommendations(
+            categorised_answers, tech_role),
+    }
+
+    return json_response(response)
+
+
+def _tech_diag_course_recommendations(categorised_answers, tech_role):
+    """
+    Provides course recommendations based on:
+    @categorised_answers: the scores for each competency category
+    @tech_role: the user's selected tech role
+    """
+
+    # Obsfucate course IDs with a hashids function seeded with a
+    # random salt
+    hash_func = hashids.Hashids(min_length=4, salt=gen_cache_bust_str()).encode
+
+    result = {
+        "map": {},
+        "courses": {},
+    }
+
+    def _next_level(tech_role):
+        max_level = models.TechRole.objects.all()\
+            .aggregate(Max("role_level"))["role_level__max"]
+        level = tech_role.role_level
+        if level < max_level:
+            level += 1
+        return level
+
+    for category_name, score_info in categorised_answers.items():
+        courses = []
+        result["map"][category_name] = []
+
+        if score_info["score"] == 100:
+            level = _next_level(tech_role)
+
+            competencies = models.TechCompetency.objects.filter(
+                    category__name=category_name,
+                    techrolecompetency__tech_role__role_level=level)\
+                .distinct()
+
+            courses = models.Course.objects.filter(
+                    coursetechcompetency__tech_competency__in=competencies
+            ).distinct()
+
+        else:
+            level = tech_role.role_level
+            competencies = models.TechCompetency.objects.filter(
+                    category__name=category_name,
+                    techrolecompetency__tech_role__role_level=level)
+
+            courses = models.Course.objects.filter(
+                    coursetechcompetency__tech_competency__in=competencies
+            ).distinct()
+
+        courses = _optimise_course_query(courses)
+        for course in courses:
+            course_id = hash_func(course.id)
+            result["map"][category_name].append(course_id)
+            result["courses"][course_id] = _course_json(course)
+
+    return result
 
 
 @login_required
@@ -581,8 +667,6 @@ def results(request):
             .select_related("category")
     )
 
-    key = {0: 2, 1: -1, 2: -2}
-
     categorised_answers = {}
     cat_names = {}
 
@@ -590,7 +674,7 @@ def results(request):
         # Scores:
         # 0 - yes - +1
         # 1 - no - -1
-        if v not in key.keys():
+        if v not in [0, 1]:
             return HttpResponseServerError(
                     "Invalid answer provided for %s" % k)
 
@@ -682,7 +766,7 @@ def _diag_course_recommendations(categorised_answers, vertical, job_role):
     }
 
     def _next_level(job_role):
-        max_level = models.JobRole.objects.filter(id=job_role.id)\
+        max_level = models.JobRole.objects.filter(vertical=job_role.vertical)\
             .aggregate(Max("role_level"))["role_level__max"]
         level = job_role.role_level
         if level < max_level:

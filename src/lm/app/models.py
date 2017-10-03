@@ -4,6 +4,7 @@ from django.db import models
 class TechRole(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.TextField(unique=True)
+    role_level = models.IntegerField(null=True)
     option = models.TextField(unique=True)
 
 
@@ -194,3 +195,12 @@ class JobRoleCompetency(models.Model):
         unique_together = (("job_role", "competency"))
     job_role = models.ForeignKey(JobRole, on_delete=models.CASCADE)
     competency = models.ForeignKey(Competency, on_delete=models.CASCADE)
+
+
+class CourseTechCompetency(models.Model):
+    class Meta:
+        unique_together = (("course", "tech_competency"))
+    id = models.AutoField(primary_key=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    tech_competency = models.ForeignKey(TechCompetency,
+                                        on_delete=models.CASCADE)

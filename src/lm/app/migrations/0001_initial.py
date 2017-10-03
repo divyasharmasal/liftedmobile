@@ -175,6 +175,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.IntegerField(primary_key=True, serialize=False)),
                 ('name', models.TextField(unique=True)),
+                ('role_level', models.IntegerField(null=True)),
                 ('option', models.TextField(unique=True)),
             ],
         ),
@@ -217,6 +218,16 @@ class Migration(migrations.Migration):
                 ('name', models.TextField()),
                 ('option', models.TextField()),
                 ('vertical', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Vertical')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='CourseTechCompetency',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('tech_competency',
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                        to='app.TechCompetency')),
+                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
             ],
         ),
         migrations.AddField(
@@ -316,6 +327,10 @@ class Migration(migrations.Migration):
         migrations.AlterUniqueTogether(
             name='coursecompetency',
             unique_together=set([('course', 'competency')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='coursetechcompetency',
+            unique_together=set([('course', 'tech_competency')]),
         ),
         migrations.AlterUniqueTogether(
             name='competencycategory',

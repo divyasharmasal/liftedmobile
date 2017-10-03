@@ -129,8 +129,18 @@ def parse_courses():
         comps = str(row["Competencies"]).split(",")
         for comp in comps:
             c = comp.strip()
-            competencies.append(int(c))
+            if len(c) > 0:
+                competencies.append(int(c))
         row["Competencies"] = competencies
+
+        tech_competencies = []
+        if "Tech Competencies" in row.keys():
+            tech_comps = str(row["Tech Competencies"]).split(",")
+            for comp in tech_comps:
+                c = comp.strip()
+                if len(c) > 0:
+                    tech_competencies.append(int(c))
+        row["Tech Competencies"] = tech_competencies
 
     return rows
 
@@ -330,9 +340,9 @@ if __name__ == "__main__":
     # pprint.pprint(parse_tech_roles())
     # pprint.pprint(parse_tech_competency_categories())
     # pprint.pprint(parse_tech_competencies())
-    pprint.pprint(parse_competency_categories())
+    # pprint.pprint(parse_competency_categories())
 
     # courses = parse_courses()
-    # pprint.pprint(parse_courses())
+    pprint.pprint(parse_courses())
     # roles = parse_job_roles()
     # pprint.pprint(roles)

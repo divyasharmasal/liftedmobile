@@ -97,7 +97,7 @@ class DiagScreen extends Screen{
 
 
   handleSubmitBtnClick = () => {
-    route("/review/results");
+    route(this.props.resultsPath);
   }
 
 
@@ -117,6 +117,7 @@ class DiagScreen extends Screen{
       shouldHighlight: true,
     });
   }
+
 
   render(){
     if (!this.state.diag){
