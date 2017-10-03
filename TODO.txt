@@ -1,7 +1,3 @@
-- Diagnostic screen - leave out first line in the description since
-  it's the same as the comp. description
-
-
 - Preferred sorting metrics:
     1. CPD points
     2. Dates and cost - equally impt

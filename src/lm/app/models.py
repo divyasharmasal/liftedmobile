@@ -1,6 +1,32 @@
 from django.db import models
 
 
+class TechRole(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.TextField(unique=True)
+    option = models.TextField(unique=True)
+
+
+class TechCompetencyCategory(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.TextField()
+    tech_role = models.ForeignKey(TechRole, on_delete=models.CASCADE)
+
+
+class TechCompetency(models.Model):
+    id = models.IntegerField(primary_key=True)
+    category = models.ForeignKey(TechCompetencyCategory, on_delete=models.CASCADE)
+    copy_title = models.TextField()
+    full_desc = models.TextField()
+
+
+class TechRoleCompetency(models.Model):
+    class Meta:
+        unique_together = (("tech_role", "tech_competency"))
+    tech_role = models.ForeignKey(TechRole, on_delete=models.CASCADE)
+    tech_competency = models.ForeignKey(TechCompetency, on_delete=models.CASCADE)
+
+
 class Vertical(models.Model):
     """
     Practicing lawyer, in-house counsel, legal support

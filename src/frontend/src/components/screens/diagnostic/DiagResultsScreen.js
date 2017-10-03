@@ -71,14 +71,11 @@ class CategoryCourses extends Component{
         </div>
 
         <div class={"course_table " + showHide}>
-          {/*this.props.results[this.props.categoryName].score === 100 ?
-            <p>Good job! You might like to check out these courses too:</p>
-            :
-            <p>You might like to try these courses to improve:</p>
-            */}
-          <p>Here are some courses to consider based on what's available.</p>
+          {/*<p>Here are some courses to consider based on what's available.</p>*/}
           <p class="back_to_top"><a href="#top">back to top</a></p>
-          <Courses courses={{courses: this.props.courseList, tailored: true}} />
+
+          <Courses courses={this.props.courseList} />
+
         </div>
       </div>
     );

@@ -24,6 +24,7 @@ CMD cd /src/lm && \
 
     python3 manage.py collectstatic --no-input && \
    #python3 manage.py makemigrations && \
+   #python3 manage.py makemigrations --empty app && \
     python3 manage.py migrate && \
     echo && \
     echo "Docker containers are up; server at: http://0.0.0.0:8000/" && \

@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^course_recs$', views.course_recs, name='course_recs'),
     url(r'^course_browse$', views.course_browse, name='course_browse'),
     url(r'^roles$', views.roles, name='roles'),
+    url(r'^techdiag$', views.tech_diag, name='tech_diag'),
     url(r'^diag$', views.diag, name='diag'),
     url(r'^results$', views.results, name='results'),
 ]

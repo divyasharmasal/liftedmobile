@@ -3,6 +3,7 @@ Loaded by 0001_initial.py to load initial data from ODS files in
 lifted_framework_data/
 """
 from app.lifted_framework_data import extract_framework_data
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def load(apps, schema_editor):
@@ -11,6 +12,10 @@ def load(apps, schema_editor):
     it in the DB
     """
 
+    TechCompetencyCategory = apps.get_model("app", "TechCompetencyCategory")
+    TechCompetency = apps.get_model("app", "TechCompetency")
+    TechRoleCompetency = apps.get_model("app", "TechRoleCompetency")
+    TechRole = apps.get_model("app", "TechRole")
     Vertical = apps.get_model("app", "Vertical")
     VerticalCategory = apps.get_model("app", "VerticalCategory")
     Level = apps.get_model("app", "Level")
@@ -34,6 +39,47 @@ def load(apps, schema_editor):
     JobRole = apps.get_model("app", "JobRole")
     JobRoleCompetency = apps.get_model("app", "JobRoleCompetency")
 
+    # Parse and save the tech roles
+    parsed_tech_roles = extract_framework_data.parse_tech_roles()
+    for i, role in enumerate(parsed_tech_roles):
+        tech_role = TechRole(id=i, name=role["Role"],
+                             option=role["Copyedited role"])
+        tech_role.save()
+
+    # parse and save the tech competencies
+    for i, tech_comp in enumerate(
+            extract_framework_data.parse_tech_competencies()):
+        tech_role = TechRole.objects.get(name=tech_comp["Tech role"])
+
+        # Find / create the tech competency category
+        tech_comp_cat = None
+        try:
+            tech_comp_cat = TechCompetencyCategory.objects.get(
+                    tech_role=tech_role,
+                    name=tech_comp["Competency category"])
+        except ObjectDoesNotExist as e:
+            tech_comp_cat = TechCompetencyCategory(
+                    tech_role=tech_role,
+                    name=tech_comp["Competency category"])
+            tech_comp_cat.save()
+
+        tech_comp = TechCompetency(
+                id=tech_comp["ID"],
+                category=tech_comp_cat,
+                copy_title=tech_comp["Copyedited title"],
+                full_desc=tech_comp["Description"])
+        tech_comp.save()
+
+    for i, tech_role in enumerate(parsed_tech_roles):
+        role = TechRole.objects.get(name=tech_role["Role"])
+        for comp_id in tech_role["Tech Competency IDs"]:
+            comp = TechCompetency.objects.get(id=comp_id)
+            tech_role_comp = TechRoleCompetency(
+                    tech_role=role,
+                    tech_competency=comp)
+            tech_role_comp.save()
+
+
     i = 1
     j = 1
     verticals = []
@@ -53,6 +99,7 @@ def load(apps, schema_editor):
             j += 1
         i += 1
 
+
     levels = []
     for lvl in extract_framework_data.parse_levels():
         levels.append(Level(name=lvl["Level"], acronym=lvl["Acronym"]))
@@ -70,6 +117,7 @@ def load(apps, schema_editor):
         funding_types.append(Funding(funding_type=funding_type))
 
     db_alias = schema_editor.connection.alias
+
     Vertical.objects.using(db_alias).bulk_create(verticals)
     VerticalCategory.objects.using(db_alias).bulk_create(categories)
     Level.objects.using(db_alias).bulk_create(levels)
@@ -109,9 +157,9 @@ def load(apps, schema_editor):
 
     # CompetencyCategory
     comp_categories = extract_framework_data.parse_competency_categories()
-    for vertical, categories in comp_categories.items():
+    for vertical, cats in comp_categories.items():
         vertical = Vertical.objects.get(name=vertical)
-        for category in categories:
+        for category in cats:
             comp_cat = CompetencyCategory(vertical=vertical, name=category)
             comp_cat.save()
 

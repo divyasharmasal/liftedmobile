@@ -1,11 +1,12 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 """
 Extract data from the ODS spreadsheets which contain
 the LIFTED framework and courses for 2017.
 (see https://liftedsg.files.wordpress.com/2017/01/lifted-learning-planner-2017-with-insert.pdf)
 """
 
-#!/usr/bin/env python3
 import pyexcel_odsr
 import pytz
 import datetime
@@ -26,6 +27,8 @@ FORMATS_FILE = _make_path("formats.ods")
 NEEDS_FILE = _make_path("needs.ods")
 COURSES_FILE = _make_path("courses.ods")
 VERTICALS_FILE = _make_path("verticals.ods")
+TECH_ROLES_FILE = _make_path("tech_roles.ods")
+TECH_COMPETENCIES_FILE = _make_path("tech_competencies.ods")
 COMPETENCIES_FILE = _make_path("competencies.ods")
 JOB_ROLES_FILE = _make_path("job_roles.ods")
 
@@ -159,6 +162,25 @@ def parse_funding_types():
     return list(all_funding_types)
 
 
+def parse_tech_roles():
+    ods_data = read_ods_file(TECH_ROLES_FILE)["Tech Roles"]
+    headers = ods_data[0]
+
+    results = []
+    for i, row in enumerate(ods_data):
+        if i == 0:
+            continue
+
+        r = {}
+        for j, col in enumerate(row):
+            r[headers[j]] = col
+
+        comp_limits = [int(x) for x in r["Tech Competency IDs"].split("-")]
+        r["Tech Competency IDs"] = [x for x in range(comp_limits[0], comp_limits[1]+1)]
+
+        results.append(r)
+    return results
+
 
 def parse_verticals():
     """
@@ -221,6 +243,16 @@ def trim_values(dict_data):
     return dict_data
 
 
+def parse_tech_competencies():
+    data = trim_values(parse_item_rows(read_ods_file(TECH_COMPETENCIES_FILE)))
+    for i, row in enumerate(data):
+        title = row["Copyedited title"]
+        if row["Description"].startswith(title):
+            row["Description"] = row["Description"][len(title):].strip()
+
+    return data
+
+
 def parse_competencies():
     """
     Extract data about the competencies.
@@ -238,6 +270,16 @@ def parse_competencies():
         if row["Specialism"] == "":
             row["Specialism"] = None
     return data
+
+
+def parse_tech_competency_categories():
+    """
+    Extract data about the tech competency categories.
+    """
+    tech_competencies = parse_tech_competencies()
+    comp_cats = {}
+    for tech_comp in tech_competencies:
+        print(tech_comp["Competency Category"])
 
 
 def parse_competency_categories():
@@ -284,8 +326,13 @@ def parse_job_roles():
 
 if __name__ == "__main__":
     import pprint
+    # parse_tech_competencies()
+    # pprint.pprint(parse_tech_roles())
+    # pprint.pprint(parse_tech_competency_categories())
+    # pprint.pprint(parse_tech_competencies())
+    pprint.pprint(parse_competency_categories())
+
     # courses = parse_courses()
-    pprint.pprint(parse_competencies())
     # pprint.pprint(parse_courses())
     # roles = parse_job_roles()
     # pprint.pprint(roles)

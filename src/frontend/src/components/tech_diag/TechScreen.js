@@ -4,23 +4,20 @@ import { renderLoader } from "../../../../lib/js/loader_anim";
 import { getSelectedOpts, storeSelectedOpts } from "../../lib/store";
 
 export { 
-  Screen, 
-  createCoursesUrl, 
-  renderLoader,
-  renderStartOver,
+  TechScreen, 
 };
 
 
 // Screen parent class
-class Screen extends Component{
+class TechScreen extends Component{
   constructor(props){
     super(props);
 
     if (window.location.pathname !== "/" &&
-      window.location.pathname !== "/analysis"){
+      window.location.pathname !== "/tech"){
       const storedOpts = getSelectedOpts();
       if (!storedOpts || Object.keys(storedOpts).length === 0){
-        route("/analysis");
+        route("/tech");
       }
     }
   }
@@ -51,3 +48,4 @@ class Screen extends Component{
     route(this.props.nextScreenPath);
   }
 }
+

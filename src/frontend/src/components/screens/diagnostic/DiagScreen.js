@@ -20,28 +20,40 @@ class DiagScreen extends Screen{
     };
   }
 
-  componentWillMount = () => {
-    const selectedOptions = this.props.selectedOptions;
-    const currentRole = selectedOptions["role"];
-    let nextRole = null;
-    if (Object.keys(selectedOptions).indexOf("nextrole") > -1){
-      nextRole = selectedOptions["nextrole"];
-    }
 
-    let role;
-    if (nextRole){
-      role = nextRole
+  componentWillMount = () => {
+    if (this.props.techRole != null){
+      const techRole = this.props.techRole;
+      const url = "/techdiag?r=" + encodeURIComponent(techRole);
+      authFetch(url).then(response => {
+        response.json().then(diag => {
+          this.setState({ diag });
+        });
+      });
     }
     else{
-      role = currentRole;
-    }
+      const selectedOptions = this.props.selectedOptions;
+      const currentRole = selectedOptions["role"];
+      let nextRole = null;
+      if (Object.keys(selectedOptions).indexOf("nextrole") > -1){
+        nextRole = selectedOptions["nextrole"];
+      }
 
-    const url = "/diag?r=" + encodeURIComponent(role);
-    authFetch(url).then(response => {
-      response.json().then(diag => {
-        this.setState({ diag });
+      let role;
+      if (nextRole){
+        role = nextRole
+      }
+      else{
+        role = currentRole;
+      }
+
+      const url = "/diag?r=" + encodeURIComponent(role);
+      authFetch(url).then(response => {
+        response.json().then(diag => {
+          this.setState({ diag });
+        });
       });
-    });
+    }
   }
 
 
@@ -127,7 +139,7 @@ class DiagScreen extends Screen{
       disabled = "disabled";
     }
 
-    let btn = (
+    const btn = (
       <a onClick={() => {
         if (numAnswered === numQns){
           this.handleSubmitBtnClick();

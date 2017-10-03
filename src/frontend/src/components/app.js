@@ -22,7 +22,7 @@ import {
 } from "./screens";
 
 import { CourseBrowser } from "./course_browser";
-
+import { TechRoleScreen } from "./tech_diag";
 import { renderLoader } from "./screens/Screen";
 
 export default class App extends Component {
@@ -116,9 +116,21 @@ export default class App extends Component {
         <CourseBrowser
           path="/browse" />
 
+        <TechRoleScreen
+          name="tech_role"
+          handleOptionSelect={this.handleOptionSelect}
+          qnData={this.state.qns["tech_role"]}
+          path="/tech" 
+          nextScreenPath="/tech/diag" />
+
+        <DiagScreen
+          name="tech_diag"
+          techRole={this.state.selectedOptions["tech_role"]}
+          handleOptionSelect={this.handleOptionSelect}
+          path="/tech/diag" />
+
         <VerticalScreen 
           name="vertical"
-          deps={[]}
           qnData={this.state.qns["vertical"]}
           path="/analysis"
           handleOptionSelect={this.handleOptionSelect}

@@ -94,12 +94,20 @@ def qns_and_opts(request):
     ]
     qn5 = create_qn("I want to...", qn5_opts)
 
+    tech_roles = [{
+        "text": v.option,
+        "id": v.id
+    } for v in models.TechRole.objects.all()]
+
+    tech_role_qn = create_qn("I am...", tech_roles)
+
     qns = {
         "vertical": qn1,
         "comp_category": qn2,
         "need": qn3,
         "where": qn4,
         "goal": qn5,
+        "tech_role": tech_role_qn,
     }
 
     return json_response(qns)
@@ -487,6 +495,14 @@ def roles(request):
                        for job_role in job_role_query.distinct()
                         ], key=lambda j: j["level"])
     return json_response(job_roles)
+
+
+@login_required
+def tech_diag(request):
+    """
+    Given a tech role ID, respond with the tech diagnostic questions.
+    """
+    role_num = _numeric_param(request, None, "r", "Invalid role param", True)
 
 
 @login_required
