@@ -258,7 +258,7 @@ def course_browse(request):
     if end_date_param is not None:
         csd_query = csd_query.filter(start_date__lte=end_date_param)
     
-    csd_query = csd_query[start_page:end_page]
+    # csd_query = csd_query[start_page:end_page]
 
     return json_response([
             _course_json(
@@ -328,10 +328,10 @@ def _course_json(course, index=None, orig_start_dates=True,
     points = course.coursecpdpoints
     cpd_points = course.coursecpdpoints.points
 
-    if cpd_points is not None:
-        cpd_points = float(cpd_points)
-    else:
-        cpd_points = 0
+    # if cpd_points is None:
+        # cpd_points = 0
+    # else:
+        # cpd_points = float(cpd_points)
 
     result = {
         "name": course.name,
@@ -340,7 +340,7 @@ def _course_json(course, index=None, orig_start_dates=True,
         "level": level_name,
         "format": format_name,
         "cpd": {
-            "points": cpd_points,
+            "points": float(cpd_points),
             "is_private": points.is_private
         }
     }

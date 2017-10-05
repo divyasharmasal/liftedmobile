@@ -8,10 +8,14 @@ export class CourseListOpts extends Component{
       <div class="course_list_opts">
         <div class="content">
           <div class="pri">
-            <CourseSorter />
+            <CourseSorter 
+              onSort={this.props.handleSort}
+            />
           </div>
           <div class="pri">
-            <CourseDateFilter />
+            <CourseDateFilter 
+              onDateRangeSelect={this.props.handleDateFilter}
+            />
           </div>
           <div class="pri">
             <span class="label">Topic</span>

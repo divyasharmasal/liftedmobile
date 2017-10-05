@@ -5,8 +5,8 @@ import "react-simple-dropdown/styles/Dropdown.css";
 import CloseButton from "./CloseButton";
 
 
-const ASC = 0;
-const DESC = 1;
+const ASC = "asc";
+const DESC = "desc";
 class Sorter extends Component{
   selectSortOpt = () => {
     let direction;
@@ -80,7 +80,10 @@ export class CourseSorter extends Component{
 
 
   selectSortBtn = () => {
-    console.log(this.state.sortBy);
+    if (this.state.sortBy){
+      this.props.onSort(this.state.sortBy);
+    }
+    this.dropdown.hide();
   }
 
 
@@ -173,11 +176,11 @@ export class CourseSorter extends Component{
                 </div>
 
                 {this.state.sortBy &&
-                    <div class="button ok"
-                      onClick={this.selectSortBtn}
-                    >
-                  <a>Sort</a>
-                </div>
+                  <div class="button ok"
+                    onClick={this.selectSortBtn}
+                  >
+                    <a>Sort</a>
+                  </div>
                 }
 
               </div>

@@ -10,21 +10,17 @@ import { renderLoader } from "../screens/Screen";
 import { authFetch } from "../../lib/fetch";
 
 
-const sortKeys = {
-  date: 0,
-  cpd: 1,
-  cost: 2,
-}
+const sortKey = {
+  "Date": 0,
+  "CPD points": 1,
+  "Cost": 2,
+};
 
 
-const reduce = (prevState, action) => {
-  switch (action.type){
-    case "SET_COURSES":
-      return { courses: action.data };
-  default:
-      return prevState;
-  }
-}
+const directionKey = {
+  "asc": 0,
+  "desc": 1,
+};
 
 
 export class CourseBrowser extends Component{
@@ -37,7 +33,12 @@ export class CourseBrowser extends Component{
 
 
   componentWillMount = () => {
-    const url = this.genCourseListUrl("date", "desc", "all", 1, 2, 0);
+    const url = this.genCourseListUrl("Date", "desc", "all", 1, 2, 0);
+    this.fetchAndSetCourses(url);
+  }
+
+
+  fetchAndSetCourses = url => {
     console.log(url);
     authFetch(url).then(response => {
       response.json().then(courses => {
@@ -51,10 +52,12 @@ export class CourseBrowser extends Component{
 
 
   genCourseListUrl = (sortBy, sortOrder, cpdType, startDate, endDate, page) => {
+    console.log(sortOrder);
     const base = "/course_browse?";
-    const sortByParam = "&s=" + sortKeys[sortBy].toString();
+    const sortByParam = "&s=" + sortKey[sortBy].toString();
+    const sortOrderParam = "&o=" + directionKey[sortOrder].toString();
 
-    return base + sortByParam;
+    return base + sortByParam + sortOrderParam;
   }
 
 
@@ -63,9 +66,30 @@ export class CourseBrowser extends Component{
   }
 
 
+  reduce = (prevState, action) => {
+    switch (action.type){
+      case "SET_COURSES":
+        return { courses: action.data };
+    default:
+        return prevState;
+    }
+  }
+
+
   dispatch = action => {
     console.log("Dispatch: " + action.type);
-    this.setState(prevState => reduce(prevState, action));
+    this.setState(prevState => this.reduce(prevState, action));
+  }
+
+
+  handleSort = sortBy => {
+    const url = this.genCourseListUrl(sortBy.field, sortBy.direction, "all", 1, 2, 0);
+    this.fetchAndSetCourses(url);
+  }
+
+
+  handleDateFilter = dateRange => {
+    console.log(dateRange);
   }
 
 
@@ -83,7 +107,10 @@ export class CourseBrowser extends Component{
             { this.state.courses.length > 0 ?
               <div>
                 <CourseList courses={this.state.courses}>
-                  <CourseListOpts />
+                  <CourseListOpts 
+                    handleSort={this.handleSort}
+                    handleDateFilter={this.handleDateFilter}
+                  />
                 </CourseList>
               </div>
             :

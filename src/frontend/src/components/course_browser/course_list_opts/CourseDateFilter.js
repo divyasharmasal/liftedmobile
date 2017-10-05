@@ -4,8 +4,8 @@ import "react-simple-dropdown/styles/Dropdown.css";
 import Flatpickr from 'react-flatpickr'
 import 'flatpickr/dist/themes/airbnb.css';
 
-
 import CloseButton from "./CloseButton";
+
 
 export class CourseDateFilter extends Component{
   closeDropdown = () => {
@@ -16,11 +16,17 @@ export class CourseDateFilter extends Component{
   handleDateRangeChange = dates => {
     const startDate = dates[0];
     const endDate = dates[1];
-    console.log(startDate);
-    console.log(endDate);
     this.setState({
       dateRange: { startDate, endDate },
     });
+  }
+
+
+  selectFilterBtn = () => {
+    if (this.state.dateRange){
+      this.props.onDateRangeSelect(this.state.dateRange);
+    }
+    this.dropdown.hide();
   }
 
 
@@ -65,7 +71,7 @@ export class CourseDateFilter extends Component{
 
                 {this.state.dateRange &&
                     <div class="button ok"
-                      onClick={this.selectSortBtn}
+                      onClick={this.selectFilterBtn}
                     >
                   <a>Filter</a>
                 </div>

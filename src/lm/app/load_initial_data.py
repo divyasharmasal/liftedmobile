@@ -207,7 +207,7 @@ def load(apps, schema_editor):
         course.save()
 
         # CPD points
-        cpd_points = None
+        cpd_points = 0
         is_private = False
         if "Est. CPD points" not in c.keys():
             cpd_points = None
@@ -215,10 +215,10 @@ def load(apps, schema_editor):
             cpd_points = c["Est. CPD points"]
 
         if cpd_points == "Pte":
-            cpd_points = None
             is_private = True
+            cpd_points = 0
         elif cpd_points == "":
-            cpd_points = None
+            cpd_points = 0
 
         course_cpd_points = CourseCpdPoints(course=course, points=cpd_points,
                                             is_private=is_private)
