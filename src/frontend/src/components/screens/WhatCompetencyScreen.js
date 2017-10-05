@@ -7,7 +7,7 @@ import {
 } from './Screen';
 
 
-export {WhatCompetencyScreen};
+export { WhatCompetencyScreen };
 
 class WhatCompetencyScreen extends Screen{
   componentWillMount = () => {

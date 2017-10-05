@@ -72,10 +72,10 @@ export class CourseListEntry extends Component{
 
           <div class="details">
             <div class={toggleClass}>
-              <div class="pure-u-md-1-3">
+              <div class="level pure-u-md-1-3">
                 Level: {course.level}
               </div>
-              <div class="pure-u-md-1-3">
+              <div class="format pure-u-md-1-3">
                 Format: {course.format}
               </div>
             </div>

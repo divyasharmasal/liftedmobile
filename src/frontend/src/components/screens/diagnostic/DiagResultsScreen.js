@@ -71,6 +71,11 @@ class CategoryCourses extends Component{
         </div>
 
         <div class={"course_table " + showHide}>
+          {this.props.results[this.props.categoryName].score === 100 &&
+            <p class="great">
+              Great, you're all covered. Here are some programmes to
+            take you to the next level:</p>
+          }
           {/*<p>Here are some courses to consider based on what's available.</p>*/}
           <p class="back_to_top"><a href="#top">back to top</a></p>
 
@@ -157,7 +162,7 @@ class DiagResultsScreen extends Screen{
   renderCompetencies = (results, courses) => {
     let ordinary = [];
     let special = [];
-    Object.keys(results).sort().reverse().forEach(k => {
+    Object.keys(results).forEach(k => {
       const item = {
         name: k,
         score: results[k].score,
@@ -172,7 +177,7 @@ class DiagResultsScreen extends Screen{
       }
     });
 
-    ordinary.sort((a, b) => a.score - b.score).reverse();
+    ordinary.sort((a, b) => a.score - b.score);
     special.sort((a, b) => a.score - b.score).reverse();
 
     const renderRows = (results, map) => {

@@ -193,6 +193,7 @@ def course_browse(request):
         - 0: results 1-30
         - 1: results 31-60
         - n: (30n + 1) to (30n + 30), index starting from 1
+    @q: search query (default: None)
 
     Respond with an error in the following situations:
         - @sd > @ed
@@ -229,6 +230,12 @@ def course_browse(request):
     page_param = _numeric_param(request, 0, "pg", "Invalid page param",
                                 positive=True)
 
+    search_param = None
+    if "q" in request.GET:
+        search_param = str(request.GET["q"]).strip()
+        if len(search_param) == 0:
+            search_param = None
+
     start_page = PAGE_SIZE * page_param
     end_page = start_page + PAGE_SIZE
 
@@ -259,6 +266,9 @@ def course_browse(request):
         csd_query = csd_query.filter(start_date__lte=end_date_param)
     
     # csd_query = csd_query[start_page:end_page]
+
+    if search_param is not None:
+        csd_query = csd_query.filter(course__name__search=search_param)
 
     return json_response([
             _course_json(

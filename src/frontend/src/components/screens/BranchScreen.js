@@ -95,7 +95,7 @@ export class BranchScreen extends Screen {
 
     const courseTableRef = courseTable => {this.courseTable = courseTable};
     // find out which item the user already selected
-    const preSelected = this.props.selectedOptions[this.props.name];
+    //const preSelected = this.props.selectedOptions[this.props.name];
 
     let qnData = JSON.parse(JSON.stringify(this.props.qnData));
     //qnData.text = "...or choose more goals if you wish.";
@@ -133,7 +133,7 @@ export class BranchScreen extends Screen {
           </a>
           <Question
             isMultiQn={true}
-            preSelected={preSelected}
+            //preSelected={preSelected}
             scrollDownMsg={false}
             useTiles={true}
             handleOptionSelect={this.handleOptionSelect}

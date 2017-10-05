@@ -12,8 +12,7 @@ export class IntroScreen extends Component{
 
           <div class="intro">
             <div class="text">
-              <p>Part of the legal community?</p>
-              <p>Find out what to learn.</p>
+              <p>Find out what to learn with LIFTED.</p>
             </div>
             <div class="planes no_user_select">
               <img src="/static/app/dist/images/lifted_planes.png" />

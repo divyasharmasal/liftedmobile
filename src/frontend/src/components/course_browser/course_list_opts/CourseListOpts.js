@@ -15,12 +15,15 @@ export class CourseListOpts extends Component{
           <div class="pri">
             <CourseDateFilter 
               onDateRangeSelect={this.props.handleDateFilter}
+              onDateRangeClear={this.props.handleDateFilterClear}
             />
           </div>
+          {/*
           <div class="pri">
             <span class="label">Topic</span>
             <img class="expand" src="/static/app/dist/images/courses/sort_show.png" />
           </div>
+          */}
         </div>
       </div>
     );

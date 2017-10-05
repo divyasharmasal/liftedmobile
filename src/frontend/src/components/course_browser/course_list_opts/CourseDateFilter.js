@@ -14,11 +14,18 @@ export class CourseDateFilter extends Component{
 
 
   handleDateRangeChange = dates => {
-    const startDate = dates[0];
-    const endDate = dates[1];
-    this.setState({
-      dateRange: { startDate, endDate },
-    });
+    if (dates.length == 2){
+      const startDate = dates[0];
+      const endDate = dates[1];
+      this.setState({
+        dateRange: { startDate, endDate },
+      });
+    }
+    else{
+      this.setState({
+        dateRange: null,
+      });
+    }
   }
 
 
@@ -26,7 +33,15 @@ export class CourseDateFilter extends Component{
     if (this.state.dateRange){
       this.props.onDateRangeSelect(this.state.dateRange);
     }
+    else{
+      this.props.onDateRangeClear();
+    }
     this.dropdown.hide();
+  }
+
+
+  clearDates = () => {
+    this.picker.flatpickr.clear();
   }
 
 
@@ -52,12 +67,12 @@ export class CourseDateFilter extends Component{
                   <span>Please select a date range:</span>
                 </div>
                 <Flatpickr 
+                  ref={picker => this.picker = picker}
                   onChange={this.handleDateRangeChange}
                   options={{
                     inline: true,
                     mode: "range",
                     altInput: true,
-                    defaultDate: ["2017/10/05", "2017/10/10"],
                   }} />
               </div>
 
@@ -68,14 +83,20 @@ export class CourseDateFilter extends Component{
                 >
                   <a>Cancel</a>
                 </div>
+                {this.state.dateRange != null &&
 
-                {this.state.dateRange &&
-                    <div class="button ok"
-                      onClick={this.selectFilterBtn}
-                    >
-                  <a>Filter</a>
+                <div class="button cancel"
+                  onClick={this.clearDates}
+                >
+                  <a>Clear</a>
                 </div>
                 }
+
+                <div class="button ok"
+                  onClick={this.selectFilterBtn}
+                >
+                  <a>Filter</a>
+                </div>
 
               </div>
 
