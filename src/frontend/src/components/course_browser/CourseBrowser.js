@@ -4,7 +4,7 @@ import { route } from "preact-router";
 
 import { Topbar } from "./Topbar";
 import { CourseList } from "./CourseList";
-import { CourseSorter } from "./CourseSorter";
+import { CourseListOpts } from "./course_list_opts/CourseListOpts";
 
 import { renderLoader } from "../screens/Screen";
 import { authFetch } from "../../lib/fetch";
@@ -83,7 +83,7 @@ export class CourseBrowser extends Component{
             { this.state.courses.length > 0 ?
               <div>
                 <CourseList courses={this.state.courses}>
-                  <CourseSorter />
+                  <CourseListOpts />
                 </CourseList>
               </div>
             :

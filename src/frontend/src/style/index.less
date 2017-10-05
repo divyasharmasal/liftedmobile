@@ -462,6 +462,10 @@ hr{
         cursor:pointer;
         font-weight:bold;
         display:inline-block;
+        font-size:2.5em;
+        @media (max-width: @small_screen_width) {
+            font-size:2em;
+        }
     }
 
     .not_found{
@@ -502,11 +506,6 @@ hr{
 }
 
 @media (max-width: @small_screen_width) {
-
-    .credits{
-        font-size:0.8em;
-    }
-
     .question {
         .role_option_text{
             font-size:0.8em;
@@ -568,9 +567,13 @@ hr{
 
 
 @media (max-width: @medium_screen_width) {
+    .credits{
+        font-size:0.6em;
+    }
+
     *, html, body {
         font-family: Lato, Arial;
-        font-size:1em;
+        /*font-size:1em;*/
     }
 
     .login_form{
@@ -586,15 +589,15 @@ hr{
 
 	.full_review,
     .start_over{
-        font-size:0.8em;
+        font-size:1em;
     }
 
     h1{
-        font-size:2em;
+        /*font-size:2em;*/
     }
     
     p{
-        font-size:1em;
+        /*font-size:1em;*/
     }
 
     hr{
@@ -607,15 +610,17 @@ hr{
 
     .rec_courses{
         h1{
-            font-size:1.5em;
+            font-size:2.5em;
         }
     }
 
     .diag{
         .diag_qn{
-            margin-bottom:30px;
+            font-size:1.25em;
+            margin-bottom:0px;
+
             p{
-                font-size:1.5em;
+                font-size:1.25em;
             }
 
             .answer{
@@ -642,6 +647,16 @@ hr{
             .diag_right{
                 float:none;
             }
+
+            .answer{
+                width:40px;
+                height:35px;
+
+                img{
+                    width:30px;
+                    height:30px;
+                }
+            }
         }
 
         .diag_button{
@@ -663,11 +678,11 @@ hr{
         }
 
         .answer{
-            font-size:1.25em;
+            /*font-size:1.25em;*/
         }
 
         .tile{
-            font-size: 1em;
+            font-size: 1.5em;
             margin-bottom:5px;
             padding: 10px 6px; 
             
@@ -690,7 +705,7 @@ hr{
         .sorter{
             display:initial;
             p{
-                font-size:1em;
+                font-size:1.5em;
             }
 
             .symbol{
@@ -715,7 +730,7 @@ hr{
     .results {
         .competencies{
             table{
-                font-size:1em;
+                /*font-size:1em;*/
             }
         }
     }
