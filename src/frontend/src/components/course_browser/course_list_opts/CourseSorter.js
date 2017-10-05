@@ -124,7 +124,7 @@ export class CourseSorter extends Component{
               <div class="row">
                 <div class="instructions">
                   {this.state.sortBy ?
-                      <span>Select it again to change the sort order.</span>
+                      <span>Select it again to change the sort order, then click Sort.</span>
                       :
                       <span>Select a field to sort by, then click Sort.</span>
                   }

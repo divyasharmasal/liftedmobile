@@ -43,7 +43,7 @@ export class CourseDateFilter extends Component{
               <CloseButton onClick={this.closeDropdown} />
               <div class="date_picker">
                 <div class="instructions">
-                  <p>Please select a date range:</p>
+                  <span>Please select a date range:</span>
                 </div>
                 <Flatpickr 
                   onChange={this.handleDateRangeChange}
