@@ -1,35 +1,25 @@
-- Preferred sorting metrics:
-    1. CPD points
-    2. Dates and cost - equally impt
+- Sort by cost arrow needs to toggle
+- check the CC licenses for icons
 
-- Filter for price - not necessary - demand for price is not elastic,
-  and there are not enough programmes
-- Filter for date - more useful. People generally know when they are
-  free or not.
-- Filter for competency category - yes.
+- date filter: earlier / later
+- cost filter: low / high
+- CPD filter: low / high
+
+- Preferred sorting metrics:
 
 Check with Inga about L3 specialist roles not having specialism
 competencies...
 
-Nevertheless - do a code generator for 3rd party
 
-6 Oct - Committee Meeting - presentation of Lifted Mobile
-    - includes all verticals + technology diagnostic
-    - don't worry about anything not visible for demo
-    - don't worry about the LP vertical yet...
+EB meeting: 31st October
+ - LP vertical should be done already
 
 All-in-one CMS
-  - Introductory page with 3 choices: consolidated listing, filter by
-    learning needs, and technology diagnostic
-
-    - Tech diagnostic will have 2 steps:
-        1. Role picker
-        2. Competency questions
+  - do a code generator for 3rd party
 
   - End Sept: figure out an integration framework
       - Scrape CALAS, SCCA, SkillsFuture, LawSoc
 
-  - 2 other verticals + technology
   - CMS
     - Full auth system
     - Course CRUD + tagging
