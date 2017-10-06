@@ -47,63 +47,63 @@ export class CourseDateFilter extends Component{
 
   render(){
     return(
-      <div>
-        <Dropdown ref={dropdown => {this.dropdown = dropdown; }}>
-          <DropdownTrigger>
+      <Dropdown ref={dropdown => {this.dropdown = dropdown; }}>
+        <DropdownTrigger>
+          <div class="pri">
             <span class="label">Date range</span>
             <img class="expand" src="/static/app/dist/images/courses/sort_show.png" />
-          </DropdownTrigger>
-          <DropdownContent>
-            <div 
-              onClick={this.closeDropdown}
-              class="overlay"
-            >
+          </div>
+        </DropdownTrigger>
+        <DropdownContent>
+          <div 
+            onClick={this.closeDropdown}
+            class="overlay"
+          >
+          </div>
+
+          <div class="filter">
+            <CloseButton onClick={this.closeDropdown} />
+            <div class="date_picker">
+              <div class="instructions">
+                <span>Please select a date range:</span>
+              </div>
+              <Flatpickr 
+                ref={picker => this.picker = picker}
+                onChange={this.handleDateRangeChange}
+                options={{
+                  inline: true,
+                  mode: "range",
+                  altInput: true,
+                }} />
             </div>
 
-            <div class="filter">
-              <CloseButton onClick={this.closeDropdown} />
-              <div class="date_picker">
-                <div class="instructions">
-                  <span>Please select a date range:</span>
-                </div>
-                <Flatpickr 
-                  ref={picker => this.picker = picker}
-                  onChange={this.handleDateRangeChange}
-                  options={{
-                    inline: true,
-                    mode: "range",
-                    altInput: true,
-                  }} />
+            <div class="buttons">
+
+              <div class="button cancel"
+                onClick={this.closeDropdown}
+              >
+                <a>Cancel</a>
               </div>
+              {this.state.dateRange != null &&
 
-              <div class="buttons">
+                  <div class="button cancel"
+                    onClick={this.clearDates}
+                  >
+                    <a>Clear</a>
+                  </div>
+              }
 
-                <div class="button cancel"
-                  onClick={this.closeDropdown}
-                >
-                  <a>Cancel</a>
-                </div>
-                {this.state.dateRange != null &&
-
-                <div class="button cancel"
-                  onClick={this.clearDates}
-                >
-                  <a>Clear</a>
-                </div>
-                }
-
-                <div class="button ok"
-                  onClick={this.selectFilterBtn}
-                >
-                  <a>Filter</a>
-                </div>
-
+              <div class="button ok"
+                onClick={this.selectFilterBtn}
+              >
+                <a>Filter</a>
               </div>
 
             </div>
-          </DropdownContent>
-        </Dropdown>
-      </div>
+
+          </div>
+        </DropdownContent>
+      </Dropdown>
     );
   }
 }

@@ -19,18 +19,12 @@
         padding-bottom:35px;
 
         .pri{
-            .label{
-                font-size:18px;
-                @media (max-width: @small_screen_width) {
-                    font-size:16px;
-                }
-            }
             cursor: pointer;
             display: block;
             float: left;
             padding-left:5px;
             padding-right:5px;
-            padding-top:25px;
+            padding-top:20px;
             height:54px;
             margin-right:20px;
 
@@ -40,6 +34,13 @@
 
             &:last-of-type{
                 margin-right:0px;
+            }
+
+            .label{
+                font-size:18px;
+                @media (max-width: @small_screen_width) {
+                    font-size:16px;
+                }
             }
 
             /*&:hover{*/
@@ -193,13 +194,14 @@
                     transform:scale(1.55, 1.55);
                     -webkit-transform-origin: 0% 0%;
                     transform-origin: 0% 0%;
-                    margin-top:70px !important;
+                    margin-top:90px !important;
 
                     @media (max-width: @small_screen_width) {
                         -webkit-transform:scale(0.95, 0.95);
                         transform:scale(0.95, 0.95);
                         margin-left:auto !important;
                         margin-right:auto !important;
+                        margin-top:70px !important;
                     }
                 }
 
@@ -249,11 +251,14 @@
                 width:100%;
                 box-sizing:border-box;
                 margin-bottom:10px;
+                margin-top:20px;
+
+                @media (max-width: @small_screen_width) {
+                    margin-top:10px;
+                }
             }
         }
         .sorter{
-
-
             .row{
                 float:left;
                 width:100%;
@@ -262,7 +267,7 @@
                 & > div{
                     float:left;
                     width:100%;
-            }
+                }
 
                 .instructions{
                     box-sizing:border-box;

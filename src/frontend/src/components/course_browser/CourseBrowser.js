@@ -35,6 +35,7 @@ export class CourseBrowser extends Component{
 
     this.state = {
       courses: null,
+      loading: true,
       sortBy: {
         field: "Date",
         direction: "asc",
@@ -45,6 +46,7 @@ export class CourseBrowser extends Component{
 
     this.defaultState = {
       courses: null,
+      loading: true,
       sortBy: {
         field: "Date",
         direction: "desc",
@@ -56,6 +58,11 @@ export class CourseBrowser extends Component{
 
 
   componentWillMount = () => {
+    this.updateCoursesFromState();
+  }
+
+
+  updateCoursesFromState = () => {
     const url = this.genCourseListUrl(
       this.state.sortBy, "all", this.state.dateRange, 0, this.state.searchQuery);
     this.fetchAndSetCourses(url);
@@ -63,11 +70,15 @@ export class CourseBrowser extends Component{
 
 
   fetchAndSetCourses = url => {
-    authFetch(url).then(response => {
-      response.json().then(courses => {
-        this.dispatch({
-          type: "SET_COURSES",
-          data: courses,
+    this.dispatch({
+      type: "COURSES_LOADING",
+    }, () => {
+      authFetch(url).then(response => {
+        response.json().then(courses => {
+          this.dispatch({
+            type: "SET_COURSES",
+            data: courses,
+          });
         });
       });
     });
@@ -97,7 +108,9 @@ export class CourseBrowser extends Component{
   reduce = (prevState, action) => {
     switch (action.type){
       case "SET_COURSES":
-        return { courses: action.data };
+        return { courses: action.data, loading: false };
+      case "COURSES_LOADING":
+        return { loading: true };
       case "SET_SORT_BY":
         return { sortBy: action.data };
       case "SET_DATE_RANGE":
@@ -124,11 +137,8 @@ export class CourseBrowser extends Component{
       type: "SET_SORT_BY",
       data: sortBy,
     }, () => {
-      const url = this.genCourseListUrl(
-        sortBy, "all", this.state.dateRange, 0, this.state.searchQuery);
-      this.fetchAndSetCourses(url);
+      this.updateCoursesFromState();
     });
-
   }
 
 
@@ -137,18 +147,14 @@ export class CourseBrowser extends Component{
       type: "SET_DATE_RANGE",
       data: dateRange,
     }, () => {
-      const url = this.genCourseListUrl(
-        this.state.sortBy, "all", dateRange, 0, this.state.searchQuery);
-      this.fetchAndSetCourses(url);
+      this.updateCoursesFromState();
     });
   }
 
 
   handleClearAll = () => {
     this.setState(this.defaultState, () => {
-      const url = this.genCourseListUrl(
-        this.state.sortBy, "all", this.state.dateRange, 0, this.state.searchQuery);
-      this.fetchAndSetCourses(url);
+      this.updateCoursesFromState();
     });
   }
 
@@ -163,9 +169,7 @@ export class CourseBrowser extends Component{
       type: "SET_SEARCH_QUERY",
       data: searchQuery,
     }, () => {
-      const url = this.genCourseListUrl(
-        this.state.sortBy, "all", this.state.dateRange, 0, searchQuery);
-      this.fetchAndSetCourses(url);
+      this.updateCoursesFromState();
     });
   }
 
@@ -183,6 +187,7 @@ export class CourseBrowser extends Component{
           <div class="pure-u-1">
             <div>
               <CourseList 
+                loading={this.state.loading}
                 handleClearAll={this.handleClearAll}
                 courses={this.state.courses}>
                 <CourseListOpts 

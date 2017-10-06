@@ -7,6 +7,8 @@ import CloseButton from "./CloseButton";
 
 const ASC = "asc";
 const DESC = "desc";
+
+
 class Sorter extends Component{
   selectSortOpt = () => {
     let direction;
@@ -40,7 +42,7 @@ class Sorter extends Component{
 
 
   render(){
-    let className;
+    let className = "";
     let directionLabel;
     if (this.props.label === this.props.parentSelectedField){
       className = this.state.direction == null ? "" : "selected";
@@ -48,9 +50,7 @@ class Sorter extends Component{
     }
 
     return(
-      <div 
-        onClick={this.selectSortOpt} class={className}
-      >
+      <div onClick={this.selectSortOpt} class={className}>
 
         <span class="label">{this.props.label}</span>
 
@@ -91,7 +91,7 @@ export class CourseSorter extends Component{
     switch (action.type){
       case "SELECT_SORT_OPT":
         return { sortBy: action.data };
-    default:
+      default:
         return prevState;
     }
   }
@@ -110,85 +110,85 @@ export class CourseSorter extends Component{
     const parentSelectedField = this.state.sortBy != null? this.state.sortBy.field : null;
 
     return(
-      <div>
-        <Dropdown ref={dropdown => {this.dropdown = dropdown; }}>
-          <DropdownTrigger>
+      <Dropdown ref={dropdown => {this.dropdown = dropdown; }}>
+        <DropdownTrigger>
+          <div class="pri">
             <span class="label">Sort results</span>
             <img class="expand" src="/static/app/dist/images/courses/sort_show.png" />
-          </DropdownTrigger>
-          <DropdownContent>
-            <div 
-              onClick={this.closeDropdown}
-              class="overlay">
+          </div>
+        </DropdownTrigger>
+        <DropdownContent>
+          <div 
+            onClick={this.closeDropdown}
+            class="overlay">
+          </div>
+          <div class="sorter">
+            <CloseButton onClick={this.closeDropdown} />
+
+            <div class="row">
+              <div class="instructions">
+                {this.state.sortBy ?
+                    <span>Select it again to change the sort order, then click Sort.</span>
+                    :
+                    <span>Select a field to sort by, then click Sort.</span>
+                }
+              </div>
             </div>
-            <div class="sorter">
-              <CloseButton onClick={this.closeDropdown} />
 
-              <div class="row">
-                <div class="instructions">
-                  {this.state.sortBy ?
-                      <span>Select it again to change the sort order, then click Sort.</span>
-                      :
-                      <span>Select a field to sort by, then click Sort.</span>
-                  }
-                </div>
+            <div class="row">
+              <Sorter
+                label="CPD points"
+                parentSelectedField={parentSelectedField}
+                selectSortOpt={this.selectSortOpt}
+                descLabel="most first"
+                ascLabel="least first"
+              />
+            </div>
+
+            <div class="row">
+              <Sorter
+                label="Date"
+                parentSelectedField={parentSelectedField}
+                selectSortOpt={this.selectSortOpt}
+                descLabel="furthest first"
+                ascLabel="closest first"
+              />
+            </div>
+
+            <div class="row">
+              <Sorter
+                label="Cost"
+                parentSelectedField={parentSelectedField}
+                selectSortOpt={this.selectSortOpt}
+                descLabel="most expensive first"
+                ascLabel="cheapest first"
+              />
+            </div>
+
+            <div class="row">
+            </div>
+
+            <div class="buttons">
+
+              <div class="button cancel"
+                onClick={this.closeDropdown}
+              >
+                <a>Cancel</a>
               </div>
 
-              <div class="row">
-                <Sorter
-                  label="CPD points"
-                  parentSelectedField={parentSelectedField}
-                  selectSortOpt={this.selectSortOpt}
-                  descLabel="most first"
-                  ascLabel="least first"
-                />
-              </div>
-
-              <div class="row">
-                <Sorter
-                  label="Date"
-                  parentSelectedField={parentSelectedField}
-                  selectSortOpt={this.selectSortOpt}
-                  descLabel="furthest first"
-                  ascLabel="closest first"
-                />
-              </div>
-
-              <div class="row">
-                <Sorter
-                  label="Cost"
-                  parentSelectedField={parentSelectedField}
-                  selectSortOpt={this.selectSortOpt}
-                  descLabel="most expensive first"
-                  ascLabel="cheapest first"
-                />
-              </div>
-
-              <div class="row">
-              </div>
-
-              <div class="buttons">
-
-                <div class="button cancel"
-                  onClick={this.closeDropdown}
-                >
-                  <a>Cancel</a>
-                </div>
-
-                {this.state.sortBy &&
+              {this.state.sortBy &&
                   <div class="button ok"
                     onClick={this.selectSortBtn}
                   >
                     <a>Sort</a>
                   </div>
-                }
-
-              </div>
+              }
 
             </div>
-          </DropdownContent>
-        </Dropdown>
-      </div>
+
+          </div>
+        </DropdownContent>
+      </Dropdown>
     );
   }
 }
