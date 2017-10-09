@@ -4,7 +4,6 @@ import { renderLoader } from "../screens/Screen";
 
 export class CourseList extends Component{
   render() {
-      console.log(this.props.loading);
     return(
       <div class="courses">
         {this.props.loading ?

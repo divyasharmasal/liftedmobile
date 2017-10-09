@@ -140,8 +140,8 @@ export class CourseSorter extends Component{
                 label="CPD points"
                 parentSelectedField={parentSelectedField}
                 selectSortOpt={this.selectSortOpt}
-                descLabel="most first"
-                ascLabel="least first"
+                descLabel="high"
+                ascLabel="low"
               />
             </div>
 
@@ -150,8 +150,8 @@ export class CourseSorter extends Component{
                 label="Date"
                 parentSelectedField={parentSelectedField}
                 selectSortOpt={this.selectSortOpt}
-                descLabel="furthest first"
-                ascLabel="closest first"
+                descLabel="later"
+                ascLabel="earlier"
               />
             </div>
 
@@ -160,8 +160,8 @@ export class CourseSorter extends Component{
                 label="Cost"
                 parentSelectedField={parentSelectedField}
                 selectSortOpt={this.selectSortOpt}
-                descLabel="most expensive first"
-                ascLabel="cheapest first"
+                descLabel="high"
+                ascLabel="low"
               />
             </div>
 
