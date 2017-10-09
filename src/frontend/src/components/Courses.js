@@ -30,7 +30,7 @@ class Sorter extends Component{
 
   render(){
     const nameSym = symbol(this.state.nameDesc);
-    const costSym = symbol(this.state.dateDesc);
+    const costSym = symbol(this.state.costDesc);
     const cpdSym = symbol(this.state.cpdDesc);
     const dateSym = symbol(this.state.dateDesc);
 
