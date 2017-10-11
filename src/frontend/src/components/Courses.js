@@ -68,6 +68,7 @@ class Sorter extends Component{
   }
 }
 
+
 export default class Courses extends Component{
   constructor(props){
     super(props);
@@ -152,7 +153,7 @@ export default class Courses extends Component{
         if (b.cpd.is_private){
           y = -1;
         }
-        if (x < y){
+        if (x > y){
           return 1;
         }
         return 0;

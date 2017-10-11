@@ -5,7 +5,7 @@ services:
         container_name: liftedmobile_db
         build: 
             context: ../
-            dockerfile: ./docker/db
+            dockerfile: ./docker/db.prod.dockerfile
         environment:
             - POSTGRES_PASSWORD=fGWJTw2Dbpa2p547brXEVjXyzHZu9puytcAaA9mY 
 
@@ -13,7 +13,7 @@ services:
         container_name: liftedmobile
         build:
             context: ../
-            dockerfile: ./docker/liftedmobile
+            dockerfile: ./docker/liftedmobile.prod.dockerfile
         ports:
             - "80:80"
         expose:
@@ -23,7 +23,6 @@ services:
         secrets:
             - django_secret
             - django_admin_pwd
-            - django_demo_pwd
             - django_team_pwd
         logging:
             driver: "awslogs"
@@ -38,7 +37,5 @@ secrets:
         file: ./secrets/DJANGO_SECRET
     django_admin_pwd:
         file: ./secrets/DJANGO_ADMIN_PWD
-    django_demo_pwd:
-        file: ./secrets/DJANGO_DEMO_PWD
     django_team_pwd:
         file: ./secrets/DJANGO_TEAM_PWD

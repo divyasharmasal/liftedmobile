@@ -25,6 +25,11 @@ def cms_get_coursespage_data(request):
     courses = _optimise_course_query(courses)
 
     result["courses"] = [_course_json(course) for course in courses]
+
+    from django.db import connection
+    for q in connection.queries:
+        print(q, "\n\n")
+
     return json_response(result)
 
 
@@ -53,10 +58,8 @@ def cms_login(request):
 
 
 def _render_login_failed(request):
-    return render(request,
-                  "../../cms/templates/registration/login.html",
-                  {"login_failed": True}
-                  )
+    url = "../../cms/templates/registration/login.html"
+    return render(request, url, {"login_failed": True})
 
 
 @staff_member_required(login_url=None)
@@ -65,5 +68,5 @@ def index(request):
     View for /
     """
 
-    return render(request, "cms/base.html",
-                  {"cache_bust": gen_cache_bust_str(10)})
+    url = "cms/base.html"
+    return render(request, url, {"cache_bust": gen_cache_bust_str(10)})

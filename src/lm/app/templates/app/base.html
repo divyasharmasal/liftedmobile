@@ -14,8 +14,8 @@
         <meta name="theme-color" content="#0060a2"/>
 
         {% if DEV %}
-            <link rel="stylesheet" href="http://0.0.0.0:8080/style.css" />
             <!-- Styles are embedded by webpack-dev-server -->
+            <link rel="stylesheet" href="http://0.0.0.0:8080/style.css" />
         {% else %}
             <link rel="stylesheet" href="{% static "/app/dist/style.css" %}?v={{ cache_bust }}" />
         {% endif %}

@@ -5,7 +5,7 @@ services:
         container_name: liftedmobile_db_dev
         build: 
             context: ../
-            dockerfile: ./docker/db_dev
+            dockerfile: ./docker/db.dev.dockerfile
         environment:
             - POSTGRES_PASSWORD=password 
 
@@ -14,7 +14,7 @@ services:
         container_name: liftedmobile_dev
         build:
             context: ../
-            dockerfile: ./docker/liftedmobile_dev
+            dockerfile: ./docker/liftedmobile.dev.dockerfile
         volumes:
             - ../src:/src
         ports:

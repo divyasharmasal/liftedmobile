@@ -12,31 +12,31 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
-LIFTED_TEMP_DEMO_USERNAME = 'demo'
-LIFTED_TEMP_DEMO_PASSWORD = '***REMOVED***'
-
-LIFTED_TEMP_USERNAME = 'lifted'
-LIFTED_TEMP_PASSWORD = '***REMOVED***'
-
-LIFTED_TEMP_SUPER_USERNAME = 'admin'
-LIFTED_TEMP_SUPER_PASSWORD = '***REMOVED***'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+
+def read_secret(filepath):
+    return open(filepath).read().splitlines()[0]
 
 if 'DEV' in os.environ:
     # Quick-start development settings - unsuitable for production
     # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
     SECRET_KEY = 'kw!3bqy4e39x0@xhoor4uvpwj!hgofxh9p5=j7^9$x-i*41vc_'
     DEBUG = True
+    LIFTED_TEMP_SUPER_USERNAME = "admin"
+    LIFTED_TEMP_SUPER_PASSWORD = "***REMOVED***"
+    LIFTED_TEMP_USERNAME = "lifted"
+    LIFTED_TEMP_PASSWORD = "***REMOVED***"
 else:
+    # Settings for production
     # SECURITY WARNING: keep the secret key used in production secret!
-    SECRET_KEY = open("/run/secrets/django_secret").read().splitlines()[0]
+    SECRET_KEY = read_secret("/run/secrets/django_secret")
     DEBUG = False
 
-    LIFTED_TEMP_SUPER_PASSWORD = open("/run/secrets/django_admin_pwd").read().splitlines()[0]
-    LIFTED_TEMP_DEMO_PASSWORD = open("/run/secrets/django_demo_pwd").read().splitlines()[0]
-    LIFTED_TEMP_PASSWORD = open("/run/secrets/django_team_pwd").read().splitlines()[0]
+    LIFTED_TEMP_SUPER_USERNAME = "admin"
+    LIFTED_TEMP_SUPER_PASSWORD = read_secret("/run/secrets/django_admin_pwd")
+    LIFTED_TEMP_USERNAME = "lifted"
+    LIFTED_TEMP_PASSWORD = read_secret("/run/secrets/django_team_pwd")
     assert(DEBUG == False)
 
 print("Debug set to", str(DEBUG))

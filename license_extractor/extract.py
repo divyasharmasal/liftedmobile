@@ -95,7 +95,6 @@ def parse_additional_licenses():
     return result
 
 
-
 if __name__ == "__main__":
     node_licenses = process_node_licenses(json.loads(
             subprocess.run(["license-checker", "--json"], 
@@ -103,7 +102,7 @@ if __name__ == "__main__":
                         .stdout.decode("utf-8")))
 
     # python_licenses = []
-    python_licenses = parse_yolk_output(subprocess.run(["../src/venv/bin/yolk", "-l",
+    python_licenses = parse_yolk_output(subprocess.run(["./venv/bin/yolk", "-l",
         "-f", "license"], stdout=subprocess.PIPE).stdout.decode("utf-8"))
     
 

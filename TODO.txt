@@ -1,11 +1,4 @@
-- Sort by cost arrow needs to toggle
 - check the CC licenses for icons
-
-- date filter: earlier / later
-- cost filter: low / high
-- CPD filter: low / high
-
-- Preferred sorting metrics:
 
 Check with Inga about L3 specialist roles not having specialism
 competencies...
@@ -17,11 +10,10 @@ EB meeting: 31st October
 All-in-one CMS
   - do a code generator for 3rd party
 
-  - End Sept: figure out an integration framework
-      - Scrape CALAS, SCCA, SkillsFuture, LawSoc
+  - Scrape CALAS, SCCA, SkillsFuture, LawSoc
 
   - CMS
-    - Full auth system
+    - Full auth system with 2FA
     - Course CRUD + tagging
     - Scrape controller
       - Monitor
@@ -41,8 +33,6 @@ Level
 Resume function
 
 Make push_prod do all deployment work
-
-2FA!
 
 Unit testing
 

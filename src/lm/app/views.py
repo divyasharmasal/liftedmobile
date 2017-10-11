@@ -35,7 +35,8 @@ def json_response(obj):
 
 @login_required
 def terms_of_use(request):
-    return render(request, "app/terms.html")
+    return render(request, "app/terms.html",
+                  {"cache_bust": gen_cache_bust_str(10)})
 
 
 @login_required

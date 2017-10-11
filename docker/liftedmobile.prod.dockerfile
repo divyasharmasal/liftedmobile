@@ -7,7 +7,7 @@ COPY ./requirements.txt /requirements.txt
 
 # Copy the nginx config file
 RUN mkdir /config
-COPY ./config/nginx.conf /config/nginx.conf
+COPY ./docker/nginx.conf /nginx.conf
 
 WORKDIR /src
 
@@ -42,7 +42,6 @@ RUN apk update                                                              && \
 # Build the CMS
     cd /src/cms                                                             && \
     yarn install                                                            && \
-    yarn add gulp                                                           && \
     echo "Running gulp deploy on CMS"                                       && \
     gulp deploy --gulpfile /src/cms/gulpfile.js                             && \
 
@@ -77,4 +76,4 @@ CMD sh /src/lm/sleep_until_prod_pg_isready.sh                               && \
     gunicorn -D --bind unix:/gunicorn.sock lm.wsgi:application              && \
     echo                                                                    && \
     echo "Docker containers are up; server at: http://0.0.0.0:80/"          && \
-    nginx -c /config/nginx.conf -g 'daemon off;'
+    nginx -c /nginx.conf -g 'daemon off;'
