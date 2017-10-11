@@ -2,7 +2,7 @@ FROM alpine:latest
 
 WORKDIR /src
 
-COPY ./requirements.txt /requirements.txt
+COPY ./src/requirements.txt /requirements.txt
 
 # Install dependencies to get Django running
 RUN apk update

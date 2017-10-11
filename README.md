@@ -61,7 +61,7 @@ git remote add github git remote add github git@github_lm:weijiekoh/liftedmobile
 Just `cd` to the `liftedmobile` directory and run:
 
 ```
-./scripts/dev/build_dev.sh
+./scripts/app_server/dev/build_dev.sh
 ```
 
 This spins up the following containers:
@@ -98,13 +98,13 @@ JS bundle from the webpack dev server in development mode, and from
 static files in production.
 
 ```
-./scripts/dev/watch-app.sh
+./scripts/app_server/ev/watch-app.sh
 ```
 
 The same idea applies to the CMS:
 
 ```
-./scripts/dev/watch-cms.sh
+./scripts/app_server/dev/watch-cms.sh
 ```
 
 You can use a [`tmux`](https://tmux.github.io/) screen with 3 panes: one
@@ -126,13 +126,13 @@ Store static assets in `src/lm/static/`, and then run this command
 to move images to the Django staticfiles directory:
 
 ```
-./scripts/dev/gulp-app.sh
+./scripts/app_server/dev/gulp-app.sh
 ```
 
 To do the same for the CMS:
 
 ```
-./scripts/dev/gulp-cms.sh
+./scripts/app_server/dev/gulp-cms.sh
 ```
 
 
@@ -155,7 +155,7 @@ The production container uses the following secrets:
 Run:
 
 ```
-./scripts/prod/build_prod.sh
+./scripts/app_server/prod/build_prod.sh
 ```
 
 This spins up the following containers:
@@ -213,7 +213,7 @@ Locally, `cd` to the directory with `liftedmobile.pem`.
 Run:
 
 ```
-./scripts/prod/push_prod.sh "ssh -i "liftedmobile.pem" ubuntu@52.221.77.72"
+./scripts/app_server/prod/push_prod.sh "ssh -i "liftedmobile.pem" ubuntu@52.221.77.72"
 ```
 
 Now, `ssh` into the remote server.  Install `docker`, `docker-compose`, and
@@ -261,5 +261,5 @@ Run these commands to start the docker containers which you just pushed:
 
 ```
 cd liftedmobile
-./scripts/prod/run_prod.sh
+./scripts/app_server/prod/run_prod.sh
 ```

@@ -4,16 +4,16 @@ services:
     db:
         container_name: liftedmobile_db
         build: 
-            context: ../
-            dockerfile: ./docker/db.prod.dockerfile
+            context: ../../
+            dockerfile: ./docker/app_server/db.prod.dockerfile
         environment:
             - POSTGRES_PASSWORD=fGWJTw2Dbpa2p547brXEVjXyzHZu9puytcAaA9mY 
 
     liftedmobile:
         container_name: liftedmobile
         build:
-            context: ../
-            dockerfile: ./docker/liftedmobile.prod.dockerfile
+            context: ../../
+            dockerfile: ./docker/app_server/liftedmobile.prod.dockerfile
         ports:
             - "80:80"
         expose:

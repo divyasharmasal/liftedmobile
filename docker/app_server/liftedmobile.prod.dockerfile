@@ -3,11 +3,10 @@ FROM nginx:alpine
 # Copy source code. Note that src/venv should be in .dockerignore
 RUN mkdir /src
 COPY src /src
-COPY ./requirements.txt /requirements.txt
 
 # Copy the nginx config file
 RUN mkdir /config
-COPY ./docker/nginx.conf /nginx.conf
+COPY ./docker/app_server/nginx.conf /nginx.conf
 
 WORKDIR /src
 
@@ -20,7 +19,7 @@ RUN apk update                                                              && \
         libffi-dev bash py3-lxml geoip nginx-mod-http-geoip                 && \ 
 
     pip3 --no-cache-dir install --upgrade pip                               && \
-    pip3 --no-cache-dir install -r /requirements.txt                        && \
+    pip3 --no-cache-dir install -r /src/requirements.txt                    && \
 
 # Link the yarn binary to /bin. The command to create ~/.profile is only to
 # quash an inconsequential error message from yarn's installation script that
