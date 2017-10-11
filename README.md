@@ -61,7 +61,7 @@ git remote add github git remote add github git@github_lm:weijiekoh/liftedmobile
 Just `cd` to the `liftedmobile` directory and run:
 
 ```
-./build_dev.sh
+./scripts/dev/build_dev.sh
 ```
 
 This spins up the following containers:
@@ -98,13 +98,13 @@ JS bundle from the webpack dev server in development mode, and from
 static files in production.
 
 ```
-./watch-app.sh
+./scripts/dev/watch-app.sh
 ```
 
 The same idea applies to the CMS:
 
 ```
-./watch-cms.sh
+./scripts/dev/watch-cms.sh
 ```
 
 You can use a [`tmux`](https://tmux.github.io/) screen with 3 panes: one
@@ -126,13 +126,13 @@ Store static assets in `src/lm/static/`, and then run this command
 to move images to the Django staticfiles directory:
 
 ```
-./gulp-app.sh
+./scripts/dev/gulp-app.sh
 ```
 
 To do the same for the CMS:
 
 ```
-./gulp-cms.sh
+./scripts/dev/gulp-cms.sh
 ```
 
 
@@ -155,7 +155,7 @@ The production container uses the following secrets:
 Run:
 
 ```
-./build_prod.sh
+./scripts/prod/build_prod.sh
 ```
 
 This spins up the following containers:
@@ -164,11 +164,8 @@ This spins up the following containers:
 
 These containers do not use volumes.
 
-To view the logs from the `liftedmobile` container, run:
-
-```
-docker logs -f liftedmobile
-```
+To view the logs from the `liftedmobile` container, visit the AWS CloudWatch
+URL which should appear on the screen.
 
 Launch Lifted Mobile: http://localhost:80
 
@@ -216,7 +213,7 @@ Locally, `cd` to the directory with `liftedmobile.pem`.
 Run:
 
 ```
-/path/to/push_prod.sh "ssh -i "liftedmobile.pem" ubuntu@52.221.77.72"
+./scripts/prod/push_prod.sh "ssh -i "liftedmobile.pem" ubuntu@52.221.77.72"
 ```
 
 Now, `ssh` into the remote server.  Install `docker`, `docker-compose`, and
@@ -264,5 +261,5 @@ Run these commands to start the docker containers which you just pushed:
 
 ```
 cd liftedmobile
-./run_prod.sh
+./scripts/prod/run_prod.sh
 ```
