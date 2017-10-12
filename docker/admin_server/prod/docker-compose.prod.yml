@@ -1,0 +1,15 @@
+version: '3.1'
+
+services:
+    scrapyd:
+        container_name: admin_scrapyd
+        build:
+            context: ../
+            dockerfile: ./scrapyd.dockerfile
+        ports:
+            - "80:80"
+            - "443:443"
+        expose:
+            - "80"
+            - "443"
+
