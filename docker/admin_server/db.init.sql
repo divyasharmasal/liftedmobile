@@ -1,2 +1,2 @@
-CREATE DATABASE liftedmobile;
-GRANT ALL PRIVILEGES ON DATABASE liftedmobile TO postgres; 
+CREATE DATABASE admin;
+GRANT ALL PRIVILEGES ON DATABASE admin TO postgres; 

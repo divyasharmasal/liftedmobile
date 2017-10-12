@@ -2,28 +2,39 @@ version: '3.1'
 
 services:
     db:
-        container_name: admin_scrape_db
+        container_name: admin_db
         build:
             context: ../
             dockerfile: ./prod/db.prod.dockerfile
+        environment:
+            - POSTGRES_PASSWORD=ko3TnNyBRYVWg3cqgP8G8CTpnmr9HPgndnhpDo98jKGCJwec9H
 
-    controller:
-        container_name: admin_scrape_controller
+    cms:
+        container_name: admin_cms
         build:
-            context: ./
-            dockerfile: ./controller.prod.dockerfile
-
-    scrapyd:
-        container_name: admin_scrapyd
-        build:
-            context: ../scrapyd/
-            dockerfile: ./scrapyd.dockerfile
+            context: ../../../
+            dockerfile: ./docker/admin_server/prod/cms.prod.dockerfile
+        secrets:
+            - django_secret
+        environment:
+            - DB_PWD=ko3TnNyBRYVWg3cqgP8G8CTpnmr9HPgndnhpDo98jKGCJwec9H
         ports:
-            - "80:80"
-            - "443:443"
-            - "6800:6800"
-        expose:
-            - "80"
-            - "443"
-            - "6800"
+            - "90:80"
 
+    #scrapyd:
+        #container_name: admin_scrapyd
+        #build:
+            #context: ../scrapyd/
+            #dockerfile: ./scrapyd.dockerfile
+        #ports:
+            #- "80:80"
+            #- "443:443"
+            #- "6800:6800"
+        #expose:
+            #- "80"
+            #- "443"
+            #- "6800"
+
+secrets:
+    django_secret:
+        file: ../secrets/DJANGO_SECRET
