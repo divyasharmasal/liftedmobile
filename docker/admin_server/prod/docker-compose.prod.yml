@@ -1,15 +1,23 @@
 version: '3.1'
 
 services:
+    db:
+        container_name: admin_scrape_db
+        build:
+            context: ../
+            dockerfile: ./prod/db.prod.dockerfile
+
     scrapyd:
         container_name: admin_scrapyd
         build:
-            context: ../
+            context: ../scrapyd/
             dockerfile: ./scrapyd.dockerfile
         ports:
             - "80:80"
             - "443:443"
+            - "6800:6800"
         expose:
             - "80"
             - "443"
+            - "6800"
 
