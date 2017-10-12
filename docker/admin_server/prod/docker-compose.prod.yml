@@ -7,6 +7,12 @@ services:
             context: ../
             dockerfile: ./prod/db.prod.dockerfile
 
+    controller:
+        container_name: admin_scrape_controller
+        build:
+            context: ./
+            dockerfile: ./controller.prod.dockerfile
+
     scrapyd:
         container_name: admin_scrapyd
         build:
