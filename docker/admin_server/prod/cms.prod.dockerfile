@@ -21,7 +21,7 @@ WORKDIR /src
 CMD sh /src/cms/sleep_until_pg_isready.sh                                   && \
     python3 manage.py migrate                                               && \
     python3 manage.py collectstatic --no-input                              && \
-    gunicorn -D --bind unix:/gunicorn.sock cms.wsgi:application              && \
+    gunicorn -D --bind unix:/gunicorn.sock cms.wsgi:application             && \
     echo                                                                    && \
     echo "Docker containers are up; server at: http://0.0.0.0:90/"          && \
     nginx -c /nginx.conf -g 'daemon off;'
