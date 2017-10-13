@@ -37,4 +37,4 @@ services:
 
 secrets:
     django_secret:
-        file: ../secrets/DJANGO_SECRET
+        file: ../../../../LM_ADMIN_SECRETS/DJANGO_SECRET

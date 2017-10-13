@@ -18,7 +18,7 @@ RUN pip3 --no-cache-dir install -r /src/requirements.txt
 
 WORKDIR /src
 
-CMD sh /src/cms/sleep_until_pg_isready.sh                                   && \
+CMD sh /src/cms/sleep_until_prod_pg_isready.sh                                   && \
     python3 manage.py migrate                                               && \
     python3 manage.py collectstatic --no-input                              && \
     gunicorn -D --bind unix:/gunicorn.sock cms.wsgi:application             && \

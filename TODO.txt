@@ -1,3 +1,13 @@
+- Draft subdomain request to MIS!
+
+- Target mid-Nov for scrapers to be done
+
+- End-Nov beta release
+
+- End-Nov: Submit phase 2 proposal: heatmap, scraping of books, scraping of
+  AP site, law school event pages, tagging of books, recommended
+  reading section. Journals Online.
+
 - check the CC licenses for icons
 
 Check with Inga about L3 specialist roles not having specialism
