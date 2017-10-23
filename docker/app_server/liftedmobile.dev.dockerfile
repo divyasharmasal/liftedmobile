@@ -21,7 +21,6 @@ ENV DEV 1
 # Wait till the database is ready and then launch the dev server
 CMD cd /src/lm && \
     sh /src/lm/sleep_until_dev_pg_isready.sh && \
-
     python3 manage.py collectstatic --no-input && \
    #python3 manage.py makemigrations && \
    #python3 manage.py makemigrations --empty app && \

@@ -1,0 +1,157 @@
+@import (once, css) "../../../../../src/frontend/src/style/pure-min.css";
+@import (once, css) "../../../../../src/frontend/src/style/grids-responsive-min.css";
+@import (once, css) "../../../../../src/frontend/src/style/pure_tweaks.css";
+@import (once, css) "../../../../../src/frontend/src/style/fonts.css";
+@import (once, css) "../../../../../src/frontend/src/style/loading_anim.css";
+@import (once, css) "../../../../../src/lib/styles/buttons.less";
+@import (once, less) "../../../../../src/lib/styles/constants.less";
+
+*, html, body {
+    font-family: Lato, Arial;
+}
+
+h1, h2, h3, h4, h5, h6{
+    color: @sal_blue;
+    font-weight:normal;
+}
+
+a{
+    text-decoration:none;
+}
+
+.cms{
+    width:100%;
+    padding:0;
+    margin:0;
+}
+
+.topbar{
+    width:100%;
+    background:@sal_blue;
+    color:white;
+
+    *, .logo{
+        color:white;
+    }
+
+    .logo{
+        padding-left:10px;
+        padding-right:10px;
+        padding-top:15px;
+        padding-bottom:15px;
+        &:hover{
+            background: @sal_lightblue;
+        }
+    }
+
+    .section{
+        float:left;
+        height:100%;
+        cursor:pointer;
+        img{
+            height:13px;
+            margin-right:10px;
+        }
+        a{
+            display:block;
+        }
+    }
+
+    .account{
+        float:right;
+        .dropdown__trigger{
+            display:inline-block;
+            padding-left:10px;
+            padding-right:10px;
+            padding-top:15px;
+            padding-bottom:15px;
+            &:hover{
+                background: @sal_lightblue;
+            }
+        }
+
+        .dropdown__content{
+            right:0px;
+            top:49px;
+        }
+        .subsection{
+            background: @sal_dropdown_blue;
+            padding-left:10px;
+            padding-right:10px;
+            padding-top:15px;
+            padding-bottom:15px;
+
+            &:hover{
+                background: @sal_lightblue;
+            }
+        }
+    }
+}
+
+.navbar{
+    background: @navbar_grey;
+    min-height: 100vh;
+    display: block;
+    float: left;
+
+    *{
+        color: white;
+    }
+
+    .section{
+        cursor:pointer;
+        background: @navbar_grey;
+
+        &:hover{
+            background: @navbar_hover;
+        }
+        
+        a{
+            display:block;
+            padding-top:15px;
+            padding-bottom:15px;
+            padding-left:10px;
+            padding-right:10px;
+            width:100%;
+            height:100%;
+        }
+    }
+}
+
+.content{
+    padding-left:2em;
+    padding-right:2em;
+    padding-bottom:2em;
+}
+
+@media (max-width: 1024px) {
+    .cms{
+        width:100% !important;
+    }
+
+    .content{
+    }
+
+    .navbar{
+        height:initial;
+        min-height:initial;
+        width:100%;
+        display:block;
+        .section{
+            width:initial;
+            display:inline-block;
+            float:left;
+        }
+    }
+}
+
+@media (max-width: 568px) {
+    .content{
+        padding-left:1em;
+        padding-right:1em;
+    }
+}
+
+@import (once, less) "./course_page.less";
+@import (once, less) "./scrapers_page.less";
+@import (once, less) "./staff_page.less";

@@ -15,7 +15,7 @@ services:
             context: ../../../
             dockerfile: ./docker/admin_server/dev/cms.dev.dockerfile
         volumes:
-            - ../../../admin/cms:/cms
+            - ../../../admin_server/cms:/cms
         environment:
             - DB_PWD=password
             - DEV=true

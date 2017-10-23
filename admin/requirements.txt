@@ -1,5 +1,0 @@
-Django==1.11.6
-gunicorn==19.7.1
-pytz==2017.2
-django-htmlmin==0.10.0
-django-querycount==0.7.0

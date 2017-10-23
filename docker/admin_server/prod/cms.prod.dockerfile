@@ -1,8 +1,8 @@
 FROM nginx:alpine
 RUN mkdir /src
 
-COPY admin/cms /src/
-COPY admin/requirements.txt /src/requirements.txt
+COPY admin_server/cms /src/
+COPY admin_server/requirements.txt /src/requirements.txt
 
 # Copy the nginx config file
 RUN mkdir /config
@@ -18,7 +18,7 @@ RUN pip3 --no-cache-dir install -r /src/requirements.txt
 
 WORKDIR /src
 
-CMD sh /src/cms/sleep_until_prod_pg_isready.sh                                   && \
+CMD sh /src/cms/sleep_until_pg_isready.sh admin_db                          && \
     python3 manage.py migrate                                               && \
     python3 manage.py collectstatic --no-input                              && \
     gunicorn -D --bind unix:/gunicorn.sock cms.wsgi:application             && \
