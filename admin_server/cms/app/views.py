@@ -1,5 +1,6 @@
 import base64
 import os
+import json
 
 from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
@@ -8,7 +9,6 @@ from django.http import HttpResponseServerError, HttpResponse
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 # from app.views import _optimise_course_query, _course_json
-from app import models as app_models
 
 
 def gen_cache_bust_str(length=32):
@@ -58,8 +58,6 @@ def cms_account_name(request):
 
 
 def cms_login(request):
-    print("============================")
-    print(request)
     username = request.POST["username"]
     password = request.POST["password"]
     next_url = request.POST["next"]
@@ -74,7 +72,7 @@ def cms_login(request):
 
 
 def _render_login_failed(request):
-    url = "./templates/registration/login.html"
+    url = "registration/login.html"
     return render(request, url, {"login_failed": True})
 
 

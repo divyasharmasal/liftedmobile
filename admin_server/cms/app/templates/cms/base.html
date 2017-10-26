@@ -10,7 +10,7 @@
         {% if DEV %}
             <link rel="manifest" href="http://0.0.0.0:9080/manifest.json?v={{ cache_bust }}" />
         {% else %}
-            <link rel="manifest" href="{% static "/cms/dist/manifest.json" %}?v={{ cache_bust }}" />
+            <link rel="manifest" href="{% static "/app/dist/manifest.json" %}?v={{ cache_bust }}" />
         {% endif %}
 
         <meta name="theme-color" content="#0060a2"/>
@@ -19,7 +19,7 @@
             <!-- Styles are embedded by webpack-dev-server -->
             <link rel="stylesheet" href="http://0.0.0.0:9080/style.css?v={{cache_bust}}" />
         {% else %}
-            <link rel="stylesheet" href="{% static "/cms/dist/style.css" %}?v={{ cache_bust }}" />
+            <link rel="stylesheet" href="{% static "/app/dist/style.css" %}?v={{ cache_bust }}" />
         {% endif %}
 
         {% block head %}{% endblock %}
@@ -37,9 +37,9 @@
 
         {% else %}
 
-            <script defer src="{% static "/cms/dist/bundle.js" %}?v={{ cache_bust }}"></script>
+            <script defer src="{% static "/app/dist/bundle.js" %}?v={{ cache_bust }}"></script>
             <script>
-                window.fetch||document.write('<script src="{% static "/cms/dist/polyfills.js" %}?v={{ cache_bus }}"><\/script>')
+                window.fetch||document.write('<script src="{% static "/app/dist/polyfills.js" %}?v={{ cache_bus }}"><\/script>')
             </script>
 
         {% endif %}

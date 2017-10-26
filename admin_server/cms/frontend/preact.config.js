@@ -17,7 +17,7 @@ export default function (config, env, helpers) {
 
   if (process.env.PREACT_PROD === "true"){
     // Mutate config if in production 
-    config.output.publicPath = "/static/cms/dist/";
+    config.output.publicPath = "/static/app/dist/";
 
     // Disable sourcemaps
     let uglifyPlugins = helpers.getPluginsByName(config, "UglifyJsPlugin");

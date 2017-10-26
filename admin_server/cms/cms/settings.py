@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 
 
+def read_secret(filepath):
+    return open(filepath).read().splitlines()[0]
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
@@ -21,9 +25,6 @@ SECRET_KEY = "ke$f]?WGPPKJy46Vw;yFt{fft{N$,6xLBjJcaWi&GaW9tX@y8o"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-
-def read_secret(filepath):
-    return open(filepath).read().splitlines()[0]
 
 if 'DEV' in os.environ:
     # Quick-start development settings - unsuitable for production
@@ -38,6 +39,8 @@ else:
 
     # SECURITY WARNING: keep the secret key used in production secret!
     SECRET_KEY = read_secret("/run/secrets/django_secret")
+    CMS_TEMP_SUPER_USERNAME = "admin"
+    CMS_TEMP_SUPER_PASSWORD = read_secret("/run/secrets/cms_admin_pwd")
 
     assert(DEBUG == False)
 

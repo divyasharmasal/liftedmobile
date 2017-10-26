@@ -2,7 +2,7 @@ import { h, Component } from "preact";
 import { findDOMNode } from "preact-compat";
 import Dropdown, { DropdownTrigger, DropdownContent } from "react-simple-dropdown";
 import "react-simple-dropdown/styles/Dropdown.css";
-import { authFetch } from "../../lib/fetch";
+import { authFetch } from "../../lib/js/fetch";
 
 export class AccountDropdown extends Component {
   constructor(props){
@@ -57,7 +57,7 @@ export class AccountDropdown extends Component {
       <div class="section account">
         <Dropdown ref={dropdown => {this.dropdown = dropdown; }}>
           <DropdownTrigger>
-            <img src="/static/cms/dist/images/user.png" />
+            <img src="/static/app/images/user.png" />
             {this.state.accountName}
           </DropdownTrigger>
           <DropdownContent>

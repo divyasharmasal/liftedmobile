@@ -27,6 +27,7 @@ CMD cd /src/lm && \
     python3 manage.py migrate && \
     echo && \
     echo "Docker containers are up; server at: http://0.0.0.0:8000/" && \
-    echo "Run ./gulp-app.sh or ./gulp-cms.sh in a separate terminal to continually update the static files while you develop the frontend or CMS." && \
+    echo "Run ./scripts/app_server/dev/gulp-app.sh in a separate terminal to continually update the static files while you develop the frontend." && \
+    echo "Also run ./scripts/app_server/dev/watch-app.sh in a separate terminal for preact-cli to build the frontend as you code." && \
     echo && \
     python3 manage.py runserver 0.0.0.0:8000

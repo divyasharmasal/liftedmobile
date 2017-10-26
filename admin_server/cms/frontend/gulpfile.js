@@ -16,11 +16,10 @@ gulp.task('watch', function () {
   gulp.watch(['../cms/static/cms/'], ['build'])
 });
 
-// Run preact build in development mode
 gulp.task('build', shell.task([
-   'rm -rf ../static/cms/dist/images',
-   'cp -r ../frontend/static/app/images ../static/cms/dist/images',
-   'cp -r ../frontend/static/app/favicons ../static/cms/dist/favicons',
+  'rm -rf ../static/app/dist/images',
+  'cp -r ../app/static/app/images ../static/app/',
+  'cp -r ../app/static/app/favicons ../static/app/',
   ],
   {
     env: {
@@ -32,16 +31,20 @@ gulp.task('build', shell.task([
 
 // Run preact build in production mode, and delete JS sourcemaps
 gulp.task('build-prod', shell.task([
-  'preact build --clean --production true --no-prerender --dest ../cms/static/app/dist/',
+  'preact build --clean --production true --no-prerender --dest ../static/app/dist/',
   'echo "Deleting sourcemaps..."',
-  'rm -rf ../cms/static/app/dist/*.map',
-  'rm -rf ../cms/static/app/dist/ssr-build',
-  'rm ../cms/static/app/dist/index.html',
-  'mv ../cms/static/app/dist/bundle*.js ../cms/static/app/dist/bundle.js',
-  'mv ../cms/static/app/dist/polyfills*.js ../cms/static/app/dist/polyfills.js',
-  'mv ../cms/static/app/dist/style*.css ../cms/static/app/dist/style.css',
-  'cp -r ../lm/static/cms/images ../cms/static/app/dist/images',
-  'cp -r ../lm/static/cms/favicons ../cms/static/app/dist/favicons',
+  'rm -rf ../static/app/dist/*.map',
+  'rm -rf ../static/app/dist/ssr-build',
+  'rm ../static/app/dist/index.html',
+
+  'echo "Renaming source files..."',
+  'mv ../static/app/dist/bundle*.js ../static/app/dist/bundle.js',
+  'mv ../static/app/dist/polyfills*.js ../static/app/dist/polyfills.js',
+  'mv ../static/app/dist/style*.css ../static/app/dist/style.css',
+
+  'echo "Copying static files..."',
+  'cp -r ../app/static/app/images ../static/app/',
+  'cp -r ../app/static/app/favicons ../static/app/',
 ],
   {
     env: {

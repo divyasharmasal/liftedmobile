@@ -4,6 +4,7 @@ URL patterns for the frontend.
 
 from django.conf.urls import url
 from django.contrib.auth import views as auth_views
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from . import views
 

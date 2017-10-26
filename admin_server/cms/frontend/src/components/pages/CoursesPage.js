@@ -1,7 +1,7 @@
 import { h, Component } from "preact";
-import { authFetch } from "../../lib/fetch";
-import { sortCoursesByDate } from "../../../../../../src/lib/js/courses";
-import { renderLoader } from "../../../../../../src/lib/js/loader_anim";
+import { authFetch } from "../../lib/js/fetch";
+import { sortCoursesByDate } from "../../lib/js/courses";
+import { renderLoader } from "../../lib/js/loader_anim";
 import format from 'date-fns/format';
 
 
@@ -203,7 +203,7 @@ class CourseEditor extends Component{
           <div class="buttons pure-u-1">
 
             <button class="pure-button button-red delete_button" title="Delete event">
-              <img src="/static/cms/dist/images/trash.png" alt="delete"/> Delete
+              <img src="/static/app/images/trash.png" alt="delete"/> Delete
             </button>
 
             {this.state.hasChanged &&
@@ -211,7 +211,7 @@ class CourseEditor extends Component{
                 onClick={this.handleSaveClick}
                 class="pure-button button-green save_button" 
                 title="Save">
-                <img src="/static/cms/dist/images/tick.png" alt="save"/> Save
+                <img src="/static/app/images/tick.png" alt="save"/> Save
               </button>
             }
 

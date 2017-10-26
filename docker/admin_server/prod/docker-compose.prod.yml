@@ -16,6 +16,7 @@ services:
             dockerfile: ./docker/admin_server/prod/cms.prod.dockerfile
         secrets:
             - django_secret
+            - cms_admin_pwd
         environment:
             - DB_PWD=ko3TnNyBRYVWg3cqgP8G8CTpnmr9HPgndnhpDo98jKGCJwec9H
         ports:
@@ -38,3 +39,5 @@ services:
 secrets:
     django_secret:
         file: ../../../../LM_ADMIN_SECRETS/DJANGO_SECRET
+    cms_admin_pwd:
+        file: ../../../../LM_ADMIN_SECRETS/CMS_ADMIN_PWD

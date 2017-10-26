@@ -10,11 +10,30 @@ COPY ./docker/admin_server/nginx.conf /nginx.conf
 
 WORKDIR /src
 
-RUN apk update && apk --no-cache upgrade 
+RUN apk update && apk --no-cache upgrade                                    && \
+    apk --no-cache add python3 python3-dev py-psycopg2 postgresql              \
+                       build-base libffi-dev curl nodejs gnupg              && \
+    pip3 --no-cache-dir install --upgrade pip                               && \
+    pip3 --no-cache-dir install -r /src/requirements.txt                    && \
+    touch ~/.profile                                                        && \ 
+    curl -o- -L https://yarnpkg.com/install.sh | sh                         && \
+    ln -s /root/.yarn/bin/yarn /bin/yarn                                    && \
+    ln -s /root/.yarn/bin/yarnpkg /bin/yarnpkg                              && \
+    ln -s /root/.yarn/bin/yarn.js /bin/yarn.js                              && \
+    yarn global add preact-cli gulp gulp-shell                              && \
+    cd /src/frontend                                                        && \
+    yarn install                                                            && \
+    yarn add gulp                                                           && \
+    echo "Running gulp deploy on frontend"                                  && \
+    gulp deploy --gulpfile /src/frontend/gulpfile.js                        && \
+    apk del build-base python3-dev linux-headers nodejs                        \
+            gnupg libffi-dev binutils-gold gcc g++ curl make                && \
+    rm -rf /src/frontend/node_modules /usr/local/share/.cache/yarn/            \
+    /usr/local/share/.config/yarn /usr/lib/node_modules/ /root/.yarn           \
+    /var/cache/apk /usr/share/man /tmp/* /root/.node-gyp /root/.gnupg          \
+    /root/.npm  /src/frontend/src/fonts /bin/yarn /bin/yarnpkg                 \
+    /bin/yarn.js
 
-RUN apk --no-cache add python3 python3-dev py-psycopg2 postgresql
-RUN pip3 --no-cache-dir install --upgrade pip
-RUN pip3 --no-cache-dir install -r /src/requirements.txt
 
 WORKDIR /src
 

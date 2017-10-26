@@ -26,7 +26,7 @@ services:
         #container_name: admin_scrapyd_dev
         #build:
             #context: ../
-            #dockerfile: ./scrapyd.dockerfile
+            #dockerfile: ./docker/admin_server/scrapyd/scrapyd.dockerfile
         #ports:
             #- "80:80"
             #- "443:443"
