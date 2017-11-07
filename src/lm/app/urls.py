@@ -16,7 +16,7 @@ urlpatterns = [
 
     url(r'^$', views.index, name='index'),
     url(r'^terms/$', views.terms_of_use, name='index'),
-    url(r'^.*/$', views.index, name='index'),
+    url(r'^(?!cms/.*).*/$', views.index, name='index'),
 
     url(r'^qns$', views.qns_and_opts, name='qns_and_opts'),
     url(r'^course_recs$', views.course_recs, name='course_recs'),

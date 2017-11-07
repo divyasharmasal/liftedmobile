@@ -1,2 +1,2 @@
 #!/bin/sh
-preact watch --cwd admin_server/cms/frontend/ --port 9080
+preact watch --cwd src/lm/cms/frontend/ --port 9080

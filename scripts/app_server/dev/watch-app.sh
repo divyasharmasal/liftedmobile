@@ -1,2 +1,2 @@
 #!/bin/sh
-preact watch --cwd src/frontend/ --port 8080
+preact watch --cwd src/lm/app/frontend/ --port 8080

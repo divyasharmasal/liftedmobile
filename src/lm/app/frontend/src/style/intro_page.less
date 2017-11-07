@@ -1,0 +1,132 @@
+@import (once, less) "../../../../../lib/styles/constants.less";
+
+.intro{
+    display:block;
+    background-color:#0071bb;
+    border-radius:@border_radius;
+    width:100%;
+    height:250px;
+    margin-bottom:15px;
+
+    .planes img{
+        height:250px;
+        float:right;
+        border-radius:@border_radius;
+    }
+
+    .text{
+        font-size:1.25em;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        float:left;
+        color:white;
+        padding-left:30px;
+        text-align:left;
+    }
+
+    .planes{
+        float:right;
+    }
+
+    @media (max-width: @medium_screen_width) {
+        height:130px;
+
+        .text{
+            font-size:0.8em;
+            width:400px;
+            padding-left:15px;
+        }
+
+        .planes {
+            width:0%;
+            img{
+                height:130px;
+            }
+        }
+    }
+
+    @media (max-width: @small_screen_width) {
+        height:100px !important;
+        .text{
+            padding-left:15px;
+            max-width: 200px !important;
+        }
+        .planes {
+            width:0%;
+            img{
+                height:100px !important;
+            }
+        }
+    }
+}
+
+.intro_option{
+    float:left;
+    width:100%;
+    margin-bottom: 2em;
+
+    @media (max-width: @medium_screen_width) {
+        margin-bottom: 0em;
+    }
+
+    &:last-of-type{
+        margin-bottom: 0em;
+    }
+
+    a{
+        text-decoration:none;
+        float:left;
+        width:100%;
+    }
+
+    .icon{
+        float:right;
+        padding-top:1em;
+
+        @media (max-width: @medium_screen_width) {
+            margin-right:1em;
+            padding-top:1em;
+            img{
+                margin-top:0.5em;
+                width:70px;
+            }
+        }
+
+        @media (max-width: @small_screen_width) {
+            font-size:2.5em;
+        }
+    }
+
+    .desc{
+        float:left;
+        width:60%;
+    }
+
+    img{
+    }
+
+    p{
+        color:initial;
+        @media (max-width: @small_screen_width) {
+            font-size:1.5em;
+        }
+    }
+
+
+    h2{
+        font-size:2.5em;
+        font-weight:normal;
+        color:@sal_blue;
+
+        @media (max-width: @medium_screen_width) {
+            font-size:2em;
+        }
+
+        @media (max-width: @small_screen_width) {
+            font-size:2em;
+        }
+    }
+
+}
+

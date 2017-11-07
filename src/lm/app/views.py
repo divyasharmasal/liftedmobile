@@ -12,7 +12,6 @@ from django.http import HttpResponseServerError
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max
-from django import db
 
 from app import models
 

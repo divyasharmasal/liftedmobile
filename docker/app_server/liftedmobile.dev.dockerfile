@@ -20,10 +20,8 @@ ENV DEV 1
 
 # Wait till the database is ready and then launch the dev server
 CMD cd /src/lm && \
-    sh /src/lm/sleep_until_dev_pg_isready.sh && \
+    sh /src/lm/wait_for_db.sh liftedmobile_db_dev && \
     python3 manage.py collectstatic --no-input && \
-   #python3 manage.py makemigrations && \
-   #python3 manage.py makemigrations --empty app && \
     python3 manage.py migrate && \
     echo && \
     echo "Docker containers are up; server at: http://0.0.0.0:8000/" && \

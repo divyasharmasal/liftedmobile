@@ -2,8 +2,8 @@
 
 if [ "${1}" == "deploy" ]
 then
-    gulp deploy --gulpfile src/frontend/gulpfile.js
+    gulp deploy --gulpfile src/lm/app/frontend/gulpfile.js
 else
-    gulp --gulpfile src/frontend/gulpfile.js
+    gulp --gulpfile src/lm/app/frontend/gulpfile.js
 fi
 

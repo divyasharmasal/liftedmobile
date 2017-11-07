@@ -1,5 +1,3 @@
-- Draft subdomain request to MIS!
-
 - Target mid-Nov for scrapers to be done
 
 - End-Nov beta release
@@ -12,7 +10,6 @@
 
 Check with Inga about L3 specialist roles not having specialism
 competencies...
-
 
 EB meeting: 31st October
  - LP vertical should be done already

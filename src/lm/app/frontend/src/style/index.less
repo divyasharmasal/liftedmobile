@@ -1,0 +1,757 @@
+@import (once, css) "pure-min.css";
+@import (once, css) "./grids-responsive-min.css";
+@import (once, css) "./pure_tweaks.css";
+@import (once, css) "./fonts.css";
+@import (once, css) "./loading_anim.css";
+@import (once, less) "../../../../../lib/styles/constants.less";
+@import (once, less) "../../../../../lib/styles/course_table.less";
+
+.no_user_select{
+    user-select:none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+*, html, body {
+    font-family: Lato, Arial !important;
+    font-size:0.95em;
+}
+
+.terms_of_use{
+    p, ul, table{
+        font-size:1.5em;
+    }
+}
+
+.sal_logo{
+    padding-top:30px;
+    padding-bottom:15px;
+    img{
+        height:63px;
+    }
+
+    @media (max-width: @medium_screen_width) {
+        img{
+            height:50px;
+        }
+    }
+}
+
+.sal_logo.center{
+    text-align:center;
+}
+
+.credits{
+    float:left;
+    width:100%;
+    text-align:center;
+    margin-top:15vh;
+    font-size:0.8em;
+}
+
+.top_nav_link{
+    cursor:pointer;
+    display:block;
+    font-size: 1.5em;
+    text-decoration:none;
+    margin-top:5px;
+    color:@sal_blue;
+    &:visited{
+        color:@sal_blue;
+    }
+}
+
+.full_review{
+    float:right;
+}
+
+.start_over{
+    float:left;
+}
+
+h1{
+    text-align:center;
+    font-weight: normal;
+    color: @sal_blue;
+    font-size: 4em;
+}
+
+p{
+    font-size:2em;
+}
+
+hr{
+    border-top: 1px solid #585757;
+    width:80%;
+    margin-left:10%;
+	margin-top:30px;
+	margin-bottom:30px;
+}
+
+.notification{
+    position: fixed;
+    bottom:0px;
+    left:0px;
+    width: 100%;
+    /*width:1280px;*/
+    background-color:@sal_blue;
+    color:white;
+    z-index:999;
+    opacity:1;
+    text-align:center;
+    cursor:pointer;
+
+    p{
+        margin-top:10px;
+        margin-bottom:10px;
+    }
+
+    a{
+        color:white;
+        text-decoration:none;
+    }
+}
+
+.flash{
+    -webkit-animation-name: demo;
+    -webkit-animation-duration: 600ms;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in-out;
+    -moz-animation-name: demo;
+    -moz-animation-duration: 600ms;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-timing-function: ease-in-out;
+}
+
+@-webkit-keyframes demo {
+    0% {
+        background-color: #008BEB;
+    }
+    100% {
+        background-color: @sal_blue;
+    }
+}
+
+.rec_courses{
+    p{
+        text-align:center;
+    }
+    h1{
+        font-size:4em;
+    }
+}
+
+.login_form{
+    input{
+        width:95%;
+    }
+    .button-large, p{
+        font-size:1.8em;
+    }
+
+    .login_failed{
+        color:darkred;
+        text-align: center;
+    }
+}
+
+.question_small{
+    .question{
+        margin-top:initial;
+
+        h1{
+            font-size:2em;
+        }
+
+        .answer{
+            font-size: 2em;
+        }
+
+        .answer{
+            padding-left: 2.5em;
+            padding-right: 2.5em;
+        }
+    }
+}
+
+.question{
+    margin-top: 100px;
+    text-align:center;
+
+    .answer{
+        cursor:pointer;
+        color:black;
+        font-size: 2.5em;
+        border: 1px solid #585757;
+        border-radius: @border_radius;
+        text-align:center;
+        padding-left:10px;
+        padding-right:10px;
+        padding-top:15px;
+        padding-bottom:15px;
+        margin-bottom:15px;
+
+        .emoji{
+            width:40px;
+            height:40px;
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
+        }
+    }
+
+    .answer.has_emoji{
+        height:40px;
+    }
+
+    .option_tick{
+        visibility:hidden;
+        /*display:none;*/
+        float:left;
+        margin-right: 0;
+        img{
+            width: 20px;
+
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
+
+            user-select:none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+    }
+    
+    .role_option_text{
+        .desc{
+            font-size:1em;
+            margin-bottom:5px;
+            display:block;
+        }
+        .role{
+            font-weight:bold;
+            font-size:0.8em;
+        }
+    }
+
+    .selected{
+        background-color:@selected_bg_color;
+        font-weight:bold;
+
+        .option_tick{
+            display:initial;
+            visibility:visible;
+            /*color:@sal_blue;*/
+        }
+
+        .option_text{
+            float:right;
+        }
+    }
+
+    .disabled, 
+    .disabled:hover{
+        background-color: #eeeeee;
+        color:#dddddd;
+    }
+
+    .scroll_down_msg{
+        display: none;
+    }
+}
+
+.competency_anchor,
+.select_level a,
+.select_level a:visited,
+.scroll_link:visited,
+.scroll_link{
+    color: @link_blue;
+    text-decoration:none;
+}
+
+.courses{
+    margin-bottom:75px;
+
+    .mobile_only{
+        display:none;
+    }
+
+    .sorter{
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select:none;
+
+        text-align:center;
+
+        a{
+            display:inline-block;
+            margin-left:10px;
+            text-decoration:none;
+            color:@link_blue;
+            cursor:pointer;
+            &:visited{
+                color:@link_blue;
+            }
+        }
+
+        .symbol{
+            color:black;
+            margin-left:10px;
+        }
+    }
+
+    width:100%;
+    p, h2{
+        text-align:center;
+    }
+
+    h2{
+        font-size:3.5em;
+        font-weight: normal;
+        color: @sal_blue;
+        margin-bottom:20px;
+    }
+}
+
+.diag{
+    .highlight{
+        width:100%;
+        display:inline-block;
+        background-color:#ffe6e6;
+        border-radius: @border_radius;
+    }
+
+    p.highlight.warning{
+        margin-bottom:50px;
+        padding:10px;
+        /*width:50%;*/
+        margin-left:auto;
+        margin-right:auto;
+    }
+
+    .diag_qn{
+        margin-bottom:80px;
+        width:100%;
+        float:left;
+        p{
+            font-size:2.5em;
+        }
+
+        .diag_whatsthis{
+            cursor:pointer;
+            margin-top:0px;
+            margin-bottom:30px;
+            font-size:2em;
+        }
+
+        .diag_opts{
+            width:100%;
+            text-align:center;
+        }
+
+        .diag_help{
+            text-align:left;
+            font-size:2em;
+        }
+
+        .diag_left{
+            float:left;
+            width:60%;
+            text-align:left;
+            p{
+                margin-top:0;
+            }
+        }
+
+        .diag_right{
+            float:right;
+        }
+
+        .answer{
+            font-size:2em;
+            margin-right: 25px;
+            width:100px;
+            display:inline-block;
+
+            &:last-of-type{
+                margin-right:0;
+            }
+        }
+
+        &:last-of-type{
+            margin-bottom:50px;
+        }
+
+    }
+
+    .diag_button.disabled{
+        color:grey;
+        cursor: default;
+    }
+
+    .diag_button{
+        display:inline-block;
+        cursor: pointer;
+        font-size: 2em;
+        font-weight:bold;
+        line-height: 3em;
+        padding-top:1em;
+        padding-bottom:1em;
+        padding-left:2em;
+        padding-right:2em;
+        color: @sal_blue;
+        margin-bottom: 1.0rem;
+        border: 1px solid;
+        border-radius: @border_radius;
+    }
+}
+
+.results {
+    .stars{
+        color:@sal_blue;
+    }
+
+    .competencies{
+        table{
+            margin:auto;
+            font-size:2em;
+            thead{
+                line-height:1.5em;
+                th{
+                    text-align:left;
+                    padding:0.25em;
+                }
+            }
+
+            td{
+                text-align:left;
+                padding:0.25em;
+            }
+
+            td.special{
+                padding-top:1em;
+                padding-bottom:1em;
+                text-align:center;
+                font-weight:bold;
+            }
+        }
+
+        .star{
+            cursor:default;
+        }
+
+        .empty{
+            color:grey;
+        }
+    }
+}
+
+.diag_courses{
+    .result_category{
+        margin-bottom:40px;
+    }
+
+    .result_courses{
+        .hide{
+            display:none;
+        }
+
+        .great{
+            font-size:1.5em;
+        }
+
+    }
+    .category_name{
+        cursor:pointer;
+        font-weight:bold;
+        display:inline-block;
+        font-size:2.5em;
+        @media (max-width: @small_screen_width) {
+            font-size:2em;
+        }
+    }
+
+    .not_found{
+        width:75%;
+        margin:auto;
+    }
+
+    p.back_to_top{
+        text-align:right;
+        font-size:1.2em;
+        margin-top:0px;
+    }
+}
+
+.role_picker{
+    .level{
+        margin-bottom:20px;
+        .level_text{
+            font-weight:bold;
+        }
+
+        .prompt{
+            font-weight:bold;
+        }
+
+        .roles{
+            font-size:1em;
+
+            .desc{
+                font-size:1.5em;
+            }
+
+            .role_name{
+                font-weight:bold;
+            }
+        }
+    }
+}
+
+@media (max-width: @small_screen_width) {
+    .question {
+        .role_option_text{
+            font-size:0.8em;
+        }
+
+        h1{
+            font-size:2em;
+        }
+
+        .answer{
+            padding-top:0.3em;
+            padding-bottom:0.3em;
+            font-size:1.25em;
+        }
+
+        .goals{
+            display:none;
+        }
+
+        .show{
+            display:initial;
+        }
+
+        .option_tick{
+            img{
+                width:15px;
+            }
+        }
+    }
+
+    .take_test_prompt{
+        margin-top:15px;
+    }
+
+    .take_test_prompt .take_test_button{
+        padding: 0.9em 1.2em;
+        font-size:1.5em;
+    }
+
+    .scroll_down_msg{
+        display: initial !important;
+    }
+
+    .question_small{
+        .question{
+            margin-bottom:15px;
+
+            .answer{
+                font-size:1.25em;
+                padding: 15px 10px;
+            }
+
+            .answer.tile{
+                padding: 10px 6px; 
+            }
+        }
+    }
+}
+
+
+@media (max-width: @medium_screen_width) {
+    .credits{
+        font-size:0.6em;
+    }
+
+    *, html, body {
+        font-family: Lato, Arial;
+        /*font-size:1em;*/
+    }
+
+    .login_form{
+        h1{
+            font-size:2em;
+        }
+    }
+
+    .notification{
+        width:100%;
+        left:0px;
+    }
+
+	.full_review,
+    .start_over{
+        font-size:1em;
+    }
+
+    h1{
+        /*font-size:2em;*/
+    }
+    
+    p{
+        /*font-size:1em;*/
+    }
+
+    hr{
+        border-top: 1px solid #585757;
+        width:90%;
+        margin-left:5%;
+        margin-top:15px;
+        margin-bottom:15px;
+    }
+
+    .rec_courses{
+        h1{
+            font-size:2.5em;
+        }
+    }
+
+    .diag{
+        .diag_qn{
+            font-size:1.25em;
+            margin-bottom:0px;
+
+            p{
+                font-size:1.25em;
+            }
+
+            .answer{
+                width:50px;
+            }
+
+            .diag_whatsthis{
+                font-size:1em;
+            }
+
+            .diag_help{
+                font-size:1em;
+            }
+
+            .diag_left{
+                float:none;
+                width:100%;
+                text-align:center;
+                p{
+                    margin-top:24px;
+                }
+            }
+
+            .diag_right{
+                float:none;
+            }
+
+            .answer{
+                width:40px;
+                height:35px;
+
+                img{
+                    width:30px;
+                    height:30px;
+                }
+            }
+        }
+
+        .diag_button{
+            padding: .5em .5em;
+            line-height: 1.2em;
+            display: inline-block;
+            height: initial;
+        }
+    }
+
+    .question{
+        float: left;
+        width: 100%;
+
+        margin-top: 10px;
+
+        h1{
+            margin-bottom:15px;
+        }
+
+        .answer{
+            /*font-size:1.25em;*/
+        }
+
+        .tile{
+            font-size: 1.5em;
+            margin-bottom:5px;
+            padding: 10px 6px; 
+            
+            .option_tick{
+                visibility:hidden;
+            }
+        }
+        .selected{
+            .option_tick{
+                visibility:visible;
+            }
+        }
+    }
+
+    .for_better_results{
+        margin-bottom:0px;
+    }
+
+    .courses{
+        .sorter{
+            display:initial;
+            p{
+                font-size:1.5em;
+            }
+
+            .symbol{
+                margin-left:3px;
+            }
+        }
+
+        h2{
+            font-size:2em;
+            margin-top:21.44px;
+            margin-bottom:10px;
+        }
+
+    }
+
+    .diag_courses{
+        p.back_to_top{
+            font-size:0.8em;
+        }
+    }
+
+    .results {
+        .competencies{
+            table{
+                /*font-size:1em;*/
+            }
+        }
+    }
+
+}
+
+@import (once, less) "./intro_page.less";
+@import (once, less) "./course_browser/course_browser.less";

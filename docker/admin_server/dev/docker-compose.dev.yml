@@ -15,10 +15,11 @@ services:
             context: ../../../
             dockerfile: ./docker/admin_server/dev/cms.dev.dockerfile
         volumes:
-            - ../../../admin_server/cms:/cms
+            - ../../../src:/src
         environment:
             - DB_PWD=password
             - DEV=true
+            - CMS=true
         ports:
             - "9000:9000"
 

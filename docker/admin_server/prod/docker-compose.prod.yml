@@ -17,10 +17,21 @@ services:
         secrets:
             - django_secret
             - cms_admin_pwd
+            - scraper_api_key
+            - django_admin_pwd
+            - django_team_pwd
         environment:
+            - CMS=true
             - DB_PWD=ko3TnNyBRYVWg3cqgP8G8CTpnmr9HPgndnhpDo98jKGCJwec9H
         ports:
-            - "90:80"
+            - "80:80"
+        logging:
+            driver: "awslogs"
+            options:
+                awslogs-region: "ap-southeast-1"
+                awslogs-group: "liftedmobile_logs"
+                awslogs-stream: "cms_stream"
+                awslogs-create-group: "true"
 
     #scrapyd:
         #container_name: admin_scrapyd
@@ -41,3 +52,9 @@ secrets:
         file: ../../../../LM_ADMIN_SECRETS/DJANGO_SECRET
     cms_admin_pwd:
         file: ../../../../LM_ADMIN_SECRETS/CMS_ADMIN_PWD
+    scraper_api_key:
+        file: ../../../../LM_ADMIN_SECRETS/SCRAPER_API_KEY
+    django_admin_pwd:
+        file: ../../../../LM_SECRETS/DJANGO_ADMIN_PWD
+    django_team_pwd:
+        file: ../../../../LM_SECRETS/DJANGO_TEAM_PWD

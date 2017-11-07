@@ -6,4 +6,3 @@ docker-compose -f docker/app_server/docker-compose.prod.yml up -d --force-recrea
 
 echo
 echo "View logs at https://ap-southeast-1.console.aws.amazon.com/cloudwatch/home?region=ap-southeast-1#logEventViewer:group=liftedmobile_logs;stream=liftedmobile_stream"
-#docker logs -f liftedmobile
