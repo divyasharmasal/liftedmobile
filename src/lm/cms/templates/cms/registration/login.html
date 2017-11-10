@@ -16,11 +16,11 @@
     <body>
         <div class="pure-g login_form">
             <div class="pure-u-1">
-                <form method="post" action="/login/" class="pure-form">
+                <form method="post" action="/cms/login/" class="pure-form">
 
                     {% csrf_token %}
 
-                    <input type="hidden" name="next" value="cms_index" />
+                    <input type="hidden" name="next" value="/cms/" />
 
                     <h1>Log in to the LIFTED Mobile CMS</h1>
 

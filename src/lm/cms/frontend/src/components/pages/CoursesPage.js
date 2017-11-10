@@ -203,7 +203,7 @@ class CourseEditor extends Component{
           <div class="buttons pure-u-1">
 
             <button class="pure-button button-red delete_button" title="Delete event">
-              <img src="/static/app/images/trash.png" alt="delete"/> Delete
+              <img src="/static/cms/images/trash.png" alt="delete"/> Delete
             </button>
 
             {this.state.hasChanged &&
@@ -211,7 +211,7 @@ class CourseEditor extends Component{
                 onClick={this.handleSaveClick}
                 class="pure-button button-green save_button" 
                 title="Save">
-                <img src="/static/app/images/tick.png" alt="save"/> Save
+                <img src="/static/cms/images/tick.png" alt="save"/> Save
               </button>
             }
 

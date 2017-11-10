@@ -10,15 +10,18 @@ class SalSpider(scrapy.Spider):
 
     def parse(self, response):
         items = []
+
         for item in response.css(".list-item"):
             name = item.css(".Title::text").extract_first()
             url = item.css("a::attr(href)").extract_first()
             start_date = item.css(".startDate::text").extract_first()
             end_date = item.css(".endDate::text").extract_first()
+            upcoming = start_date is None and end_date is None
 
-            course_item = CourseItem(name=name,
-                                     url=url,
+            course_item = CourseItem(name=name, url=url,
                                      start_date=start_date,
-                                     end_date=end_date)
+                                     end_date=end_date,
+                                     upcoming=upcoming)
             items.append(course_item)
+
         return items

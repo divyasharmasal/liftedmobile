@@ -11,11 +11,15 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import socket
 
 
 def read_secret(filepath):
     return open(filepath).read().splitlines()[0]
 
+SCRAPYD_IP = None
+if 'CMS' in os.environ:
+    SCRAPYD_IP = socket.gethostbyname("scrapyd")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -35,7 +39,7 @@ if 'DEV' in os.environ:
         SECRET_KEY = 'wdh|w>q&&roC*UEF-&~fNHwM,~GaUH2tC6Pn+)F2=GSQ*8DaM]'
         CMS_TEMP_SUPER_USERNAME = "admin"
         CMS_TEMP_SUPER_PASSWORD = "***REMOVED***"
-        SCRAPER_API_KEY = "6J2*8Z/[)dC2,Dof*+MVCCF$cm@xvdjG~twt.$zM$`UDd"
+        SCRAPYD_API_KEY = "scrapydapikey"
 else:
     # Settings for production
     DEBUG = False
@@ -52,7 +56,7 @@ else:
         SECRET_KEY = read_secret("/run/secrets/django_secret")
         CMS_TEMP_SUPER_USERNAME = "admin"
         CMS_TEMP_SUPER_PASSWORD = read_secret("/run/secrets/cms_admin_pwd")
-        SCRAPER_API_KEY = read_secret("/run/secrets/scraper_api_key")
+        SCRAPYD_API_KEY = read_secret("/run/secrets/scrapyd_api_key")
 
     assert(DEBUG == False)
 

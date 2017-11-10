@@ -19,8 +19,6 @@ services:
             - ../../src:/src
         ports:
             - "8000:8000"
-        expose:
-            - "8000"
         environment:
             - DEV=true
             - DB_PWD=password

@@ -5,14 +5,13 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 
-import scrapy
+# import scrapy
 from scrapy.item import Item, Field
 
 
 class CourseItem(Item):
-    # define the fields for your item here like:
     name = Field()
     url = Field()
     start_date = Field()
     end_date = Field()
-    pass
+    upcoming = Field()

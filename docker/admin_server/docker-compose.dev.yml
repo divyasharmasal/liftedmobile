@@ -1,0 +1,39 @@
+version: '3.1'
+
+services:
+    db:
+        container_name: admin_db_dev
+        build:
+            context: ./
+            dockerfile: ./db.dev.dockerfile
+        environment:
+            - POSTGRES_PASSWORD=password
+
+    cms:
+        container_name: admin_cms_dev
+        build:
+            context: ../../
+            dockerfile: ./docker/admin_server/cms.dev.dockerfile
+        volumes:
+            - ../../src:/src
+        environment:
+            - DB_PWD=password
+            - DEV=true
+            - CMS=true
+        ports:
+            - "9000:9000"
+
+    scrapyd:
+        container_name: admin_scrapyd_dev
+        build:
+            context: ../../
+            dockerfile: ./docker/admin_server/scrapyd.dev.dockerfile
+        ports:
+            - "81:80"
+            - "442:443"
+            - "6800:6800"
+        environment:
+            - DEV=true
+            - SCRAPYD_API_KEY=scrapydapikey
+        expose:
+            - "6800"
