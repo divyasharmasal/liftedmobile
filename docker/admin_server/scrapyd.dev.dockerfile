@@ -5,12 +5,18 @@ RUN apk --no-cache upgrade
 RUN apk add --no-cache python3 python3-dev openssl-dev ca-certificates        \
                        libffi-dev build-base py3-lxml  supervisor py3-cffi    \
                        py3-requests curl
-RUN pip3 --no-cache-dir install scrapyd scrapyd-client pytz
+RUN pip3 --no-cache-dir install scrapyd scrapyd-client pytz schedule
+
+
 
 RUN mkdir /etc/supervisor.d /var/log/scrapyd
+RUN mkdir /var/log/scraper_scheduler
+
 COPY ./docker/admin_server/scrapyd.conf /etc/scrapyd/
 COPY ./docker/admin_server/supervisor_scrapyd.ini /etc/supervisor.d/
 COPY ./admin_server/scraper/ /scraper
+
+ENV PYTHONUNBUFFERED 1 
 
 CMD supervisord -c /etc/supervisord.conf                                   && \
     python3 /scraper/wait_for_scrapyd.py http://0.0.0.0:6800               && \

@@ -40,6 +40,7 @@ services:
             dockerfile: ./docker/admin_server/scrapyd.prod.dockerfile
         volumes:
             - ../../../scrapyd_logs:/var/log/scrapyd/
+            - ../../../scraper_scheduler_logs:/var/log/scraper_scheduler/
         secrets:
             - scrapyd_api_key
         ports:
