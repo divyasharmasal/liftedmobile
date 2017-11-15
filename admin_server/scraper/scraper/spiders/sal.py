@@ -18,6 +18,9 @@ class SalSpider(scrapy.Spider):
             end_date = item.css(".endDate::text").extract_first()
             upcoming = start_date is None and end_date is None
 
+            if url.startswith("/"):
+                url = "https://www.sal.org.sg" + url
+
             course_item = CourseItem(name=name, url=url,
                                      start_date=start_date,
                                      end_date=end_date,

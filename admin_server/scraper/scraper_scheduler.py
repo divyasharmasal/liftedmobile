@@ -2,7 +2,7 @@ import schedule
 import time
 import datetime
 import requests
-
+import subprocess
 
 def timestamp():
     """
@@ -36,6 +36,25 @@ def run_all_scrapes():
 
 
 if __name__ == "__main__":
+    # Wait for the scrapyd process to start
+    _log("Waiting for scrapyd...")
+    while True:
+        try:
+            if requests.get("http://localhost:6800").ok:
+                break
+        except:
+            time.sleep(0.25)
+    _log("scrapyd is running")
+
+    # Run scrapyd-deploy
+    command = "cd /scraper && scrapyd-deploy"
+
+    subprocess.run(command, shell=True)
+    _log("Ran {command}".format(command=command))
+
+    run_all_scrapes()
+    _log("Ran first scrape")
+
     schedule.every(2).hours.do(run_all_scrapes)
 
     while True:

@@ -20,6 +20,7 @@ services:
             - DB_PWD=password
             - DEV=true
             - CMS=true
+            - PYTHONUNBUFFERED=1
         ports:
             - "9000:9000"
 

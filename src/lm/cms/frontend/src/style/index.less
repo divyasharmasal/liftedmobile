@@ -93,9 +93,33 @@ a{
     min-height: 100vh;
     display: block;
     float: left;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select:none;
+
 
     *{
         color: white;
+    }
+
+    .group{
+        background: @navbar_grey;
+
+        .name{
+            display:block;
+            padding-top:15px;
+            padding-bottom:15px;
+            padding-left:10px;
+            padding-right:10px;
+            width:100%;
+            height:100%;
+        }
+
+        .section a{
+            padding-left:20px;
+        }
     }
 
     .section{
@@ -116,6 +140,7 @@ a{
             height:100%;
         }
     }
+
 }
 
 .content{

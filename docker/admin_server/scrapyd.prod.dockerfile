@@ -19,7 +19,4 @@ COPY ./admin_server/scraper/ /scraper
 ENV PYTHONUNBUFFERED 1 
 
 CMD supervisord -c /etc/supervisord.conf                                   && \
-    python3 /scraper/wait_for_scrapyd.py http://0.0.0.0:6800               && \
-    cd /scraper                                                            && \
-    scrapyd-deploy                                                         && \
     while sleep 3600; do :; done

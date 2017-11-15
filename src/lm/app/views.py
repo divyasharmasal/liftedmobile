@@ -331,7 +331,7 @@ def _course_query_to_json(course_query):
 
 
 def _course_json(course, index=None, orig_start_dates=True,
-        custom_start_date=None):
+        custom_start_date=None, include_id=False):
     start_dates = None
     level_name = course.courselevel.level.name
     format_name = course.courseformat.format.name
@@ -343,6 +343,9 @@ def _course_json(course, index=None, orig_start_dates=True,
     # else:
         # cpd_points = float(cpd_points)
 
+    if cpd_points is not None:
+        cpd_points = float(cpd_points)
+
     result = {
         "name": course.name,
         "cost": float(course.cost),
@@ -350,10 +353,13 @@ def _course_json(course, index=None, orig_start_dates=True,
         "level": level_name,
         "format": format_name,
         "cpd": {
-            "points": float(cpd_points),
+            "points": cpd_points,
             "is_private": points.is_private
         }
     }
+
+    if include_id:
+        result["id"] = course.id
 
     if orig_start_dates:
         start_dates = course.coursestartdate_set.all()

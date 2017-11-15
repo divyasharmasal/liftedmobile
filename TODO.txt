@@ -1,5 +1,12 @@
 - Target mid-Nov for scrapers to be done
 
+- Competency category and verticals in CMS
+    - each course should have up to 3 LIFTED keys
+- The scraped data must be connected to the diagnostic tool!
+    - competency category only - broad matching.
+
+- Scrapers should run every day at noon GMT+8
+
 - End-Nov beta release
 
 - End-Nov: Submit phase 2 proposal: heatmap, scraping of books, scraping of
@@ -18,6 +25,7 @@ All-in-one CMS
   - do a code generator for 3rd party
 
   - Scrape CALAS, SCCA, SkillsFuture, LawSoc
+    (priority: SAL, CALAS, LawSoc)
 
   - CMS
     - Full auth system with 2FA

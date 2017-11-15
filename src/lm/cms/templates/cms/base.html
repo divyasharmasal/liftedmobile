@@ -23,6 +23,7 @@
         {% block head %}{% endblock %}
     </head>
     <body>
+        {% csrf_token %}
         <noscript><p>This page requires Javascript.</p></noscript>
         {% block body %}{% endblock %}
 

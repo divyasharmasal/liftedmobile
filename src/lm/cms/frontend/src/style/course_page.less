@@ -16,10 +16,22 @@
         }
     }
 
+    .grey_bg{
+        background-color:#f3f3f3
+    }
+
     .editor{
         margin-bottom:1em;
         padding:0.5em;
         margin-left:-0.5em;
+
+        .delete_confirm{
+            float:left;
+            margin-right:1em;
+            label{
+                margin-right:1em;
+            }
+        }
 
         &>div{
             margin-bottom:1em;
@@ -36,8 +48,12 @@
             }
         }
 
-        &:nth-of-type(even){
-            background-color:#f3f3f3
+        .list_input_item input[disabled],
+        .cpd_points_input[disabled],
+        input[disabled]{
+            background-color:#f3f3f3;
+            border:0;
+            box-shadow:none !important;
         }
 
         .name{
@@ -104,6 +120,10 @@
                     width:41px;
                 }
 
+                .empty{
+                    margin-top:0;
+                }
+
                 .list_input_item{
                     float:left;
 
@@ -159,6 +179,7 @@
         }
 
         .custom_input .cpd_points_input{
+            width:80px;
             &:hover{
                 &:disabled{
                     box-shadow:none;
@@ -168,6 +189,10 @@
 
         .actions{
             margin-top:1em;
+            .error_msg, .success_msg{
+                margin-left:1em;
+            }
+
             .buttons{
                 button{
                     @button_width: auto;

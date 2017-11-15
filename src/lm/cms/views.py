@@ -1,6 +1,8 @@
 import base64
+import pytz
 import os
 import json
+import datetime
 
 from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
@@ -33,7 +35,36 @@ def json_response(obj):
 
 
 @staff_member_required(login_url=None)
-def cms_get_coursespage_data(request):
+def cms_get_unpublished_courses_data(request):
+    result = {
+        "courses": [],
+        "levels": [c.name for c in app_models.Level.objects.all()],
+        "formats": [c.name for c in app_models.Format.objects.all()]
+    }
+
+    # TODO: only show future courses??
+    for scraped_course in models.ScrapedSalCourse.objects.filter(is_new=True):
+        start_date = end_date = None
+
+        if isinstance(scraped_course.start_date, datetime.datetime):
+            start_date = scraped_course.start_date.isoformat()
+
+        if isinstance(scraped_course.end_date, datetime.datetime):
+            end_date = scraped_course.end_date.isoformat()
+
+        result["courses"].append({
+            "id": scraped_course.id,
+            "name": scraped_course.name,
+            "url": scraped_course.url,
+            "start_date": start_date,
+            "end_date": end_date,
+        })
+
+    return json_response(result)
+
+
+@staff_member_required(login_url=None)
+def cms_get_published_courses_data(request):
     result = {
         "courses": [],
         "levels": [],
@@ -46,7 +77,8 @@ def cms_get_coursespage_data(request):
     courses = app_models.Course.objects.all()
     courses = _optimise_course_query(courses)
 
-    result["courses"] = [_course_json(course) for course in courses]
+    result["courses"] = [_course_json(course, include_id=True)
+                         for course in courses]
 
     return json_response(result)
 
@@ -75,6 +107,125 @@ def cms_login(request):
         # return redirect(reverse(next_url))
     else:
         return _render_login_failed(request)
+
+
+@staff_member_required(login_url="login")
+def save_course(request):
+    try:
+        body = json.loads(request.body)
+        id = body["id"]
+        name = body["name"]
+        cost = body["cost"]
+        url = body["url"]
+        level_name = body["level"]
+        cpd_points = body["cpdPoints"]
+        cpd_is_private = body["cpdIsPrivate"]
+        format_name = body["format"]
+
+        if body["is_published"]:
+            course = app_models.Course.objects.get(id=id)
+            course.name = name
+            course.url = url
+            course.cost = cost
+            course.save()
+
+            course_cpd = app_models.CourseCpdPoints(course=course)
+            course_cpd.points = cpd_points
+            course_cpd.is_private = cpd_is_private
+            course_cpd.save()
+
+            level = app_models.Level.objects.get(name=level_name)
+            course_level = app_models.CourseLevel.objects.get(course=course)
+            course_level.level = level
+            course_level.save()
+
+            format = app_models.Format.objects.get(name=format_name)
+            course_format = app_models.CourseFormat.objects.get(course=course)
+            course_format.format = format
+            course_format.save()
+
+            app_models.CourseStartDate.objects.filter(course=course).delete()
+            for date in body["start_dates"]:
+                course_start_date = app_models.CourseStartDate(
+                    course=course, start_date=date)
+                course_start_date.save()
+
+            return HttpResponse("OK")
+        else:
+            id = body["id"]
+            scraped_course = models.ScrapedSalCourse(id=id)
+            scraped_course.is_new = False
+            scraped_course.save()
+
+            # Course
+            course = app_models.Course(name=name, url=url, cost=cost)
+            course.save()
+
+            # CPD
+
+            # having private status & having public cpd points are mutually
+            # exclusive
+            if cpd_is_private:
+                cpd_points = None
+
+            if cpd_is_private is None or cpd_points is not None:
+                cpd_is_private = False
+
+            course_cpd = app_models.CourseCpdPoints(course=course,
+                                                    points=cpd_points,
+                                                    is_private=cpd_is_private)
+            course_cpd.save()
+
+            # Level
+            level = app_models.Level.objects.get(name=level_name)
+            course_level = app_models.CourseLevel(course=course, level=level)
+            course_level.save()
+
+            # Format
+            format = app_models.Format.objects.get(name=format_name)
+            course_format = app_models.CourseFormat(course=course, format=format)
+            course_format.save()
+
+            # Start dates
+            course_start_dates = []
+            timezone = pytz.timezone("Asia/Singapore")
+
+            for date in list(set(body["start_dates"])):
+                localized_date = timezone.localize(
+                    datetime.datetime.strptime(date, "%d/%m/%Y"))
+
+                course_start_date = app_models.CourseStartDate(
+                    course=course, start_date=localized_date)
+                course_start_dates.append(course_start_date)
+
+            for c in course_start_dates:
+                c.save()
+
+            return HttpResponse("OK")
+
+    except Exception as e:
+        import traceback
+        print(traceback.print_exc())
+        return HttpResponseServerError("Invalid request")
+
+
+@staff_member_required(login_url="login")
+def delete_course(request):
+    id = None
+    try:
+        body = json.loads(request.body)
+        id = body["id"]
+        published = body["is_published"]
+
+        if published:
+            app_models.Course.objects.get(id=id).delete()
+        else:
+            models.ScrapedSalCourse.objects.get(id=id).delete()
+            pass
+    except:
+        return HttpResponseServerError("Error")
+
+    return HttpResponse("Deleted course with id {id}".format(id=id))
 
 
 def _render_login_failed(request):
@@ -131,23 +282,35 @@ def scraper_sal_add_course(request):
     if len(course_data.keys()) == 0:
         return HttpResponseServerError("Empty course data JSON")
 
-    try:
-        # Do nothing if a course with the same data exists
-        models.ScrapedSalCourse.objects.get(
-            name=course_data["name"],
-            url=course_data["url"],
-            start_date=course_data["start_date"],
-            end_date=course_data["end_date"])
+    # Do nothing if a ScrapedSalCourse with the same data exists:
+    if models.ScrapedSalCourse.objects\
+        .filter(name=course_data["name"],
+                url=course_data["url"],
+                start_date=course_data["start_date"],
+                end_date=course_data["end_date"]).exists():
+        print("Found a matching ScrapedSalCourse")
+        return json_response("Found matching ScrapedSalCourse")
 
-        print("Exact match found; skipping")
+    # Do nothing if an app_models.Course with the same data exists.
+    if app_models.Course.objects\
+        .filter(name=course_data["name"],
+                url=course_data["url"],
+                coursestartdate__start_date=course_data["start_date"]).exists():
+        print("Found a matching Course")
+        return json_response("Found matching Course")
 
-    except models.ScrapedSalCourse.DoesNotExist:
-        # Otherwise, update/create the row:
-        models.ScrapedSalCourse.objects.update_or_create(
-            defaults={"start_date": course_data["start_date"],
-                      "end_date": course_data["end_date"]},
-            name=course_data["name"],
-            url=course_data["url"],
-            is_new=True)
+    # TODO: what to do if there is a matching course with different data?
+    # pin to URL?
+    # delete old courses?
 
-    return json_response("OK")
+    # Otherwise, update/create the ScrapedSalCourse:
+    scraped_course = models.ScrapedSalCourse.objects.update_or_create(
+        defaults={"start_date": course_data["start_date"],
+                  "end_date": course_data["end_date"]},
+        name=course_data["name"],
+        url=course_data["url"],
+        is_new=True)
+    if scraped_course:
+        return json_response("Added ScrapedSalCourse")
+
+    return json_response("No action taken")

@@ -55,8 +55,9 @@ class ScraperPipeline(object):
             "c": json.dumps(item_dict)
         }
 
-        requests.post("http://cms:9000/cms/scraper/sal/add_course/",
-                      data=payload)
+        post_res = requests.post(
+            "http://cms:9000/cms/scraper/sal/add_course/", data=payload)
+        print(post_res.json())
 
         # This can be run in the admin_scrapyd_dev container to schedule
         # (launch) a job:

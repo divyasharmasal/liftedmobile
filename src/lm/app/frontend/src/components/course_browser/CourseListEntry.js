@@ -44,7 +44,7 @@ export class CourseListEntry extends Component{
 
   renderCourseName = course => {
     return (
-      <a href={course.url}>{course.name}</a>
+      <a target="_blank" href={course.url}>{course.name}</a>
     );
   }
 
