@@ -9,10 +9,21 @@ export { CourseEditor };
 class CourseEditor extends Component{
   constructor(props){
     super(props);
-
     let course = this.props.course;
 
-    // Unpublished courses only provide the start_date attribute
+    if (Object.keys(this.props.course).indexOf("cpd") === -1){
+      course.cpd = {
+        points: null,
+        is_private: null,
+      };
+    }
+
+    // Rename is_private to isPrivate
+    course.cpd.isPrivate = course.cpd.is_private;
+    delete course.cpd.is_private;
+
+    // Unpublished courses only provide the start_date attributem, instead of a
+    // list of start dates.
     if (Object.keys(course).indexOf("start_date") > -1){
       course.start_dates = [course.start_date];
     }
@@ -22,11 +33,13 @@ class CourseEditor extends Component{
     );
 
     this.state = {
+      course: course,
       showDeleteButton: true,
       showDeleteOngoing: false,
       showDeleteConfirm: false,
       showDeleteError: false,
-      course: course,
+      invalidInput: false,
+      invalidFields: {},
     }
   }
 
@@ -48,7 +61,10 @@ class CourseEditor extends Component{
     let course = this.state.course;
     course.cost = value;
     course.hasChanged = true;
-    this.setState({ course });
+
+    let invalidFields = this.state.invalidFields;
+    invalidFields.cost = false;
+    this.setState({ course, invalidFields });
   }
 
   
@@ -60,7 +76,10 @@ class CourseEditor extends Component{
     let course = this.state.course;
     course.cpd = { isPrivate, points };
     course.hasChanged = true;
-    this.setState({ course });
+
+    let invalidFields = this.state.invalidFields;
+    invalidFields.cpd = false;
+    this.setState({ course, invalidFields });
   }
 
 
@@ -68,7 +87,10 @@ class CourseEditor extends Component{
     let course = this.state.course;
     course.format = format;
     course.hasChanged = true;
-    this.setState({ course });
+
+    let invalidFields = this.state.invalidFields;
+    invalidFields.format = false;
+    this.setState({ course, invalidFields });
   }
 
 
@@ -76,7 +98,10 @@ class CourseEditor extends Component{
     let course = this.state.course;
     course.level = level;
     course.hasChanged = true;
-    this.setState({ course });
+
+    let invalidFields = this.state.invalidFields;
+    invalidFields.level = false;
+    this.setState({ course, invalidFields });
   }
 
 
@@ -84,7 +109,10 @@ class CourseEditor extends Component{
     let course = this.state.course;
     course.url = url;
     course.hasChanged = true;
-    this.setState({ course });
+
+    let invalidFields = this.state.invalidFields;
+    invalidFields.url = false;
+    this.setState({ course, invalidFields });
   }
 
 
@@ -92,7 +120,10 @@ class CourseEditor extends Component{
     let course = this.state.course;
     course.name = name;
     course.hasChanged = true;
-    this.setState({ course });
+
+    let invalidFields = this.state.invalidFields;
+    invalidFields.name = false;
+    this.setState({ course, invalidFields });
   }
   
 
@@ -102,7 +133,10 @@ class CourseEditor extends Component{
     if (dates[dates.length-1] !== ""){
       course.hasChanged = true;
     }
-    this.setState({ course });
+
+    let invalidFields = this.state.invalidFields;
+    invalidFields.startDates = false;
+    this.setState({ course, invalidFields });
   }
 
 
@@ -127,11 +161,25 @@ class CourseEditor extends Component{
         this.setState({
           course: course,
           hasSaved: true,
+          showSaveError: false,
+          showDeleteButton: true,
+          showDeleteOngoing: false,
+          showDeleteConfirm: false,
+          showDeleteError: false,
+          invalidInput: false,
+          invalidFields: {}
         });
 			}
       else{
-        //TODO: show error
-        console.log("not ok");
+        this.setState({
+          hasSaved: false,
+          showSaveError: true,
+          showDeleteError: false,
+          showDeleteOngoing: false,
+          showDeleteConfirm: false,
+          invalidInput: false,
+          invalidFields: {}
+        });
       }
     });
   }
@@ -139,51 +187,69 @@ class CourseEditor extends Component{
 
   handleSaveClick = () => {
     const course = this.state.course;
-    // TODO: input validation
-    
-    let valid = true;
-    if (
-      !course.id || 
-      !course.cpd || 
-      !course.name || 
-      !course.cost ||
-      !course.level ||
-      !course.format ||
-      !course.start_dates
-    ){
-      valid = false;
+
+    let validCpd = false;
+
+    // neither points nor isPrivate can both be null
+    if (course.cpd.points != null || course.cpd.isPrivate != null){
+      validCpd = true;
     }
 
+    // there must either be CPD points, or isPrivate == true
+    if (course.cpd.points == null && course.cpd.isPrivate === false){
+      validCpd = false;
+    }
+
+    const validName = course.name.trim().length > 0;
+    const validUrl = course.url.trim().length > 0;
+    const validCost = parseFloat(course.cost, 10) ===
+      Math.abs(parseFloat(Math.round(course.cost * 100) / 100));
+    const validLevel = this.props.levels.indexOf(course.level) > -1;
+    const validFormat = this.props.formats.indexOf(course.format) > -1;
+
+    const isValidDate = d => {
+      const dateRe = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+      if (dateRe.test(d)){
+        const sp = d.split("/");
+        const day = sp[0];
+        const month = sp[1];
+        const year = sp[2];
+        return isValid(parse(month + "/" + day + "/" + year));
+      }
+      return false;
+    };
+
+    const startDates = course.start_dates.filter(d => d.length > 0);
+    const validStartDates = 
+      startDates.length > 0 && 
+      startDates.every(isValidDate);
+
+    let valid = (
+      validCpd &&
+      validName &&
+      validUrl &&
+      validCost &&
+      validLevel &&
+      validFormat &&
+      validStartDates);
+
     if (valid){
-      const id = course.id;
-      const name = course.name;
-      const cost = course.cost;
-      const cpdPoints = course.cpd.points;
-      const cpdIsPrivate = course.cpd.isPrivate;
-      const level = course.level;
-      const format = course.format;
-
-      let dates = [];
-      course.start_dates.forEach(d => {
-        const dateRe = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
-        if (dateRe.test(d)){
-          const sp = d.split("/");
-          const day = sp[0];
-          const month = sp[1];
-          const year = sp[2];
-
-          if (isValid(parse(month + "/" + day + "/" + year))){
-            dates.push(d);
-          }
-        }
-      });
-
       this.saveCourseData(course);
     }
     else{
-      console.log("invalid");
+      this.setState({ 
+        invalidInput: true, 
+        invalidFields: {
+          cpd: !validCpd,
+          name: !validName,
+          url: !validUrl,
+          cost: !validCost,
+          level: !validLevel,
+          format: !validFormat,
+          startDates: !validStartDates
+        },
+      });
     }
-    
   }
 
 
@@ -198,6 +264,7 @@ class CourseEditor extends Component{
   handleDeleteEntry = () => {
     const payload = {
       id: this.props.course.id,
+			is_published: !this.props.unpublished,
     };
 
     this.setState({
@@ -213,6 +280,7 @@ class CourseEditor extends Component{
             showDeleteConfirm: false,
             showDeleteOngoing: false,
             showDeleteError: false,
+            invalidInput: false,
           });
         }
         else{
@@ -221,6 +289,7 @@ class CourseEditor extends Component{
             showDeleteOngoing: false,
             showDeleteButton: true,
             showDeleteError: true,
+            invalidInput: false,
           });
         }
       });
@@ -234,53 +303,58 @@ class CourseEditor extends Component{
     const nameInput =
       <div class="name pure-u-1">
         <NameInput
-          disabled={this.state.hasSaved}
+          disabled={this.state.hasSaved && this.props.unpublished}
           handleValueChange={this.handleNameChange}
+          invalid={this.state.invalidFields.name}
           value={course.name} />
       </div>
 
     const urlInput =
       <div class="pure-u-1">
         <UrlInput
-          disabled={this.state.hasSaved}
+          disabled={this.state.hasSaved && this.props.unpublished}
           handleValueChange={this.handleUrlChange}
+          invalid={this.state.invalidFields.url}
           value={course.url} />
       </div>
 
     const costInput =
       <div class="pure-u-1-2 pure-u-sm-2-5">
         <CostInput 
-          disabled={this.state.hasSaved}
+          disabled={this.state.hasSaved && this.props.unpublished}
           handleValueChange={this.handleCostChange}
+          invalid={this.state.invalidFields.cost}
           value={course.cost} />
       </div>
 
     const cpdInput =
       <div class="pure-u-1-2 pure-u-sm-2-5">
         <CpdInput 
-          disabled={this.state.hasSaved}
+          disabled={this.state.hasSaved && this.props.unpublished}
           handleValueChange={this.handleCpdChange}
+          invalid={this.state.invalidFields.cpd}
           value={course.cpd} />
       </div>
 
     const levelDropdown = 
       <div class="pure-u-1-2 pure-u-sm-2-5">
         <LevelDropdown 
-          disabled={this.state.hasSaved}
+          disabled={this.state.hasSaved && this.props.unpublished}
           handleValueChange={this.handleLevelChange}
+          invalid={this.state.invalidFields.level}
           value={course.level} levels={this.props.levels} />
       </div>
 
     const formatDropdown = 
       <div class="pure-u-1-2 pure-u-sm-2-5">
         <FormatDropdown 
-          disabled={this.state.hasSaved}
+          disabled={this.state.hasSaved && this.props.unpublished}
           handleValueChange={this.handleFormatChange}
+          invalid={this.state.invalidFields.format}
           value={course.format} formats={this.props.formats} />
       </div>
 
     const saveOrPublish = this.props.unpublished ? "Publish" : "Save";
-
 
     const actions = 
       <div class="actions">
@@ -290,33 +364,35 @@ class CourseEditor extends Component{
           {this.state.showDeleteConfirm ?
             <div class="delete_confirm">
               <label>Delete this entry?</label>
-              <button 
-                onClick={this.handleDeleteEntry}
+              <button onClick={this.handleDeleteEntry}
                 class="pure-button button-red delete_button">
                 Yes
               </button>
               <button 
-                onClick={() => {this.setState({showDeleteConfirm: false})}}
+                onClick={() => {
+                  this.setState({
+                    showDeleteConfirm: false,
+                  })}}
                 class="pure-button">
                 No
               </button>
             </div>
             :
-            (this.state.showDeleteButton && !this.state.hasSaved) && 
-              <button 
-                onClick={this.handleDeleteClick}
+            (this.state.showDeleteButton) && 
+              <button onClick={this.handleDeleteClick}
                 class="pure-button button-red delete_button" 
                 title="Delete">
-                <img src="/static/cms/images/trash.png" alt="delete" /> Delete
+                <img src="/static/cms/images/trash.png" 
+                  alt="delete" /> Delete
               </button>
           }
 
           {this.state.course.hasChanged &&
-            <button 
-              onClick={this.handleSaveClick}
+            <button onClick={this.handleSaveClick}
               class="pure-button button-green save_button" 
               title="Save">
-              <img src="/static/cms/images/tick.png" alt="save" /> {saveOrPublish}
+              <img src="/static/cms/images/tick.png" 
+                alt="save" /> {saveOrPublish}
             </button>
           }
 
@@ -324,14 +400,29 @@ class CourseEditor extends Component{
             <label class="error_msg">Error: could not delete course.</label>
           }
 
-          {this.state.hasSaved &&
-            <div>
-              <label class="success_msg">Course published. To edit it, go 
-                to <a href="/cms/courses/published">Published Courses</a>.</label>
-            </div>
+          {this.state.showSaveError &&
+            <label class="error_msg">Error: could not save course.</label>
+          }
+
+          {this.state.invalidInput &&
+            <label class="error_msg">
+              Invalid or incomplete data; please check your input.
+            </label>
+          }
+
+          {this.state.hasSaved && this.props.unpublished &&
+            <label class="success_msg">Course published. To edit it, go 
+              to <a href="/cms/courses/published">Published Courses</a>.</label>
+          }
+
+          {this.state.hasSaved && !this.props.unpublished &&
+             !(this.state.course.hasChanged && this.state.hasSaved) && 
+             <label class="success_msg">Course saved.</label>
           }
         </div>
       </div>
+
+    const className = "editor " + (this.props.index % 2 === 0 ? "grey_bg" : "");
 
     // For unpublished courses:
     if (this.props.unpublished){
@@ -343,8 +434,6 @@ class CourseEditor extends Component{
       if (course.start_dates){
         dates = course.start_dates;
       }
-
-      const className = "editor " + (this.props.index % 2 === 0 ? "grey_bg" : "");
 
       return (
         <div class={className}>
@@ -358,8 +447,9 @@ class CourseEditor extends Component{
 
           <div class="pure-u-1">
             <DatesInput 
-              disabled={this.state.hasSaved}
+              disabled={this.state.hasSaved && this.props.unpublished}
               handleValueChange={this.handleDatesChange}
+              invalid={this.state.invalidFields.startDates}
               values={dates} />
           </div>
 
@@ -370,7 +460,7 @@ class CourseEditor extends Component{
 
     // For published courses:
     return(
-      <div class="editor">
+      <div class={className}>
         {nameInput}
         {urlInput}
         {costInput}
@@ -384,6 +474,7 @@ class CourseEditor extends Component{
           <DatesInput 
             disabled={this.props.disabled}
             handleValueChange={this.handleDatesChange}
+            invalid={this.state.invalidFields.startDates}
             values={course.start_dates} />
         </div>
 
@@ -399,17 +490,15 @@ class TextInput extends Component{
     super(props);
 
     const value = this.props.value == null ? "" : this.props.value;
-    this.state = {
-      value
-    };
+    const invalid = this.props.invalid;
+    this.state = { value, invalid };
   }
 
 
   componentWillReceiveProps(newProps){
-    if (this.state.value !== newProps.value){
-      this.state = {
-        value: newProps.value,
-      }
+    this.state = {
+      value: newProps.value,
+      invalid: newProps.invalid,
     }
   }
 
@@ -424,10 +513,15 @@ class TextInput extends Component{
 }
 
 
+const renderClassname = (isInvalid, className) => {
+  return (isInvalid ? "highlight" : "") + " " + className;
+}
+
+
 class NameInput extends TextInput{
   render(){
     return(
-      <div class="custom_input url_input">
+      <div class={renderClassname(this.state.invalid, "name_input")}>
         <input type="text" 
           disabled={this.props.disabled}
           placeholder="Name" 
@@ -442,12 +536,13 @@ class NameInput extends TextInput{
 class UrlInput extends TextInput{
   render(){
     return(
-      <div class="custom_input url_input">
+      <div class={renderClassname(this.state.invalid, "url_input")}>
         <label>URL:</label>
-        <input type="text" 
+        <textarea
           disabled={this.props.disabled}
           onKeyUp={e => this.handleValueChange(e.target.value)}
           placeholder="(none)"
+          rows="2"
           value={this.state.value} />
       </div>
     );
@@ -458,7 +553,7 @@ class UrlInput extends TextInput{
 class CostInput extends TextInput{
   render(){
     return(
-      <div class="custom_input">
+      <div class={renderClassname(this.state.invalid, "custom_input")}>
         <label>Cost ($):</label>
         <input 
           disabled={this.props.disabled}
@@ -481,13 +576,15 @@ class CpdInput extends Component{
     if (!this.props.value){
       this.state = {
         blank: true,
+        invalid: this.props.invalid,
       };
     }
     else{
       this.state = {
         blank: false,
         points: this.props.value.points,
-        isPrivate: this.props.value.is_private,
+        isPrivate: this.props.value.isPrivate,
+        invalid: this.props.invalid,
       };
     }
   }
@@ -496,11 +593,13 @@ class CpdInput extends Component{
   componentWillReceiveProps = newProps => {
     if (newProps.value){
       if (this.state.points !== newProps.value.points ||
-        this.state.isPrivate !== newProps.value.isPrivate){
+        this.state.isPrivate !== newProps.value.isPrivate ||
+        this.state.invalid !== newProps.invalid){
         this.setState({
           blank: false,
           points: newProps.value.points,
           isPrivate: newProps.value.isPrivate,
+          invalid: newProps.invalid,
         });
       }
     }
@@ -517,6 +616,9 @@ class CpdInput extends Component{
 
 
   handlePointsChange = points => {
+    if (points === ""){
+      points = null;
+    }
     if (this.state.points !== points){
       this.setState({ points }, () => {
         this.props.handleValueChange(points, false);
@@ -527,7 +629,7 @@ class CpdInput extends Component{
 
   render(){
     return(
-      <div class="custom_input">
+      <div class={renderClassname(this.state.invalid, "custom_input")}>
         <div class="pure-u-1-2">
           <label>CPD:</label>
 
@@ -563,7 +665,7 @@ class CpdInput extends Component{
 class LevelDropdown extends Component{
   render(){
     return (
-      <div class="custom_input">
+      <div class={renderClassname(this.props.invalid, "custom_input")}>
         <label>Level:</label>
         <select 
           disabled={this.props.disabled}
@@ -582,7 +684,7 @@ class LevelDropdown extends Component{
 class FormatDropdown extends Component{
   render(){
     return (
-      <div class="custom_input">
+      <div class={renderClassname(this.props.invalid, "custom_input")}>
         <label>Format:</label>
         <select
           disabled={this.props.disabled}
@@ -603,14 +705,17 @@ class DatesInput extends Component{
     super(props);
     this.state = {
       values: this.props.values,
+      invalid: this.props.invalid,
     };
   }
 
 
   componentWillReceiveProps = newProps => {
-    if (this.state.values !== newProps.values){
+    if (this.state.values !== newProps.values ||
+        this.state.invalid !== newProps.invalid){
       this.setState({
         values: newProps.values,
+        invalid: newProps.invalid,
       });
     }
   }
@@ -625,7 +730,7 @@ class DatesInput extends Component{
 
   render(){
     return(
-      <div class="dates_input">
+      <div class={renderClassname(this.state.invalid, "dates_input")}>
         <label>Dates (SGT):</label>
         <DateListInput
           disabled={this.props.disabled}
@@ -737,7 +842,9 @@ class DateListInputItem extends Component{
 
 
   handleValueChange = value => {
-    this.props.handleValueChange(value);
+    this.setState({ value }, () => {
+      this.props.handleValueChange(value);
+    });
   }
 
 

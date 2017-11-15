@@ -68,19 +68,15 @@ export class PublishedCoursesPage extends Component {
         </div>
 
         <div>
-          {
-            this.state.courses.map((course, index) => 
-              <CourseEditor 
-                index={index}
-                course={course} 
-                levels={this.state.levels}
-                formats={this.state.formats}
-                handleDelete={() => {
-                  this.handleDelete(index);
-                }}
-              />
-            )
-          }
+          {this.state.courses.map((course, index) => 
+            <CourseEditor 
+              index={index}
+              course={course} 
+              levels={this.state.levels}
+              formats={this.state.formats}
+              handleDelete={() => {this.handleDelete(index) }}
+            />
+          )}
         </div>
       </div>
     );

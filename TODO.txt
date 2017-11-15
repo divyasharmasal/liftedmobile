@@ -1,3 +1,19 @@
+Legal practitioner: (DUE END NOV)
+- 3 job role levels:
+    1. Generalist / Developing Specialist
+        plus corporate comm OR plus community OR no specialism
+    2. ..
+        plus crim OR plus ip OR plus b&c OR plus family or no specialism
+    3. ..
+        plus crim OR plus ip OR plus b&c OR plus family or no specialism
+================
+- End-Nov: presentation to CJ + beta testing
+- Jan: launch
+
+- Anita's leave: 8-28 Dec
+
+- TODO: Take out thick descriptions in the beta
+
 - Target mid-Nov for scrapers to be done
 
 - Competency category and verticals in CMS

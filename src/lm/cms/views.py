@@ -123,31 +123,49 @@ def save_course(request):
         format_name = body["format"]
 
         if body["is_published"]:
+
+            # Course
             course = app_models.Course.objects.get(id=id)
             course.name = name
             course.url = url
             course.cost = cost
             course.save()
 
-            course_cpd = app_models.CourseCpdPoints(course=course)
+            # CPD
+
+            course_cpd = app_models.CourseCpdPoints.objects.get(course=course)
             course_cpd.points = cpd_points
             course_cpd.is_private = cpd_is_private
             course_cpd.save()
+
+            # Level
 
             level = app_models.Level.objects.get(name=level_name)
             course_level = app_models.CourseLevel.objects.get(course=course)
             course_level.level = level
             course_level.save()
 
+            # Format
+
             format = app_models.Format.objects.get(name=format_name)
             course_format = app_models.CourseFormat.objects.get(course=course)
             course_format.format = format
             course_format.save()
 
+            # Start date
             app_models.CourseStartDate.objects.filter(course=course).delete()
+
+            timezone = pytz.timezone("Asia/Singapore")
             for date in body["start_dates"]:
+
+                localized_date = timezone.localize(
+                    datetime.datetime.strptime(
+                        date, "%d/%m/%Y"))
+
                 course_start_date = app_models.CourseStartDate(
-                    course=course, start_date=date)
+                    course=course,
+                    start_date=localized_date)
+
                 course_start_date.save()
 
             return HttpResponse("OK")
@@ -203,9 +221,10 @@ def save_course(request):
 
             return HttpResponse("OK")
 
-    except Exception as e:
-        import traceback
-        print(traceback.print_exc())
+    except:
+        if "DEV" in os.environ:
+            import traceback
+            print(traceback.print_exc())
         return HttpResponseServerError("Invalid request")
 
 
@@ -218,11 +237,14 @@ def delete_course(request):
         published = body["is_published"]
 
         if published:
+            # TODO: recycle bin function
             app_models.Course.objects.get(id=id).delete()
         else:
             models.ScrapedSalCourse.objects.get(id=id).delete()
-            pass
     except:
+        if "DEV" in os.environ:
+            import traceback
+            print(traceback.print_exc())
         return HttpResponseServerError("Error")
 
     return HttpResponse("Deleted course with id {id}".format(id=id))

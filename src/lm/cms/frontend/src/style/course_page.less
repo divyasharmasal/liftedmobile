@@ -35,6 +35,9 @@
 
         &>div{
             margin-bottom:1em;
+            &:nth-of-type(odd){
+                margin-right:10px;
+            }
 
             input{
                 width:100%;
@@ -61,19 +64,29 @@
             font-weight:bold;
         }
 
+        .name_input,
         .url_input{
             display:flex;
+
             label{
                 padding:0.2em;
                 margin-right:1em;
                 float:left;
             }
-            input{
+
+            textarea, input{
                 flex-grow:100;
             }
         }
 
+        .highlight, 
+        .highlight textarea, 
+        .highlight input[type=text]{
+            background-color:#ffe6e6;
+        }
+
         .custom_input{
+            display:flex;
             label{
                 float:left;
                 width:60px;
