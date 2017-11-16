@@ -15,7 +15,7 @@ services:
             context: ../../
             dockerfile: ./docker/admin_server/cms.prod.dockerfile
         volumes:
-            - ../../../django_log:/var/log/django/
+            - ../../../admin_server/django_log:/var/log/django/
         secrets:
             - django_secret
             - cms_admin_pwd

@@ -18,6 +18,8 @@ services:
             - "80:80"
         expose:
             - "80"
+        volumes:
+            - ../../../app_server/django_log:/var/log/django/
         environment:
             - DB_PWD=fGWJTw2Dbpa2p547brXEVjXyzHZu9puytcAaA9mY 
         secrets:
