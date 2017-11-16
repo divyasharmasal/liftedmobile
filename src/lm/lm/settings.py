@@ -31,14 +31,15 @@ if 'DEV' in os.environ:
     SECRET_KEY = 'kw!3bqy4e39x0@xhoor4uvpwj!hgofxh9p5=j7^9$x-i*41vc_'
     DEBUG = True
     LIFTED_TEMP_SUPER_USERNAME = "admin"
-    LIFTED_TEMP_SUPER_PASSWORD = "***REMOVED***"
+    LIFTED_TEMP_SUPER_PASSWORD = "password"
+
     LIFTED_TEMP_USERNAME = "lifted"
-    LIFTED_TEMP_PASSWORD = "***REMOVED***"
+    LIFTED_TEMP_PASSWORD = "password"
 
     if 'CMS' in os.environ:
         SECRET_KEY = 'wdh|w>q&&roC*UEF-&~fNHwM,~GaUH2tC6Pn+)F2=GSQ*8DaM]'
         CMS_TEMP_SUPER_USERNAME = "admin"
-        CMS_TEMP_SUPER_PASSWORD = "***REMOVED***"
+        CMS_TEMP_SUPER_PASSWORD = "password"
         SCRAPYD_API_KEY = "scrapydapikey"
 else:
     # Settings for production
@@ -137,6 +138,10 @@ WSGI_APPLICATION = 'lm.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+DATABASE_ROUTERS = []
+if 'CMS' in os.environ:
+    DATABASE_ROUTERS.append("cms.db_routers.CmsRouter")
+
 DATABASES = None
 
 if 'DEV' in os.environ:
@@ -148,6 +153,14 @@ if 'DEV' in os.environ:
                 'USER': 'postgres',
                 'PASSWORD': os.environ['DB_PWD'],
                 'HOST': 'admin_db_dev',
+                'PORT': '5432',
+            },
+            'app_server': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': 'liftedmobile',
+                'USER': 'postgres',
+                'PASSWORD': os.environ['LM_DB_PWD'],
+                'HOST': os.environ['LM_DB_HOSTNAME'],
                 'PORT': '5432',
             }
         }

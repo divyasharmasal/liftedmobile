@@ -8,6 +8,8 @@ services:
             dockerfile: ./docker/app_server/db.dev.dockerfile
         environment:
             - POSTGRES_PASSWORD=password 
+        expose:
+            - "5432"
 
 
     liftedmobile_dev:

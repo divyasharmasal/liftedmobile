@@ -85,6 +85,7 @@ export class DiagQuestion extends Component{
       <div class="diag_qn">
         <div class="diag_left">
           <p class={highlightClass}>{qn.desc}</p>
+          {/*
           <p class="diag_whatsthis"
             onClick={this.showHelp}>
             {desc_prompt}
@@ -96,6 +97,7 @@ export class DiagQuestion extends Component{
               </ul>
             </div>
           }
+          */}
         </div>
         <div class="diag_right">
           <div class="diag_opts">

@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-#docker stop liftedmobile liftedmobile_db
-#docker rm liftedmobile liftedmobile_db
 docker-compose -f ./docker/app_server/docker-compose.prod.yml stop
 docker-compose -f ./docker/app_server/docker-compose.prod.yml up -d
 

@@ -32,7 +32,12 @@ class CourseEditor extends Component{
     // Unpublished courses only provide the start_date attributem, instead of a
     // list of start dates.
     if (Object.keys(course).indexOf("start_date") > -1){
-      course.start_dates = [course.start_date];
+      if (course.start_date == null){
+        course.start_dates = [];
+      }
+      else{
+        course.start_dates = [course.start_date];
+      }
     }
 
     course.start_dates = course.start_dates.map(
