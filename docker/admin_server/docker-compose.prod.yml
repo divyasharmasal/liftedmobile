@@ -14,6 +14,8 @@ services:
         build:
             context: ../../
             dockerfile: ./docker/admin_server/cms.prod.dockerfile
+        volumes:
+            - ../../../django_log:/var/log/django/
         secrets:
             - django_secret
             - cms_admin_pwd
@@ -25,6 +27,8 @@ services:
             - DB_PWD=ko3TnNyBRYVWg3cqgP8G8CTpnmr9HPgndnhpDo98jKGCJwec9H
         ports:
             - "80:80"
+        expose:
+            - "80"
         logging:
             driver: "awslogs"
             options:
@@ -39,8 +43,8 @@ services:
             context: ../../
             dockerfile: ./docker/admin_server/scrapyd.prod.dockerfile
         volumes:
-            - ../../../scrapyd_logs:/var/log/scrapyd/
-            - ../../../scraper_scheduler_logs:/var/log/scraper_scheduler/
+            - ../../../scrapyd/scrapyd:/var/log/scrapyd/
+            - ../../../scrapyd/scheduler:/var/log/scraper_scheduler/
         secrets:
             - scrapyd_api_key
         ports:

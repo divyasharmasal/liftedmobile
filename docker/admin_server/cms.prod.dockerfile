@@ -43,7 +43,7 @@ RUN apk update                                                              && \
            /src/lm/app/frontend/ /src/lm/cms/frontend/                         \
            /src/lm/static/app/fonts/                                           \
            /src/lm/static/app/dist/ssr-build/ /bin/yarn /bin/yarnpkg           \
-           /bin/yarn.js /root/.yarn /bin/yarn /bin/yarn.js /bin/yarnpkg
+           /bin/yarn.js /root/.yarn
 
 EXPOSE 80
 

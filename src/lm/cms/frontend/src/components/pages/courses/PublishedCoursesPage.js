@@ -53,6 +53,7 @@ export class PublishedCoursesPage extends Component {
       <div class="course_manager">
         <h1>Published Courses</h1>
 
+        {/*
         <div class="search pure-form">
           <input 
             ref={search => {this.searchInput = search}}
@@ -66,6 +67,7 @@ export class PublishedCoursesPage extends Component {
             Search
           </button>
         </div>
+        */}
 
         <div>
           {this.state.courses.map((course, index) => 

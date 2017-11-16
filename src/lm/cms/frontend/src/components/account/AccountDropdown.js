@@ -64,7 +64,7 @@ export class AccountDropdown extends Component {
             <a href="/cms/modify_account" class="subsection">
               Modify account
             </a>
-            <a href="/cms/accounts/logout" class="subsection">
+            <a href="/cms/accounts/logout/" class="subsection">
               Logout
             </a>
           </DropdownContent>

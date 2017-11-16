@@ -3,6 +3,13 @@ import { authPost } from "../../../lib/js/fetch";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 import isValid from "date-fns/is_valid";
+import ScrollableAnchor from 'react-scrollable-anchor';
+import { configureAnchors } from 'react-scrollable-anchor';
+configureAnchors({
+  offset:-20,
+  scrollDuration: 0,
+  keepLastAnchorHash: true,
+})
 
 export { CourseEditor };
 
@@ -156,18 +163,22 @@ class CourseEditor extends Component{
 
 		authPost("/cms/save_course/", data).then(response => {
 			if (response.ok){
-        let course = this.state.course;
-        course.hasChanged = false;
-        this.setState({
-          course: course,
-          hasSaved: true,
-          showSaveError: false,
-          showDeleteButton: true,
-          showDeleteOngoing: false,
-          showDeleteConfirm: false,
-          showDeleteError: false,
-          invalidInput: false,
-          invalidFields: {}
+        response.json().then(json => {
+          let course = this.state.course;
+          course.hasChanged = false;
+
+          this.setState({
+            course: course,
+            hasSaved: true,
+            showSaveError: false,
+            showDeleteButton: true,
+            showDeleteOngoing: false,
+            showDeleteConfirm: false,
+            showDeleteError: false,
+            invalidInput: false,
+            invalidFields: {},
+            publishedCourseId: json.published_course_id,
+          });
         });
 			}
       else{
@@ -412,7 +423,9 @@ class CourseEditor extends Component{
 
           {this.state.hasSaved && this.props.unpublished &&
             <label class="success_msg">Course published. To edit it, go 
-              to <a href="/cms/courses/published">Published Courses</a>.</label>
+              to <a href={"/cms/courses/published#" 
+                  + this.state.publishedCourseId.toString()}
+              >Published Courses</a>.</label>
           }
 
           {this.state.hasSaved && !this.props.unpublished &&
@@ -422,7 +435,7 @@ class CourseEditor extends Component{
         </div>
       </div>
 
-    const className = "editor " + (this.props.index % 2 === 0 ? "grey_bg" : "");
+    let className = "editor " + (this.props.index % 2 === 0 ? "grey_bg" : "");
 
     // For unpublished courses:
     if (this.props.unpublished){
@@ -459,8 +472,16 @@ class CourseEditor extends Component{
     }
 
     // For published courses:
+    if (typeof window !== "undefined"){
+      if (course.id.toString() === window.location.hash.substring(1)){
+        className += " hash_highlight";
+      }
+    }
     return(
       <div class={className}>
+        <ScrollableAnchor id={course.id.toString()}>
+          <span />
+        </ScrollableAnchor>
         {nameInput}
         {urlInput}
         {costInput}

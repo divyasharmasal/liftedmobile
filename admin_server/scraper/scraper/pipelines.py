@@ -55,9 +55,16 @@ class ScraperPipeline(object):
             "c": json.dumps(item_dict)
         }
 
-        post_res = requests.post(
-            "http://cms:9000/cms/scraper/sal/add_course/", data=payload)
-        print(post_res.json())
+        url = "http://cms/cms/scraper/sal/add_course/"
+        if "DEV" in os.environ and os.environ["DEV"]:
+            url = "http://cms:9000/cms/scraper/sal/add_course/"
+
+        post_res = requests.post(url, data=payload)
+        if post_res.ok:
+            print(post_res.json())
+        else:
+            print("POST request to {url} failed.".format(url=url))
+            print(post_res.status_code, post_res.text)
 
         # This can be run in the admin_scrapyd_dev container to schedule
         # (launch) a job:
