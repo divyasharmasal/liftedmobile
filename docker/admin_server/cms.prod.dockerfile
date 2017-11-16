@@ -54,5 +54,5 @@ CMD sh /src/lm/wait_for_db.sh admin_db                                      && \
     python3 manage.py collectstatic --no-input                              && \
     gunicorn -D --bind unix:/gunicorn.sock lm.wsgi:application              && \
     echo                                                                    && \
-    echo "Docker containers are up; server at: http://0.0.0.0:80/"          && \
+    echo "Docker containers are up; server at: http://0.0.0.0:90/"          && \
     nginx -c /nginx.conf -g 'daemon off;'

@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import json
 import socket
+from boto3.session import Session
 
 
 def read_secret(filepath):
@@ -254,6 +256,19 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 LOGGING = None
 if DEBUG == False:
+    aws_cw = json.loads(open("/run/secrets/django_logging_aws_cw").read())
+
+    boto3_session = Session(
+        aws_access_key_id=aws_cw["access_key_id"],
+        aws_secret_access_key=aws_cw["secret_access_key"],
+        region_name=aws_cw["region_name"])
+
+    stream_name = None
+    if "CMS" in os.environ:
+        stream_name = "cms_django_debug"
+    else:
+        stream_name = "lm_django_debug"
+
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
@@ -263,10 +278,17 @@ if DEBUG == False:
                 'class': 'logging.FileHandler',
                 'filename': '/var/log/django/debug.log'
             },
+            'watchtower':  {
+                'level': 'DEBUG',
+                'class': 'watchtower.CloudWatchLogHandler',
+                'boto3_session': boto3_session,
+                'log_group': 'liftedmobile_logs',
+                'stream_name': stream_name
+            },
         },
         'loggers': {
             'django': {
-                'handlers': ['file'],
+                'handlers': ['file', 'watchtower'],
                 'level': 'DEBUG',
                 'propagate': True,
             },

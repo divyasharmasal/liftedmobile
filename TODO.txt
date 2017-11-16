@@ -54,16 +54,13 @@ All-in-one CMS
 
 Technology competence diagnostic - standalone?
 
-Title
-Date
-Price
-CPD points
-Format
-Level
-
 Resume function
 
 Make push_prod do all deployment work
+
+ssh -p 2233 -i /home/di/Desktop/SAL/liftedmobile.pem ubuntu@52.221.77.72 "mkdir ~/run"
+scp -P 2233 -i /home/di/Desktop/SAL/liftedmobile.pem -r scripts docker ubuntu@52.221.77.72:~/run/
+ssh -p 2233 -i /home/di/Desktop/SAL/liftedmobile.pem ubuntu@52.221.77.72 "cd run && ./scripts/admin_server/prod/run_prod.sh" 
 
 Unit testing
 
@@ -71,4 +68,3 @@ Server logging
   - Set up graylog server
   - Link CloudWatch to graylog
 
-External DB

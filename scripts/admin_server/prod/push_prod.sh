@@ -9,4 +9,3 @@ else
     eval "docker save adminserver_cms     | bzip2 | pv | ${1} 'bunzip2 | docker load'"
     eval "docker save adminserver_scrapyd | bzip2 | pv | ${1} 'bunzip2 | docker load'"
 fi
-
