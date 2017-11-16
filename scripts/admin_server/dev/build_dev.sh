@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
 echo "Launching the app server..."
 sh scripts/app_server/dev/build_dev.sh --no-logs

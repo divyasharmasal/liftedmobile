@@ -1,4 +1,9 @@
+# Production Dockerfile for the admin server
 version: '3.1'
+networks:
+    default:
+        external:
+            name: appserver_default
 
 services:
     db:
@@ -25,8 +30,10 @@ services:
         environment:
             - CMS=true
             - DB_PWD=ko3TnNyBRYVWg3cqgP8G8CTpnmr9HPgndnhpDo98jKGCJwec9H
+            - LM_DB_HOSTNAME=liftedmobile_db
+            - LM_DB_PWD=fGWJTw2Dbpa2p547brXEVjXyzHZu9puytcAaA9mY 
         ports:
-            - "80:80"
+            - "90:80"
         expose:
             - "80"
         logging:

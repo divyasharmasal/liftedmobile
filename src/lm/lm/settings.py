@@ -21,6 +21,9 @@ SCRAPYD_IP = None
 if 'CMS' in os.environ:
     SCRAPYD_IP = socket.gethostbyname("scrapyd")
 
+if 'CMS' in os.environ:
+    SESSION_COOKIE_NAME = "cms_sessionid"
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -184,6 +187,14 @@ else:
                 'USER': 'postgres',
                 'PASSWORD': os.environ['DB_PWD'],
                 'HOST': 'admin_db',
+                'PORT': '5432',
+            },
+            'app_server': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': 'liftedmobile',
+                'USER': 'postgres',
+                'PASSWORD': os.environ['LM_DB_PWD'],
+                'HOST': os.environ['LM_DB_HOSTNAME'],
                 'PORT': '5432',
             }
         }
