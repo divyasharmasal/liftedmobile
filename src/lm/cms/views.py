@@ -124,12 +124,14 @@ def save_course(request):
     body = json.loads(_bytes_to_utf8(request.body))
 
     # validate input
-
     id = name = cost = url = level_name = cpd_points = \
         cpd_is_private = format_name = is_published = None
 
+    is_new = "is_new" in body.keys() and body["is_new"]
+
     try:
-        id = body["id"]
+        if not is_new:
+            id = body["id"]
         name = body["name"]
         cost = body["cost"]
         url = body["url"]
@@ -139,10 +141,12 @@ def save_course(request):
         format_name = body["format"]
         is_published = body["is_published"]
     except:
+        import traceback
+        traceback.print_exc()
         return HttpResponseServerError("Invalid body keys: {keys}"\
             .format(keys=str(body.keys())))
 
-    if is_published:
+    if is_published and not is_new:
         # Course
         course = app_models.Course.objects.get(id=id)
         course.name = name
@@ -191,10 +195,12 @@ def save_course(request):
             "published_course_id": course.id,
         })
     else:
-        id = body["id"]
-        scraped_course = models.ScrapedSalCourse(id=id)
-        scraped_course.is_new = False
-        scraped_course.save()
+        id = None
+        if not is_new:
+            id = body["id"]
+            scraped_course = models.ScrapedSalCourse(id=id)
+            scraped_course.is_new = False
+            scraped_course.save()
 
         # Course
         course = app_models.Course(name=name, url=url, cost=cost)
@@ -243,7 +249,6 @@ def save_course(request):
         return json_response({
             "published_course_id": course.id,
         })
-
 
 
 @staff_member_required(login_url="login")

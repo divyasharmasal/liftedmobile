@@ -55,7 +55,7 @@ if __name__ == "__main__":
     run_all_scrapes()
     _log("Ran first scrape")
 
-    schedule.every(2).hours.do(run_all_scrapes)
+    schedule.every().day.at("4:00").do(run_all_scrapes)
 
     while True:
         schedule.run_pending()

@@ -12,16 +12,13 @@ Legal practitioner: (DUE END NOV)
 
 - Anita's leave: 8-28 Dec
 
-- TODO: Take out thick descriptions in the beta
-
 - Target mid-Nov for scrapers to be done
 
 - Competency category and verticals in CMS
     - each course should have up to 3 LIFTED keys
+
 - The scraped data must be connected to the diagnostic tool!
     - competency category only - broad matching.
-
-- Scrapers should run every day at noon GMT+8
 
 - End-Nov beta release
 
@@ -51,8 +48,6 @@ All-in-one CMS
       - Start / stop
     - Show untagged courses
       - Email reminders about untagged courses
-
-Technology competence diagnostic - standalone?
 
 Resume function
 

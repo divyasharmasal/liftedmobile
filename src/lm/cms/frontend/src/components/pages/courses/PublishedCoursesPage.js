@@ -9,7 +9,6 @@ export class PublishedCoursesPage extends Component {
   componentWillMount = () => {
     authFetch("/cms/get_published_courses_data/").then(response => {
       response.json().then(data => {
-
         // sort by date
         data.courses = sortCoursesByDate(data.courses)
 
@@ -44,6 +43,24 @@ export class PublishedCoursesPage extends Component {
   }
 
 
+  handleAddCourseClick = () => {
+    const newCourse = {
+      isNew: true,
+      name: "",
+      url: "",
+      cost: null,
+      cpd: {points: null, isPrivate: null},
+      format: null,
+      level: null,
+      start_dates: [],
+    };
+
+    let courses = this.state.courses;
+    courses.splice(0, 0, newCourse);
+    this.setState({ courses });
+  }
+
+
   render(){
     if (!this.state.courses){
       return renderLoader();
@@ -51,7 +68,17 @@ export class PublishedCoursesPage extends Component {
 
     return(
       <div class="course_manager">
-        <h1>Published Courses</h1>
+        <div class="pure-u-1 pure-u-md-3-5">
+          <h1>Published Courses</h1>
+        </div>
+        <div class="pure-u-1 pure-u-md-2-5 add_course">
+          <button 
+            class="add_course_btn pure-button pure-button-primary"
+            onClick={this.handleAddCourseClick}
+          >
+            + Add Course
+          </button>
+        </div>
 
         {/*
         <div class="search pure-form">

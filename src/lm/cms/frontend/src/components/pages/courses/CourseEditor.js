@@ -164,6 +164,7 @@ class CourseEditor extends Component{
 			format: course.format, 
 			start_dates: course.start_dates,
 			is_published: !this.props.unpublished,
+      is_new: course.isNew,
 		};
 
 		authPost("/cms/save_course/", data).then(response => {
@@ -278,38 +279,43 @@ class CourseEditor extends Component{
 
 
   handleDeleteEntry = () => {
-    const payload = {
-      id: this.props.course.id,
-			is_published: !this.props.unpublished,
-    };
+    if (this.props.course.isNew){
+      this.props.handleDelete();
+    }
+    else{
+      const payload = {
+        id: this.props.course.id,
+        is_published: !this.props.unpublished,
+      };
 
-    this.setState({
-      showDeleteOngoing: true,
-      showDeleteConfirm: false,
-      showDeleteButton: false,
-      showDeleteError: false,
-    }, () => {
-      authPost("/cms/delete_course/", payload).then(response => {
-        if (response.ok){
-          this.props.handleDelete();
-          this.setState({
-            showDeleteConfirm: false,
-            showDeleteOngoing: false,
-            showDeleteError: false,
-            invalidInput: false,
-          });
-        }
-        else{
-          this.setState({
-            showDeleteConfirm: false,
-            showDeleteOngoing: false,
-            showDeleteButton: true,
-            showDeleteError: true,
-            invalidInput: false,
-          });
-        }
+      this.setState({
+        showDeleteOngoing: true,
+        showDeleteConfirm: false,
+        showDeleteButton: false,
+        showDeleteError: false,
+      }, () => {
+        authPost("/cms/delete_course/", payload).then(response => {
+          if (response.ok){
+            this.props.handleDelete();
+            this.setState({
+              showDeleteConfirm: false,
+              showDeleteOngoing: false,
+              showDeleteError: false,
+              invalidInput: false,
+            });
+          }
+          else{
+            this.setState({
+              showDeleteConfirm: false,
+              showDeleteOngoing: false,
+              showDeleteButton: true,
+              showDeleteError: true,
+              invalidInput: false,
+            });
+          }
+        });
       });
-    });
+    }
   }
 
 
@@ -477,16 +483,18 @@ class CourseEditor extends Component{
     }
 
     // For published courses:
-    if (typeof window !== "undefined"){
+    if (typeof window !== "undefined" && typeof course.id !== "undefined"){
       if (course.id.toString() === window.location.hash.substring(1)){
         className += " hash_highlight";
       }
     }
     return(
       <div class={className}>
-        <ScrollableAnchor id={course.id.toString()}>
-          <span />
-        </ScrollableAnchor>
+        {course.id &&
+          <ScrollableAnchor id={course.id.toString()}>
+            <span />
+          </ScrollableAnchor>
+        }
         {nameInput}
         {urlInput}
         {costInput}
