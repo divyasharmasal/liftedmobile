@@ -52,6 +52,7 @@ class CourseEditor extends Component{
       showDeleteError: false,
       invalidInput: false,
       invalidFields: {},
+      unpublished: this.props.unpublished,
     }
   }
 
@@ -64,6 +65,7 @@ class CourseEditor extends Component{
         showDeleteOngoing: false,
         showDeleteConfirm: false,
         showDeleteError: false,
+        unpublished: newProps.unpublished,
       });
     }
   }
@@ -163,7 +165,7 @@ class CourseEditor extends Component{
 			level: course.level, 
 			format: course.format, 
 			start_dates: course.start_dates,
-			is_published: !this.props.unpublished,
+			is_published: !this.state.unpublished,
       is_new: course.isNew,
 		};
 
@@ -172,6 +174,10 @@ class CourseEditor extends Component{
         response.json().then(json => {
           let course = this.state.course;
           course.hasChanged = false;
+          if (course.isNew){
+            course.id = json.published_course_id;
+            course.isNew = false;
+          }
 
           this.setState({
             course: course,
@@ -279,13 +285,13 @@ class CourseEditor extends Component{
 
 
   handleDeleteEntry = () => {
-    if (this.props.course.isNew){
+    if (this.state.course.isNew){
       this.props.handleDelete();
     }
     else{
       const payload = {
         id: this.props.course.id,
-        is_published: !this.props.unpublished,
+        is_published: !this.state.unpublished,
       };
 
       this.setState({
@@ -325,7 +331,7 @@ class CourseEditor extends Component{
     const nameInput =
       <div class="name pure-u-1">
         <NameInput
-          disabled={this.state.hasSaved && this.props.unpublished}
+          disabled={this.state.hasSaved && this.state.unpublished}
           handleValueChange={this.handleNameChange}
           invalid={this.state.invalidFields.name}
           value={course.name} />
@@ -334,7 +340,7 @@ class CourseEditor extends Component{
     const urlInput =
       <div class="pure-u-1">
         <UrlInput
-          disabled={this.state.hasSaved && this.props.unpublished}
+          disabled={this.state.hasSaved && this.state.unpublished}
           handleValueChange={this.handleUrlChange}
           invalid={this.state.invalidFields.url}
           value={course.url} />
@@ -343,7 +349,7 @@ class CourseEditor extends Component{
     const costInput =
       <div class="pure-u-1-2 pure-u-sm-2-5">
         <CostInput 
-          disabled={this.state.hasSaved && this.props.unpublished}
+          disabled={this.state.hasSaved && this.state.unpublished}
           handleValueChange={this.handleCostChange}
           invalid={this.state.invalidFields.cost}
           value={course.cost} />
@@ -352,7 +358,7 @@ class CourseEditor extends Component{
     const cpdInput =
       <div class="pure-u-1-2 pure-u-sm-2-5">
         <CpdInput 
-          disabled={this.state.hasSaved && this.props.unpublished}
+          disabled={this.state.hasSaved && this.state.unpublished}
           handleValueChange={this.handleCpdChange}
           invalid={this.state.invalidFields.cpd}
           value={course.cpd} />
@@ -361,7 +367,7 @@ class CourseEditor extends Component{
     const levelDropdown = 
       <div class="pure-u-1-2 pure-u-sm-2-5">
         <LevelDropdown 
-          disabled={this.state.hasSaved && this.props.unpublished}
+          disabled={this.state.hasSaved && this.state.unpublished}
           handleValueChange={this.handleLevelChange}
           invalid={this.state.invalidFields.level}
           value={course.level} levels={this.props.levels} />
@@ -370,13 +376,13 @@ class CourseEditor extends Component{
     const formatDropdown = 
       <div class="pure-u-1-2 pure-u-sm-2-5">
         <FormatDropdown 
-          disabled={this.state.hasSaved && this.props.unpublished}
+          disabled={this.state.hasSaved && this.state.unpublished}
           handleValueChange={this.handleFormatChange}
           invalid={this.state.invalidFields.format}
           value={course.format} formats={this.props.formats} />
       </div>
 
-    const saveOrPublish = this.props.unpublished ? "Publish" : "Save";
+    const saveOrPublish = this.state.unpublished ? "Publish" : "Save";
 
     const actions = 
       <div class="actions">
@@ -432,14 +438,14 @@ class CourseEditor extends Component{
             </label>
           }
 
-          {this.state.hasSaved && this.props.unpublished &&
+          {this.state.hasSaved && this.state.unpublished &&
             <label class="success_msg">Course published. To edit it, go 
               to <a href={"/cms/courses/published#" 
                   + this.state.publishedCourseId.toString()}
               >Published Courses</a>.</label>
           }
 
-          {this.state.hasSaved && !this.props.unpublished &&
+          {this.state.hasSaved && !this.state.unpublished &&
              !(this.state.course.hasChanged && this.state.hasSaved) && 
              <label class="success_msg">Course saved.</label>
           }
@@ -449,7 +455,7 @@ class CourseEditor extends Component{
     let className = "editor " + (this.props.index % 2 === 0 ? "grey_bg" : "");
 
     // For unpublished courses:
-    if (this.props.unpublished){
+    if (this.state.unpublished){
       let dates = course.start_date == null ? 
         [] 
         : 
@@ -471,7 +477,7 @@ class CourseEditor extends Component{
 
           <div class="pure-u-1">
             <DatesInput 
-              disabled={this.state.hasSaved && this.props.unpublished}
+              disabled={this.state.hasSaved && this.state.unpublished}
               handleValueChange={this.handleDatesChange}
               invalid={this.state.invalidFields.startDates}
               values={dates} />
@@ -888,6 +894,7 @@ class DateListInputItem extends Component{
         <input
           disabled={this.props.disabled}
           onKeyUp={e => this.handleValueChange(e.target.value)}
+          onChange={e => this.handleValueChange(e.target.value)}
           type="text" 
           maxlength="10" placeholder={this.props.placeholder} 
           value={this.state.value} />
