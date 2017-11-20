@@ -21,8 +21,8 @@ WORKDIR /src
 RUN apk update                                                              && \
     apk --no-cache upgrade                                                  && \
     apk --no-cache add python3 python3-dev postgresql py-psycopg2              \
-        curl gnupg nodejs linux-headers build-base                             \
-        libffi-dev bash py3-lxml                                            && \ 
+        curl gnupg nodejs linux-headers build-base py3-requests libffi-dev     \
+        bash py3-lxml                                                       && \ 
     pip3 --no-cache-dir install --upgrade pip                               && \
     pip3 --no-cache-dir install -r /src/requirements.txt                    && \
     apk --no-cache add yarn --repository                                       \

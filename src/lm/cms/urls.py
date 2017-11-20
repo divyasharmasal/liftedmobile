@@ -34,7 +34,16 @@ urlpatterns = [
         views.save_course,
         name="cms_save_course"),
 
-    url(r'^scraper/sal/add_course/$', views.scraper_sal_add_course,
+    url(r'^scraper/run/$', views.scraper_run,
+        name="scraper_run"),
+
+    url(r'^scraper/list/$', views.scraper_list,
+        name="scraper_list"),
+
+    url(r'^scraper/sync_urls/$', views.scraper_sync_urls,
+        name='scraper_sync_urls'),
+
+    url(r'^scraper/add_course/$', views.scraper_add_course,
         name='scraper_add_course'),
 
     url(r'^$', views.index, name='cms_index'),

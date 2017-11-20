@@ -58,8 +58,9 @@ export class IntroScreen extends Component{
           <div class="credits">
             <p>
               This app is part of 
-              the <a href="http://www.sal.org.sg/Resources-Tools/Legal-Education/LIFTED/Overview">Legal Industry Framework for Training and Education</a>, an 
-              initiative of the <a href="http://www.sal.org.sg">
+              the <a href="https://www.sal.org.sg/lifted">
+                Legal Industry Framework for Training and Education</a>, an 
+              initiative of the <a href="https://www.sal.org.sg">
                 Singapore Academy of Law</a>.
             </p>
             {/*

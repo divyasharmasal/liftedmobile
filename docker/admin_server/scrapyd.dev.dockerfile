@@ -14,7 +14,6 @@ RUN mkdir /var/log/scraper_scheduler
 
 COPY ./docker/admin_server/scrapyd.conf /etc/scrapyd/
 COPY ./docker/admin_server/supervisor_scrapyd.ini /etc/supervisor.d/
-COPY ./admin_server/scraper/ /scraper
 
 ENV PYTHONUNBUFFERED 1 
 

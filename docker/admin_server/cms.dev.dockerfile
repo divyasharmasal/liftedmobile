@@ -8,7 +8,7 @@ COPY ./src/requirements.txt /requirements.txt
 RUN apk update
 RUN apk add python3 python3-dev py-psycopg2 postgresql-dev \
             postgresql linux-headers build-base libffi-dev \
-            libxslt-dev libxml2-dev && \
+            py3-requests libxslt-dev libxml2-dev && \
     rm -rf /var/cache/apk/* && \
     pip3 --no-cache-dir install --upgrade pip && \
     pip3 --no-cache-dir install -r /requirements.txt

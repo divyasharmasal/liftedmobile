@@ -183,7 +183,7 @@ class CourseEditor extends Component{
             course: course,
             hasSaved: true,
             showSaveError: false,
-            showDeleteButton: true,
+            showDeleteButton: data.is_published,
             showDeleteOngoing: false,
             showDeleteConfirm: false,
             showDeleteError: false,

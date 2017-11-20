@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+
 docker-compose -f ./docker/app_server/docker-compose.prod.yml stop
 docker-compose -f ./docker/app_server/docker-compose.prod.yml up -d
 

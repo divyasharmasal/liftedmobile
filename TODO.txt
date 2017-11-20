@@ -12,22 +12,16 @@ Legal practitioner: (DUE END NOV)
 
 - Anita's leave: 8-28 Dec
 
-- Target mid-Nov for scrapers to be done
-
 - Competency category and verticals in CMS
     - each course should have up to 3 LIFTED keys
 
 - The scraped data must be connected to the diagnostic tool!
     - competency category only - broad matching.
 
-- Error alerts via SendGrid - e.g. scraping and Django errors
-
 - Funnel visitors from the course browser to the diagnostic
 
 - Diag heading should be the job role heading + some copytext
     - "As a/an Legal Technologist..." - just the current job
-
-- lifted.sg - use this domain
 
 - Legal support vertical job roles should now be split into general +
   specialisms, just like LP. Use the same role picker as LP.
@@ -66,7 +60,7 @@ Resume function
 
 Make push_prod do all deployment work
 
-ssh -p 2233 -i /home/di/Desktop/SAL/liftedmobile.pem ubuntu@52.221.77.72 "mkdir ~/run"
+ssh -p 2233 -i /home/di/Desktop/SAL/liftedmobile.pem ubuntu@52.221.77.72 "mkdir -p ~/run"
 scp -P 2233 -i /home/di/Desktop/SAL/liftedmobile.pem -r scripts docker ubuntu@52.221.77.72:~/run/
 ssh -p 2233 -i /home/di/Desktop/SAL/liftedmobile.pem ubuntu@52.221.77.72 "cd run && ./scripts/admin_server/prod/run_prod.sh" 
 

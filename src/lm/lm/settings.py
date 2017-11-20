@@ -58,11 +58,24 @@ else:
     LIFTED_TEMP_USERNAME = "lifted"
     LIFTED_TEMP_PASSWORD = read_secret("/run/secrets/django_team_pwd")
 
+    email_credentials = json.loads(open("/run/secrets/email_credentials").read())
+    ADMINS = list(json.loads(open("/run/secrets/admin_emails").read()).items())
+
+    EMAIL_HOST = "email-smtp.us-west-2.amazonaws.com"
+    EMAIL_HOST_USER = email_credentials["username"]
+    EMAIL_HOST_PASSWORD = email_credentials["password"]
+    EMAIL_USE_TLS = True
+    EMAIL_PORT = 587
+    SERVER_EMAIL = "_django@lifted.sg"
+
     if 'CMS' in os.environ:
+        SERVER_EMAIL = "cms" + SERVER_EMAIL
         SECRET_KEY = read_secret("/run/secrets/django_secret")
         CMS_TEMP_SUPER_USERNAME = "admin"
         CMS_TEMP_SUPER_PASSWORD = read_secret("/run/secrets/cms_admin_pwd")
         SCRAPYD_API_KEY = read_secret("/run/secrets/scrapyd_api_key")
+    else:
+        SERVER_EMAIL = "lm" + SERVER_EMAIL
 
     assert(DEBUG == False)
 

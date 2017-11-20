@@ -27,6 +27,8 @@ services:
             - django_admin_pwd
             - django_team_pwd
             - django_logging_aws_cw
+            - email_credentials
+            - admin_emails
         logging:
             driver: "awslogs"
             options:
@@ -44,3 +46,7 @@ secrets:
         file: ../../../LM_SECRETS/DJANGO_TEAM_PWD
     django_logging_aws_cw:
         file: ../../../LM_SECRETS/DJANGO_LOGGING_AWS_CW.json
+    email_credentials:
+        file: ../../../LM_SECRETS/EMAIL_CREDENTIALS.json
+    admin_emails:
+        file: ../../../LM_SECRETS/ADMIN_EMAILS.json

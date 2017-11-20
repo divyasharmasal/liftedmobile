@@ -3,6 +3,7 @@ import pytz
 import os
 import json
 import datetime
+import requests
 
 from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
@@ -11,6 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseServerError, HttpResponse
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
 
 from lm import settings
 from app.views import _optimise_course_query, _course_json
@@ -43,7 +45,7 @@ def cms_get_unpublished_courses_data(request):
     }
 
     # TODO: only show future courses??
-    for scraped_course in models.ScrapedSalCourse.objects.filter(is_new=True):
+    for scraped_course in models.ScrapedCourse.objects.filter(is_new=True):
         start_date = end_date = None
 
         if isinstance(scraped_course.start_date, datetime.datetime):
@@ -58,6 +60,7 @@ def cms_get_unpublished_courses_data(request):
             "url": scraped_course.url,
             "start_date": start_date,
             "end_date": end_date,
+            "spider_name": scraped_course.spider_name,
         })
 
     return json_response(result)
@@ -198,7 +201,7 @@ def save_course(request):
         id = None
         if not is_new:
             id = body["id"]
-            scraped_course = models.ScrapedSalCourse(id=id)
+            scraped_course = models.ScrapedCourse(id=id)
             scraped_course.is_new = False
             scraped_course.save()
 
@@ -262,7 +265,7 @@ def delete_course(request):
         # TODO: recycle bin function
         app_models.Course.objects.get(id=id).delete()
     else:
-        models.ScrapedSalCourse.objects.get(id=id).delete()
+        models.ScrapedCourse.objects.get(id=id).delete()
 
     return HttpResponse("Deleted course with id {id}".format(id=id))
 
@@ -282,48 +285,95 @@ def index(request):
     return render(request, url, {"cache_bust": gen_cache_bust_str(10)})
 
 
-# @csrf_exempt
-# def scraper_sal_add_course(request):
-    # return HttpResponseServerError(str(request.META.items()))
+@staff_member_required(login_url=None)
+def scraper_run(request):
+    body = json.loads(_bytes_to_utf8(request.body))
+    spider_name = body["name"]
+    payload = {"project": "scraper", "spider": spider_name}
+
+    r = requests.post("http://scrapyd:6800/schedule.json", data=payload)
+    response = json.loads(r.text)
+
+    return json_response("ok")
+
+
+@staff_member_required(login_url=None)
+def scraper_list(request):
+    r = requests.get("http://scrapyd:6800/listjobs.json?project=scraper")
+    return json_response(r.json())
+
+
+def is_from_scrapyd(function):
+    def wrap(request, *args, **kwargs):
+        # Security layer 1: all requests must be POST and all requests must
+        # originate from the scrapyd container.
+
+        if request.method != "POST":
+            print("Unauthorised: invalid method")
+            raise PermissionDenied()
+
+        remote_addr = None
+        if "DEV" in os.environ and os.environ["DEV"]:
+            remote_addr = request.META["REMOTE_ADDR"]
+        else:
+            remote_addr = request.META["HTTP_X_REAL_IP"]
+
+        if settings.SCRAPYD_IP != remote_addr:
+            print("Unauthorised: invalid remote_addr {addr} vs {ip}"
+                  .format(addr=remote_addr, ip=settings.SCRAPYD_IP))
+            raise PermissionDenied()
+
+        # Security layer 2: the API key must be correct
+        scrapyd_api_key = None
+        if "k" in request.POST:
+            scrapyd_api_key = request.POST["k"]
+        else:
+            print("Unauthorised: no API key")
+            raise PermissionDenied()
+
+        if scrapyd_api_key != settings.SCRAPYD_API_KEY:
+            print("Unauthorised: invalid API key")
+            raise PermissionDenied()
+
+        return function(request, *args, **kwargs)
+
+    wrap.__doc__ = function.__doc__
+    wrap.__name__ = function.__name__
+    return wrap
+
 
 @csrf_exempt
-def scraper_sal_add_course(request):
+@is_from_scrapyd
+def scraper_sync_urls(request):
+    post_keys = request.POST.keys()
+    if "spider" not in post_keys or "urls" not in post_keys:
+        return HttpResponseServerError("Invalid params.")
+
+    spider_name = request.POST["spider"]
+    urls =json.loads(request.POST["urls"])
+
+    # Delete scraped courses that aren't in the URL list
+    models.ScrapedCourse.objects\
+        .exclude(url__in=urls,
+                 spider_name=spider_name)\
+        .delete()
+
+    return json_response("ok")
+
+
+@csrf_exempt
+@is_from_scrapyd
+def scraper_add_course(request):
     """
     Endpoint for scrapers to add a course to the CMS.
     """
-
-    # Security layer 1: all requests must be POST and all requests must
-    # originate from the scrapyd container.
-
-    if request.method != "POST":
-        return HttpResponseServerError("Unauthorised: invalid method")
-
-    remote_addr = None
-    if "DEV" in os.environ and os.environ["DEV"]:
-        remote_addr = request.META["REMOTE_ADDR"]
-    else:
-        remote_addr = request.META["HTTP_X_REAL_IP"]
-
-    if settings.SCRAPYD_IP != remote_addr:
-        return HttpResponseServerError(
-            "Unauthorised: invalid remote_addr {addr} vs {ip}"
-            .format(addr=remote_addr, ip=settings.SCRAPYD_IP))
-
-    # Security layer 2: the API key must be correct
-    scrapyd_api_key = None
-
-    if "k" in request.POST:
-        scrapyd_api_key = request.POST["k"]
-    else:
-        return HttpResponseServerError("Unauthorised: no API key")
-
-    if scrapyd_api_key != settings.SCRAPYD_API_KEY:
-        return HttpResponseServerError("Unauthorised: invalid API key")
     
     # Parse course data
     course_data = None
+    spider_name = None
     try:
         course_data = json.loads(request.POST["c"])
+        spider_name = request.POST["spider_name"]
     except:
         return HttpResponseServerError("Invalid or missing course data")
 
@@ -331,15 +381,16 @@ def scraper_sal_add_course(request):
     if len(course_data.keys()) == 0:
         return HttpResponseServerError("Empty course data JSON")
 
-    # Do nothing if a ScrapedSalCourse with the same data exists:
-    if models.ScrapedSalCourse.objects\
+    # Do nothing if a ScrapedCourse with the same data exists:
+    if models.ScrapedCourse.objects\
         .filter(name=course_data["name"],
                 url=course_data["url"],
+                spider_name=spider_name,
                 start_date=course_data["start_date"],
                 end_date=course_data["end_date"]).exists():
 
-        print("Found a matching ScrapedSalCourse")
-        return json_response("Found matching ScrapedSalCourse")
+        print("Found a matching ScrapedCourse")
+        return json_response("Found matching ScrapedCourse")
 
     # Do nothing if an app_models.Course with the same data exists.
     if app_models.Course.objects\
@@ -354,17 +405,19 @@ def scraper_sal_add_course(request):
     # pin to URL?
     # delete old courses?
 
-    # Otherwise, update/create the ScrapedSalCourse:
-    scraped_course, created = models.ScrapedSalCourse.objects.update_or_create(
+    # Otherwise, update/create the ScrapedCourse:
+    scraped_course, created = models.ScrapedCourse.objects.update_or_create(
         defaults={"start_date": course_data["start_date"],
-                  "end_date": course_data["end_date"]},
-        name=course_data["name"],
+                  "end_date": course_data["end_date"],
+                  "name": course_data["name"],
+              },
+        spider_name=spider_name,
         url=course_data["url"],
         is_new=True)
 
     if created:
-        return json_response("Added ScrapedSalCourse")
+        return json_response("Added ScrapedCourse")
     else:
-        return json_response("Updated ScrapedSalCourse")
+        return json_response("Updated ScrapedCourse")
 
     return json_response("No action taken")
