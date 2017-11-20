@@ -56,7 +56,7 @@ class RoleScreen extends Screen{
         roles[r.level] = [];
       }
       roles[r.level].push({
-        text: r.name,
+        name: r.name,
         desc: r.desc,
         id: r.id,
         level: r.level,
@@ -82,18 +82,18 @@ class RoleScreen extends Screen{
     const levels = this.state.roles.map(r => r.level);
     const maxLevel = Math.max(...levels);
     if (this.props.nextScreenPath){
-        this.props.handleOptionSelect(this.props.name, role.id, () => {
+        this.props.handleOptionSelect(this.props.name, role, () => {
           route(this.props.nextScreenPath);
         });
     }
     else{
       if (role.level === maxLevel && isSingle){
-        this.props.handleOptionSelect(this.props.name, role.id, () => {
+        this.props.handleOptionSelect(this.props.name, role, () => {
           route(this.props.nextScreenPaths["atEnd"]);
         });
       }
       else{
-        this.props.handleOptionSelect(this.props.name, role.id, () => {
+        this.props.handleOptionSelect(this.props.name, role, () => {
           route(this.props.nextScreenPaths["hasNext"]);
         });
       }

@@ -105,7 +105,7 @@ class DiagResultsScreen extends Screen{
     let url;
 
     if (this.props.techRole != null){
-      url = "/techdiagresults?r=" + encodeURIComponent(this.props.techRole);
+      url = "/techdiagresults?r=" + encodeURIComponent(this.props.techRole.id);
 
       Object.keys(answers).forEach(compId => {
         let answer = answers[compId];
@@ -113,7 +113,6 @@ class DiagResultsScreen extends Screen{
           encodeURIComponent(answer);
       });
 
-      console.log(url);
     }
     else{
       //const answers = this.props.selectedOptions["diag"];

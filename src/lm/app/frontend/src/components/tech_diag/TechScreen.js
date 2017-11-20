@@ -39,8 +39,8 @@ class TechScreen extends Component{
 
 
   handleOptionSelect = answer => {
-    this.props.handleOptionSelect(
-      this.props.name, answer, this.routeToNextScreen);
+    this.props.handleOptionSelect(this.props.name, answer, 
+                                  this.routeToNextScreen);
   }
 
 

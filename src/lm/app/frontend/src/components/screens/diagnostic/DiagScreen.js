@@ -23,17 +23,18 @@ class DiagScreen extends Screen{
 
   componentWillMount = () => {
     if (this.props.techRole != null){
-      const techRole = this.props.techRole;
-      const url = "/techdiag?r=" + encodeURIComponent(techRole);
+      const role = this.props.techRole;
+      const url = "/techdiag?r=" + encodeURIComponent(role.id);
       authFetch(url).then(response => {
         response.json().then(diag => {
-          this.setState({ diag });
+          this.setState({ diag , role });
         });
       });
     }
     else{
       const selectedOptions = this.props.selectedOptions;
       const currentRole = selectedOptions["role"];
+
       let nextRole = null;
       if (Object.keys(selectedOptions).indexOf("nextrole") > -1){
         nextRole = selectedOptions["nextrole"];
@@ -47,10 +48,10 @@ class DiagScreen extends Screen{
         role = currentRole;
       }
 
-      const url = "/diag?r=" + encodeURIComponent(role);
+      const url = "/diag?r=" + encodeURIComponent(role.id);
       authFetch(url).then(response => {
         response.json().then(diag => {
-          this.setState({ diag });
+          this.setState({ diag, role });
         });
       });
     }
@@ -154,12 +155,14 @@ class DiagScreen extends Screen{
       </a>
     );
 
+    const roleName = this.state.role.name;
+
     return(
       <div class="pure-g">
         <div class="pure-u-1">
           {this.renderStartOver()}
           <div className="diag question">
-            <h1>I can...</h1>
+            <h2>As a {roleName}...</h2>
             {this.renderQns(this.state.diag, this.state.toHighlight)}
             {warning}
             {btn}

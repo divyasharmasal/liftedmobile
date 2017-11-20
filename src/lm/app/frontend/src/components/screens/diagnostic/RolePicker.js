@@ -32,14 +32,14 @@ class RoleLevelPicker extends Component{
         <div class="roles answer no_user_select" onClick={ () => {
             this.props.handleRoleSelect(role, false);
           }}>
-          <p class="role_name">{role.text}</p>
+          <p class="role_name">{role.name}</p>
           <p>{role.desc}</p>
         </div>
       );
     }
     else{
       roles = this.props.roles.map(role =>
-        <p class="role_name">{role.text}</p>
+        <p class="role_name">{role.name}</p>
       );
     }
 

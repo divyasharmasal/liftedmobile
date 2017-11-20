@@ -4,6 +4,12 @@ import { TechScreen } from "./TechScreen";
 import Question from '../Question';
 
 export class TechRoleScreen extends TechScreen{
+  handleOptionSelect = answer => {
+    const role = this.props.qnData.options[answer];
+    this.props.handleOptionSelect(this.props.name, role, 
+                                  this.routeToNextScreen);
+  }
+
   render(){
     return(
       <div className="pure-g">

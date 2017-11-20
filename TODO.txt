@@ -24,8 +24,6 @@ Legal practitioner: (DUE END NOV)
 
 - Funnel visitors from the course browser to the diagnostic
 
-- Change diagnostic from smiley faces to I can... Yes/No
-
 - Diag heading should be the job role heading + some copytext
     - "As a/an Legal Technologist..." - just the current job
 

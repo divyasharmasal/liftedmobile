@@ -96,6 +96,7 @@ def qns_and_opts(request):
 
     tech_roles = [{
         "text": v.option,
+        "name": v.name,
         "id": v.id
     } for v in models.TechRole.objects.all()]
 
