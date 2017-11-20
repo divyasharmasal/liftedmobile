@@ -29,8 +29,6 @@ Legal practitioner: (DUE END NOV)
 - Diag heading should be the job role heading + some copytext
     - "As a/an Legal Technologist..." - just the current job
 
-- Diagnostic link should also be on the /what page
-
 - lifted.sg - use this domain
 
 - Legal support vertical job roles should now be split into general +

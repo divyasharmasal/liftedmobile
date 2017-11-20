@@ -42,14 +42,15 @@ export class DiagQuestion extends Component{
 
   render(){
     let qn = this.props.qn;
-    //const answers = ["Yes", "I'm not sure", "No"];
-    const answers = [
-      <img class="emoji" src="/static/app/dist/images/smiley.png" />, 
-      <img class="emoji" src="/static/app/dist/images/frown.png" />
-    ];
+    const answers = ["Yes", "No"];
+    //const answers = [
+      //<img class="emoji" src="/static/app/dist/images/smiley.png" />, 
+      //<img class="emoji" src="/static/app/dist/images/frown.png" />
+    //];
     let ansElms = [];
     answers.forEach((answer, i) => {
-      let answerClass = "no_user_select answer has_emoji";
+      //let answerClass = "no_user_select answer has_emoji";
+      let answerClass = "no_user_select answer";
       if (i === this.state.selectedAnswerId){
         answerClass += " selected";
       }
