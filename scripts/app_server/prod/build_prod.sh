@@ -1,8 +1,8 @@
 #!/bin/sh
 yes | docker-compose -f docker/app_server/docker-compose.prod.yml stop
 yes | docker-compose -f docker/app_server/docker-compose.prod.yml rm
-docker-compose -f docker/app_server/docker-compose.prod.yml build #--no-cache
-docker-compose -f docker/app_server/docker-compose.prod.yml up -d #--force-recreate
+docker-compose -f docker/app_server/docker-compose.prod.yml build --no-cache
+docker-compose -f docker/app_server/docker-compose.prod.yml up -d --force-recreate
 
 if [ "${1}" != "--no-logs" ]
 then

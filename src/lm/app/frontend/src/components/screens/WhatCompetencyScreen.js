@@ -28,6 +28,12 @@ class WhatCompetencyScreen extends Screen{
   }
 
 
+  redirectToDiag = () => {
+    const verticalId = this.props.selectedOptions["vertical"]
+    route(this.props.diagPaths[verticalId]);
+  }
+
+
   render = () => {
     if (!this.state.qnData){
       return (renderLoader());
@@ -36,6 +42,10 @@ class WhatCompetencyScreen extends Screen{
       <div className="pure-g">
         <div className="pure-u-1">
           {this.renderStartOver()}
+          <a class="top_nav_link full_review"
+            onClick={this.redirectToDiag}>
+            Full review ➜
+          </a>
 					<Question
 						isMultiQn={false}
 						handleOptionSelect={this.handleOptionSelect}

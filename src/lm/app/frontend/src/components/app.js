@@ -110,8 +110,7 @@ export default class App extends Component {
       <Router onChange={this.handleRoute}>
         <IntroScreen
           default
-          path="/"
-        />
+          path="/" />
 
         <CourseBrowser
           path="/browse" />
@@ -147,8 +146,15 @@ export default class App extends Component {
           qnData={this.state.qns["comp_category"]}
           path={"/what"}
           handleOptionSelect={this.handleOptionSelect}
+          selectedOptions={this.state.selectedOptions}
           vertical={this.state.selectedOptions["vertical"]}
-          nextScreenPath="/choose" />
+          nextScreenPath="/choose"
+          diagPaths={{
+            1: "/review/role",
+            2: "/review/role",
+            3: "/review/where"
+          }}
+        />
 
         <BranchScreen
           name="needs"
@@ -162,7 +168,8 @@ export default class App extends Component {
             1: "/review/role",
             2: "/review/role",
             3: "/review/where"
-          }} />
+          }} 
+        />
 
         <WhereWorkScreen
           name="legalsupport_where"
