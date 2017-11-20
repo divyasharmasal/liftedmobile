@@ -124,9 +124,9 @@ class DiagResultsScreen extends Screen{
         url = "/results?";
 
         // Get role ID from prev answers
-        let roleId = this.props.selectedOptions["role"];
+        let roleId = this.props.selectedOptions["role"].id;
         if (Object.keys(this.props.selectedOptions).indexOf("nextrole") > -1){
-          roleId = this.props.selectedOptions["nextrole"];
+          roleId = this.props.selectedOptions["nextrole"].id;
         }
 
         if (!roleId){

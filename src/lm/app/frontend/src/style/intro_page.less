@@ -15,7 +15,7 @@
     }
 
     .text{
-        font-size:1.25em;
+        font-size:1.70em;
         position: relative;
         top: 50%;
         transform: translateY(-50%);
@@ -23,6 +23,9 @@
         color:white;
         padding-left:30px;
         text-align:left;
+        @media (min-width: @medium_screen_width) {
+            width:500px;
+        }
     }
 
     .planes{
@@ -33,7 +36,7 @@
         height:130px;
 
         .text{
-            font-size:0.8em;
+            font-size:1.2em;
             width:400px;
             padding-left:15px;
         }
@@ -49,6 +52,7 @@
     @media (max-width: @small_screen_width) {
         height:100px !important;
         .text{
+            font-size:1em;
             padding-left:15px;
             max-width: 200px !important;
         }
@@ -101,30 +105,30 @@
     .desc{
         float:left;
         width:60%;
-    }
-
-    img{
+        margin-left:30px;
+        @media (max-width: @medium_screen_width) {
+            margin-left:0px;
+        }
     }
 
     p{
         color:initial;
         @media (max-width: @small_screen_width) {
-            font-size:1.5em;
+            font-size:2.5em;
         }
     }
 
-
     h2{
-        font-size:2.5em;
+        font-size:3em;
         font-weight:normal;
         color:@sal_blue;
 
         @media (max-width: @medium_screen_width) {
-            font-size:2em;
+            font-size:2.5em;
         }
 
         @media (max-width: @small_screen_width) {
-            font-size:2em;
+            font-size:2.5em;
         }
     }
 

@@ -31,10 +31,11 @@ class Screen extends Component{
   }
 
 
-  renderStartOver = () => {
+  renderStartOver = isTech => {
+    const path = isTech ? "/tech" : "/analysis";
     return (
       <a class="no_user_select top_nav_link start_over" 
-         onClick={() => { route("/") }}>
+         onClick={() => { route(path) }}>
         ⟲ start over
       </a>
     );

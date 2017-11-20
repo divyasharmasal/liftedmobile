@@ -160,7 +160,7 @@ class DiagScreen extends Screen{
     return(
       <div class="pure-g">
         <div class="pure-u-1">
-          {this.renderStartOver()}
+          {this.renderStartOver(this.props.techRole != null)}
           <div className="diag question">
             <h2>As a {roleName}...</h2>
             {this.renderQns(this.state.diag, this.state.toHighlight)}
