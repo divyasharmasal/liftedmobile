@@ -1,15 +1,18 @@
 """
 URL patterns for the CMS.
 """
+
 from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LoginView
 from . import views
 
+
 urlpatterns = [
     url(r'^accounts/login/$',
         LoginView.as_view(template_name='cms/registration/login.html'),
         name='login'),
+
     url(r'^accounts/logout/$', auth_views.logout,
         {'next_page': '/cms/accounts/login'}, name='cms_logout'),
 

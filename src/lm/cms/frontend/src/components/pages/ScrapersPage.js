@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import { authFetch, authPost } from "../../lib/js/fetch";
 import { renderLoader } from "../../lib/js/loader_anim";
+import format from "date-fns/format";
 
 
 export class ScrapersPage extends Component {
@@ -96,13 +97,6 @@ class ScraperControl extends Component {
   }
 
 
-  toggleActive = () => {
-    this.setState({
-      isActive: !this.state.isActive,
-    });
-  }
-
-
   handleScrapeButtonClick = () => {
     const spiderName = this.props.scrapydData.spider;
     const url = "/cms/scraper/run/";
@@ -138,7 +132,10 @@ class ScraperControl extends Component {
         </p>
 
         <p>Status: {this.props.scrapydData.status}</p>
-        <p>Last scrape started: {this.props.scrapydData.start_time.toString()}</p>
+        <p>
+          Last scrape started: {
+            format(this.props.scrapydData.start_time, "ddd DD MMM YYYY, HH:MM:SS Z")}
+        </p>
         <p>ID: {this.props.scrapydData.id}</p>
 
         {this.props.scrapydData.status === "finished" &&
@@ -155,28 +152,6 @@ class ScraperControl extends Component {
         {this.state.scrapeButtonClicked && this.state.scrapeError &&
           <p>Error launching the scrape.</p>
         }
-        {/*
-        <p>
-          <span class="label">Status: </span> {this.state.isActive ? 
-              <span>running</span> :
-              <span>paused</span>
-          }
-        </p>
-        <p>
-          <span class="label">
-            Most recent scrape: </span> <span>{(new Date()).toString()}</span>
-        </p>
-
-        {this.state.isActive ?
-          <button onClick={this.toggleActive} class="pure-button button-red">
-            <span>pause</span> 
-          </button>
-          :
-          <button onClick={this.toggleActive} class="pure-button button-green">
-            <span>start</span> 
-          </button>
-        }
-        */}
       </div>
     );
   }

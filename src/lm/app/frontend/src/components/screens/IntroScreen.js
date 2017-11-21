@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 
+
 export class IntroScreen extends Component{
   render(){
     return(
@@ -57,11 +58,10 @@ export class IntroScreen extends Component{
 
           <div class="credits">
             <p>
-              This app is part of 
-              the <a href="https://www.sal.org.sg/lifted">
-                Legal Industry Framework for Training and Education</a>, an 
+              This app is part of the <a href="https://www.sal.org.sg/lifted">
+              Legal Industry Framework for Training and Education</a>, an 
               initiative of the <a href="https://www.sal.org.sg">
-                Singapore Academy of Law</a>.
+              Singapore Academy of Law</a>.
             </p>
             {/*
             <p>
