@@ -39,6 +39,7 @@ def load(apps, schema_editor):
     CompetencyCategory = apps.get_model("app", "CompetencyCategory")
     JobRole = apps.get_model("app", "JobRole")
     JobRoleCompetency = apps.get_model("app", "JobRoleCompetency")
+    Specialism = apps.get_model("app", "Specialism")
 
     # Parse and save the tech roles
     parsed_tech_roles = extract_framework_data.parse_tech_roles()
@@ -85,6 +86,7 @@ def load(apps, schema_editor):
             tech_role_comp.save()
 
 
+    # Verticals and competency categories
     i = 1
     j = 1
     verticals = []
@@ -105,18 +107,23 @@ def load(apps, schema_editor):
         i += 1
 
 
+    # Levels
     levels = []
     for lvl in extract_framework_data.parse_levels():
         levels.append(Level(name=lvl["Level"], acronym=lvl["Acronym"]))
 
+    # Venues
     venues = []
     for venue in extract_framework_data.parse_venues():
         venues.append(Venue(name=venue["Venue"], acronym=venue["Acronym"]))
+
+    # Formats
 
     formats = []
     for fmt in extract_framework_data.parse_formats():
         formats.append(Format(name=fmt["Format"], acronym=fmt["Acronym"]))
 
+    # Funding types
     funding_types = []
     for funding_type in extract_framework_data.parse_funding_types():
         funding_types.append(Funding(funding_type=funding_type))
@@ -168,16 +175,29 @@ def load(apps, schema_editor):
             comp_cat = CompetencyCategory(vertical=vertical, name=category)
             comp_cat.save()
 
+    # Specialisms
+    specialisms = extract_framework_data.parse_specialisms()
+    for specialism in specialisms:
+        sp = Specialism(name=specialism)
+        sp.save()
+
     # Competencies
     competencies = extract_framework_data.parse_competencies()
     for competency in competencies:
         vertical = Vertical.objects.get(name=competency["Vertical"])
-        competency_category = \
-            CompetencyCategory.objects.get(vertical=vertical,
-                                           name=competency["Competency Category"])
+        competency_category = CompetencyCategory.objects.get(
+            vertical=vertical,
+            name=competency["Competency Category"])
+
+        specialism = None
+        specialism_name = competency["Specialism"]
+
+        if specialism_name is not None:
+            specialism = Specialism.objects.get(name=competency["Specialism"])
+
         competency = Competency(id=competency["ID"],
                                 vertical=vertical,
-                                specialism=competency["Specialism"],
+                                specialism=specialism,
                                 copy_title=competency["Copyedited title"],
                                 category=competency_category,
                                 full_desc=competency["Description"])
@@ -186,18 +206,25 @@ def load(apps, schema_editor):
     # Job Roles
     job_roles = extract_framework_data.parse_job_roles()
     for job_role in job_roles:
+        specialism = None
+
+        if len(job_role["Specialism"].strip()) > 0:
+            specialism = Specialism.objects.get(name=job_role["Specialism"])
+
         vertical = Vertical.objects.get(name=job_role["Vertical"])
         jr_obj = JobRole(name=job_role["Role"],
                          role_level=job_role["Level"],
                          org_type=job_role["In-house or law firm?"],
                          vertical=vertical,
+                         specialism=specialism,
                          thin_desc=job_role["Thin Description"])
         jr_obj.save()
 
-        for competency_id in job_role["Competency IDs"]:
+        for competency_id in job_role["Competency Ids"]:
             comp = Competency.objects.get(id=competency_id)
             jrc = JobRoleCompetency(job_role=jr_obj, competency=comp)
             jrc.save()
+
 
     # Courses
     parsed_courses = extract_framework_data.parse_courses()

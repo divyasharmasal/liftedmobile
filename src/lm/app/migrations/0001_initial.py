@@ -18,7 +18,6 @@ class Migration(migrations.Migration):
             name='Competency',
             fields=[
                 ('id', models.IntegerField(primary_key=True, serialize=False)),
-                ('specialism', models.TextField(null=True)),
                 ('copy_title', models.TextField()),
                 ('full_desc', models.TextField()),
             ],
@@ -36,8 +35,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('name', models.TextField()),
                 ('cost', models.DecimalField(decimal_places=2, max_digits=11)),
-                ('duration', models.DecimalField(null=True, decimal_places=1,
-                                                 max_digits=6)),
+                ('duration', models.DecimalField(decimal_places=1, max_digits=6, null=True)),
                 ('url', models.TextField(null=True)),
             ],
         ),
@@ -84,6 +82,13 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('start_date', models.DateTimeField(null=True)),
+                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='CourseTechCompetency',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
             ],
         ),
@@ -164,11 +169,25 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='Specialism',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('name', models.TextField(unique=True)),
+            ],
+        ),
+        migrations.CreateModel(
             name='TechCompetency',
             fields=[
                 ('id', models.IntegerField(primary_key=True, serialize=False)),
                 ('copy_title', models.TextField()),
                 ('full_desc', models.TextField()),
+            ],
+        ),
+        migrations.CreateModel(
+            name='TechCompetencyCategory',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('name', models.TextField()),
             ],
         ),
         migrations.CreateModel(
@@ -178,14 +197,6 @@ class Migration(migrations.Migration):
                 ('name', models.TextField(unique=True)),
                 ('role_level', models.IntegerField(null=True)),
                 ('option', models.TextField(unique=True)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='TechCompetencyCategory',
-            fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('name', models.TextField()),
-                ('tech_role', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.TechRole')),
             ],
         ),
         migrations.CreateModel(
@@ -221,20 +232,20 @@ class Migration(migrations.Migration):
                 ('vertical', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Vertical')),
             ],
         ),
-        migrations.CreateModel(
-            name='CourseTechCompetency',
-            fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('tech_competency',
-                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                        to='app.TechCompetency')),
-                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
-            ],
+        migrations.AddField(
+            model_name='techcompetencycategory',
+            name='tech_role',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.TechRole'),
         ),
         migrations.AddField(
             model_name='techcompetency',
             name='category',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.TechCompetencyCategory'),
+        ),
+        migrations.AddField(
+            model_name='jobrole',
+            name='specialism',
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='app.Specialism'),
         ),
         migrations.AddField(
             model_name='jobrole',
@@ -250,6 +261,11 @@ class Migration(migrations.Migration):
             model_name='coursevenue',
             name='venue',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Venue'),
+        ),
+        migrations.AddField(
+            model_name='coursetechcompetency',
+            name='tech_competency',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.TechCompetency'),
         ),
         migrations.AddField(
             model_name='courselevel',
@@ -275,6 +291,11 @@ class Migration(migrations.Migration):
             model_name='competency',
             name='category',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.CompetencyCategory'),
+        ),
+        migrations.AddField(
+            model_name='competency',
+            name='specialism',
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='app.Specialism'),
         ),
         migrations.AddField(
             model_name='competency',
@@ -310,6 +331,10 @@ class Migration(migrations.Migration):
             unique_together=set([('course', 'venue')]),
         ),
         migrations.AlterUniqueTogether(
+            name='coursetechcompetency',
+            unique_together=set([('course', 'tech_competency')]),
+        ),
+        migrations.AlterUniqueTogether(
             name='coursestartdate',
             unique_together=set([('course', 'start_date')]),
         ),
@@ -328,10 +353,6 @@ class Migration(migrations.Migration):
         migrations.AlterUniqueTogether(
             name='coursecompetency',
             unique_together=set([('course', 'competency')]),
-        ),
-        migrations.AlterUniqueTogether(
-            name='coursetechcompetency',
-            unique_together=set([('course', 'tech_competency')]),
         ),
         migrations.AlterUniqueTogether(
             name='competencycategory',

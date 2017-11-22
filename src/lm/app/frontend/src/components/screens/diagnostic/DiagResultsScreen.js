@@ -220,7 +220,9 @@ class DiagResultsScreen extends Screen{
               <th>Rating</th>
             </tr>
           </thead>
-          {renderRows(ordinary, courses.map)}
+          <tbody>
+            {renderRows(ordinary, courses.map)}
+          </tbody>
           {special.length > 0 && 
             <tr>
               <td class="special" colspan={4}>

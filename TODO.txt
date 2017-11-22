@@ -20,9 +20,6 @@ Legal practitioner: (DUE END NOV)
 
 - Funnel visitors from the course browser to the diagnostic
 
-- Diag heading should be the job role heading + some copytext
-    - "As a/an Legal Technologist..." - just the current job
-
 - Legal support vertical job roles should now be split into general +
   specialisms, just like LP. Use the same role picker as LP.
   e.g. Paralegal (civil litigation specialist)
@@ -59,10 +56,6 @@ All-in-one CMS
 Resume function
 
 Make push_prod do all deployment work
-
-ssh -p 2233 -i /home/di/Desktop/SAL/liftedmobile.pem ubuntu@52.221.77.72 "mkdir -p ~/run"
-scp -P 2233 -i /home/di/Desktop/SAL/liftedmobile.pem -r scripts docker ubuntu@52.221.77.72:~/run/
-ssh -p 2233 -i /home/di/Desktop/SAL/liftedmobile.pem ubuntu@52.221.77.72 "cd run && ./scripts/admin_server/prod/run_prod.sh" 
 
 Unit testing
 

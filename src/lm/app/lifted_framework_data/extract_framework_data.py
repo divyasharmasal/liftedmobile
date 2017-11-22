@@ -315,23 +315,33 @@ def parse_job_roles():
     """
     data = trim_values(parse_item_rows(read_ods_file(JOB_ROLES_FILE)))
 
-    # parse competency IDs
-    for row in data:
-        comps = []
-        for x in row["Competency IDs "].split(","):
+    def _parse_nums_and_ranges(s):
+        nums = []
+        if len(s.strip()) == 0:
+            return nums
+
+        for x in s.split(","):
             if "-" in x:
                 limits = [int(n.strip()) for n in x.split("-")]
                 for i in range(limits[0], limits[1] + 1):
-                    comps.append(i)
+                    nums.append(i)
             else:
-                comps.append(int(x.strip()))
+                nums.append(int(x.strip()))
+        return nums
 
-        row["Competency IDs"] = comps
-        del row["Competency IDs "]
+    for row in data:
+        row["Competency Ids"] = _parse_nums_and_ranges(row["Competency Ids"])
 
-        if row["Level"] == "":
-            row["Level"] = None
     return data
+
+
+def parse_specialisms():
+    specialisms = set()
+    for competency in parse_competencies():
+        specialism = competency["Specialism"]
+        if specialism is not None:
+            specialisms.add(specialism)
+    return list(specialisms)
 
 
 if __name__ == "__main__":
@@ -343,6 +353,7 @@ if __name__ == "__main__":
     # pprint.pprint(parse_competency_categories())
 
     # courses = parse_courses()
-    pprint.pprint(parse_courses())
-    # roles = parse_job_roles()
+    # pprint.pprint(parse_courses())
+    pprint.pprint(parse_job_roles())
     # pprint.pprint(roles)
+    # pprint.pprint(parse_specialisms())

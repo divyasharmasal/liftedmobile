@@ -55,12 +55,7 @@ class RoleScreen extends Screen{
       if (!roles[r.level]){
         roles[r.level] = [];
       }
-      roles[r.level].push({
-        name: r.name,
-        desc: r.desc,
-        id: r.id,
-        level: r.level,
-      });
+      roles[r.level].push(r);
     });
 
     let options = [];

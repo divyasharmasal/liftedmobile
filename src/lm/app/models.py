@@ -164,11 +164,16 @@ class CompetencyCategory(models.Model):
     vertical = models.ForeignKey(Vertical, on_delete=models.CASCADE)
 
 
+class Specialism(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.TextField(unique=True)
+
+
 class Competency(models.Model):
     id = models.IntegerField(primary_key=True)
     vertical = models.ForeignKey(Vertical, on_delete=models.CASCADE)
     category = models.ForeignKey(CompetencyCategory, on_delete=models.CASCADE)
-    specialism = models.TextField(null=True)
+    specialism = models.ForeignKey(Specialism, null=True, on_delete=models.CASCADE)
     copy_title = models.TextField()
     full_desc = models.TextField()
 
@@ -188,6 +193,8 @@ class JobRole(models.Model):
     org_type = models.TextField()
     thin_desc = models.TextField()
     vertical = models.ForeignKey(Vertical, on_delete=models.CASCADE)
+    specialism = models.ForeignKey(Specialism, null=True, 
+                                   on_delete=models.CASCADE)
 
 
 class JobRoleCompetency(models.Model):

@@ -379,8 +379,7 @@ def _course_json(course, index=None, orig_start_dates=True,
 def roles(request):
     """
     Repsond with a list of roles given the organisation type, vertical, and
-    (optionally) current role. Used by RoleScreen for the diagnostic,
-    only for legal support roles.
+    (optionally) current role. Used by RoleScreen for the diagnostic.
     """
 
     if "v" not in request.GET:
@@ -390,8 +389,8 @@ def roles(request):
     try:
         vertical_id = int(vertical_id)
     except:
-        return HttpResponseServerError("Please provide valid "
-                                       "workplace/vertical params.")
+        return HttpResponseServerError(
+            "Please provide valid workplace/vertical params.")
 
     org_type_name = "any"
     if "o" in request.GET:
@@ -399,9 +398,8 @@ def roles(request):
 
     if org_type_name not in ["Law firm", "In-house", "any"]:
         return HttpResponseServerError(
-                "Please provide org_type/vertical "
-                "params that correspond to the "
-                "right org_type.")
+            "Please provide org_type/vertical params that correspond to the "
+            "right org_type.")
 
     role_num = None
     if "r" in request.GET:
@@ -435,17 +433,28 @@ def roles(request):
     else:
         if org_type_name == "any":
             job_role_query = models.JobRole.objects.filter(
-                    vertical=vertical)
+                    vertical=vertical).distinct()
         else:
             job_role_query = models.JobRole.objects.filter(
-                    org_type=org_type_name, vertical=vertical)
+                    org_type=org_type_name, vertical=vertical).distinct()
 
-    job_roles = sorted([{"name": job_role.name,
-                         "desc": job_role.thin_desc,
-                         "level": job_role.role_level,
-                         "id": job_role.id}
-                       for job_role in job_role_query.distinct()
-                        ], key=lambda j: j["level"])
+    job_roles = []
+    for job_role in job_role_query:
+        json = {
+            "name": job_role.name,
+            "desc": job_role.thin_desc,
+            "level": job_role.role_level,
+            "id": job_role.id,
+        }
+
+        if job_role.specialism is not None:
+            json["specialism"] = job_role.specialism.name
+            job_roles.append(json)
+        else:
+            job_roles.append(json)
+
+    job_roles = sorted(job_roles, key=lambda j: j["level"])
+    
     return json_response(job_roles)
 
 
@@ -707,7 +716,7 @@ def results(request):
 
         special = False
         if comp.specialism:
-            category = comp.specialism
+            category = comp.specialism.name
             special = True
 
         cat_names[category] = comp.category
@@ -798,16 +807,16 @@ def _diag_course_recommendations(categorised_answers, vertical, job_role):
             if score_info["score"] == 100:
                 level = _next_level(job_role)
                 competencies = models.Competency.objects.filter(
-                        specialism=category_name,
+                        specialism__name=category_name,
                         jobrolecompetency__job_role__role_level=level)\
                     .distinct()
 
                 courses = _get_courses_from_comps(
-                        None, vertical.id, competencies)
+                    None, vertical.id, competencies)
 
             else:
                 competencies = models.Competency.objects.filter(
-                        specialism=category_name).distinct()
+                        specialism__name=category_name).distinct()
                 courses = _get_courses_from_comps(
                         job_role, vertical.id, competencies)
         else:
