@@ -76,8 +76,9 @@ class CategoryCourses extends Component{
               Great, you're all covered. Here are some programmes to
             take you to the next level:</p>
           }
-          {/*<p>Here are some courses to consider based on what's available.</p>*/}
-          <p class="back_to_top"><a href="#top">back to top</a></p>
+          {this.props.showBackToTop &&
+            <p class="back_to_top"><a href="#top">back to top</a></p>
+          }
 
           <Courses courses={this.props.courseList} />
 
@@ -270,6 +271,7 @@ class DiagResultsScreen extends Screen{
         if (courseList.length > 0){
           recs.push(
             <CategoryCourses
+              showBackToTop={i > 0}
               showByDefault={show}
               courseList={courseList}
               results={results}

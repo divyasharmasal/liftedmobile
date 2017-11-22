@@ -17,6 +17,9 @@
 
 *, html, body {
     font-family: Lato, Arial !important;
+}
+
+html, body{
     font-size:0.90em;
 }
 
@@ -36,6 +39,7 @@
 
     @media (max-width: @medium_screen_width) {
         margin-left:0px;
+        padding-top:15px;
         img{
             height:50px;
         }
@@ -57,7 +61,7 @@
 .top_nav_link{
     cursor:pointer;
     display:block;
-    font-size: 1.7em;
+    font-size: 1.5em;
     text-decoration:none;
     margin-top:5px;
     color:@sal_blue;
@@ -78,11 +82,11 @@ h1{
     text-align:center;
     font-weight: normal;
     color: @sal_blue;
-    font-size: 4.5em;
+    font-size: 3em;
 }
 
 p{
-    font-size:2.5em;
+    font-size:2em;
 }
 
 hr{
@@ -107,8 +111,9 @@ hr{
     cursor:pointer;
 
     p{
-        margin-top:10px;
-        margin-bottom:10px;
+        margin-top:5px;
+        margin-bottom:5px;
+        font-size:1.5em;
     }
 
     a{
@@ -182,9 +187,12 @@ hr{
 .question{
     margin-top: 100px;
     text-align:center;
+    p{
+        font-size:1.5em;
+    }
 
     h2{
-        font-size:3.5em;
+        font-size:2em;
         font-weight:bold;
         color: @sal_blue;
     }
@@ -192,7 +200,7 @@ hr{
     .answer{
         cursor:pointer;
         color:black;
-        font-size: 3em;
+        font-size: 2em;
         border: 1px solid #585757;
         border-radius: @border_radius;
         text-align:center;
@@ -202,20 +210,20 @@ hr{
         padding-bottom:15px;
         margin-bottom:15px;
 
-        .emoji{
-            width:40px;
-            height:40px;
-            -webkit-user-drag: none;
-            -khtml-user-drag: none;
-            -moz-user-drag: none;
-            -o-user-drag: none;
-            user-drag: none;
-        }
+        /*.emoji{*/
+            /*width:40px;*/
+            /*height:40px;*/
+            /*-webkit-user-drag: none;*/
+            /*-khtml-user-drag: none;*/
+            /*-moz-user-drag: none;*/
+            /*-o-user-drag: none;*/
+            /*user-drag: none;*/
+        /*}*/
     }
 
-    .answer.has_emoji{
-        height:40px;
-    }
+    /*.answer.has_emoji{*/
+        /*height:40px;*/
+    /*}*/
 
     .option_tick{
         visibility:hidden;
@@ -355,7 +363,7 @@ hr{
         width:100%;
         float:left;
         p{
-            font-size:2.5em;
+            font-size:2em;
         }
 
         .diag_whatsthis{
@@ -372,7 +380,7 @@ hr{
 
         .diag_help{
             text-align:left;
-            font-size:2em;
+            font-size:1em;
         }
 
         .diag_left{
@@ -380,7 +388,6 @@ hr{
             width:60%;
             text-align:left;
             p{
-                font-size:3em;
                 margin-top:0;
             }
         }
@@ -390,7 +397,6 @@ hr{
         }
 
         .answer{
-            font-size:3em;
             margin-right: 25px;
             width:100px;
             display:inline-block;
@@ -436,7 +442,7 @@ hr{
     .competencies{
         table{
             margin:auto;
-            font-size:4em;
+            font-size:1.5em;
             thead{
                 line-height:1.5em;
                 th{
@@ -479,7 +485,7 @@ hr{
         }
 
         .great{
-            font-size:1.5em;
+            font-size:1em;
         }
 
     }
@@ -487,9 +493,9 @@ hr{
         cursor:pointer;
         font-weight:bold;
         display:inline-block;
-        font-size:4em;
+        font-size:1.5em;
         @media (max-width: @small_screen_width) {
-            font-size:2em;
+            font-size:1.5em;
         }
     }
 
@@ -501,44 +507,229 @@ hr{
 
     p.back_to_top{
         text-align:right;
-        font-size:1.2em;
+        font-size:1em;
         margin-top:0px;
     }
 }
 
 .role_picker{
+    .role_name{
+        font-weight:bold;
+    }
+
+    .answer{
+        font-size:1em;
+    }
+
     .level{
         margin-bottom:20px;
+
+        @media (max-width: @small_screen_width) {
+            font-size:1em;
+        }
+
+        .answer{
+            @media (max-width: @small_screen_width) {
+                font-size:1em;
+            }
+        }
+
         .level_text{
             font-weight:bold;
+            font-size:1.25em;
         }
 
         .prompt{
             font-weight:bold;
+            font-size:1.25em;
         }
 
         .roles{
             font-size:1em;
 
             .desc{
-                font-size:1.5em;
-            }
-
-            .role_name{
-                font-weight:bold;
+                font-size:1em;
             }
         }
     }
 }
 
+
+@media (max-width: @medium_screen_width) {
+    .credits{
+        font-size:0.6em;
+    }
+
+    *, html, body {
+        font-family: Lato, Arial;
+        /*font-size:1em;*/
+    }
+
+    .login_form{
+        h1{
+            font-size:2em;
+        }
+    }
+
+    .notification{
+        width:100%;
+        left:0px;
+    }
+
+	.full_review,
+    .start_over{
+        font-size:1.25em;
+    }
+
+    p{
+        /*font-size:1em;*/
+    }
+
+    hr{
+        border-top: 1px solid #585757;
+        width:90%;
+        margin-left:5%;
+        margin-top:15px;
+        margin-bottom:15px;
+    }
+
+    .rec_courses{
+        h1{
+            font-size:2.5em;
+        }
+    }
+
+    .diag{
+        .diag_qn{
+            font-size:1em;
+            margin-bottom:0px;
+
+            p{
+                font-size:1em;
+            }
+
+            .answer{
+                width:50px;
+                font-size:1.25em;
+            }
+
+            .diag_whatsthis{
+                font-size:1em;
+            }
+
+            .diag_help{
+                font-size:1em;
+            }
+
+            .diag_left{
+                float:none;
+                width:100%;
+                text-align:center;
+
+                p{
+                    font-size:1.5em;
+                    margin-top:24px;
+                }
+            }
+
+            .diag_right{
+                float:none;
+            }
+
+            .answer{
+                width:40px;
+                height:25px;
+                padding-top:12px;
+            }
+        }
+
+        .diag_button{
+            padding: .5em .5em;
+            line-height: 1.2em;
+            display: inline-block;
+            height: initial;
+        }
+    }
+
+    .question{
+        float: left;
+        width: 100%;
+
+        margin-top: 10px;
+
+        h1{
+            margin-bottom:15px;
+        }
+
+        .answer{
+            /*font-size:1.25em;*/
+        }
+
+        .tile{
+            font-size: 2em;
+            margin-bottom:5px;
+            padding: 10px 6px; 
+            
+            .option_tick{
+                visibility:hidden;
+            }
+        }
+        .selected{
+            .option_tick{
+                visibility:visible;
+            }
+        }
+    }
+
+    .for_better_results{
+        margin-bottom:0px;
+    }
+
+    .courses{
+        .sorter{
+            display:initial;
+
+            .symbol{
+                margin-left:3px;
+            }
+        }
+
+        h2{
+            font-size:2em;
+            margin-top:21.44px;
+            margin-bottom:10px;
+        }
+
+    }
+
+    .diag_courses{
+        p.back_to_top{
+            font-size:0.8em;
+        }
+    }
+
+    .results {
+        .competencies{
+            table{
+                /*font-size:1em;*/
+            }
+        }
+    }
+
+}
+
 @media (max-width: @small_screen_width) {
     .question {
+        .choose_more_than_one{
+            font-size:1.5em;
+        }
+
         .role_option_text{
-            font-size:0.8em;
+            font-size:1em;
         }
 
         h1{
-            font-size:2em;
+            font-size:2.5em;
         }
 
         .answer{
@@ -591,177 +782,6 @@ hr{
     }
 }
 
-
-@media (max-width: @medium_screen_width) {
-    .credits{
-        font-size:0.6em;
-    }
-
-    *, html, body {
-        font-family: Lato, Arial;
-        /*font-size:1em;*/
-    }
-
-    .login_form{
-        h1{
-            font-size:2em;
-        }
-    }
-
-    .notification{
-        width:100%;
-        left:0px;
-    }
-
-	.full_review,
-    .start_over{
-        font-size:1em;
-    }
-
-    h1{
-        /*font-size:2em;*/
-    }
-    
-    p{
-        /*font-size:1em;*/
-    }
-
-    hr{
-        border-top: 1px solid #585757;
-        width:90%;
-        margin-left:5%;
-        margin-top:15px;
-        margin-bottom:15px;
-    }
-
-    .rec_courses{
-        h1{
-            font-size:2.5em;
-        }
-    }
-
-    .diag{
-        .diag_qn{
-            font-size:1.25em;
-            margin-bottom:0px;
-
-            p{
-                font-size:1.25em;
-            }
-
-            .answer{
-                width:50px;
-            }
-
-            .diag_whatsthis{
-                font-size:1em;
-            }
-
-            .diag_help{
-                font-size:1em;
-            }
-
-            .diag_left{
-                float:none;
-                width:100%;
-                text-align:center;
-                p{
-                    margin-top:24px;
-                }
-            }
-
-            .diag_right{
-                float:none;
-            }
-
-            .answer{
-                width:40px;
-                height:35px;
-
-                img{
-                    width:30px;
-                    height:30px;
-                }
-            }
-        }
-
-        .diag_button{
-            padding: .5em .5em;
-            line-height: 1.2em;
-            display: inline-block;
-            height: initial;
-        }
-    }
-
-    .question{
-        float: left;
-        width: 100%;
-
-        margin-top: 10px;
-
-        h1{
-            margin-bottom:15px;
-        }
-
-        .answer{
-            /*font-size:1.25em;*/
-        }
-
-        .tile{
-            font-size: 1.5em;
-            margin-bottom:5px;
-            padding: 10px 6px; 
-            
-            .option_tick{
-                visibility:hidden;
-            }
-        }
-        .selected{
-            .option_tick{
-                visibility:visible;
-            }
-        }
-    }
-
-    .for_better_results{
-        margin-bottom:0px;
-    }
-
-    .courses{
-        .sorter{
-            display:initial;
-            p{
-                font-size:1.5em;
-            }
-
-            .symbol{
-                margin-left:3px;
-            }
-        }
-
-        h2{
-            font-size:2em;
-            margin-top:21.44px;
-            margin-bottom:10px;
-        }
-
-    }
-
-    .diag_courses{
-        p.back_to_top{
-            font-size:0.8em;
-        }
-    }
-
-    .results {
-        .competencies{
-            table{
-                /*font-size:1em;*/
-            }
-        }
-    }
-
-}
 
 @import (once, less) "./intro_page.less";
 @import (once, less) "./course_browser/course_browser.less";

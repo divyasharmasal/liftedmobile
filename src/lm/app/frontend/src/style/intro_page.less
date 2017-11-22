@@ -15,7 +15,7 @@
     }
 
     .text{
-        font-size:1.70em;
+        font-size:1.5em;
         position: relative;
         top: 50%;
         transform: translateY(-50%);
@@ -52,7 +52,9 @@
     @media (max-width: @small_screen_width) {
         height:100px !important;
         .text{
-            font-size:1em;
+            p{
+                font-size:1.5em;
+            }
             padding-left:15px;
             max-width: 200px !important;
         }
@@ -99,7 +101,7 @@
         }
 
         @media (max-width: @small_screen_width) {
-            font-size:2.5em;
+            font-size:2em;
         }
     }
 
@@ -113,24 +115,17 @@
     }
 
     p{
+        font-size:2em;
         color:initial;
         @media (max-width: @small_screen_width) {
-            font-size:2.5em;
+            font-size:1.5em;
         }
     }
 
     h2{
-        font-size:3em;
+        font-size:2em;
         font-weight:normal;
         color:@sal_blue;
-
-        @media (max-width: @medium_screen_width) {
-            font-size:2.5em;
-        }
-
-        @media (max-width: @small_screen_width) {
-            font-size:2.5em;
-        }
     }
 }
 

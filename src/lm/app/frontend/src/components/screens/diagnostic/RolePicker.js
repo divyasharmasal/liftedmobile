@@ -48,8 +48,7 @@ class RoleLevelPicker extends Component{
       boxClass = "answer no_user_select";
     }
     return (
-      <div class={"roles " + boxClass}
-        onClick={this.handleLevelSelect} 
+      <div class={boxClass} onClick={this.handleLevelSelect} 
       >
         {this.state.showRoles && 
           <p class="prompt">

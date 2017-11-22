@@ -110,10 +110,6 @@ class RoleScreen extends Screen{
               :
               <h1>My job role is...</h1>
             }
-            <p>
-              Note: only legal support and in-house counsel roles are
-              available for now.
-            </p>
             {this.renderRolePicker(this.state.roles)}
           </div>
         </div>

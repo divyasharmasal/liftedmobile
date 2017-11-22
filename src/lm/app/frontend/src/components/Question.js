@@ -103,7 +103,7 @@ export default class Question extends Component{
       <div className="question">
         {qnData.text && <h1>{qnData.text}</h1>}
         {this.props.isMultiQn &&
-          <p>(you can choose more than one)</p>
+          <p class="choose_more_than_one">(you can choose more than one)</p>
         }
         {optionBtns}
       </div>
