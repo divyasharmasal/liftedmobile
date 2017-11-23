@@ -26,7 +26,7 @@ if __name__ == "__main__":
     scripts_path = os.path.join(scripts_docker_dir, "scripts")
     docker_path = os.path.join(scripts_docker_dir, "docker")
 
-    push_command = "./scripts/admin_server/prod/push_prod.sh '" + ssh_command + "'"
+    push_command = "sh ./scripts/admin_server/prod/push_prod.sh '" + ssh_command + "'"
     mkdir_command = ssh_command + "\"mkdir -p ~/run\""
 
     scp_command = "scp -P {port} -i '{cred_filepath}' -r {scripts} {docker} {userhost}:~/run"\
@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     run_command = ssh_command + "\"cd run && ./scripts/admin_server/prod/run_prod.sh\""
 
-    print(push_command)
     print(mkdir_command)
     print(scp_command)
+    print(push_command)
     print(run_command)

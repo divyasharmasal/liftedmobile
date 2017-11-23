@@ -17,7 +17,7 @@ COPY ./docker/admin_server/supervisor_scrapyd.ini /etc/supervisor.d/
 
 ENV PYTHONUNBUFFERED 1 
 
-WORKDIR /scraper
+WORKDIR /scraper/scraper
 
 CMD supervisord -c /etc/supervisord.conf                                   && \
     while sleep 3600; do :; done

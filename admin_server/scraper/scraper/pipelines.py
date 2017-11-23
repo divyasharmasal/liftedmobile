@@ -18,18 +18,6 @@ class ScraperPipeline(object):
         self.urls = []
 
 
-    def convert_to_isodate(self, date):
-        """
-        Convert a datestring like "01 Nov 2017" to a
-        Asia/Singapore ISO datetime string.
-        """
-
-        d = datetime.datetime.strptime(date, "%d %b %Y")
-        tz = pytz.timezone("Asia/Singapore")
-
-        return tz.localize(d, is_dst=None).isoformat()
-
-
     def close_spider(self, spider):
         payload = {
             "k": settings.SCRAPYD_API_KEY,
@@ -59,26 +47,9 @@ class ScraperPipeline(object):
         if "NOPUSH" in os.environ:
             return item
 
-        start_date = item["start_date"]
-        end_date = item["end_date"]
-
-        if start_date is not None:
-            start_date = self.convert_to_isodate(start_date)
-
-        if end_date is not None:
-            end_date = self.convert_to_isodate(end_date)
-
-        item_dict = {
-            "name": item["name"],
-            "url": item["url"],
-            "start_date": start_date,
-            "end_date": end_date,
-            "upcoming": item["upcoming"],
-        }
-
         payload = {
             "k": settings.SCRAPYD_API_KEY,
-            "c": json.dumps(item_dict),
+            "c": json.dumps(dict(item)),
             "spider_name": spider.name,
         }
 

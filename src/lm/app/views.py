@@ -353,6 +353,7 @@ def _course_json(course, index=None, orig_start_dates=True,
         "url": course.url,
         "level": level_name,
         "format": format_name,
+        "spider_name": course.spider_name,
         "cpd": {
             "points": cpd_points,
             "is_private": points.is_private

@@ -19,10 +19,11 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('is_new', models.BooleanField()),
                 ('name', models.TextField()),
-                ('spider_name', models.TextField()),
                 ('url', models.TextField()),
                 ('start_date', models.DateTimeField(null=True)),
                 ('end_date', models.DateTimeField(null=True)),
+                ('public_cpd', models.FloatField(null=True)),
+                ('spider_name', models.TextField()),
             ],
         ),
     ]

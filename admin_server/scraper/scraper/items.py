@@ -14,4 +14,5 @@ class CourseItem(Item):
     url = Field()
     start_date = Field()
     end_date = Field()
+    public_cpd = Field()
     upcoming = Field()

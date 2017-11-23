@@ -5,14 +5,21 @@ export class Topbar extends Component {
   render(){
     return(
       <div>
-        <div class="section">
-          <a href="/cms" class="logo">
+        <div class="section logo">
+          <a href="/cms">
             <img src="/static/cms/images/plane.png" />
             LIFTED Mobile CMS
           </a>
         </div>
 
         <AccountDropdown />
+
+        <div class="section browse">
+          <a href="/browse" target="_blank">
+            ↪ Public course browser
+          </a>
+        </div>
+
       </div>
     );
   }

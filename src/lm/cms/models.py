@@ -6,6 +6,7 @@ class ScrapedCourse(models.Model):
     is_new = models.BooleanField(null=False)
     name = models.TextField(null=False)
     url = models.TextField(null=False)
-    spider_name = models.TextField(null=False)
     start_date = models.DateTimeField(null=True)
     end_date = models.DateTimeField(null=True)
+    public_cpd = models.FloatField(null=True)
+    spider_name = models.TextField(null=False)

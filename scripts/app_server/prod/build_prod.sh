@@ -1,5 +1,6 @@
 #!/bin/sh
 
+echo "Building the app server..."
 yes | docker-compose -f docker/app_server/docker-compose.prod.yml stop
 yes | docker-compose -f docker/app_server/docker-compose.prod.yml rm
 docker-compose -f docker/app_server/docker-compose.prod.yml build #--no-cache

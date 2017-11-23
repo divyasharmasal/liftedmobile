@@ -58,6 +58,9 @@ def cms_get_unpublished_courses_data(request):
             "id": scraped_course.id,
             "name": scraped_course.name,
             "url": scraped_course.url,
+            "cpd": {
+                "points": scraped_course.public_cpd,
+            },
             "start_date": start_date,
             "end_date": end_date,
             "spider_name": scraped_course.spider_name,
@@ -127,7 +130,7 @@ def save_course(request):
     body = json.loads(_bytes_to_utf8(request.body))
 
     # validate input
-    id = name = cost = url = level_name = cpd_points = \
+    spider_name = id = name = cost = url = level_name = cpd_points = \
         cpd_is_private = format_name = is_published = None
 
     is_new = "is_new" in body.keys() and body["is_new"]
@@ -143,6 +146,7 @@ def save_course(request):
         cpd_is_private = body["cpdIsPrivate"]
         format_name = body["format"]
         is_published = body["is_published"]
+        spider_name = body["spider_name"]
     except:
         import traceback
         traceback.print_exc()
@@ -206,7 +210,7 @@ def save_course(request):
             scraped_course.save()
 
         # Course
-        course = app_models.Course(name=name, url=url, cost=cost)
+        course = app_models.Course(name=name, url=url, cost=cost, spider_name=spider_name)
         course.save()
 
         # CPD
@@ -353,10 +357,10 @@ def scraper_sync_urls(request):
     urls =json.loads(request.POST["urls"])
 
     # Delete scraped courses that aren't in the URL list
-    models.ScrapedCourse.objects\
-        .exclude(url__in=urls,
-                 spider_name=spider_name)\
-        .delete()
+    (models.ScrapedCourse.objects
+     .filter(spider_name=spider_name)
+     .exclude(url__in=urls)
+     .delete())
 
     return json_response("ok")
 
@@ -371,20 +375,26 @@ def scraper_add_course(request):
     # Parse course data
     course_data = None
     spider_name = None
+
     try:
         course_data = json.loads(request.POST["c"])
-        spider_name = request.POST["spider_name"]
     except:
         return HttpResponseServerError("Invalid or missing course data")
+
+    try:
+        spider_name = request.POST["spider_name"]
+    except:
+        return HttpResponseServerError("Invalid or missing spider name")
 
     # Validate course_data here
     if len(course_data.keys()) == 0:
         return HttpResponseServerError("Empty course data JSON")
 
     # Do nothing if a ScrapedCourse with the same data exists:
-    if models.ScrapedCourse.objects\
+    if models.ScrapedCourse.objects \
         .filter(name=course_data["name"],
                 url=course_data["url"],
+                public_cpd=course_data["public_cpd"],
                 spider_name=spider_name,
                 start_date=course_data["start_date"],
                 end_date=course_data["end_date"]).exists():
@@ -401,14 +411,14 @@ def scraper_add_course(request):
         print("Found a matching Course")
         return json_response("Found matching Course")
 
-    # TODO: what to do if there is a matching course with different data?
-    # pin to URL?
-    # delete old courses?
+    # TODO: update published matching courses with the same URL
+
 
     # Otherwise, update/create the ScrapedCourse:
     scraped_course, created = models.ScrapedCourse.objects.update_or_create(
         defaults={"start_date": course_data["start_date"],
                   "end_date": course_data["end_date"],
+                  "public_cpd": course_data["public_cpd"],
                   "name": course_data["name"],
               },
         spider_name=spider_name,

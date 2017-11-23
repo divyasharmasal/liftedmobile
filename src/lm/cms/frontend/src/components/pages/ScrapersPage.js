@@ -9,13 +9,15 @@ export class ScrapersPage extends Component {
     const extractScrapers = (data, status) => {
       return data.map(d => {
         d.status = status;
-        d.end_time = new Date(Date.parse(d.end_time + " GMT"));
         d.start_time = new Date(Date.parse(d.start_time + " GMT"));
+        d.end_time = new Date(Date.parse(d.end_time + " GMT"));
+
         return d;
       });
     }
 
     const filterLatest = scrapers => {
+      console.log(scrapers)
       let nameStartTimes = {};
       scrapers.forEach(s => {
         if (Object.keys(nameStartTimes).indexOf(s.spider) > -1){
@@ -60,6 +62,14 @@ export class ScrapersPage extends Component {
       sal: {
         name: "SAL Events",
         url: "https://www.sal.org.sg/Events/View-All-Events/Date-Desc"
+      },
+      calas: {
+        name: "SILE CALAS",
+        url: "https://www.silecpdcentre.sg/calas/",
+      },
+      lawsoc: {
+        name: "LawSoc",
+        url: "http://www.lawsoc.org.sg",
       }
     };
     return details[spiderName];
@@ -133,8 +143,8 @@ class ScraperControl extends Component {
 
         <p>Status: {this.props.scrapydData.status}</p>
         <p>
-          Last scrape started: {
-            format(this.props.scrapydData.start_time, "ddd DD MMM YYYY, HH:MM:SS Z")}
+          Most recent scrape at: {
+            format(this.props.scrapydData.start_time, "ddd DD MMM YYYY, HH:mm:ss Z")}
         </p>
         <p>ID: {this.props.scrapydData.id}</p>
 

@@ -37,6 +37,7 @@ services:
             - LM_DB_PWD=fGWJTw2Dbpa2p547brXEVjXyzHZu9puytcAaA9mY 
         ports:
             - "90:80"
+            - "91:443"
         expose:
             - "80"
         logging:

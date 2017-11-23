@@ -167,7 +167,9 @@ class CourseEditor extends Component{
 			start_dates: course.start_dates,
 			is_published: !this.state.unpublished,
       is_new: course.isNew,
+      spider_name: course.spider_name,
 		};
+    console.log(course.spider_name)
 
 		authPost("/cms/save_course/", data).then(response => {
 			if (response.ok){
@@ -452,6 +454,11 @@ class CourseEditor extends Component{
         </div>
       </div>
 
+    const scrapedFrom =
+      <div class="pure-u-1">
+        <label>Scraped from:</label> {course.spider_name}
+      </div>
+
     let className = "editor " + (this.props.index % 2 === 0 ? "grey_bg" : "");
 
     // For unpublished courses:
@@ -482,6 +489,8 @@ class CourseEditor extends Component{
               invalid={this.state.invalidFields.startDates}
               values={dates} />
           </div>
+
+          {scrapedFrom}
 
           {actions}
         </div>
@@ -518,6 +527,7 @@ class CourseEditor extends Component{
             values={course.start_dates} />
         </div>
 
+        {scrapedFrom}
         {actions}
       </div>
     );
