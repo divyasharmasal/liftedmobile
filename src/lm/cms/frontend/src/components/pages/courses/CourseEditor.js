@@ -168,8 +168,8 @@ class CourseEditor extends Component{
 			is_published: !this.state.unpublished,
       is_new: course.isNew,
       spider_name: course.spider_name,
+      is_manually_added: course.is_manually_added,
 		};
-    console.log(course.spider_name)
 
 		authPost("/cms/save_course/", data).then(response => {
 			if (response.ok){
@@ -456,7 +456,14 @@ class CourseEditor extends Component{
 
     const scrapedFrom =
       <div class="pure-u-1">
-        <label>Scraped from:</label> {course.spider_name}
+        {course.spider_name != null && !course.is_manually_added &&
+          <div>
+            <label>Scraped from:</label> {course.spider_name}
+          </div>
+        }
+        {course.is_manually_added && !course.isNew &&
+          <p>This entry was manually added.</p>
+        }
       </div>
 
     let className = "editor " + (this.props.index % 2 === 0 ? "grey_bg" : "");

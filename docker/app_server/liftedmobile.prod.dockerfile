@@ -38,7 +38,7 @@ RUN apk update                                                              && \
     mkdir -p /var/www/letsencrypt/.well-known/acme-challenge                && \
     yarn cache clean                                                        && \
     apk del build-base python3-dev linux-headers nodejs gnupg libffi-dev       \
-            binutils-gold gcc g++ curl make yarn                            && \
+            binutils-gold gcc g++ curl make yarn openssl-dev                && \
     rm -rf /src/frontend/node_modules /usr/local/share/.config/yarn            \
            /root/.config/yarn/global/node_modules                              \
            /usr/lib/node_modules /var/cache/apk/* /usr/share/man /tmp/*        \
@@ -48,8 +48,6 @@ RUN apk update                                                              && \
            /src/lm/cms/frontend                                                \
            /src/lm/static/app/dist/ssr-build/ /bin/yarn /bin/yarnpkg           \
            /bin/yarn.js /root/.yarn /bin/yarn /bin/yarn.js /bin/yarnpkg
-
-EXPOSE 80
 
 WORKDIR /src/lm
 

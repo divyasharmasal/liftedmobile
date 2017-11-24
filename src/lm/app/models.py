@@ -99,7 +99,8 @@ class Course(models.Model):
     cost = models.DecimalField(decimal_places=2, max_digits=11)
     duration = models.DecimalField(null=True, decimal_places=1, max_digits=6)
     url = models.TextField(null=True)
-    spider_name = models.TextField()
+    spider_name = models.TextField(null=True)
+    is_manually_added = models.NullBooleanField(null=True)
 
 
 class CourseVerticalCategory(models.Model):

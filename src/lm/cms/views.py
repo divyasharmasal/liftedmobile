@@ -147,6 +147,7 @@ def save_course(request):
         format_name = body["format"]
         is_published = body["is_published"]
         spider_name = body["spider_name"]
+        is_manually_added = body["is_manually_added"]
     except:
         import traceback
         traceback.print_exc()
@@ -210,7 +211,11 @@ def save_course(request):
             scraped_course.save()
 
         # Course
-        course = app_models.Course(name=name, url=url, cost=cost, spider_name=spider_name)
+        course = app_models.Course(name=name,
+                                   url=url,
+                                   cost=cost,
+                                   spider_name=spider_name,
+                                   is_manually_added=is_manually_added)
         course.save()
 
         # CPD

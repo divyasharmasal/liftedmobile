@@ -53,6 +53,8 @@ export class PublishedCoursesPage extends Component {
       format: null,
       level: null,
       start_dates: [],
+      spider_name: null,
+      is_manually_added: true,
     };
 
     let courses = this.state.courses;

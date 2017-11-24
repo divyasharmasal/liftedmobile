@@ -37,7 +37,8 @@ class Migration(migrations.Migration):
                 ('cost', models.DecimalField(decimal_places=2, max_digits=11)),
                 ('duration', models.DecimalField(decimal_places=1, max_digits=6, null=True)),
                 ('url', models.TextField(null=True)),
-                ('spider_name', models.TextField()),
+                ('spider_name', models.TextField(null=True)),
+                ('is_manually_added', models.NullBooleanField(null=True)),
             ],
         ),
         migrations.CreateModel(
