@@ -11,13 +11,6 @@ COPY ./docker/admin_server/nginx.conf /nginx.conf
 
 WORKDIR /src
 
-# RUN these to install yarn without apk:
-    #touch ~/.profile                                                        && \ 
-    #curl -o- -L https://yarnpkg.com/install.sh | sh                         && \
-    #ln -s /root/.yarn/bin/yarn /bin/yarn                                    && \
-    #ln -s /root/.yarn/bin/yarnpkg /bin/yarnpkg                              && \
-    #ln -s /root/.yarn/bin/yarn.js /bin/yarn.js                              && \
-
 RUN apk update                                                              && \
     apk --no-cache upgrade                                                  && \
     apk --no-cache add python3 python3-dev postgresql py-psycopg2              \
@@ -44,8 +37,6 @@ RUN apk update                                                              && \
            /src/lm/static/app/fonts/                                           \
            /src/lm/static/app/dist/ssr-build/ /bin/yarn /bin/yarnpkg           \
            /bin/yarn.js /root/.yarn
-
-EXPOSE 80
 
 WORKDIR /src/lm
 

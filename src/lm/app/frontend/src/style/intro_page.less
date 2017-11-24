@@ -1,21 +1,52 @@
 @import (once, less) "../../../../../lib/styles/constants.less";
 
+.sal_logo{
+    padding-top:30px;
+    padding-bottom:15px;
+    margin-left:30px;
+
+    img{
+        height:63px;
+    }
+
+    .lifted{
+        color:@sal_grey;
+        float:right;
+        font-size:2em;
+        font-weight:bold;
+        margin-right:5px;
+        margin-top:5px;
+        letter-spacing:0.4em;
+        @media (max-width: @small_screen_width) {
+        }
+    }
+
+    @media (max-width: @medium_screen_width) {
+        margin-left:5px;
+        padding-top:15px;
+        img{
+            height:50px;
+        }
+    }
+}
+
+.sal_logo.center{
+    text-align:center;
+}
+
+
 .intro{
     display:block;
     background-color:#0071bb;
     border-radius:@border_radius;
     width:100%;
-    height:250px;
+    height:150px;
     margin-bottom:15px;
 
-    .planes img{
-        height:250px;
-        float:right;
-        border-radius:@border_radius;
-    }
-
     .text{
-        font-size:1.5em;
+        p{
+            font-size:2.5em;
+        }
         position: relative;
         top: 50%;
         transform: translateY(-50%);
@@ -23,46 +54,26 @@
         color:white;
         padding-left:30px;
         text-align:left;
-        @media (min-width: @medium_screen_width) {
-            width:500px;
-        }
-    }
-
-    .planes{
-        float:right;
     }
 
     @media (max-width: @medium_screen_width) {
         height:130px;
 
         .text{
-            font-size:1.2em;
-            width:400px;
             padding-left:15px;
-        }
-
-        .planes {
-            width:0%;
-            img{
-                height:130px;
+            p{
+                font-size:2em;
             }
         }
     }
 
     @media (max-width: @small_screen_width) {
-        height:100px !important;
+        height: 80px !important;
         .text{
             p{
                 font-size:1.5em;
             }
             padding-left:15px;
-            max-width: 200px !important;
-        }
-        .planes {
-            width:0%;
-            img{
-                height:100px !important;
-            }
         }
     }
 }
@@ -73,11 +84,11 @@
     margin-bottom: 2em;
 
     @media (max-width: @medium_screen_width) {
-        margin-bottom: 0em;
+        margin-bottom: 0.5em;
     }
 
     &:last-of-type{
-        margin-bottom: 0em;
+        margin-bottom: 0.5em;
     }
 
     a{
@@ -88,15 +99,13 @@
 
     .icon{
         float:right;
-        padding-top:1em;
         margin-right:30px;
 
         @media (max-width: @medium_screen_width) {
             margin-right:1em;
-            padding-top:1em;
+            margin-top:0.5em;
             img{
-                margin-top:0.5em;
-                width:70px;
+                width:60px;
             }
         }
 
@@ -114,18 +123,25 @@
         }
     }
 
-    p{
-        font-size:2em;
-        color:initial;
-        @media (max-width: @small_screen_width) {
-            font-size:1.5em;
-        }
-    }
-
     h2{
-        font-size:1.75em;
+        font-size:2em;
         font-weight:normal;
         color:@sal_blue;
+        @media (max-width: @medium_screen_width) {
+            font-size:1.5em;
+            padding-left:15px;
+        }
+    }
+}
+
+.credits{
+    float:left;
+    width:100%;
+    text-align:center;
+    margin-top:3em;
+    color: @sal_grey;
+    a { 
+        color:grey;
     }
 }
 

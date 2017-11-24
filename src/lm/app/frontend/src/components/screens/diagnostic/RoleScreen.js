@@ -25,7 +25,7 @@ class RoleScreen extends Screen{
 
       if (this.props.isNextRole){
         const role = this.props.selectedOptions["role"];
-        url += "&r=" + encodeURIComponent(role);
+        url += "&r=" + encodeURIComponent(role.id);
       }
 
       url += "&o=" + encodeURIComponent(workplace) +
@@ -35,7 +35,7 @@ class RoleScreen extends Screen{
     else{
       if (this.props.isNextRole){
         const role = this.props.selectedOptions["role"];
-        url += "&r=" + encodeURIComponent(role);
+        url += "&r=" + encodeURIComponent(role.id);
       }
       url += "&v=" + encodeURIComponent(verticalId)
     }

@@ -105,7 +105,7 @@ class RolePicker extends Component{
     return (
       <div class="role_picker">
         <p class="prompt">
-          If you see your job role in any of these boxes, select it:
+          Select the best fit:
         </p>
         {levelSections}
       </div>

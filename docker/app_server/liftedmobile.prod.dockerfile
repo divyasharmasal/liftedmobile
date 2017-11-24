@@ -14,10 +14,9 @@ WORKDIR /src
 RUN apk update                                                              && \
     apk --no-cache upgrade                                                  && \
     apk --no-cache add python3 python3-dev postgresql py-psycopg2              \
-        curl gnupg nodejs linux-headers build-base openssl-dev                 \
+        curl gnupg nodejs linux-headers build-base                             \
         libffi-dev bash py3-lxml geoip nginx-mod-http-geoip                 && \ 
     pip3 --no-cache-dir install --upgrade pip                               && \
-    pip3 --no-cache-dir install certbot certbot-nginx                       && \
     pip3 --no-cache-dir install -r /src/requirements.txt                    && \
     apk --no-cache add yarn --repository                                       \
         http://dl-3.alpinelinux.org/alpine/edge/community                   && \
@@ -35,10 +34,9 @@ RUN apk update                                                              && \
     yarn add gulp                                                           && \
     echo "Running gulp deploy on frontend"                                  && \
     gulp deploy --gulpfile /src/lm/app/frontend/gulpfile.js                 && \
-    mkdir -p /var/www/letsencrypt/.well-known/acme-challenge                && \
     yarn cache clean                                                        && \
     apk del build-base python3-dev linux-headers nodejs gnupg libffi-dev       \
-            binutils-gold gcc g++ curl make yarn openssl-dev                && \
+            binutils-gold gcc g++ curl make yarn                            && \
     rm -rf /src/frontend/node_modules /usr/local/share/.config/yarn            \
            /root/.config/yarn/global/node_modules                              \
            /usr/lib/node_modules /var/cache/apk/* /usr/share/man /tmp/*        \

@@ -6,11 +6,49 @@ Legal practitioner: (DUE END NOV)
         plus crim OR plus ip OR plus b&c OR plus family or no specialism
     3. ..
         plus crim OR plus ip OR plus b&c OR plus family or no specialism
-================
-- End-Nov: presentation to CJ + beta testing
-- Jan: launch
 
-- Anita's leave: 8-28 Dec
+-------------------------------------------
+
+Done:
+- Identify your learning needs.
+- Are you tech savvy?
+- Browse CPD courses
+- Change diag button to "Show me my learning needs"
+- Fix bug in "Prepare for your next role"
+- Legal learning made simple.
+- "L I F T E D" at top right
+- Make hyperlinks throughout the site @sal_blue
+- Job role titles - blue
+- Reduce spacing in results page
+- "You're off to a great start! Here's more to learn:"
+- Add "I can" to the tech competencies
+- In results, underline the competency category names
+- Change /what to "I want to develop my ..."
+- /review/role: Select the the best fit:
+- /tech screen: add space between ellipses
+- "I am a ..."
+    - Legal tech innovator
+    - ...
+- Use category titles instead of option text in the /what screen
+- Change "Updates about my own niche" to "... specialisms"
+- Change the competency category names back to the originals
+- Reduce font size further  
+    - Relative size of options vs question text
+- Font size issues in /choose
+- Mobile sorter font size
+- Enable pinch zoom
+
+-------------------------------------------
+
+- Course provider field for courses. As far as possible, scrape it.
+
+- Deduplicate scraped courses
+- (Title, date provider) - use to check for overlaps (?)
+
+- Course sync system!
+
+- For the diag screen, shift unanswered questions to the bottom after
+  the "please compelete all qns" prompt if there are unanswered qns.
 
 - Competency category and verticals in CMS
     - each course should have up to 3 LIFTED keys
@@ -31,12 +69,6 @@ Legal practitioner: (DUE END NOV)
   reading section. Journals Online.
 
 - check the CC licenses for icons
-
-Check with Inga about L3 specialist roles not having specialism
-competencies...
-
-EB meeting: 31st October
- - LP vertical should be done already
 
 All-in-one CMS
   - do a code generator for 3rd party
@@ -62,3 +94,9 @@ Unit testing
 Server logging
   - Set up graylog server
   - Link CloudWatch to graylog
+
+- End-Nov: presentation to CJ + beta testing
+- Jan: launch
+
+- Anita's leave: 8-28 Dec
+

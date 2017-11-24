@@ -33,7 +33,7 @@ gulp.task('build', shell.task([
 
 // Run preact build in production mode, and delete JS sourcemaps
 gulp.task('build-prod', shell.task([
-  'preact build --no-prerender --clean --dest ../static/app/dist/',
+  'preact build --service-worker false --no-prerender --clean --dest ../static/app/dist/',
   'echo "Deleting sourcemaps..."',
   'rm -rf ../static/app/dist/*.map',
   'rm -rf ../static/app/dist/ssr-build',

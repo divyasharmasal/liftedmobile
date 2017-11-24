@@ -5,6 +5,8 @@ import parse from "date-fns/parse";
 import isValid from "date-fns/is_valid";
 import ScrollableAnchor from 'react-scrollable-anchor';
 import { configureAnchors } from 'react-scrollable-anchor';
+import { LiftedKeyInput } from "./LiftedKeyInput";
+
 configureAnchors({
   offset:-20,
   scrollDuration: 0,
@@ -384,6 +386,13 @@ class CourseEditor extends Component{
           value={course.format} formats={this.props.formats} />
       </div>
 
+    const liftedKeyInput =
+      <div class="pure-u-1-2 pure-u-sm-2-5">
+        <LiftedKeyInput
+          disabled={this.state.hasSaved && this.state.unpublished}
+        />
+      </div>
+
     const saveOrPublish = this.state.unpublished ? "Publish" : "Save";
 
     const actions = 
@@ -497,6 +506,8 @@ class CourseEditor extends Component{
               values={dates} />
           </div>
 
+          {liftedKeyInput}
+
           {scrapedFrom}
 
           {actions}
@@ -533,6 +544,8 @@ class CourseEditor extends Component{
             invalid={this.state.invalidFields.startDates}
             values={course.start_dates} />
         </div>
+
+        {liftedKeyInput}
 
         {scrapedFrom}
         {actions}

@@ -2,10 +2,13 @@
 <html lang="en">
     <head>
         <title>LIFTED Mobile</title>
-        <meta content="width=device-width, initial-scale=1.0, 
-                       maximum-scale=1.0, user-scalable=no" 
-                       name="viewport"/>
-        <meta charset="utf-8">
+        <!--<meta content="width=device-width, initial-scale=1.0, -->
+                       <!--maximum-scale=1.0, user-scalable=yes" -->
+                       <!--name="viewport"/>-->
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <meta charset="utf-8" />
+
         {% if DEV %}
             <link rel="manifest" href="http://0.0.0.0:8080/manifest.json?v={{ cache_bust }}" />
         {% else %}

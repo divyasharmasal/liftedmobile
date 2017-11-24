@@ -129,7 +129,7 @@ class DiagScreen extends Screen{
     const numQns = Object.keys(this.state.diag).length
 
     let warning;
-    let disabled;
+    let disabled = "";
 
     if (this.state.toHighlight.length > 0 && numAnswered < numQns){
       warning = (
@@ -151,7 +151,7 @@ class DiagScreen extends Screen{
         }
       }}
         class={"no_user_select diag_button " + disabled}>
-        Find out my learning needs
+        Show me my learning needs
       </a>
     );
 
@@ -162,7 +162,7 @@ class DiagScreen extends Screen{
         <div class="pure-u-1">
           {this.renderStartOver(this.props.techRole != null)}
           <div className="diag question">
-            <h2>As a {roleName}...</h2>
+            <h2>As a {roleName} <wbr />...</h2>
             {this.renderQns(this.state.diag, this.state.toHighlight)}
             {warning}
             {btn}

@@ -88,7 +88,7 @@ export default class Question extends Component{
         <div class={answerClass}
              onClick={() => {this.handleOptionClick(option.id)}}>
           {this.props.isMultiQn &&
-            <div class="option_tick">
+            <div class="option_tick no_user_select">
               <img src="/static/app/dist/images/tick.png" />
             </div>
           }

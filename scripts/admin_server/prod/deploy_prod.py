@@ -23,8 +23,9 @@ if __name__ == "__main__":
 
     ssh_command = "ssh " + ssh_args
 
-    scripts_path = os.path.join(scripts_docker_dir, "scripts")
-    docker_path = os.path.join(scripts_docker_dir, "docker")
+    # TODO: relative path
+    scripts_path = os.path.join("scripts")
+    docker_path = os.path.join("docker")
 
     push_command = "sh ./scripts/admin_server/prod/push_prod.sh '" + ssh_command + "'"
     mkdir_command = ssh_command + "\"mkdir -p ~/run\""

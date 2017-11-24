@@ -25,7 +25,7 @@ const stars = score => {
     stars.push(empty);
   }
 
-  return <span class="stars">{stars}</span>;
+  return <p class="stars">{stars}</p>;
 }
 
 
@@ -65,24 +65,24 @@ class CategoryCourses extends Component{
             }}>
             {this.props.categoryName + " " + toggleArrow}
           </p>
-          <p class="results">
-            {stars(this.props.results[this.props.categoryName].score)}
-          </p>
+          {stars(this.props.results[this.props.categoryName].score)}
         </div>
 
-        <div class={"course_table " + showHide}>
-          {this.props.results[this.props.categoryName].score === 100 &&
-            <p class="great">
-              Great, you're all covered. Here are some programmes to
-            take you to the next level:</p>
-          }
-          {this.props.showBackToTop &&
-            <p class="back_to_top"><a href="#top">back to top</a></p>
-          }
+        {this.state.show &&
+          <div>
+            {this.props.results[this.props.categoryName].score === 100 &&
+              <p class="great">
+                You're off to a great start! Here's more to learn:
+              </p>
+            }
+            {this.props.showBackToTop &&
+              <p class="back_to_top"><a href="#top">back to top</a></p>
+            }
 
-          <Courses courses={this.props.courseList} />
+            <Courses courses={this.props.courseList} />
 
-        </div>
+          </div>
+        }
       </div>
     );
   }
@@ -338,7 +338,7 @@ class DiagResultsScreen extends Screen{
         <a name="top"></a>
         <div className="pure-u-1">
           {this.renderStartOver()}
-          <div className="question results">
+          <div className="results">
             <h1>Your competencies</h1>
             <p>Click on each name below to jump to courses that help you to improve.</p>
             <div class="competencies">

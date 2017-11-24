@@ -19,51 +19,27 @@
     font-family: Lato, Arial !important;
 }
 
+a{
+    text-decoration:underline;
+    color: @link_blue;
+}
+
 html, body{
-    font-size:0.90em;
+    font-size:15px;
 }
 
 .terms_of_use{
     p, ul, table{
-        font-size:1.5em;
+        font-size:1em;
     }
-}
-
-.sal_logo{
-    padding-top:30px;
-    padding-bottom:15px;
-    margin-left:30px;
-    img{
-        height:63px;
-    }
-
-    @media (max-width: @medium_screen_width) {
-        margin-left:0px;
-        padding-top:15px;
-        img{
-            height:50px;
-        }
-    }
-}
-
-.sal_logo.center{
-    text-align:center;
-}
-
-.credits{
-    float:left;
-    width:100%;
-    text-align:center;
-    margin-top:15vh;
-    font-size:0.6em;
 }
 
 .top_nav_link{
     cursor:pointer;
     display:block;
-    font-size: 1.5em;
     text-decoration:none;
-    margin-top:5px;
+    margin-top:3px;
+    font-size:1.25em;
     color:@sal_blue;
     &:visited{
         color:@sal_blue;
@@ -82,11 +58,11 @@ h1{
     text-align:center;
     font-weight: normal;
     color: @sal_blue;
-    font-size: 3em;
+    font-size: 2em;
 }
 
 p{
-    font-size:2em;
+    font-size:1em;
 }
 
 hr{
@@ -102,7 +78,6 @@ hr{
     bottom:0px;
     left:0px;
     width: 100%;
-    /*width:1280px;*/
     background-color:@sal_blue;
     color:white;
     z-index:999;
@@ -113,7 +88,7 @@ hr{
     p{
         margin-top:5px;
         margin-bottom:5px;
-        font-size:1.5em;
+        font-size:1.25em;
     }
 
     a{
@@ -146,8 +121,8 @@ hr{
     p{
         text-align:center;
     }
-    h1{
-        font-size:4em;
+    .courses{
+        margin-bottom:60px;
     }
 }
 
@@ -187,12 +162,13 @@ hr{
 .question{
     margin-top: 100px;
     text-align:center;
+
     p{
         font-size:1.5em;
     }
 
     h2{
-        font-size:2em;
+        font-size:1.5em;
         font-weight:bold;
         color: @sal_blue;
     }
@@ -200,7 +176,7 @@ hr{
     .answer{
         cursor:pointer;
         color:black;
-        font-size: 2em;
+        font-size: 1.5em;
         border: 1px solid #585757;
         border-radius: @border_radius;
         text-align:center;
@@ -209,42 +185,20 @@ hr{
         padding-top:15px;
         padding-bottom:15px;
         margin-bottom:15px;
-
-        /*.emoji{*/
-            /*width:40px;*/
-            /*height:40px;*/
-            /*-webkit-user-drag: none;*/
-            /*-khtml-user-drag: none;*/
-            /*-moz-user-drag: none;*/
-            /*-o-user-drag: none;*/
-            /*user-drag: none;*/
-        /*}*/
     }
 
-    /*.answer.has_emoji{*/
-        /*height:40px;*/
-    /*}*/
 
     .option_tick{
         visibility:hidden;
-        /*display:none;*/
         float:left;
         margin-right: 0;
         img{
             width: 20px;
-
             -webkit-user-drag: none;
             -khtml-user-drag: none;
             -moz-user-drag: none;
             -o-user-drag: none;
             user-drag: none;
-
-            user-select:none;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
         }
     }
     
@@ -296,7 +250,7 @@ hr{
 }
 
 .courses{
-    margin-bottom:75px;
+    width:100%;
 
     .mobile_only{
         display:none;
@@ -311,6 +265,10 @@ hr{
         user-select:none;
 
         text-align:center;
+        font-size:1.25em;
+        @media (max-width: @small_screen_width) {
+            font-size:1em;
+        }
 
         a{
             display:inline-block;
@@ -329,22 +287,18 @@ hr{
         }
     }
 
-    width:100%;
     p, h2{
         text-align:center;
-    }
-
-    h2{
-        font-size:3.5em;
-        font-weight: normal;
-        color: @sal_blue;
-        margin-bottom:20px;
     }
 }
 
 .diag{
+    h2{
+        margin-bottom:30px;
+    }
+
     .highlight{
-        width:100%;
+        min-width:80%;
         display:inline-block;
         background-color:#ffe6e6;
         border-radius: @border_radius;
@@ -359,12 +313,9 @@ hr{
     }
 
     .diag_qn{
-        margin-bottom:80px;
+        margin-bottom:40px;
         width:100%;
         float:left;
-        p{
-            font-size:2em;
-        }
 
         .diag_whatsthis{
             cursor:pointer;
@@ -418,33 +369,54 @@ hr{
     }
 
     .diag_button{
+        color: @sal_blue;
         display:inline-block;
         cursor: pointer;
-        font-size: 2em;
+        border-radius: @border_radius;
+        border: 1px solid;
+
+        font-size: 1.75em;
         font-weight:bold;
+
         line-height: 3em;
+        margin-bottom: 15px;
+
         padding-top:1em;
         padding-bottom:1em;
         padding-left:2em;
         padding-right:2em;
-        color: @sal_blue;
-        margin-bottom: 1.0rem;
-        border: 1px solid;
-        border-radius: @border_radius;
     }
 }
 
 .results {
+    float:left;
+    margin-left:auto;
+    margin-right:auto;
+
+    h1{
+        font-size:1.5em;
+    }
+
     .stars{
+        margin:0;
         color:@sal_blue;
+    }
+
+    p{
+        text-align:center;
+        font-size:1.25em;
+    }
+    .sorter{
+        p{
+            font-size:1rem;
+        }
     }
 
     .competencies{
         table{
             margin:auto;
-            font-size:1.5em;
             thead{
-                line-height:1.5em;
+                line-height:1em;
                 th{
                     text-align:left;
                     padding:0.25em;
@@ -476,27 +448,29 @@ hr{
 
 .diag_courses{
     .result_category{
-        margin-bottom:40px;
+        text-align:center;
+        margin-bottom:10px;
+
+        float:left;
+        width:100%;
+
+        .course_category{
+            float:left;
+            width:100%;
+            margin-bottom:10px;
+        }
     }
 
     .result_courses{
         .hide{
             display:none;
         }
-
-        .great{
-            font-size:1em;
-        }
-
     }
     .category_name{
         cursor:pointer;
         font-weight:bold;
-        display:inline-block;
-        font-size:1.5em;
-        @media (max-width: @small_screen_width) {
-            font-size:1.5em;
-        }
+        text-decoration:underline;
+        font-size:1.25em;
     }
 
     .not_found{
@@ -512,43 +486,24 @@ hr{
     }
 }
 
-.role_picker{
-    .role_name{
-        font-weight:bold;
-    }
-
-    .answer{
-        font-size:1em;
-    }
-
-    .level{
-        margin-bottom:20px;
-
-        @media (max-width: @small_screen_width) {
-            font-size:1em;
-        }
-
-        .answer{
-            @media (max-width: @small_screen_width) {
-                font-size:1em;
-            }
-        }
-
-        .level_text{
-            font-weight:bold;
-            font-size:1.25em;
-        }
-
+.question{
+    .role_picker{
         .prompt{
-            font-weight:bold;
             font-size:1.25em;
         }
-
-        .roles{
-            font-size:1em;
-
-            .desc{
-                font-size:1em;
+        .level{
+            p.level_text{
+                font-weight:bold;
+                font-size:1.25em;
+            }
+            .answer{
+                p{
+                    font-size:1em;
+                }
+                .role_name{
+                    color:@sal_blue;
+                    font-weight:bold;
+                }
             }
         }
     }
@@ -556,10 +511,6 @@ hr{
 
 
 @media (max-width: @medium_screen_width) {
-    .credits{
-        font-size:0.6em;
-    }
-
     *, html, body {
         font-family: Lato, Arial;
         /*font-size:1em;*/
@@ -578,11 +529,7 @@ hr{
 
 	.full_review,
     .start_over{
-        font-size:1.25em;
-    }
-
-    p{
-        /*font-size:1em;*/
+        font-size:1em;
     }
 
     hr{
@@ -591,12 +538,6 @@ hr{
         margin-left:5%;
         margin-top:15px;
         margin-bottom:15px;
-    }
-
-    .rec_courses{
-        h1{
-            font-size:2.5em;
-        }
     }
 
     .diag{
@@ -627,7 +568,7 @@ hr{
                 text-align:center;
 
                 p{
-                    font-size:1.5em;
+                    font-size:1.25em;
                     margin-top:24px;
                 }
             }
@@ -639,13 +580,12 @@ hr{
             .answer{
                 width:40px;
                 height:25px;
-                padding-top:12px;
             }
         }
 
         .diag_button{
-            padding: .5em .5em;
-            line-height: 1.2em;
+            padding: 0.75em 0.75em;
+            line-height: 1.5em;
             display: inline-block;
             height: initial;
         }
@@ -666,7 +606,6 @@ hr{
         }
 
         .tile{
-            font-size: 2em;
             margin-bottom:5px;
             padding: 10px 6px; 
             
@@ -707,21 +646,12 @@ hr{
             font-size:0.8em;
         }
     }
-
-    .results {
-        .competencies{
-            table{
-                /*font-size:1em;*/
-            }
-        }
-    }
-
 }
 
 @media (max-width: @small_screen_width) {
     .question {
         .choose_more_than_one{
-            font-size:1.5em;
+            font-size:1.25em;
         }
 
         .role_option_text{
@@ -729,7 +659,7 @@ hr{
         }
 
         h1{
-            font-size:2.5em;
+            font-size:1.75em;
         }
 
         .answer{

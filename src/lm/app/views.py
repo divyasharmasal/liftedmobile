@@ -66,33 +66,33 @@ def qns_and_opts(request):
         }
         for v in models.Vertical.objects.all()]
 
-    qn1 = create_qn("I am...", qn1_opts)
+    qn1 = create_qn("I am ...", qn1_opts)
 
     qn2_opts = {}
     for row in models.VerticalCategory.objects.all():
         opt_num = row.vertical_id
         if opt_num not in qn2_opts:
             qn2_opts[opt_num] = []
-        qn2_opts[opt_num].append({"text": row.option, "id": row.id})
+        qn2_opts[opt_num].append({"text": row.name, "id": row.id})
 
-    qn2 = create_qn("I want to develop my abilities in...", qn2_opts)
+    qn2 = create_qn("I want to develop my ...", qn2_opts)
 
     qn3_opts = []
     for row in models.Need.objects.all():
         qn3_opts.append({"text": row.option, "id": row.id})
-    qn3 = create_qn("I want to focus on...", qn3_opts)
+    qn3 = create_qn("I want to focus on ...", qn3_opts)
 
     qn4_opts = [
         {"text": "A law firm.", "id": "Law firm"},
         {"text": "A corporation or organisation.", "id": "In-house"}
     ]
-    qn4 = create_qn("I work at...", qn4_opts)
+    qn4 = create_qn("I work at ...", qn4_opts)
 
     qn5_opts = [
         {"text": "Prepare for my next job or role.", "id": 0},
         {"text": "Get better at my current job.", "id": 1}
     ]
-    qn5 = create_qn("I want to...", qn5_opts)
+    qn5 = create_qn("I want to ...", qn5_opts)
 
     tech_roles = [{
         "text": v.option,
@@ -100,7 +100,7 @@ def qns_and_opts(request):
         "id": v.id
     } for v in models.TechRole.objects.all()]
 
-    tech_role_qn = create_qn("I am...", tech_roles)
+    tech_role_qn = create_qn("I am a ...", tech_roles)
 
     qns = {
         "vertical": qn1,
