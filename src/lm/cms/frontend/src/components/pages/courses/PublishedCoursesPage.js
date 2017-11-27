@@ -16,6 +16,7 @@ export class PublishedCoursesPage extends Component {
           courses: data.courses,
           levels: data.levels,
           formats: data.formats,
+          verticals: data.verticals,
         });
       });
     });
@@ -105,6 +106,7 @@ export class PublishedCoursesPage extends Component {
               course={course} 
               levels={this.state.levels}
               formats={this.state.formats}
+              verticals={this.state.verticals}
               handleDelete={() => {this.handleDelete(index) }}
             />
           )}

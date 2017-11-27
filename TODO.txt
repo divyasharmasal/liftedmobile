@@ -87,6 +87,8 @@ All-in-one CMS
 
 Resume function
 
+Optimise /cms/get_published_courses_data/
+
 Make push_prod do all deployment work
 
 Unit testing

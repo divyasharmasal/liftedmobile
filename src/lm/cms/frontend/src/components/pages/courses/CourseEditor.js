@@ -31,8 +31,8 @@ class CourseEditor extends Component{
     course.cpd.isPrivate = course.cpd.is_private;
     delete course.cpd.is_private;
 
-    // Unpublished courses only provide the start_date attributem, instead of a
-    // list of start dates.
+    // Unpublished courses only provide the start_date attribute,
+    // instead of a list of start dates.
     if (Object.keys(course).indexOf("start_date") > -1){
       if (course.start_date == null){
         course.start_dates = [];
@@ -45,6 +45,10 @@ class CourseEditor extends Component{
     course.start_dates = course.start_dates.map(
       date => format(date, "DD/MM/YYYY")
     );
+
+    if (Object.keys(course).indexOf("is_manually_added") === -1){
+      course.is_manually_added = false;
+    }
 
     this.state = {
       course: course,
@@ -156,6 +160,17 @@ class CourseEditor extends Component{
   }
 
 
+  handleLiftedKeyChange = liftedKeys => {
+    let course = this.state.course;
+    course.lifted_keys = liftedKeys;
+    course.hasChanged = true;
+
+    let invalidFields = this.state.invalidFields;
+    invalidFields.liftedKeys = false;
+    this.setState({ course, invalidFields });
+  }
+
+
 	saveCourseData = course => {
 		let data = {
 			id: course.id, 
@@ -170,6 +185,7 @@ class CourseEditor extends Component{
 			is_published: !this.state.unpublished,
       is_new: course.isNew,
       spider_name: course.spider_name,
+      lifted_keys: course.lifted_keys,
       is_manually_added: course.is_manually_added,
 		};
 
@@ -251,6 +267,28 @@ class CourseEditor extends Component{
       startDates.length > 0 && 
       startDates.every(isValidDate);
 
+    const keysAreUnique = dicts => {
+      console.log(dicts.length)
+      for (let i=0; i < dicts.length; i++){
+        for (let j=0; j < dicts.length; j++){
+          if (i !== j 
+              && dicts[i].vertical_name === dicts[j].vertical_name
+              && dicts[i].vertical_category_name === dicts[j].vertical_category_name){
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    const validLiftedKeys = 
+      course.lifted_keys.length > 0 &&
+      keysAreUnique(course.lifted_keys) &&
+      course.lifted_keys.every(
+        lifted_key => lifted_key.vertical_name != null &&
+                      lifted_key.vertical_category_name != null
+      );
+
     let valid = (
       validCpd &&
       validName &&
@@ -258,7 +296,8 @@ class CourseEditor extends Component{
       validCost &&
       validLevel &&
       validFormat &&
-      validStartDates);
+      validStartDates &&
+      validLiftedKeys);
 
     if (valid){
       this.saveCourseData(course);
@@ -273,7 +312,8 @@ class CourseEditor extends Component{
           cost: !validCost,
           level: !validLevel,
           format: !validFormat,
-          startDates: !validStartDates
+          startDates: !validStartDates,
+          liftedKeys: !validLiftedKeys,
         },
       });
     }
@@ -387,9 +427,13 @@ class CourseEditor extends Component{
       </div>
 
     const liftedKeyInput =
-      <div class="pure-u-1-2 pure-u-sm-2-5">
+      <div class="pure-u-1">
         <LiftedKeyInput
           disabled={this.state.hasSaved && this.state.unpublished}
+          values={course.lifted_keys}
+          verticals={this.props.verticals}
+          invalid={this.state.invalidFields.liftedKeys}
+          handleValueChange={this.handleLiftedKeyChange}
         />
       </div>
 
@@ -875,7 +919,8 @@ class DateListInput extends Component{
         </div>
         <div class="list_input_col">
           {this.state.items.length === 0 && 
-              <p class="empty">(no entries)</p>}
+            <p class="empty">(no entries)</p>
+          }
 
           {this.state.items.map((item, index) => 
             <DateListInputItem 
@@ -931,7 +976,8 @@ class DateListInputItem extends Component{
         {!this.props.disabled &&
           <span
             onClick={this.props.handleRemoveItem}
-            title="Remove date" class="remove_btn">✕</span>
+            title="Remove date" 
+            class="remove_btn no_user_select">✕</span>
         }
       </div>
     );

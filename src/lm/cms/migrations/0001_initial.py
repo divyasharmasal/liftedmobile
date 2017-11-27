@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -14,6 +15,14 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='LiftedKey',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('vertical_name', models.TextField()),
+                ('vertical_category_name', models.TextField()),
+            ],
+        ),
+        migrations.CreateModel(
             name='ScrapedCourse',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
@@ -24,6 +33,7 @@ class Migration(migrations.Migration):
                 ('end_date', models.DateTimeField(null=True)),
                 ('public_cpd', models.FloatField(null=True)),
                 ('spider_name', models.TextField()),
+                ('lifted_keys', models.ManyToManyField(to='cms.LiftedKey')),
             ],
         ),
     ]

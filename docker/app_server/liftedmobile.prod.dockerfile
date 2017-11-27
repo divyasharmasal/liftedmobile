@@ -11,24 +11,25 @@ COPY ./docker/app_server/nginx.conf /etc/nginx/nginx.conf
 
 WORKDIR /src
 
+    #wget -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz \
+        #-O /tmp/GeoIP.dat.gz                                                && \
+    #gunzip /tmp/GeoIP.dat.gz && \
+    #mv /tmp/GeoIP.dat /usr/share/GeoIP/                                     && \
+    #wget -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz \
+        #-O /tmp/GeoLiteCity.dat.gz                                          && \
+    #gunzip /tmp/GeoLiteCity.dat.gz && \
+    #mv /tmp/GeoLiteCity.dat /usr/share/GeoIP/                               && \
+
 RUN apk update                                                              && \
     apk --no-cache upgrade                                                  && \
     apk --no-cache add python3 python3-dev postgresql py-psycopg2              \
         curl gnupg nodejs linux-headers build-base                             \
-        libffi-dev bash py3-lxml geoip nginx-mod-http-geoip                 && \ 
+        libffi-dev bash py3-lxml                                            && \ 
     pip3 --no-cache-dir install --upgrade pip                               && \
     pip3 --no-cache-dir install -r /src/requirements.txt                    && \
     apk --no-cache add yarn --repository                                       \
         http://dl-3.alpinelinux.org/alpine/edge/community                   && \
     yarn global add preact-cli gulp gulp-shell                              && \
-    wget -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz \
-        -O /tmp/GeoIP.dat.gz                                                && \
-    gunzip /tmp/GeoIP.dat.gz && \
-    mv /tmp/GeoIP.dat /usr/share/GeoIP/                                     && \
-    wget -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz \
-        -O /tmp/GeoLiteCity.dat.gz                                          && \
-    gunzip /tmp/GeoLiteCity.dat.gz && \
-    mv /tmp/GeoLiteCity.dat /usr/share/GeoIP/                               && \
     cd /src/lm/app/frontend                                                 && \
     yarn install                                                            && \
     yarn add gulp                                                           && \

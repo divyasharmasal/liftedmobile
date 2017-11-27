@@ -36,16 +36,52 @@ def json_response(obj):
                         content_type="application/json")
 
 
+def get_level_format_vertical_data():
+    result = {
+        "levels": [c.name for c in app_models.Level.objects.all()],
+        "formats": [c.name for c in app_models.Format.objects.all()],
+        "verticals": {}
+    }
+    vertical_category_query = (
+        app_models.VerticalCategory.objects.all()
+        .order_by("id")
+        .select_related("vertical")
+    )
+
+    for vertical_category in vertical_category_query:
+        vertical_name = vertical_category.vertical.name
+        vertical_category_name = vertical_category.name
+        if vertical_name not in result["verticals"]:
+            result["verticals"][vertical_name] = [vertical_category_name]
+        else:
+            result["verticals"][vertical_name].append(vertical_category_name)
+    return result
+
+
+
 @staff_member_required(login_url=None)
 def cms_get_unpublished_courses_data(request):
-    result = {
-        "courses": [],
-        "levels": [c.name for c in app_models.Level.objects.all()],
-        "formats": [c.name for c in app_models.Format.objects.all()]
-    }
+    result = get_level_format_vertical_data()
+    result["courses"] = []
 
     # TODO: only show future courses??
-    for scraped_course in models.ScrapedCourse.objects.filter(is_new=True):
+
+    sc_query = (
+        models.ScrapedCourse.objects
+        .filter(is_new=True)
+        .prefetch_related("lifted_keys")
+    )
+
+
+    for scraped_course in sc_query:
+        lifted_keys = []
+        for lifted_key in scraped_course.lifted_keys.all():
+            lifted_keys.append({
+                "vertical_name": lifted_key.vertical_name,
+                "vertical_category_name": lifted_key.vertical_category_name,
+            })
+
+
         start_date = end_date = None
 
         if isinstance(scraped_course.start_date, datetime.datetime):
@@ -64,6 +100,7 @@ def cms_get_unpublished_courses_data(request):
             "start_date": start_date,
             "end_date": end_date,
             "spider_name": scraped_course.spider_name,
+            "lifted_keys": lifted_keys,
         })
 
     return json_response(result)
@@ -71,14 +108,7 @@ def cms_get_unpublished_courses_data(request):
 
 @staff_member_required(login_url=None)
 def cms_get_published_courses_data(request):
-    result = {
-        "courses": [],
-        "levels": [],
-        "formats": [],
-    }
-
-    result["levels"] = [c.name for c in app_models.Level.objects.all()]
-    result["formats"] = [c.name for c in app_models.Format.objects.all()]
+    result = get_level_format_vertical_data()
 
     courses = app_models.Course.objects.all()
     courses = _optimise_course_query(courses)
@@ -131,7 +161,7 @@ def save_course(request):
 
     # validate input
     spider_name = id = name = cost = url = level_name = cpd_points = \
-        cpd_is_private = format_name = is_published = None
+        cpd_is_private = format_name = lifted_keys = is_published = None
 
     is_new = "is_new" in body.keys() and body["is_new"]
 
@@ -147,6 +177,7 @@ def save_course(request):
         format_name = body["format"]
         is_published = body["is_published"]
         spider_name = body["spider_name"]
+        lifted_keys = body["lifted_keys"]
         is_manually_added = body["is_manually_added"]
     except:
         import traceback
@@ -161,6 +192,20 @@ def save_course(request):
         course.url = url
         course.cost = cost
         course.save()
+
+        # LIFTED keys
+        app_models.CourseVerticalCategory.objects.filter(course=course).delete()
+        for lifted_key in lifted_keys:
+            vc = app_models.VerticalCategory.objects.get(
+                name=lifted_key["vertical_category_name"],
+                vertical__name=lifted_key["vertical_name"]
+                )
+
+            cvc = app_models.CourseVerticalCategory(
+                course=course,
+                vertical_category=vc
+            )
+            cvc.save()
 
         # CPD
 
@@ -217,6 +262,17 @@ def save_course(request):
                                    spider_name=spider_name,
                                    is_manually_added=is_manually_added)
         course.save()
+
+        # LIFTED keys
+        for lifted_key in lifted_keys:
+            vertical_category = app_models.VerticalCategory.objects.get(
+                name=lifted_key["vertical_category_name"],
+                vertical__name=lifted_key["vertical_name"]
+            )
+
+            course_vc = app_models.CourseVerticalCategory(
+                    course=course, vertical_category=vertical_category)
+            course_vc.save()
 
         # CPD
 

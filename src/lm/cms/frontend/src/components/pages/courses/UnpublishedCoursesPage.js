@@ -46,6 +46,7 @@ export class UnpublishedCoursesPage extends Component {
           courses: data.courses, 
           levels: data.levels,
           formats: data.formats,
+          verticals: data.verticals,
         });
       });
     });
@@ -75,6 +76,7 @@ export class UnpublishedCoursesPage extends Component {
               unpublished={true}
               levels={this.state.levels}
               formats={this.state.formats}
+              verticals={this.state.verticals}
               handleDelete={() => {
                 this.handleDelete(course);
               }}

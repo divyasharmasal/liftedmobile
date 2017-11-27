@@ -339,13 +339,20 @@ def _course_json(course, index=None, orig_start_dates=True,
     points = course.coursecpdpoints
     cpd_points = course.coursecpdpoints.points
 
-    # if cpd_points is None:
-        # cpd_points = 0
-    # else:
-        # cpd_points = float(cpd_points)
-
     if cpd_points is not None:
         cpd_points = float(cpd_points)
+
+    lifted_keys = []
+    cvc_query = (
+        course.courseverticalcategory_set.all()
+        .select_related("vertical_category__vertical")
+    )
+    for cvc in cvc_query:
+        lifted_keys.append({
+            "vertical_name": cvc.vertical_category.vertical.name,
+            "vertical_category_name": cvc.vertical_category.name,
+        })
+
 
     result = {
         "name": course.name,
@@ -355,6 +362,7 @@ def _course_json(course, index=None, orig_start_dates=True,
         "format": format_name,
         "spider_name": course.spider_name,
         "is_manually_added": course.is_manually_added,
+        "lifted_keys": lifted_keys,
         "cpd": {
             "points": cpd_points,
             "is_private": points.is_private
