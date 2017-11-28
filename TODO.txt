@@ -38,6 +38,13 @@ Done:
 - Mobile sorter font size
 - Enable pinch zoom
 
+- Competency category and verticals in CMS
+    - each course should have up to 3 LIFTED keys
+- Legal support vertical job roles should now be split into general +
+  specialisms, just like LP. Use the same role picker as LP.
+  e.g. Paralegal (civil litigation specialist)
+
+
 -------------------------------------------
 
 - Course provider field for courses. As far as possible, scrape it.
@@ -50,17 +57,10 @@ Done:
 - For the diag screen, shift unanswered questions to the bottom after
   the "please compelete all qns" prompt if there are unanswered qns.
 
-- Competency category and verticals in CMS
-    - each course should have up to 3 LIFTED keys
-
 - The scraped data must be connected to the diagnostic tool!
     - competency category only - broad matching.
 
 - Funnel visitors from the course browser to the diagnostic
-
-- Legal support vertical job roles should now be split into general +
-  specialisms, just like LP. Use the same role picker as LP.
-  e.g. Paralegal (civil litigation specialist)
 
 - End-Nov beta release
 
@@ -73,8 +73,7 @@ Done:
 All-in-one CMS
   - do a code generator for 3rd party
 
-  - Scrape CALAS, SCCA, SkillsFuture, LawSoc
-    (priority: SAL, CALAS, LawSoc)
+  - Scrape SCCA, SkillsFuture
 
   - CMS
     - Full auth system with 2FA

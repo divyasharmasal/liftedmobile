@@ -4114,6 +4114,10 @@ jsx-ast-utils@^2.0.0:
   dependencies:
     array-includes "^3.0.3"
 
+jump.js@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/jump.js/-/jump.js-1.0.1.tgz#0de2b1631ba9a1c2c6b8572ad277d877e8503600"
+
 killable@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/killable/-/killable-1.0.0.tgz#da8b84bd47de5395878f95d64d02f2449fe05e6b"
@@ -5812,6 +5816,13 @@ react-flatpickr@^3.6.2:
   resolved "https://registry.yarnpkg.com/react-flatpickr/-/react-flatpickr-3.6.2.tgz#755d6e64ef213f30d12c9890485ede9f3da09c29"
   dependencies:
     flatpickr "^4.0.5"
+    prop-types "^15.5.10"
+
+react-scrollable-anchor@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/react-scrollable-anchor/-/react-scrollable-anchor-0.5.0.tgz#a1b87958976118dcee09381fd30b0e6b0233c9be"
+  dependencies:
+    jump.js "1.0.1"
     prop-types "^15.5.10"
 
 react-simple-dropdown@^3.2.0:

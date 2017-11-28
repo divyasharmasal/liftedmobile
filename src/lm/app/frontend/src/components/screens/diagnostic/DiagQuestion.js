@@ -5,7 +5,7 @@ export class DiagQuestion extends Component{
   constructor(props){
     super(props);
     this.state = {
-      selectedAnswerId: null,
+      selectedAnswerId: this.props.selectedAnswerId,
       shouldHighlight: false,
       highlight: this.props.highlight,
       showHelp: false,
@@ -13,12 +13,16 @@ export class DiagQuestion extends Component{
   }
 
   componentWillReceiveProps(nextProps){
-    if (this.props.highlight !== nextProps.highlight){
+    if (this.props.highlight !== nextProps.highlight ||
+        this.state.selectedAnswerId !== nextProps.selectedAnswerId
+    ){
       this.setState({ 
-        highlight: nextProps.highlight 
+        highlight: nextProps.highlight,
+        selectedAnswerId: nextProps.selectedAnswerId,
       });
     }
   }
+
 
   handleOptionSelect = answerNum => {
     if (this.state.selectedAnswerId === answerNum){
@@ -69,13 +73,13 @@ export class DiagQuestion extends Component{
       );
     });
 
-    let desc_prompt;
-    if (this.state.showHelp){
-      desc_prompt = "Hide description ▲";
-    }
-    else{
-      desc_prompt = "Show description ▼";
-    }
+    //let desc_prompt;
+    //if (this.state.showHelp){
+      //desc_prompt = "Hide description ▲";
+    //}
+    //else{
+      //desc_prompt = "Show description ▼";
+    //}
 
     return (
       <div class="diag_qn">
