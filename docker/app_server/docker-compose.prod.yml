@@ -21,8 +21,6 @@ services:
             - "80"
         volumes:
             - ../../../app_server/django_log:/var/log/django/
-        environment:
-            - DB_PWD=fGWJTw2Dbpa2p547brXEVjXyzHZu9puytcAaA9mY 
         secrets:
             - django_secret
             - django_admin_pwd
@@ -30,6 +28,7 @@ services:
             - django_logging_aws_cw
             - email_credentials
             - admin_emails
+            - db_config
         logging:
             driver: "awslogs"
             options:
@@ -51,3 +50,6 @@ secrets:
         file: ../../../LM_SECRETS/EMAIL_CREDENTIALS.json
     admin_emails:
         file: ../../../LM_SECRETS/ADMIN_EMAILS.json
+    db_config:
+        file: ../../../LM_SECRETS/DB_CONFIG.json
+

@@ -24,8 +24,13 @@ RUN apk update                                                              && \
     cd /src/lm/cms/frontend                                                 && \
     yarn install                                                            && \
     yarn add gulp                                                           && \
-    echo "Running gulp deploy on frontend"                                  && \
+    echo "Running gulp deploy on CMS frontend"                              && \
     gulp deploy --gulpfile /src/lm/cms/frontend/gulpfile.js                 && \
+    echo "Running gulp deploy on LM frontend"                               && \
+    cd /src/lm/app/frontend                                                 && \
+    yarn add gulp                                                           && \
+    gulp deploy --gulpfile /src/lm/app/frontend/gulpfile.js                 && \
+    yarn install                                                            && \
     yarn cache clean                                                        && \
     apk del build-base python3-dev linux-headers nodejs gnupg libffi-dev       \
             binutils-gold gcc g++ curl make yarn                            && \

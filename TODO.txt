@@ -82,7 +82,6 @@ Unit testing
 
 Secrets in Vault
 Server logging
-  - Set up graylog server
   - Link CloudWatch to graylog
 
 - End-Nov: presentation to CJ + beta testing

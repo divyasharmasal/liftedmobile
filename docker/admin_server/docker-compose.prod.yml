@@ -30,11 +30,9 @@ services:
             - django_logging_aws_cw
             - email_credentials
             - admin_emails
+            - db_config
         environment:
             - CMS=true
-            - DB_PWD=ko3TnNyBRYVWg3cqgP8G8CTpnmr9HPgndnhpDo98jKGCJwec9H
-            - LM_DB_HOSTNAME=liftedmobile_db
-            - LM_DB_PWD=fGWJTw2Dbpa2p547brXEVjXyzHZu9puytcAaA9mY 
         ports:
             - "90:80"
             - "91:443"
@@ -72,6 +70,8 @@ secrets:
         file: ../../../LM_ADMIN_SECRETS/CMS_ADMIN_PWD
     scrapyd_api_key:
         file: ../../../LM_ADMIN_SECRETS/SCRAPYD_API_KEY
+    db_config:
+        file: ../../../LM_ADMIN_SECRETS/DB_CONFIG.json
     django_admin_pwd:
         file: ../../../LM_SECRETS/DJANGO_ADMIN_PWD
     django_team_pwd:

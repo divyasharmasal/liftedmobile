@@ -194,36 +194,8 @@ if 'DEV' in os.environ:
             }
         }
 else:
-    if 'CMS' in os.environ:
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.postgresql',
-                'NAME': 'admin',
-                'USER': 'postgres',
-                'PASSWORD': os.environ['DB_PWD'],
-                'HOST': 'admin_db',
-                'PORT': '5432',
-            },
-            'app_server': {
-                'ENGINE': 'django.db.backends.postgresql',
-                'NAME': 'liftedmobile',
-                'USER': 'postgres',
-                'PASSWORD': os.environ['LM_DB_PWD'],
-                'HOST': os.environ['LM_DB_HOSTNAME'],
-                'PORT': '5432',
-            }
-        }
-    else:
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.postgresql',
-                'NAME': 'liftedmobile',
-                'USER': 'postgres',
-                'PASSWORD': os.environ['DB_PWD'],
-                'HOST': 'liftedmobile_db',
-                'PORT': '5432',
-            }
-        }
+    DATABASES = json.loads(open("/run/secrets/db_config").read())
+
 
 # Password hashing
 # https://docs.djangoproject.com/en/1.11/topics/auth/passwords/#using-argon2-with-django
