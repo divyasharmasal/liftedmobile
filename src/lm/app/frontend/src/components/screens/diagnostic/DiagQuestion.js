@@ -80,24 +80,24 @@ export class DiagQuestion extends Component{
     //else{
       //desc_prompt = "Show description ▼";
     //}
+          //{[>
+          //<p class="diag_whatsthis"
+            //onClick={this.showHelp}>
+            //{desc_prompt}
+          //</p>
+          //{this.state.showHelp && 
+            //<div class="diag_help">
+              //<ul>
+                //{expln}
+              //</ul>
+            //</div>
+          //}
+          //*/}
 
     return (
       <div class="diag_qn">
         <div class="diag_left">
           <p class={highlightClass}>{qn.desc}</p>
-          {/*
-          <p class="diag_whatsthis"
-            onClick={this.showHelp}>
-            {desc_prompt}
-          </p>
-          {this.state.showHelp && 
-            <div class="diag_help">
-              <ul>
-                {expln}
-              </ul>
-            </div>
-          }
-          */}
         </div>
         <div class="diag_right">
           <div class="diag_opts">
