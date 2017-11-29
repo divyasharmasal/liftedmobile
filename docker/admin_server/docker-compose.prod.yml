@@ -34,8 +34,7 @@ services:
         environment:
             - CMS=true
         ports:
-            - "90:80"
-            - "91:443"
+            - "9001:80"
         expose:
             - "80"
         logging:
@@ -56,10 +55,6 @@ services:
             - ../../../scrapyd/scheduler:/var/log/scraper_scheduler/
         secrets:
             - scrapyd_api_key
-        ports:
-            - "81:80"
-            - "442:443"
-            #- "6800:6800"
         expose:
             - "6800"
 

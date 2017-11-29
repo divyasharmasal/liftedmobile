@@ -7,7 +7,7 @@ COPY src /src
 
 # Copy the nginx config file
 RUN mkdir /config
-COPY ./docker/admin_server/nginx.conf /nginx.conf
+COPY ./docker/admin_server/nginx.conf /etc/nginx/nginx.conf
 
 WORKDIR /src
 
@@ -51,4 +51,4 @@ CMD sh /src/lm/wait_for_db.sh admin_db                                      && \
     gunicorn -D --bind unix:/gunicorn.sock lm.wsgi:application              && \
     echo                                                                    && \
     echo "Docker containers are up; server at: http://0.0.0.0:90/"          && \
-    nginx -c /nginx.conf -g 'daemon off;'
+    nginx -c /etc/nginx/nginx.conf -g 'daemon off;'
