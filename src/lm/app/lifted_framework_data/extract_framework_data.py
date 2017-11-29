@@ -271,9 +271,12 @@ def parse_competencies():
 
     for row in data:
         title = row["Copyedited title"]
-        desc = row["Description"]
-        if desc.startswith(title):
-            row["Description"] = desc[len(title):].strip()
+        desc = None
+        if "Description" in row.keys():
+            desc = row["Description"]
+            if desc.startswith(title):
+                desc = desc[len(title):].strip()
+        row["Description"] = desc
 
     # Make empty specialisms None
     for row in data:
@@ -331,6 +334,8 @@ def parse_job_roles():
 
     for row in data:
         row["Competency Ids"] = _parse_nums_and_ranges(row["Competency Ids"])
+        if "Thin Description" not in row.keys():
+            row["Thin Description"] = None
 
     return data
 
@@ -357,3 +362,4 @@ if __name__ == "__main__":
     pprint.pprint(parse_job_roles())
     # pprint.pprint(roles)
     # pprint.pprint(parse_specialisms())
+    # pprint.pprint(parse_verticals())

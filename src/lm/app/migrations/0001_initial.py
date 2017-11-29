@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.IntegerField(primary_key=True, serialize=False)),
                 ('copy_title', models.TextField()),
-                ('full_desc', models.TextField()),
+                ('full_desc', models.TextField(null=True)),
             ],
         ),
         migrations.CreateModel(
@@ -38,6 +38,7 @@ class Migration(migrations.Migration):
                 ('duration', models.DecimalField(decimal_places=1, max_digits=6, null=True)),
                 ('url', models.TextField(null=True)),
                 ('spider_name', models.TextField(null=True)),
+                ('provider', models.TextField(null=True)),
                 ('is_manually_added', models.NullBooleanField(null=True)),
             ],
         ),
@@ -128,7 +129,7 @@ class Migration(migrations.Migration):
                 ('name', models.TextField(unique=True)),
                 ('role_level', models.IntegerField(null=True)),
                 ('org_type', models.TextField()),
-                ('thin_desc', models.TextField()),
+                ('thin_desc', models.TextField(null=True)),
             ],
         ),
         migrations.CreateModel(

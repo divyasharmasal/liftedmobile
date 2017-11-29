@@ -66,12 +66,12 @@ export class DiagQuestion extends Component{
       highlightClass = "highlight";
     }
 
-    let expln = [];
-    qn.expln.split("\n").forEach(row => {
-      expln.push(
-        <li>{row}</li>
-      );
-    });
+    //let expln = [];
+    //qn.expln.split("\n").forEach(row => {
+      //expln.push(
+        //<li>{row}</li>
+      //);
+    //});
 
     //let desc_prompt;
     //if (this.state.showHelp){

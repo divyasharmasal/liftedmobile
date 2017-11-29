@@ -99,11 +99,13 @@ class DiagScreen extends Screen{
     if (this.state.incomplete){
       const warning = (
         <ScrollableAnchor id="w">
-          <p 
-            ref={warning => this.warning = warning}
-            class="highlight warning">
-            Please complete all questions to continue.
-          </p>
+          <div class="warning pure-u-1">
+            <p 
+              ref={warning => this.warning = warning}
+              class="highlight warning">
+              Please complete all questions to continue.
+            </p>
+          </div>
         </ScrollableAnchor>
       );
 
@@ -145,10 +147,12 @@ class DiagScreen extends Screen{
   renderSubmitBtn = (answers, qns) => {
     if (!this.state.submitBtnClickedOnce){
       return (
-        <a onClick={this.handleSubmitBtnClick}
-          class="no_user_select diag_button">
-          Show me my learning needs
-        </a>
+        <div class="diag_button_row pure-u-1">
+          <a onClick={this.handleSubmitBtnClick}
+            class="no_user_select diag_button">
+            Show me my learning needs
+          </a>
+        </div>
       );
     }
     const numAnswered = Object.keys(answers).length

@@ -100,6 +100,7 @@ class Course(models.Model):
     duration = models.DecimalField(null=True, decimal_places=1, max_digits=6)
     url = models.TextField(null=True)
     spider_name = models.TextField(null=True)
+    provider = models.TextField(null=True)
     is_manually_added = models.NullBooleanField(null=True)
 
 
@@ -177,7 +178,7 @@ class Competency(models.Model):
     category = models.ForeignKey(CompetencyCategory, on_delete=models.CASCADE)
     specialism = models.ForeignKey(Specialism, null=True, on_delete=models.CASCADE)
     copy_title = models.TextField()
-    full_desc = models.TextField()
+    full_desc = models.TextField(null=True)
 
 
 class CourseCompetency(models.Model):
@@ -193,7 +194,7 @@ class JobRole(models.Model):
     name = models.TextField(unique=True)
     role_level = models.IntegerField(null=True)
     org_type = models.TextField()
-    thin_desc = models.TextField()
+    thin_desc = models.TextField(null=True)
     vertical = models.ForeignKey(Vertical, on_delete=models.CASCADE)
     specialism = models.ForeignKey(Specialism, null=True, 
                                    on_delete=models.CASCADE)

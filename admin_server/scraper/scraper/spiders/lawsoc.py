@@ -59,6 +59,7 @@ def parse_dates_str(dates_str):
 
     return start_date, end_date
 
+
 class LawsocSpider(scrapy.Spider):
     name = 'lawsoc'
     allowed_domains = ['www.lawsoc.org.sg']
@@ -67,6 +68,15 @@ class LawsocSpider(scrapy.Spider):
     def parse(self, response):
         links = response.xpath("//div[contains(@class, 'evtBarBtn')]/span/a")
         cal_url = links[0].css("a::attr(href)").extract_first()
+
+        event_links = (
+            response.xpath("//span[contains(@class, 'ListTitle')]/a")
+                        .css("a::attr(href)").extract())
+        # print(event_links)
+        # import pdb; pdb.set_trace()
+
+        for link in event_links:
+            yield scrapy.Request(link, callback=self.parse_event_page)
 
         yield scrapy.Request(cal_url, callback=self.parse_cal_page)
 

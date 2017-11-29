@@ -63,9 +63,16 @@ export class CourseListEntry extends Component{
             {this.formatDate(course.start_date)}
           </div>
 
+          {course.provider &&
+            <div class="date pure-u-1">
+                  <span>Provider: {course.provider}</span>
+            </div>
+          }
+
           <div class="cost pure-u-md-1-3">
             {this.renderCost(course.cost)}
           </div>
+
           <div class="cpd pure-u-md-1-3">
             {this.renderCpd(course.cpd, false)}
           </div>
@@ -117,15 +124,21 @@ export class CourseListEntry extends Component{
             {this.renderCourseName(course)}
           </div>
 
-          <div class="date">
+          <div class="date pure-u-1-2">
             {this.formatDate(course.start_date)}
           </div>
 
+          <div class="date pure-u-1-2">
+            {course.provider &&
+                <span>Provider: {course.provider}</span>
+            }
+          </div>
+
           <div class={"pure-u-1 " + toggleClass}>
-            <div class="pure-u-1-3">
+            <div class="pure-u-1-2">
               Level: {course.level}
             </div>
-            <div class="pure-u-1-3">
+            <div class="pure-u-1-2">
               Format: {course.format}
             </div>
           </div>

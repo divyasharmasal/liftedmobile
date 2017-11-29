@@ -356,6 +356,7 @@ def _course_json(course, index=None, orig_start_dates=True,
 
     result = {
         "name": course.name,
+        "provider": course.provider,
         "cost": float(course.cost),
         "url": course.url,
         "level": level_name,

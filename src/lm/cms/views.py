@@ -1,3 +1,7 @@
+"""
+Views for the CMS
+"""
+
 import base64
 import pytz
 import os
@@ -37,6 +41,10 @@ def json_response(obj):
 
 
 def get_level_format_vertical_data():
+    """
+    Returns data about levels, formats, and verticals
+    """
+
     result = {
         "levels": [c.name for c in app_models.Level.objects.all()],
         "formats": [c.name for c in app_models.Format.objects.all()],
@@ -58,9 +66,11 @@ def get_level_format_vertical_data():
     return result
 
 
-
 @staff_member_required(login_url=None)
 def cms_get_unpublished_courses_data(request):
+    """
+    For /cms/get_unpublished_courses_data/
+    """
     result = get_level_format_vertical_data()
     result["courses"] = []
 
@@ -93,6 +103,7 @@ def cms_get_unpublished_courses_data(request):
         result["courses"].append({
             "id": scraped_course.id,
             "name": scraped_course.name,
+            "provider": scraped_course.provider,
             "url": scraped_course.url,
             "cpd": {
                 "points": scraped_course.public_cpd,
@@ -161,7 +172,8 @@ def save_course(request):
 
     # validate input
     spider_name = id = name = cost = url = level_name = cpd_points = \
-        cpd_is_private = format_name = lifted_keys = is_published = None
+        cpd_is_private = format_name = lifted_keys = is_published = \
+        provider = None
 
     is_new = "is_new" in body.keys() and body["is_new"]
 
@@ -179,6 +191,7 @@ def save_course(request):
         spider_name = body["spider_name"]
         lifted_keys = body["lifted_keys"]
         is_manually_added = body["is_manually_added"]
+        provider = body["provider"]
     except:
         import traceback
         traceback.print_exc()
@@ -191,6 +204,7 @@ def save_course(request):
         course.name = name
         course.url = url
         course.cost = cost
+        course.provider = provider
         course.save()
 
         # LIFTED keys
@@ -260,6 +274,7 @@ def save_course(request):
                                    url=url,
                                    cost=cost,
                                    spider_name=spider_name,
+                                   provider=provider,
                                    is_manually_added=is_manually_added)
         course.save()
 
@@ -447,40 +462,58 @@ def scraper_add_course(request):
     except:
         return HttpResponseServerError("Invalid or missing spider name")
 
+    name = course_data["name"]
+    url = course_data["url"]
+    public_cpd = course_data["public_cpd"]
+    start_date = course_data["start_date"]
+    end_date = course_data["end_date"]
+
     # Validate course_data here
     if len(course_data.keys()) == 0:
         return HttpResponseServerError("Empty course data JSON")
 
     # Do nothing if a ScrapedCourse with the same data exists:
-    if models.ScrapedCourse.objects \
-        .filter(name=course_data["name"],
-                url=course_data["url"],
-                public_cpd=course_data["public_cpd"],
-                spider_name=spider_name,
-                start_date=course_data["start_date"],
-                end_date=course_data["end_date"]).exists():
-
-        print("Found a matching ScrapedCourse")
+    if (models.ScrapedCourse.objects
+            .filter(name=name,
+                    url=url,
+                    spider_name=spider_name,
+                    public_cpd=public_cpd,
+                    start_date=start_date,
+                    end_date=end_date)
+            .exists()):
         return json_response("Found matching ScrapedCourse")
 
-    # Do nothing if an app_models.Course with the same data exists.
-    if app_models.Course.objects\
-        .filter(name=course_data["name"],
-                url=course_data["url"],
-                coursestartdate__start_date=course_data["start_date"]).exists():
+    # Update published matching courses with the same provider and url
 
-        print("Found a matching Course")
-        return json_response("Found matching Course")
+    matching_courses = (app_models.Course.objects
+        .filter(spider_name=spider_name,
+                url=url))
+       
+    if matching_courses.exists():
+        course = matching_courses[0]
 
-    # TODO: update published matching courses with the same URL
+        # update course name
+        course.name = name
+        course.save()
 
+        # update start date
+        (app_models.CourseStartDate.objects
+            .filter(course=course)
+            .update(start_date=start_date))
+
+        # update public_cpd
+        (app_models.CourseCpdPoints.objects
+            .filter(course=course)
+            .update(points=public_cpd))
+
+        return json_response("Updated matching Course")
 
     # Otherwise, update/create the ScrapedCourse:
     scraped_course, created = models.ScrapedCourse.objects.update_or_create(
-        defaults={"start_date": course_data["start_date"],
-                  "end_date": course_data["end_date"],
-                  "public_cpd": course_data["public_cpd"],
-                  "name": course_data["name"],
+        defaults={"start_date": start_date,
+                  "end_date": end_date,
+                  "public_cpd": public_cpd,
+                  "name": name,
               },
         spider_name=spider_name,
         url=course_data["url"],

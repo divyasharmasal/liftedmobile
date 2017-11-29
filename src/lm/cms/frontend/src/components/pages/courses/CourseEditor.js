@@ -29,6 +29,9 @@ class CourseEditor extends Component{
 
     // Rename is_private to isPrivate
     course.cpd.isPrivate = course.cpd.is_private;
+    if (course.cpd.isPrivate == null){
+      course.cpd.isPrivate = false;
+    }
     delete course.cpd.is_private;
 
     // Unpublished courses only provide the start_date attribute,
@@ -84,6 +87,17 @@ class CourseEditor extends Component{
 
     let invalidFields = this.state.invalidFields;
     invalidFields.cost = false;
+    this.setState({ course, invalidFields });
+  }
+
+
+  handleProviderChange = value => { 
+    let course = this.state.course;
+    course.provider = value;
+    course.hasChanged = true;
+
+    let invalidFields = this.state.invalidFields;
+    invalidFields.provider = false;
     this.setState({ course, invalidFields });
   }
 
@@ -187,6 +201,7 @@ class CourseEditor extends Component{
       spider_name: course.spider_name,
       lifted_keys: course.lifted_keys,
       is_manually_added: course.is_manually_added,
+      provider: course.provider,
 		};
 
 		authPost("/cms/save_course/", data).then(response => {
@@ -249,6 +264,8 @@ class CourseEditor extends Component{
       Math.abs(parseFloat(Math.round(course.cost * 100) / 100));
     const validLevel = this.props.levels.indexOf(course.level) > -1;
     const validFormat = this.props.formats.indexOf(course.format) > -1;
+    const validProvider = course.provider != null && 
+      course.provider.trim().length > 0;
 
     const isValidDate = d => {
       const dateRe = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
@@ -292,6 +309,7 @@ class CourseEditor extends Component{
     let valid = (
       validCpd &&
       validName &&
+      validProvider &&
       validUrl &&
       validCost &&
       validLevel &&
@@ -314,6 +332,7 @@ class CourseEditor extends Component{
           format: !validFormat,
           startDates: !validStartDates,
           liftedKeys: !validLiftedKeys,
+          provider: !validProvider,
         },
       });
     }
@@ -424,6 +443,15 @@ class CourseEditor extends Component{
           handleValueChange={this.handleFormatChange}
           invalid={this.state.invalidFields.format}
           value={course.format} formats={this.props.formats} />
+      </div>
+
+    const providerInput =
+      <div class="pure-u-1-2 pure-u-sm-2-5">
+        <ProviderInput 
+          disabled={this.state.hasSaved && this.state.unpublished}
+          handleValueChange={this.handleProviderChange}
+          invalid={this.state.invalidFields.provider}
+          value={course.provider} />
       </div>
 
     const liftedKeyInput =
@@ -541,6 +569,7 @@ class CourseEditor extends Component{
           <br />
           {levelDropdown}
           {formatDropdown}
+          {providerInput}
 
           <div class="pure-u-1">
             <DatesInput 
@@ -579,6 +608,7 @@ class CourseEditor extends Component{
         <br />
         {levelDropdown}
         {formatDropdown}
+        {providerInput}
         <br />
 
         <div class="pure-u-1">
@@ -674,6 +704,23 @@ class CostInput extends TextInput{
           type="number" 
           min="0"
           step="0.01"
+          onKeyUp={e => {this.handleValueChange(e.target.value)}}
+          onChange={e => {this.handleValueChange(e.target.value)}}
+          value={this.state.value} />
+      </div>
+    );
+  }
+}
+
+
+class ProviderInput extends TextInput{
+  render(){
+    return(
+      <div class={renderClassname(this.state.invalid, "custom_input")}>
+        <label>Provider:</label>
+        <input 
+          disabled={this.props.disabled}
+          type="text" 
           onKeyUp={e => {this.handleValueChange(e.target.value)}}
           onChange={e => {this.handleValueChange(e.target.value)}}
           value={this.state.value} />

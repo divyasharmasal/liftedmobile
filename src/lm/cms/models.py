@@ -18,3 +18,4 @@ class ScrapedCourse(models.Model):
     public_cpd = models.FloatField(null=True)
     spider_name = models.TextField(null=False)
     lifted_keys = models.ManyToManyField(LiftedKey)
+    provider = models.TextField(null=True)

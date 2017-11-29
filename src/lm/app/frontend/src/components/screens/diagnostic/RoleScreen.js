@@ -13,9 +13,9 @@ export { RoleScreen };
 class RoleScreen extends Screen{
   componentWillMount = () => {
     let verticalId = this.props.vertical;
-    if (verticalId == 1){
-      verticalId = 2;
-    }
+    //if (verticalId == 1){
+      //verticalId = 2;
+    //}
 
     let url = "/roles?";
     

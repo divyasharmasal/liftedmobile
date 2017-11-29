@@ -304,12 +304,15 @@ hr{
         border-radius: @border_radius;
     }
 
-    p.highlight.warning{
-        margin-bottom:50px;
-        padding:10px;
-        /*width:50%;*/
-        margin-left:auto;
-        margin-right:auto;
+    .warning{
+        p.highlight{
+            min-width:70%;
+            display:inline-block;
+            margin-bottom:30px;
+            padding:5px;
+            margin-left:auto;
+            margin-right:auto;
+        }
     }
 
     .diag_qn{
@@ -368,23 +371,29 @@ hr{
         cursor: default;
     }
 
-    .diag_button{
-        color: @sal_blue;
-        display:inline-block;
-        cursor: pointer;
-        border-radius: @border_radius;
-        border: 1px solid;
+    .diag_button_row{
+        text-align:center;
+        margin-left:auto;
+        margin-right:auto;
 
-        font-size: 1.75em;
-        font-weight:bold;
+        .diag_button{
+            color: @sal_blue;
+            display:inline-block;
+            cursor: pointer;
+            border-radius: @border_radius;
+            border: 1px solid;
 
-        line-height: 3em;
-        margin-bottom: 15px;
+            font-size: 1.75em;
+            font-weight:bold;
 
-        padding-top:1em;
-        padding-bottom:1em;
-        padding-left:2em;
-        padding-right:2em;
+            line-height: 3em;
+            margin-bottom: 15px;
+
+            padding-top:1em;
+            padding-bottom:1em;
+            padding-left:2em;
+            padding-right:2em;
+        }
     }
 }
 
@@ -497,6 +506,7 @@ hr{
                 font-size:1.25em;
             }
             .answer{
+                font-size:1.25em;
                 p{
                     font-size:1em;
                 }

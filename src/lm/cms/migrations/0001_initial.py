@@ -33,6 +33,7 @@ class Migration(migrations.Migration):
                 ('end_date', models.DateTimeField(null=True)),
                 ('public_cpd', models.FloatField(null=True)),
                 ('spider_name', models.TextField()),
+                ('provider', models.TextField(null=True)),
                 ('lifted_keys', models.ManyToManyField(to='cms.LiftedKey')),
             ],
         ),

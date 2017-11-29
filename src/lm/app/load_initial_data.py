@@ -208,7 +208,9 @@ def load(apps, schema_editor):
     for job_role in job_roles:
         specialism = None
 
-        if len(job_role["Specialism"].strip()) > 0:
+        print(job_role)
+        if "Specialism" in job_role.keys() and \
+                len(job_role["Specialism"].strip()) > 0:
             specialism = Specialism.objects.get(name=job_role["Specialism"])
 
         vertical = Vertical.objects.get(name=job_role["Vertical"])
