@@ -4,7 +4,7 @@ echo "Launching the app server..."
 sh scripts/app_server/dev/build_dev.sh --no-logs
 
 echo "Launching the admin server..."
-yes | docker-compose -f docker/admin_server/docker-compose.dev.yml stop
+yes | docker-compose -f docker/admin_server/docker-compose.dev.yml stop -t 0
 yes | docker-compose -f docker/admin_server/docker-compose.dev.yml rm
 docker-compose -f docker/admin_server/docker-compose.dev.yml build #--no-cache
 docker-compose -f docker/admin_server/docker-compose.dev.yml up -d #--force-recreate
