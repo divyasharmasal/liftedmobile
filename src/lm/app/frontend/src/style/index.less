@@ -481,12 +481,12 @@ hr{
     .category_name{
         cursor:pointer;
         font-weight:bold;
-        text-decoration:underline;
         font-size:1.25em;
+        color:@link_blue;
     }
 
     .not_found{
-        font-size:1.25em;
+        font-size:1em;
         width:75%;
         margin:auto;
     }
@@ -499,9 +499,14 @@ hr{
 }
 
 .question{
+    h1.next_role_title{
+        margin-bottom:5px;
+
+    }
     .role_picker{
         .prompt{
-            font-size:1.25em;
+            margin-top:0;
+            font-size:1em;
         }
         .level{
             p.level_text{
@@ -724,7 +729,6 @@ hr{
         }
     }
 }
-
 
 @import (once, less) "./intro_page.less";
 @import (once, less) "./course_browser/course_browser.less";

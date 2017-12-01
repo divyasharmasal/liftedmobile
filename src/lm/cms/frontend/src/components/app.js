@@ -43,11 +43,13 @@ export default class App extends Component {
         <div class="pure-u-1 pure-u-lg-4-5">
           <div class="content">
             <Router onChange={this.handleRoute}>
-              <HomePage path="/cms/" />
+              {/*<HomePage path="/cms/" />*/}
+              <PublishedCoursesPage path="/cms/" />
+
               <PublishedCoursesPage path="/cms/courses/published" />
               <UnpublishedCoursesPage path="/cms/courses/unpublished" />
               <ScrapersPage path="/cms/scrapers/" />
-              <StaffPage path="/cms/staff/" />
+              {/*<StaffPage path="/cms/staff/" />*/}
               <ModifyAccountPage path="/cms/modify_account/" />
             </Router>
           </div>

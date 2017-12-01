@@ -15,19 +15,20 @@ import json
 import socket
 from boto3.session import Session
 
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
 
 def read_secret(filepath):
     return open(filepath).read().splitlines()[0]
 
 SCRAPYD_IP = None
 if 'CMS' in os.environ:
-    SCRAPYD_IP = socket.gethostbyname("scrapyd")
-
-if 'CMS' in os.environ:
-    SESSION_COOKIE_NAME = "cms_sessionid"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+    if "DEV" in os.environ:
+        SCRAPYD_IP = socket.gethostbyname("scrapyd_dev")
+        SESSION_COOKIE_NAME = "cms_sessionid_dev"
+    else:
+        SCRAPYD_IP = socket.gethostbyname("scrapyd")
+        SESSION_COOKIE_NAME = "cms_sessionid"
 
 
 if 'DEV' in os.environ:

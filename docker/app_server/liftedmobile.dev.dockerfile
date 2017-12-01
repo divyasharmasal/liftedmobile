@@ -18,13 +18,14 @@ EXPOSE 8000
 ENV PYTHONUNBUFFERED 1
 ENV DEV 1
 
+    #sh /src/lm/wait_for_db.sh liftedmobile_db_dev && \
 # Wait till the database is ready and then launch the dev server
-CMD cd /src/lm && \
-    sh /src/lm/wait_for_db.sh liftedmobile_db_dev && \
-    python3 manage.py collectstatic --no-input && \
-    python3 manage.py migrate && \
-    echo && \
-    echo "Docker containers are up; server at: http://0.0.0.0:8000/" && \
+CMD cd /src/lm                                                             && \
+    python3 /src/lm/wait_for_postgres.py                                   && \
+    python3 manage.py collectstatic --no-input                             && \
+    python3 manage.py migrate                                              && \
+    echo                                                                   && \
+    echo "Docker containers are up; server at: http://0.0.0.0:8000/"       && \
     echo "Run ./scripts/app_server/dev/gulp-app.sh in a separate terminal to continually update the static files while you develop the frontend." && \
     echo "Also run ./scripts/app_server/dev/watch-app.sh in a separate terminal for preact-cli to build the frontend as you code." && \
     echo && \

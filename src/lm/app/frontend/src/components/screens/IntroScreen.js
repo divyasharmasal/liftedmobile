@@ -7,14 +7,19 @@ export class IntroScreen extends Component{
       <div class="pure-g">
         <div class="pure-u-1">
           <div class="sal_logo no_user_select">
-            <img alt="LIFTED Mobile - Singapore Academy of Law"
-                 src="/static/app/dist/images/sal_logo.png" />
-            <span class="lifted">LIFTED</span>
+            <a target="_blank" href="https://www.sal.org.sg/">
+              <img alt="LIFTED Mobile - Singapore Academy of Law"
+                   src="/static/app/dist/images/sal_logo.png" />
+             </a>
+             <a target="_blank" 
+               href="https://www.sal.org.sg/Resources-Tools/Legal-Education/LIFTED/Overview">
+              <span class="lifted">LIFTED</span>
+            </a>
           </div>
 
           <div class="intro">
             <div class="text">
-              <p>Legal learning made simple.</p>
+              <p>Legal learning <wbr />made simple.</p>
             </div>
           </div>
 
@@ -53,11 +58,16 @@ export class IntroScreen extends Component{
 
 
           <div class="credits">
+            {/*
             <p>
               This app is part of the <a href="https://www.sal.org.sg/lifted">
               Legal Industry Framework for Training and Education</a>, an 
               initiative of the <a href="https://www.sal.org.sg">
               Singapore Academy of Law</a>.
+            </p>
+            */}
+            <p>
+              © 2017 Singapore Academy of Law. All rights reserved.
             </p>
             {/*
             <p>

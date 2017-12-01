@@ -6,13 +6,30 @@ networks:
             name: appserver_default
 
 services:
-    db:
+    db_dev:
         container_name: admin_db_dev
         build:
             context: ./
             dockerfile: ./db.dev.dockerfile
         environment:
             - POSTGRES_PASSWORD=password
+
+    scrapyd_dev:
+        container_name: admin_scrapyd_dev
+        build:
+            context: ../../
+            dockerfile: ./docker/admin_server/scrapyd.dev.dockerfile
+        volumes:
+            - ../../admin_server/scraper:/scraper
+        ports:
+            - "81:80"
+            - "442:443"
+            - "6800:6800"
+        environment:
+            - DEV=true
+            - SCRAPYD_API_KEY=scrapydapikey
+        expose:
+            - "6800"
 
     cms:
         container_name: admin_cms_dev
@@ -30,20 +47,6 @@ services:
             - LM_DB_PWD=password
         ports:
             - "9000:9000"
-
-    scrapyd:
-        container_name: admin_scrapyd_dev
-        build:
-            context: ../../
-            dockerfile: ./docker/admin_server/scrapyd.dev.dockerfile
-        volumes:
-            - ../../admin_server/scraper:/scraper
-        ports:
-            - "81:80"
-            - "442:443"
-            - "6800:6800"
-        environment:
-            - DEV=true
-            - SCRAPYD_API_KEY=scrapydapikey
-        expose:
-            - "6800"
+        depends_on:
+            - "db_dev"
+            - "scrapyd_dev"

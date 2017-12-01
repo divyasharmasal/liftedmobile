@@ -7,5 +7,6 @@ then
 else
     eval "docker save appserver_db           | bzip2 | pv | ${1} 'bunzip2 | docker load'"
     eval "docker save appserver_liftedmobile | bzip2 | pv | ${1} 'bunzip2 | docker load'"
+    eval "docker save appserver_tlsproxy     | bzip2 | pv | ${1} 'bunzip2 | docker load'"
 fi
 

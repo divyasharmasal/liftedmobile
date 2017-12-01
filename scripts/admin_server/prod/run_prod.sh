@@ -1,8 +1,11 @@
 #!/usr/bin/env sh
 
-sh ./scripts/app_server/prod/run_prod.sh
+if [ "${1}" != "--only-admin" ]
+then
+    sh ./scripts/app_server/prod/run_prod.sh
+fi
 
-docker-compose -f ./docker/admin_server/docker-compose.prod.yml stop
+docker-compose -f ./docker/admin_server/docker-compose.prod.yml stop -t 0
 docker-compose -f ./docker/admin_server/docker-compose.prod.yml up -d
 
 if [ "${1}" != "--no-logs" ]

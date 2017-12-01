@@ -15,9 +15,11 @@ export class Navbar extends Component {
         <div class="section">
           <a href="/cms/scrapers/">Scrapers</a>
         </div>
+        {/*
         <div class="section">
           <a href="/cms/staff/">Staff</a>
         </div>
+        */}
       </div>
     )
   }

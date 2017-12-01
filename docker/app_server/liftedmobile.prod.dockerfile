@@ -43,17 +43,19 @@ RUN apk update                                                              && \
            /usr/lib/node_modules /var/cache/apk/* /usr/share/man /tmp/*        \
            /root/.node-gyp /root/.gnupg /root/.npm                             \
            /src/lm/app/frontend/ /src/frontend/src/fonts                       \ 
-           /src/lm/static/app/fonts/                                           \
-           /src/lm/cms/frontend                                                \
+           /src/lm/static/app/fonts/ /src/lm/cms/frontend                      \
            /src/lm/static/app/dist/ssr-build/ /bin/yarn /bin/yarnpkg           \
-           /bin/yarn.js /root/.yarn /bin/yarn /bin/yarn.js /bin/yarnpkg
+           /bin/yarn.js /root/.yarn 
 
 WORKDIR /src/lm
+ENV PYTHONUNBUFFERED 1
 
-CMD sh /src/lm/wait_for_db.sh liftedmobile_db && \
+CMD echo $(netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}') dockerhost     \
+        >> /etc/hosts                                                       && \
+    python3 /src/lm/wait_for_postgres.py                                    && \
     python3 manage.py migrate                                               && \
     python3 manage.py collectstatic --no-input                              && \
     gunicorn -D --bind unix:/gunicorn.sock lm.wsgi:application              && \
     echo                                                                    && \
-    echo "Docker containers are up; server at: http://0.0.0.0:80/"          && \
+    echo "Docker containers are up; server at: http://0.0.0.0:8001/"        && \
     nginx -c /etc/nginx/nginx.conf -g 'daemon off;'

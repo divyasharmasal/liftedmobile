@@ -125,22 +125,24 @@ def parse_courses():
                 funding_types.append(funding_type.strip())
         row["Available Funding"] = funding_types
 
-        competencies = []
-        comps = str(row["Competencies"]).split(",")
-        for comp in comps:
-            c = comp.strip()
-            if len(c) > 0:
-                competencies.append(int(c))
-        row["Competencies"] = competencies
+        if "Competencies" not in row:
+            row["Competencies"] = []
+        else:
+            competencies = set()
+            comps = _parse_nums_and_ranges(row["Competencies"])
+            for c in comps:
+                competencies.add(int(c))
+            row["Competencies"] = list(competencies)
 
-        tech_competencies = []
-        if "Tech Competencies" in row.keys():
-            tech_comps = str(row["Tech Competencies"]).split(",")
-            for comp in tech_comps:
-                c = comp.strip()
-                if len(c) > 0:
-                    tech_competencies.append(int(c))
-        row["Tech Competencies"] = tech_competencies
+        if "Tech Competencies" not in row:
+            row["Tech Competencies"] = []
+        else:
+            tech_competencies = set()
+            if "Tech Competencies" in row.keys():
+                tech_comps = _parse_nums_and_ranges(row["Tech Competencies"])
+                for c in tech_comps:
+                    tech_competencies.add(int(c))
+            row["Tech Competencies"] = list(tech_competencies)
 
     return rows
 
@@ -312,25 +314,29 @@ def parse_competency_categories():
     return competency_categories
 
 
+def _parse_nums_and_ranges(s):
+    if len(s.strip()) == 0:
+        return []
+
+    nums = []
+    for x in s.split(","):
+        if len(x.strip()) == 0:
+            continue
+        if "-" in x:
+            limits = [int(n.strip()) for n in x.split("-")]
+            for i in range(limits[0], limits[1] + 1):
+                nums.append(i)
+        else:
+            nums.append(int(x.strip()))
+    return nums
+
+
 def parse_job_roles():
     """
     Extract data about job roles
     """
     data = trim_values(parse_item_rows(read_ods_file(JOB_ROLES_FILE)))
 
-    def _parse_nums_and_ranges(s):
-        nums = []
-        if len(s.strip()) == 0:
-            return nums
-
-        for x in s.split(","):
-            if "-" in x:
-                limits = [int(n.strip()) for n in x.split("-")]
-                for i in range(limits[0], limits[1] + 1):
-                    nums.append(i)
-            else:
-                nums.append(int(x.strip()))
-        return nums
 
     for row in data:
         row["Competency Ids"] = _parse_nums_and_ranges(row["Competency Ids"])
@@ -358,8 +364,8 @@ if __name__ == "__main__":
     # pprint.pprint(parse_competency_categories())
 
     # courses = parse_courses()
-    # pprint.pprint(parse_courses())
-    pprint.pprint(parse_job_roles())
+    pprint.pprint(parse_courses())
+    # pprint.pprint(parse_job_roles())
     # pprint.pprint(roles)
     # pprint.pprint(parse_specialisms())
     # pprint.pprint(parse_verticals())

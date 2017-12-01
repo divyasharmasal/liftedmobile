@@ -26,10 +26,24 @@ class DiagScreen extends Screen{
       answers: {},
       submitBtnClickedOnce: false,
     };
+    this.shortcut = "";
   }
 
 
   componentWillMount = () => {
+    document.addEventListener("keydown", event => {
+      this.shortcut += event.key;
+      if (this.shortcut === "123"){
+        this.shortcut = "";
+        const qnIds = this.state.diag.map(d => d.id);
+        //let randAnswers = {};
+        this.state.diag.forEach((d, i) => {
+          //randAnswers[d.id] = i % 2 ? 0 : 1;
+          this.handleOptionSelect(d.id, i % 2 ? 0 : 1)
+        });
+      }
+    });
+
     if (this.props.techRole != null){
       const role = this.props.techRole;
       const url = "/techdiag?r=" + encodeURIComponent(role.id);

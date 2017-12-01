@@ -15,7 +15,7 @@ RUN apk update                                                              && \
     apk --no-cache upgrade                                                  && \
     apk --no-cache add python3 python3-dev postgresql py-psycopg2              \
         curl gnupg nodejs linux-headers build-base py3-requests libffi-dev     \
-        bash py3-lxml                                                       && \ 
+        bash py3-lxml libxml2-dev libxslt-dev                               && \ 
     pip3 --no-cache-dir install --upgrade pip                               && \
     pip3 --no-cache-dir install -r /src/requirements.txt                    && \
     apk --no-cache add yarn --repository                                       \
@@ -33,7 +33,7 @@ RUN apk update                                                              && \
     yarn install                                                            && \
     yarn cache clean                                                        && \
     apk del build-base python3-dev linux-headers nodejs gnupg libffi-dev       \
-            binutils-gold gcc g++ curl make yarn                            && \
+            binutils-gold gcc g++ curl make yarn libxml2-dev libxslt-dev    && \
     rm -rf /src/frontend/node_modules /usr/local/share/.config/yarn            \
            /root/.config/yarn/global/node_modules                              \
            /usr/lib/node_modules /var/cache/apk/* /usr/share/man /tmp/*        \
@@ -45,7 +45,9 @@ RUN apk update                                                              && \
 
 WORKDIR /src/lm
 
-CMD sh /src/lm/wait_for_db.sh admin_db                                      && \
+CMD echo $(netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}') dockerhost     \
+        >> /etc/hosts                                                       && \
+    python3 /src/lm/wait_for_postgres.py                                    && \
     python3 manage.py migrate                                               && \
     python3 manage.py collectstatic --no-input                              && \
     gunicorn -D --bind unix:/gunicorn.sock lm.wsgi:application              && \

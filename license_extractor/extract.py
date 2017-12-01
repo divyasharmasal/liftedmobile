@@ -98,7 +98,7 @@ def parse_additional_licenses():
 if __name__ == "__main__":
     node_licenses = process_node_licenses(json.loads(
             subprocess.run(["license-checker", "--json"], 
-                cwd="../src/frontend/", stdout=subprocess.PIPE)\
+                cwd="../src/lm/app/frontend/", stdout=subprocess.PIPE)\
                         .stdout.decode("utf-8")))
 
     # python_licenses = []

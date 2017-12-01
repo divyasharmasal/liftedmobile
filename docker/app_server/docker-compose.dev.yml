@@ -24,3 +24,5 @@ services:
         environment:
             - DEV=true
             - DB_PWD=password
+        depends_on:
+            - "db_dev"

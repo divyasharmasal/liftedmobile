@@ -94,7 +94,7 @@ class RolePicker extends Component{
     Object.keys(levelRoles).sort((a, b) => a - b).forEach(level => {
       levelSections.push(
         <div class="level">
-          <p class="level_text">Level {level}:</p>
+          <p class="level_text">Level {level}</p>
           <RoleLevelPicker
             handleRoleSelect={this.props.handleOptionSelect}
             level={level}
@@ -105,7 +105,7 @@ class RolePicker extends Component{
     return (
       <div class="role_picker">
         <p class="prompt">
-          Select the best fit:
+          (select the best fit category)
         </p>
         {levelSections}
       </div>

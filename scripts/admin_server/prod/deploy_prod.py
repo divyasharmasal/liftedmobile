@@ -18,7 +18,7 @@ if __name__ == "__main__":
     userhost = args.userhost
     scripts_docker_dir = args.scripts_docker_dir
 
-    ssh_args = "-p {port} -i '{cred_filepath}' {userhost} "\
+    ssh_args = "-p {port} -i '{cred_filepath}' {userhost}"\
         .format(cred_filepath=cred_filepath, port=port, userhost=userhost)
 
     ssh_command = "ssh " + ssh_args
@@ -28,13 +28,14 @@ if __name__ == "__main__":
     docker_path = os.path.join("docker")
 
     push_command = "sh ./scripts/admin_server/prod/push_prod.sh '" + ssh_command + "'"
-    mkdir_command = ssh_command + "\"mkdir -p ~/run\""
+    mkdir_command = ssh_command + " \"mkdir -p ~/run\""
 
-    scp_command = "scp -P {port} -i '{cred_filepath}' -r {scripts} {docker} {userhost}:~/run"\
+    scp_command = "scp -q -P {port} -i '{cred_filepath}' -r {scripts} {docker} {userhost}:~/run"\
         .format(cred_filepath=cred_filepath, port=port,
             userhost=userhost, scripts=scripts_path, docker=docker_path)
 
-    run_command = ssh_command + "\"cd run && ./scripts/admin_server/prod/run_prod.sh\""
+    run_command = ssh_command + \
+        " \"cd run && ./scripts/admin_server/prod/run_prod.sh --only-admin\""
 
     print(mkdir_command)
     print(scp_command)

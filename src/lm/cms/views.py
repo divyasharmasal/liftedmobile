@@ -371,7 +371,8 @@ def scraper_run(request):
     spider_name = body["name"]
     payload = {"project": "scraper", "spider": spider_name}
 
-    r = requests.post("http://scrapyd:6800/schedule.json", data=payload)
+    url = "http://" + settings.SCRAPYD_IP + ":6800/schedule.json"
+    r = requests.post(url, data=payload)
     response = json.loads(r.text)
 
     return json_response("ok")
@@ -379,7 +380,8 @@ def scraper_run(request):
 
 @staff_member_required(login_url=None)
 def scraper_list(request):
-    r = requests.get("http://scrapyd:6800/listjobs.json?project=scraper")
+    url = "http://" + settings.SCRAPYD_IP + ":6800/listjobs.json?project=scraper"
+    r = requests.get(url)
     return json_response(r.json())
 
 

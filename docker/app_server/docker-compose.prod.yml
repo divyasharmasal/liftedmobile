@@ -9,16 +9,16 @@ services:
         environment:
             - POSTGRES_PASSWORD=fGWJTw2Dbpa2p547brXEVjXyzHZu9puytcAaA9mY 
 
+
     liftedmobile:
         container_name: liftedmobile
+        depends_on:
+            - "db"
         build:
             context: ../../
             dockerfile: ./docker/app_server/liftedmobile.prod.dockerfile
-        ports:
-            - "80:80"
-            - "443:443"
         expose:
-            - "80"
+            - "8001"
         volumes:
             - ../../../app_server/django_log:/var/log/django/
         secrets:
@@ -37,6 +37,28 @@ services:
                 awslogs-stream: "liftedmobile_stream"
                 awslogs-create-group: "true"
 
+    tlsproxy:
+        container_name: liftedmobile_tlsproxy
+        build:
+            context: ../../
+            dockerfile: ./docker/app_server/tlsproxy.prod.dockerfile
+        ports:
+            - "443:443"
+            - "80:80"
+        volumes:
+            - ../../../app_server/tlsproxy/letsencrypt/:/etc/letsencrypt/
+        logging:
+            driver: "awslogs"
+            options:
+                awslogs-region: "ap-southeast-1"
+                awslogs-group: "liftedmobile_logs"
+                awslogs-stream: "liftedmobile_tlsproxy_stream"
+                awslogs-create-group: "true"
+        secrets:
+            - certbot_config
+        depends_on:
+            - "liftedmobile"
+
 secrets:
     django_secret:
         file: ../../../LM_SECRETS/DJANGO_SECRET
@@ -52,4 +74,6 @@ secrets:
         file: ../../../LM_SECRETS/ADMIN_EMAILS.json
     db_config:
         file: ../../../LM_SECRETS/DB_CONFIG.json
+    certbot_config:
+        file: ../../../LM_SECRETS/CERTBOT_CONFIG.json
 

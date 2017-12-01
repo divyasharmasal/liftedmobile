@@ -4,6 +4,7 @@ lifted_framework_data/
 """
 from app.lifted_framework_data import extract_framework_data
 from django.core.exceptions import ObjectDoesNotExist
+import os
 
 
 def load(apps, schema_editor):
@@ -228,80 +229,82 @@ def load(apps, schema_editor):
 
 
     # Courses
-    parsed_courses = extract_framework_data.parse_courses()
-    for c in parsed_courses:
-        course = Course(name=c["Name"], cost=c["Cost"],
-                        spider_name="LIFTED booklet",
-                        url=c["URL"], duration=c["Duration (days)"])
-        course.save()
+    # Only load dummy courses in dev
+    if "DEV" in os.environ and os.environ["DEV"]:
+        parsed_courses = extract_framework_data.parse_courses()
+        for c in parsed_courses:
+            course = Course(name=c["Name"], cost=c["Cost"],
+                            spider_name="LIFTED booklet",
+                            url=c["URL"], duration=c["Duration (days)"])
+            course.save()
 
-        # CPD points
-        cpd_points = 0
-        is_private = False
-        if "Est. CPD points" not in c.keys():
-            cpd_points = None
-        else:
-            cpd_points = c["Est. CPD points"]
-
-        if cpd_points == "Pte":
-            is_private = True
+            # CPD points
             cpd_points = 0
-        elif cpd_points == "":
-            cpd_points = 0
+            is_private = False
+            if "Est. CPD points" not in c.keys():
+                cpd_points = None
+            else:
+                cpd_points = c["Est. CPD points"]
 
-        course_cpd_points = CourseCpdPoints(course=course, points=cpd_points,
-                                            is_private=is_private)
-        course_cpd_points.save()
+            if cpd_points == "Pte":
+                is_private = True
+                cpd_points = 0
+            elif cpd_points == "":
+                cpd_points = 0
 
-        # Venue
-        venue = Venue.objects.get(acronym__exact=c["Venue"])
-        course_venue = CourseVenue(course=course, venue=venue)
-        course_venue.save()
+            course_cpd_points = CourseCpdPoints(course=course, points=cpd_points,
+                                                is_private=is_private)
+            course_cpd_points.save()
 
-        # Start dates
-        for start_date in c["Start dates (2017)"]:
-            csd = CourseStartDate(course=course, start_date=start_date)
-            csd.save()
+            # Venue
+            venue = Venue.objects.get(acronym__exact=c["Venue"])
+            course_venue = CourseVenue(course=course, venue=venue)
+            course_venue.save()
 
-        # Funding
-        for funding in c["Available Funding"]:
-            funding_type = Funding.objects.get(funding_type=funding)
-            course_funding = CourseFunding(course=course, funding_type=funding_type)
-            course_funding.save()
+            # Start dates
+            for start_date in c["Start dates (2017)"]:
+                csd = CourseStartDate(course=course, start_date=start_date)
+                csd.save()
 
-        # Format
-        fmt = Format.objects.get(acronym=c["Format"])
-        course_format = CourseFormat(course=course, format=fmt)
-        course_format.save()
+            # Funding
+            for funding in c["Available Funding"]:
+                funding_type = Funding.objects.get(funding_type=funding)
+                course_funding = CourseFunding(course=course, funding_type=funding_type)
+                course_funding.save()
 
-        # Level
-        lvl = Level.objects.get(acronym=c["Training Level"])
-        course_level = CourseLevel(course=course, level=lvl)
-        course_level.save()
+            # Format
+            fmt = Format.objects.get(acronym=c["Format"])
+            course_format = CourseFormat(course=course, format=fmt)
+            course_format.save()
 
-        # Vertical categories
-        vertical_names = ["Legal Practitioner", "In-House Counsel",
-                          "Legal Support"]
+            # Level
+            lvl = Level.objects.get(acronym=c["Training Level"])
+            course_level = CourseLevel(course=course, level=lvl)
+            course_level.save()
 
-        for name in vertical_names:
-            key = c[name]
-            if key:
-                vertical = Vertical.objects.get(name=name)
-                vert_cat = VerticalCategory.objects.get(key=key, vertical=vertical)
-                cvc = CourseVerticalCategory(course=course,
-                                             vertical_category=vert_cat)
-                cvc.save()
+            # Vertical categories
+            vertical_names = ["Legal Practitioner", "In-House Counsel",
+                              "Legal Support"]
 
-        # Competencies
-        competencies = c["Competencies"]
-        for competency_id in competencies:
-            competency = Competency.objects.get(id=competency_id)
-            course_comp = CourseCompetency(course=course, competency=competency)
-            course_comp.save()
+            for name in vertical_names:
+                key = c[name]
+                if key:
+                    vertical = Vertical.objects.get(name=name)
+                    vert_cat = VerticalCategory.objects.get(key=key, vertical=vertical)
+                    cvc = CourseVerticalCategory(course=course,
+                                                 vertical_category=vert_cat)
+                    cvc.save()
 
-        tech_competencies = c["Tech Competencies"]
-        for id in tech_competencies:
-            tech_competency = TechCompetency.objects.get(id=id)
-            course_tech_comp = CourseTechCompetency(course=course,
-                    tech_competency=tech_competency)
-            course_tech_comp.save()
+            # Competencies
+            competencies = c["Competencies"]
+            for competency_id in competencies:
+                competency = Competency.objects.get(id=competency_id)
+                course_comp = CourseCompetency(course=course, competency=competency)
+                course_comp.save()
+
+            tech_competencies = c["Tech Competencies"]
+            for id in tech_competencies:
+                tech_competency = TechCompetency.objects.get(id=id)
+                course_tech_comp = CourseTechCompetency(course=course,
+                        tech_competency=tech_competency)
+                course_tech_comp.save()

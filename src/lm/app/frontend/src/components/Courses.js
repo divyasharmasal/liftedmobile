@@ -54,7 +54,7 @@ class Sorter extends Component{
             this.setState({ cpdDesc: !this.state.cpdDesc });
             this.props.handleSort("cpd")}
           }>
-            CPD points <span class="symbol">{cpdSym}</span></a>
+            CPD <span class="symbol">{cpdSym}</span></a>
 
           <a onClick={() => {
             this.setState({ dateDesc: !this.state.dateDesc });
@@ -99,10 +99,13 @@ export default class Courses extends Component{
 
 
   format_cpd = cpd => {
-    if (cpd.is_private){
+    if (cpd.points == null){
+      return "";
+    }
+    else if (cpd.is_private){
       return "Private";
     }
-    else{
+    else {
       return cpd.points.toFixed(0) + " points";
     }
   }
@@ -199,8 +202,8 @@ export default class Courses extends Component{
             </td>
             <td data-title="Cost">{this.format_cost(course.cost)}</td>
             <td data-title="CPD">{this.format_cpd(course.cpd)}</td>
-            <td data-title="Level">{course.level}</td>
-            <td data-title="Format">{course.format}</td>
+            <td data-title="Level" class="full_width">{course.level}</td>
+            <td data-title="Format" class="full_width">{course.format}</td>
             <td data-title="Dates">{this.format_dates(course.start_dates)}</td>
           </tr>
         );

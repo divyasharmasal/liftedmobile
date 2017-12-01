@@ -1,11 +1,28 @@
-- Re-tag original courses with the new competencies!
-- SSL for CMS!
+- *** Launch date: 8 Jan
+
+- Get new LE certs on Fri 8 Dec 1500 hrs!
+- LE cert backup plan
+- Monday 4 Dec:
+    - Tag courses with info
+    - Create login details for committee to use
+    - Remind Anita about pentest email
+- Get logos from Rizam
+- Substring search in course browser or phase 2 it
+- Home icon in course browser instead of back
+- Change go back to a home icon
+- information icon in role picker to explain that more specialisms will be added over time.
+- Make arrow size smaller
+- Only show future courses
+- Home --- Start over ---- Full review
+- Screenshots for Rizam
+
+- For LP: omit role descriptions / branching in role screen (after 8 Jan)
+
 - Scrape course provider?
 - Funnel visitors from the course browser to the diagnostic
-- End-Nov beta release
-- End-Nov: Submit phase 2 proposal: heatmap, scraping of books, scraping of
-  AP site, law school event pages, tagging of books, recommended
-  reading section. Journals Online.
+- Mid-Jan: Submit phase 2 proposal: heatmap, scraping of books,
+  scraping of AP site, law school event pages, tagging of books,
+  recommended reading section. Journals Online.
 - check the CC licenses for icons
 - do a code generator for 3rd party
 - Scrape SCCA, SkillsFuture
@@ -15,14 +32,20 @@ Optimise /cms/get_published_courses_data/
 Make push_prod do all deployment work
 Unit testing
 Secrets in Vault
-Server logging
   - Link CloudWatch to graylog
 - End-Nov: presentation to CJ + beta testing
-- Jan: launch
+- 8 Jan: launch
 - Anita's leave: 8-28 Dec
 
 ------------------------------------------------
+
 Done:
+- Centralise and bold centralised
+- Hyperlink to SAL and LIFTED in intro 
+- SSL reverse proxy
+- Diag results - comp categories should be blue and not underlined
+- Delete dummy course data
+- Change General to Core for Practitioner
 - 3 LP job role levels:
     1. Generalist / Developing Specialist
         plus corporate comm OR plus community OR no specialism
@@ -72,6 +95,7 @@ Done:
     - used URL and spider_name instead
 - Standardise caps in job roles
 - Course provider field for courses.
+- Re-tag original courses with the new competencies!
 
 -------------------------------------------
 

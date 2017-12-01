@@ -14,8 +14,24 @@ services:
         environment:
             - POSTGRES_PASSWORD=ko3TnNyBRYVWg3cqgP8G8CTpnmr9HPgndnhpDo98jKGCJwec9H
 
+    scrapyd:
+        container_name: admin_scrapyd
+        build:
+            context: ../../
+            dockerfile: ./docker/admin_server/scrapyd.prod.dockerfile
+        volumes:
+            - ../../../scrapyd/scrapyd:/var/log/scrapyd/
+            - ../../../scrapyd/scheduler:/var/log/scraper_scheduler/
+        secrets:
+            - scrapyd_api_key
+        expose:
+            - "6800"
+
     cms:
         container_name: admin_cms
+        depends_on:
+            - "scrapyd"
+            - "db"
         build:
             context: ../../
             dockerfile: ./docker/admin_server/cms.prod.dockerfile
@@ -44,19 +60,6 @@ services:
                 awslogs-group: "liftedmobile_logs"
                 awslogs-stream: "cms_stream"
                 awslogs-create-group: "true"
-
-    scrapyd:
-        container_name: admin_scrapyd
-        build:
-            context: ../../
-            dockerfile: ./docker/admin_server/scrapyd.prod.dockerfile
-        volumes:
-            - ../../../scrapyd/scrapyd:/var/log/scrapyd/
-            - ../../../scrapyd/scheduler:/var/log/scraper_scheduler/
-        secrets:
-            - scrapyd_api_key
-        expose:
-            - "6800"
 
 secrets:
     django_secret:
