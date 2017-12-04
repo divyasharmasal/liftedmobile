@@ -6,3 +6,5 @@
 "ECMAScript","6","BSD-3-Clause","https://www.ecma-international.org/ecma-262/7.0/index.html"
 "gulp","3.9+","MIT","https://gulpjs.com/"
 "Docker CE","17+","Apache License 2.0","https://www.docker.com"
+"Font Awesome","4","SIL OFL 1.1","http://fontawesome.io/license/"
+"Font-Awesome-SVG-PNG","1.1.5","MIT","https://github.com/encharm/Font-Awesome-SVG-PNG/blob/master/LICENSE"

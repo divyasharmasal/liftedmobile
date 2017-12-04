@@ -7,8 +7,6 @@
     - Create login details for committee to use
     - Remind Anita about pentest email
 
-- Add information icon in role picker to explain that more specialisms will be
-  added over time.
 - Screenshots for Rizam
 - Get logos from Rizam
 
@@ -19,7 +17,6 @@
 - Mid-Jan: Submit phase 2 proposal: heatmap, scraping of books,
   scraping of AP site, law school event pages, tagging of books,
   recommended reading section. Journals Online.
-- check the CC licenses for icons
 - do a code generator for 3rd party
 - Scrape SCCA, SkillsFuture
 - Full auth system with 2FA
@@ -36,6 +33,9 @@ Secrets in Vault
 ------------------------------------------------
 
 Done:
+- check the CC licenses for icons
+- Add information icon in role picker to explain that more specialisms will be
+  added over time.
 - Substring search in course browser or phase 2 it
 - Only show future courses
 - Make arrow size smaller
