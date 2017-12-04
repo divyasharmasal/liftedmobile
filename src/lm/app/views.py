@@ -305,7 +305,9 @@ def course_recs(request):
             return HttpResponseServerError("Invalid need param")
 
 
-    now = datetime.datetime.now().isoformat()
+    timezone = pytz.timezone("UTC")
+    now = timezone.localize(datetime.datetime.now()).isoformat()
+
     course_query = models.Course.objects\
                 .filter(coursestartdate__start_date__gte=now)
     if need_ids is not None:
@@ -632,7 +634,8 @@ def _tech_diag_course_recommendations(categorised_answers, tech_role):
             level += 1
         return level
 
-    now = datetime.datetime.now().isoformat()
+    timezone = pytz.timezone("UTC")
+    now = timezone.localize(datetime.datetime.now()).isoformat()
 
     for category_name, score_info in categorised_answers.items():
         courses = []
@@ -719,6 +722,7 @@ def results(request):
             .filter(id__in=keys)
             .select_related("category")
     )
+    
 
     categorised_answers = {}
     cat_names = {}
@@ -804,7 +808,7 @@ def _get_courses_from_comps(job_role, vertical_id, competencies):
 def _diag_course_recommendations(categorised_answers, vertical, job_role):
     """
     Provides course recommendations based on:
-    @cat_scores: the scores for each competency category
+    @categorised_answers: the scores for each competency category
     @vertical: the user's job vertical
     @job_role: the user's selected job role
     """
@@ -826,45 +830,64 @@ def _diag_course_recommendations(categorised_answers, vertical, job_role):
             level += 1
         return level
 
-    now = datetime.datetime.now().isoformat()
+    timezone = pytz.timezone("UTC")
+    now = timezone.localize(datetime.datetime.now()).isoformat()
 
     for category_name, score_info in categorised_answers.items():
         courses = []
         result["map"][category_name] = []
 
         if score_info["special"]:
-            if score_info["score"] == 100:
-                level = _next_level(job_role)
-                competencies = models.Competency.objects.filter(
-                        specialism__name=category_name,
-                        jobrolecompetency__job_role__role_level=level)\
-                    .distinct()
+            real_cat_name = models.Competency.objects.filter(
+                specialism__name=category_name,
+                vertical=vertical,
+                jobrolecompetency__job_role=job_role
+            )[0].category.name
 
-                courses = _get_courses_from_comps(
-                    None, vertical.id, competencies)
+            courses = models.Course.objects.filter(
+                        courseverticalcategory__vertical_category__name=real_cat_name,
+                        courseverticalcategory__vertical_category__vertical=vertical)
+            # if score_info["score"] == 100:
+                # level = _next_level(job_role)
+                # competencies = models.Competency.objects.filter(
+                        # specialism__name=category_name,
+                        # jobrolecompetency__job_role__role_level=level)\
+                    # .distinct()
 
-            else:
-                competencies = models.Competency.objects.filter(
-                        specialism__name=category_name).distinct()
-                courses = _get_courses_from_comps(
-                        job_role, vertical.id, competencies)
+                # courses = _get_courses_from_comps(
+                    # None, vertical.id, competencies)
+
+            # else:
+                # # competencies = models.Competency.objects.filter(
+                        # # specialism__name=category_name).distinct()
+                # # courses = _get_courses_from_comps(
+                        # # job_role, vertical.id, competencies)
+                # courses = models.Course.objects.filter(
+                            # courseverticalcategory__vertical_category__vertical=vertical,
+                            # courseverticalcategory__vertical_category__name="Specialisms")
         else:
-            if score_info["score"] == 100:
-                level = _next_level(job_role)
-                competencies = models.Competency.objects.filter(
-                        category__name=category_name,
-                        jobrolecompetency__job_role__role_level=level)\
-                    .distinct()
-                courses = _get_courses_from_comps(
-                        None, vertical.id, competencies)
+            courses = models.Course.objects.filter(
+                        courseverticalcategory__vertical_category__vertical=vertical,
+                        courseverticalcategory__vertical_category__name=category_name)
+            # if score_info["score"] == 100:
+                # level = _next_level(job_role)
+                # competencies = models.Competency.objects.filter(
+                        # category__name=category_name,
+                        # jobrolecompetency__job_role__role_level=level)\
+                    # .distinct()
+                # courses = _get_courses_from_comps(
+                        # None, vertical.id, competencies)
 
-            else:
-                competencies = models.Competency.objects.filter(
-                        category__name=category_name)
-                courses = _get_courses_from_comps(
-                        job_role, vertical.id, competencies)
+            # else:
+                # # competencies = models.Competency.objects.filter(
+                        # # category__name=category_name)
+                # # courses = _get_courses_from_comps(
+                        # # job_role, vertical.id, competencies)
+                # courses = models.Course.objects.filter(
+                            # courseverticalcategory__vertical_category__vertical=vertical,
+                            # courseverticalcategory__vertical_category__name=category_name)
 
-        courses = _optimise_course_query(courses)\
+        courses = _optimise_course_query(courses) \
                 .filter(coursestartdate__start_date__gte=now)
         for course in courses:
             course_id = hash_func(course.id)

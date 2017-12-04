@@ -46,7 +46,7 @@ class SalSpider(scrapy.Spider):
                 end_date=self.convert_to_isodate(end_date),
                 upcoming=upcoming,
                 level=None,
-                provider="SAL")
+                provider="Singapore Academy of Law")
             items.append(course_item)
 
         return items

@@ -3,22 +3,18 @@
 
 - Get new LE certs on Fri 8 Dec 1500 hrs!
 - LE cert backup plan
-- Monday 4 Dec:
-    - Tag courses with info
-    - Create login details for committee to use
     - Remind Anita about pentest email
 
 - Get logos from Rizam
 
-- New favicon
+- New favicon?
+- Lifted keys for tech roles...
 
 - For LP: omit role descriptions / branching in role screen (after 8 Jan)
-
-- Scrape course provider?
 - Funnel visitors from the course browser to the diagnostic
-- Mid-Jan: Submit phase 2 proposal: heatmap, scraping of books,
-  scraping of AP site, law school event pages, tagging of books,
-  Recommended reading section. Journals Online.
+- Mid-Jan: Submit phase 2 proposal: heatmap, scraping of books, scraping of AP
+  site, law school event pages, tagging of books, recommended reading section,
+  journals Online.
 - Do a code generator for 3rd party
 - Scrape SCCA, SkillsFuture
 - Full auth system with 2FA
@@ -34,6 +30,9 @@ Secrets in Vault
 ------------------------------------------------
 
 Done:
+- Monday 4 Dec:
+    - Tag courses with info
+    - Create login details for committee to use
 - Scrape the CALAS training level and organiser
 - "Select the best fit" should be aligned with the title
 - "Varying" cost option

@@ -52,7 +52,7 @@ def get_level_format_vertical_data():
     }
     vertical_category_query = (
         app_models.VerticalCategory.objects.all()
-        .order_by("id")
+        .order_by("vertical__id")
         .select_related("vertical")
     )
 
