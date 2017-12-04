@@ -269,7 +269,7 @@ def course_browse(request):
     # csd_query = csd_query[start_page:end_page]
 
     if search_param is not None:
-        csd_query = csd_query.filter(course__name__search=search_param)
+        csd_query = csd_query.filter(course__name__icontains=search_param)
 
     return json_response([
             _course_json(

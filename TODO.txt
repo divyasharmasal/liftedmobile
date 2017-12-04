@@ -8,10 +8,8 @@
     - Remind Anita about pentest email
 
 - Substring search in course browser or phase 2 it
-
 - Add information icon in role picker to explain that more specialisms will be
   added over time.
-- Only show future courses
 - Screenshots for Rizam
 - Get logos from Rizam
 
@@ -39,6 +37,7 @@ Secrets in Vault
 ------------------------------------------------
 
 Done:
+- Only show future courses
 - Make arrow size smaller
 - Home icon in course browser instead of back
 - Change go back to a home icon
