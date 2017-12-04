@@ -56,11 +56,13 @@ class RoleLevelPicker extends Component{
           </p>
         */}
         {roles}
+        {/*
         {this.props.roles.length == 1 &&
           <p>
             {this.props.roles[0].desc}
           </p>
         }
+        */}
       </div>
     );
   }
@@ -124,7 +126,7 @@ class RolePicker extends Component{
         </p>
         {this.state.specInfoVisible &&
             <p class="prompt">
-              Note: more job specialisms will be added to this tool over time.
+              Note: more job specialisms will be added to this list over time.
             </p>
         }
         {levelSections}

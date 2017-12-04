@@ -1,8 +1,6 @@
 - *** Launch date: 8 Jan
 - Scrape SkillsFuture
 
-- Scrape the CALAS training level and organiser
-
 - Get new LE certs on Fri 8 Dec 1500 hrs!
 - LE cert backup plan
 - Monday 4 Dec:
@@ -36,6 +34,7 @@ Secrets in Vault
 ------------------------------------------------
 
 Done:
+- Scrape the CALAS training level and organiser
 - "Select the best fit" should be aligned with the title
 - "Varying" cost option
 - Merge "areas of specialism" with the rest of the table in results
