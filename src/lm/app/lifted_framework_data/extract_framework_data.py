@@ -364,8 +364,8 @@ if __name__ == "__main__":
     # pprint.pprint(parse_competency_categories())
 
     # courses = parse_courses()
-    pprint.pprint(parse_courses())
-    # pprint.pprint(parse_job_roles())
+    # pprint.pprint(parse_courses())
+    pprint.pprint(parse_job_roles())
     # pprint.pprint(roles)
     # pprint.pprint(parse_specialisms())
     # pprint.pprint(parse_verticals())
