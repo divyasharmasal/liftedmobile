@@ -28,9 +28,12 @@ const directionKey = {
 export class CourseBrowser extends Component{
   constructor(props){
     super(props);
+    const now = new Date();
+    const nextYear = now.getFullYear() + 1;
     this.defaultDateRange = {
-      startDate: new Date(2017, 0, 1),
-      endDate: new Date(2017, 11, 31),
+      //startDate: new Date(2017, 0, 1),
+      startDate: now,
+      endDate: new Date(nextYear, 11, 31),
     };
 
     this.state = {

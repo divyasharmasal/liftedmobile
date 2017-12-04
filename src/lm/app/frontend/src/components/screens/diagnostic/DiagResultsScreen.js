@@ -60,10 +60,11 @@ class CategoryCourses extends Component{
           <p class="category_name"
             onClick={() => {
               this.setState({
-                show: !this.state.show,
-              });
+                show: !this.state.show
+              })
             }}>
-            {this.props.categoryName + " " + toggleArrow}
+            {this.props.categoryName}
+            <span class="arrow">{toggleArrow}</span>
           </p>
           {stars(this.props.results[this.props.categoryName].score)}
         </div>

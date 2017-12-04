@@ -8,12 +8,10 @@
     - Remind Anita about pentest email
 
 - Substring search in course browser or phase 2 it
-- Home icon in course browser instead of back
-- Change go back to a home icon
-- Add information icon in role picker to explain that more specialisms will be added over time.
-- Make arrow size smaller
+
+- Add information icon in role picker to explain that more specialisms will be
+  added over time.
 - Only show future courses
-- Home --- Start over ---- Full review
 - Screenshots for Rizam
 - Get logos from Rizam
 
@@ -41,6 +39,10 @@ Secrets in Vault
 ------------------------------------------------
 
 Done:
+- Make arrow size smaller
+- Home icon in course browser instead of back
+- Change go back to a home icon
+- Home --- Start over ---- Full review
 - Centralise and bold centralised
 - Hyperlink to SAL and LIFTED in intro 
 - SSL reverse proxy

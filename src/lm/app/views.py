@@ -303,7 +303,9 @@ def course_recs(request):
             return HttpResponseServerError("Invalid need param")
 
 
-    course_query = models.Course.objects.all()
+    now = datetime.datetime.now().isoformat()
+    course_query = models.Course.objects\
+                .filter(coursestartdate__start_date__gte=now)
     if need_ids is not None:
         course_query = course_query.filter(
             courseverticalcategory__vertical_category__id=vertical_category_id,
@@ -620,6 +622,8 @@ def _tech_diag_course_recommendations(categorised_answers, tech_role):
             level += 1
         return level
 
+    now = datetime.datetime.now().isoformat()
+
     for category_name, score_info in categorised_answers.items():
         courses = []
         result["map"][category_name] = []
@@ -646,7 +650,8 @@ def _tech_diag_course_recommendations(categorised_answers, tech_role):
                     coursetechcompetency__tech_competency__in=competencies
             ).distinct()
 
-        courses = _optimise_course_query(courses)
+        courses = _optimise_course_query(courses)\
+                .filter(coursestartdate__start_date__gte=now)
         for course in courses:
             course_id = hash_func(course.id)
             result["map"][category_name].append(course_id)
@@ -811,6 +816,8 @@ def _diag_course_recommendations(categorised_answers, vertical, job_role):
             level += 1
         return level
 
+    now = datetime.datetime.now().isoformat()
+
     for category_name, score_info in categorised_answers.items():
         courses = []
         result["map"][category_name] = []
@@ -847,7 +854,8 @@ def _diag_course_recommendations(categorised_answers, vertical, job_role):
                 courses = _get_courses_from_comps(
                         job_role, vertical.id, competencies)
 
-        courses = _optimise_course_query(courses)
+        courses = _optimise_course_query(courses)\
+                .filter(coursestartdate__start_date__gte=now)
         for course in courses:
             course_id = hash_func(course.id)
             result["map"][category_name].append(course_id)
