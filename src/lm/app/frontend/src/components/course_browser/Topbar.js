@@ -31,7 +31,7 @@ export class Topbar extends Component{
               route("/");
             }}
             class="logo">
-            <img src="/static/app/dist/images/back.png" alt="back"/>
+            <img src="/static/app/dist/images/back_home.png" alt="back"/>
           </div>
           <div class="search">
             <input type="search" 
