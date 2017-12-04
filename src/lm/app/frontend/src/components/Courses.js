@@ -112,7 +112,12 @@ export default class Courses extends Component{
 
 
   format_cost = cost => {
-    return "$" + cost.toFixed(2);
+    if (cost.isVarying){
+      return "Cost varies";
+    }
+    else{
+      return "$" + cost.cost.toFixed(2);
+    }
   }
 
 
