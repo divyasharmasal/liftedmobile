@@ -23,7 +23,7 @@ WORKDIR /src
 RUN apk update                                                              && \
     apk --no-cache upgrade                                                  && \
     apk --no-cache add python3 python3-dev postgresql py-psycopg2              \
-        curl gnupg nodejs linux-headers build-base                             \
+        curl gnupg nodejs linux-headers build-base libxml2-dev libxslt-dev     \
         libffi-dev bash py3-lxml                                            && \ 
     pip3 --no-cache-dir install --upgrade pip                               && \
     pip3 --no-cache-dir install -r /src/requirements.txt                    && \
@@ -37,7 +37,7 @@ RUN apk update                                                              && \
     gulp deploy --gulpfile /src/lm/app/frontend/gulpfile.js                 && \
     yarn cache clean                                                        && \
     apk del build-base python3-dev linux-headers nodejs gnupg libffi-dev       \
-            binutils-gold gcc g++ curl make yarn                            && \
+            binutils-gold gcc g++ curl make yarn libxml2-dev libxslt-dev    && \
     rm -rf /src/frontend/node_modules /usr/local/share/.config/yarn            \
            /root/.config/yarn/global/node_modules                              \
            /usr/lib/node_modules /var/cache/apk/* /usr/share/man /tmp/*        \

@@ -16,8 +16,8 @@
 - Funnel visitors from the course browser to the diagnostic
 - Mid-Jan: Submit phase 2 proposal: heatmap, scraping of books,
   scraping of AP site, law school event pages, tagging of books,
-  recommended reading section. Journals Online.
-- do a code generator for 3rd party
+  Recommended reading section. Journals Online.
+- Do a code generator for 3rd party
 - Scrape SCCA, SkillsFuture
 - Full auth system with 2FA
 - Email reminders about untagged courses?
@@ -26,7 +26,6 @@ Make push_prod do all deployment work
 Unit testing
 Secrets in Vault
   - Link CloudWatch to graylog
-- End-Nov: presentation to CJ + beta testing
 - 8 Jan: launch
 - Anita's leave: 8-28 Dec
 

@@ -29,6 +29,7 @@ services:
             - email_credentials
             - admin_emails
             - db_config
+            - django_com_pwd
         logging:
             driver: "awslogs"
             options:
@@ -76,4 +77,5 @@ secrets:
         file: ../../../LM_SECRETS/DB_CONFIG.json
     certbot_config:
         file: ../../../LM_SECRETS/CERTBOT_CONFIG.json
-
+    django_com_pwd:
+        file: ../../../LM_SECRETS/DJANGO_COM_PWD

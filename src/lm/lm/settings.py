@@ -59,6 +59,14 @@ else:
     LIFTED_TEMP_USERNAME = "lifted"
     LIFTED_TEMP_PASSWORD = read_secret("/run/secrets/django_team_pwd")
 
+    LIFTED_COM_USERNAME = None
+    LIFTED_COM_PASSWORD = None
+    try:
+        LIFTED_COM_USERNAME = "committee"
+        LIFTED_COM_PASSWORD = read_secret("/run/secrets/django_com_pwd")
+    except:
+        pass
+
     email_credentials = json.loads(open("/run/secrets/email_credentials").read())
     ADMINS = list(json.loads(open("/run/secrets/admin_emails").read()).items())
 

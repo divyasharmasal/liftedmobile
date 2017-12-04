@@ -15,3 +15,9 @@ def create(apps, schema_editor):
                              password=settings.LIFTED_TEMP_PASSWORD,
                              is_staff=True,
                              last_login=timezone.now(), email="")
+
+    if settings.LIFTED_COM_USERNAME:
+        User.objects.create_user(username=settings.LIFTED_COM_USERNAME,
+                                 password=settings.LIFTED_COM_PASSWORD,
+                                 is_staff=False,
+                                 last_login=timezone.now(), email="")
