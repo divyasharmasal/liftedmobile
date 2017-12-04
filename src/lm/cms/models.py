@@ -19,3 +19,4 @@ class ScrapedCourse(models.Model):
     spider_name = models.TextField(null=False)
     lifted_keys = models.ManyToManyField(LiftedKey)
     provider = models.TextField(null=True)
+    level = models.TextField(null=True)

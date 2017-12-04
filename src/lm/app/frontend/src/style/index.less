@@ -17,6 +17,9 @@
 
 *, html, body {
     font-family: Lato, Arial !important;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 a{
@@ -529,6 +532,9 @@ hr{
 
     }
     .role_picker{
+        .prompt.best_fit{
+            margin-left:30px;
+        }
         .prompt{
             margin-top:0;
             font-size:1em;

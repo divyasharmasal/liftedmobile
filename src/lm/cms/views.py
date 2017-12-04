@@ -112,6 +112,11 @@ def cms_get_unpublished_courses_data(request):
             "end_date": end_date,
             "spider_name": scraped_course.spider_name,
             "lifted_keys": lifted_keys,
+            "level": scraped_course.level,
+            "cost": {
+                "cost_is_varying": False,
+                "value": None
+            }
         })
 
     return json_response(result)
@@ -206,7 +211,8 @@ def save_course(request):
         course = app_models.Course.objects.get(id=id)
         course.name = name
         course.url = url
-        course.cost = cost
+        course.cost = cost["cost"]
+        course.cost_is_varying = cost["isVarying"]
         course.provider = provider
         course.save()
 
@@ -275,7 +281,8 @@ def save_course(request):
         # Course
         course = app_models.Course(name=name,
                                    url=url,
-                                   cost=cost,
+                                   cost=cost["cost"],
+                                   cost_is_varying=cost["isVarying"],
                                    spider_name=spider_name,
                                    provider=provider,
                                    is_manually_added=is_manually_added)
@@ -472,6 +479,11 @@ def scraper_add_course(request):
     public_cpd = course_data["public_cpd"]
     start_date = course_data["start_date"]
     end_date = course_data["end_date"]
+    provider = course_data["provider"]
+    level = course_data["level"]
+
+    if level == "Foundation":
+        level = "Foundational"
 
     # Validate course_data here
     if len(course_data.keys()) == 0:
@@ -484,16 +496,18 @@ def scraper_add_course(request):
                     spider_name=spider_name,
                     public_cpd=public_cpd,
                     start_date=start_date,
-                    end_date=end_date)
+                    end_date=end_date,
+                    level=level,
+                    provider=provider)
             .exists()):
         return json_response("Found matching ScrapedCourse")
 
-    # Update published matching courses with the same provider and url
-
+    # Update published matching courses with the same spider name and url:
+    # Note: the provider won't be changed
     matching_courses = (app_models.Course.objects
         .filter(spider_name=spider_name,
                 url=url))
-       
+
     if matching_courses.exists():
         course = matching_courses[0]
 
@@ -511,6 +525,12 @@ def scraper_add_course(request):
             .filter(course=course)
             .update(points=public_cpd))
 
+        # update the level
+        level_obj = app_models.Level.objects.get(name=level)
+        (app_models.CourseLevel.objects
+            .filter(course=course)
+            .update(level=level_obj))
+
         return json_response("Updated matching Course")
 
     # Otherwise, update/create the ScrapedCourse:
@@ -518,6 +538,8 @@ def scraper_add_course(request):
         defaults={"start_date": start_date,
                   "end_date": end_date,
                   "public_cpd": public_cpd,
+                  "provider": provider,
+                  "level": level,
                   "name": name,
               },
         spider_name=spider_name,

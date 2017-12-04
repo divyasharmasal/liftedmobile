@@ -34,6 +34,7 @@ class Migration(migrations.Migration):
                 ('public_cpd', models.FloatField(null=True)),
                 ('spider_name', models.TextField()),
                 ('provider', models.TextField(null=True)),
+                ('level', models.TextField(null=True)),
                 ('lifted_keys', models.ManyToManyField(to='cms.LiftedKey')),
             ],
         ),

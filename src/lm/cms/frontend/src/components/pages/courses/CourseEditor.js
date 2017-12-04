@@ -80,9 +80,13 @@ class CourseEditor extends Component{
   }
 
 
-  handleCostChange = value => { 
+  handleCostChange = (cost, isVarying) => { 
     let course = this.state.course;
-    course.cost = value;
+    if (!cost){
+      cost = null;
+    }
+    course.cost = { cost, isVarying };
+    console.log(course.cost)
     course.hasChanged = true;
 
     let invalidFields = this.state.invalidFields;
@@ -257,11 +261,17 @@ class CourseEditor extends Component{
     if (course.cpd.points == null && course.cpd.isPrivate === false){
       validCpd = false;
     }
+    let validCost = false;
+    if (course.cost.isVarying){
+      validCost = true;
+    }
+    else{
+      validCost = parseFloat(course.cost.cost, 10) ===
+        Math.abs(parseFloat(Math.round(course.cost.cost * 100) / 100));
+    }
 
     const validName = course.name.trim().length > 0;
     const validUrl = course.url.trim().length > 0;
-    const validCost = parseFloat(course.cost, 10) ===
-      Math.abs(parseFloat(Math.round(course.cost * 100) / 100));
     const validLevel = this.props.levels.indexOf(course.level) > -1;
     const validFormat = this.props.formats.indexOf(course.format) > -1;
     const validProvider = course.provider != null && 
@@ -285,7 +295,6 @@ class CourseEditor extends Component{
       startDates.every(isValidDate);
 
     const keysAreUnique = dicts => {
-      console.log(dicts.length)
       for (let i=0; i < dicts.length; i++){
         for (let j=0; j < dicts.length; j++){
           if (i !== j 
@@ -446,7 +455,7 @@ class CourseEditor extends Component{
       </div>
 
     const providerInput =
-      <div class="pure-u-1-2 pure-u-sm-2-5">
+      <div class="pure-u-1-1">
         <ProviderInput 
           disabled={this.state.hasSaved && this.state.unpublished}
           handleValueChange={this.handleProviderChange}
@@ -694,19 +703,78 @@ class UrlInput extends TextInput{
 }
 
 
-class CostInput extends TextInput{
+class CostInput extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      cost: this.props.value.cost,
+      isVarying: this.props.value.isVarying,
+      invalid: false,
+    };
+  }
+
+
+  componentWillReceiveProps = newProps => {
+    if (this.props.value.cost !== this.state.cost ||
+      this.props.value.isVarying !== this.state.isVarying ||
+      this.state.invalid !== newProps.invalid){
+      this.setState({
+        cost: newProps.value.cost,
+        isVarying: newProps.value.isVarying,
+        invalid: newProps.invalid,
+      });
+    }
+  }
+
+
+  handleCostChange = cost => {
+    if (cost === ""){
+      cost = null;
+    }
+    if (this.state.cost !== cost){
+      this.setState({ cost }, () => {
+        this.props.handleValueChange(cost, false);
+      });
+    }
+  }
+
+
+  handleVaryingInputCheck = e => {
+    const isVarying = e.target.checked;
+
+    this.setState({ isVarying }, () => {
+      this.props.handleValueChange(this.state.points, isVarying);
+    });
+  }
+
   render(){
     return(
       <div class={renderClassname(this.state.invalid, "custom_input")}>
-        <label>Cost ($):</label>
-        <input 
-          disabled={this.props.disabled}
-          type="number" 
-          min="0"
-          step="0.01"
-          onKeyUp={e => {this.handleValueChange(e.target.value)}}
-          onChange={e => {this.handleValueChange(e.target.value)}}
-          value={this.state.value} />
+        <div class="pure-u-1-3">
+          <label>Cost ($):</label>
+          {this.state.isVarying ?
+            <label>Varies</label>
+              :
+            <input 
+              class="cost_input"
+              disabled={this.props.disabled}
+              type="number" 
+              min="0"
+              step="0.01"
+              onKeyUp={e => {this.handleCostChange(e.target.value)}}
+              onChange={e => {this.handleCostChange(e.target.value)}}
+              value={this.state.cost} />
+          }
+        </div>
+        <div class="pure-u-1-3">
+          <label>Varies?</label>
+          <input class="cost_is_varying_input"
+            disabled={this.props.disabled}
+            type="checkbox" 
+            ref={x => {this.isVarying = x}}
+            onChange={this.handleVaryingInputCheck}
+            checked={this.state.isVarying} />
+        </div>
       </div>
     );
   }
@@ -719,6 +787,7 @@ class ProviderInput extends TextInput{
       <div class={renderClassname(this.state.invalid, "custom_input")}>
         <label>Provider:</label>
         <input 
+          class="provider_input"
           disabled={this.props.disabled}
           type="text" 
           onKeyUp={e => {this.handleValueChange(e.target.value)}}
@@ -791,7 +860,7 @@ class CpdInput extends Component{
   render(){
     return(
       <div class={renderClassname(this.state.invalid, "custom_input")}>
-        <div class="pure-u-1-2">
+        <div class="pure-u-1-3">
           <label>CPD:</label>
 
           {this.state.isPrivate ?
@@ -808,7 +877,7 @@ class CpdInput extends Component{
           }
         </div>
 
-        <div class="pure-u-1-2">
+        <div class="pure-u-1-3">
           <label>Private?</label>
           <input class="cpd_is_private_input"
             disabled={this.props.disabled}

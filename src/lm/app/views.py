@@ -64,12 +64,14 @@ def qns_and_opts(request):
             "text": v.option,
             "id": v.id
         }
-        for v in models.Vertical.objects.all()]
+        for v in models.Vertical.objects.all().order_by("id")]
 
     qn1 = create_qn("I am ...", qn1_opts)
 
     qn2_opts = {}
-    for row in models.VerticalCategory.objects.all():
+    for row in (models.VerticalCategory.objects
+            .order_by("id")
+            .exclude(name="Specialisms")): # TODO: remove after beta
         opt_num = row.vertical_id
         if opt_num not in qn2_opts:
             qn2_opts[opt_num] = []
@@ -344,11 +346,19 @@ def _course_json(course, index=None, orig_start_dates=True,
     if cpd_points is not None:
         cpd_points = float(cpd_points)
 
+    cost = None
+    if course.cost is not None:
+        cost = float(course.cost)
+
+    course_cost = {
+        "cost": cost,
+        "isVarying": course.cost_is_varying,
+    }
 
     result = {
         "name": course.name,
         "provider": course.provider,
-        "cost": float(course.cost),
+        "cost": course_cost,
         "url": course.url,
         "level": level_name,
         "format": format_name,

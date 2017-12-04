@@ -49,13 +49,17 @@ export class PublishedCoursesPage extends Component {
       isNew: true,
       name: "",
       url: "",
-      cost: null,
+      cost: {
+        cost: null,
+        isVarying: false,
+      },
       cpd: {points: null, isPrivate: null},
       format: null,
       level: null,
       start_dates: [],
       spider_name: null,
       is_manually_added: true,
+      lifted_keys: [],
     };
 
     let courses = this.state.courses;

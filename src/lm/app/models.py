@@ -96,12 +96,13 @@ class Funding(models.Model):
 class Course(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.TextField()
-    cost = models.DecimalField(decimal_places=2, max_digits=11)
+    cost = models.DecimalField(decimal_places=2, max_digits=11, null=True)
     duration = models.DecimalField(null=True, decimal_places=1, max_digits=6)
     url = models.TextField(null=True)
     spider_name = models.TextField(null=True)
     provider = models.TextField(null=True)
     is_manually_added = models.NullBooleanField(null=True)
+    cost_is_varying = models.NullBooleanField(null=True)
 
 
 class CourseVerticalCategory(models.Model):

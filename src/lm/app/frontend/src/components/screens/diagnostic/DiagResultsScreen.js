@@ -219,14 +219,15 @@ class DiagResultsScreen extends Screen{
         <table>
           <thead>
             <tr>
-              <th>Name</th>
+              <th>Category</th>
               <th>Rating</th>
             </tr>
           </thead>
           <tbody>
             {renderRows(ordinary, courses.map)}
+            {renderRows(special, courses.map)}
           </tbody>
-          {special.length > 0 && 
+          {/*special.length > 0 && 
             <tr>
               <td class="special" colspan={4}>
                 Areas of specialisation you may want to consider:
@@ -237,7 +238,7 @@ class DiagResultsScreen extends Screen{
             <tbody>
               {renderRows(special, courses.map)}
             </tbody>
-          }
+            */}
         </table>
       </div>
     );
@@ -324,7 +325,7 @@ class DiagResultsScreen extends Screen{
 
     return (
       <div class="result_courses">
-        <h1>Courses tailored for you</h1>
+        <h1>Courses to consider</h1>
         {renderTables(categories, courses, courseMap)}
       </div>
     );
@@ -351,7 +352,8 @@ class DiagResultsScreen extends Screen{
         <div className="pure-u-1">
           <div className="results">
             <h1>Your competencies</h1>
-            <p>Click on each name below to jump to courses that help you to improve.</p>
+            <p>Click on each category below to jump to courses that help you to
+              improve.</p>
             <div class="competencies">
               {this.renderCompetencies(this.state.results, this.state.courses)}
             </div>

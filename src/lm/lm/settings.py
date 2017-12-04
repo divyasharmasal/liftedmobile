@@ -42,6 +42,9 @@ if 'DEV' in os.environ:
     LIFTED_TEMP_USERNAME = "lifted"
     LIFTED_TEMP_PASSWORD = "password"
 
+    LIFTED_COM_USERNAME = "committee"
+    LIFTED_COM_PASSWORD = "password"
+
     if 'CMS' in os.environ:
         SECRET_KEY = 'wdh|w>q&&roC*UEF-&~fNHwM,~GaUH2tC6Pn+)F2=GSQ*8DaM]'
         CMS_TEMP_SUPER_USERNAME = "admin"

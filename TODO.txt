@@ -1,4 +1,7 @@
 - *** Launch date: 8 Jan
+- Scrape SkillsFuture
+
+- Scrape the CALAS training level and organiser
 
 - Get new LE certs on Fri 8 Dec 1500 hrs!
 - LE cert backup plan
@@ -7,8 +10,9 @@
     - Create login details for committee to use
     - Remind Anita about pentest email
 
-- Screenshots for Rizam
 - Get logos from Rizam
+
+- New favicon
 
 - For LP: omit role descriptions / branching in role screen (after 8 Jan)
 
@@ -32,6 +36,13 @@ Secrets in Vault
 ------------------------------------------------
 
 Done:
+- "Select the best fit" should be aligned with the title
+- "Varying" cost option
+- Merge "areas of specialism" with the rest of the table in results
+- Temp. remove role descriptions from view
+- Temporarily remove "specialisms" in the comp category screen
+- "Free" instead of $0
+- Screenshots for Rizam
 - check the CC licenses for icons
 - Add information icon in role picker to explain that more specialisms will be
   added over time.

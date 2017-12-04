@@ -114,7 +114,11 @@ class LawsocSpider(scrapy.Spider):
 
         for public_cpd_str in cpd_candidates:
             if "cpd points:" in public_cpd_str.lower():
-                public_cpd = float(public_cpd_str.split(":")[1])
+                public_cpd = None
+                try:
+                    public_cpd = float(public_cpd_str.split(":")[1])
+                except:
+                    pass
                 break
 
 
@@ -123,6 +127,8 @@ class LawsocSpider(scrapy.Spider):
                                  start_date=start_date,
                                  end_date=end_date,
                                  public_cpd=public_cpd,
+                                 provider=None,
+                                 level=None,
                                  upcoming=upcoming)
         yield course_item
 

@@ -95,13 +95,22 @@ export class CourseListEntry extends Component{
     );
   }
 
-  renderCost = cost => {
-    const dollar = "S$";
-    if (!cost % 0.1 > 0){
-      return dollar + cost.toString();
+  renderCost = courseCost => {
+    if (courseCost.isVarying){
+        return "Cost varies";
     }
     else{
-      return dollar + cost.toFixed(2).toString();
+      const cost = courseCost.cost;
+      if (cost === 0){
+        return "Free";
+      }
+      const dollar = "S$";
+      if (!cost % 0.1 > 0){
+        return dollar + cost.toString();
+      }
+      else{
+        return dollar + cost.toFixed(2).toString();
+      }
     }
   }
 

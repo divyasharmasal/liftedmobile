@@ -16,3 +16,5 @@ class CourseItem(Item):
     end_date = Field()
     public_cpd = Field()
     upcoming = Field()
+    provider = Field()
+    level = Field()

@@ -13,10 +13,6 @@ export { RoleScreen };
 class RoleScreen extends Screen{
   componentWillMount = () => {
     let verticalId = this.props.vertical;
-    //if (verticalId == 1){
-      //verticalId = 2;
-    //}
-
     let url = "/roles?";
     
     // Legal support
@@ -102,14 +98,14 @@ class RoleScreen extends Screen{
     }
     return (
       <div class="pure-g">
-        <div className="pure-u-1-3">
+        <div class="pure-u-1-3">
           <a class="no_user_select top_nav_link home" 
              onClick={() => { route("/") }}>
             <img src="/static/app/dist/images/home.png" />
             Home
           </a>
         </div>
-        <div className="pure-u-1-3 start_over_parent">
+        <div class="pure-u-1-3 start_over_parent">
           {this.renderStartOver()}
         </div>
         <div class="pure-u-1">

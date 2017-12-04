@@ -8,7 +8,7 @@ class RoleLevelPicker extends Component{
   constructor(props){
     super(props);
     this.state = {
-      showRoles: false,
+      showRoles: true,
     };
   }
 
@@ -33,7 +33,7 @@ class RoleLevelPicker extends Component{
             this.props.handleRoleSelect(role, false);
           }}>
           <p class="role_name">{role.name}</p>
-          <p>{role.desc}</p>
+          {/*<p>{role.desc}</p>*/}
         </div>
       );
     }
@@ -50,11 +50,11 @@ class RoleLevelPicker extends Component{
     return (
       <div class={boxClass} 
            onClick={this.handleLevelSelect}>
-        {this.state.showRoles && 
+        {/*this.state.showRoles && 
           <p class="prompt">
             Great! Now, select the description which best fits your job:
           </p>
-        }
+        */}
         {roles}
         {this.props.roles.length == 1 &&
           <p>
@@ -113,8 +113,8 @@ class RolePicker extends Component{
     });
     return (
       <div class="role_picker">
-        <p class="prompt">
-          (select the best fit category)
+        <p class="prompt best_fit">
+          (select the best fit)
           <span 
             onClick={this.showSpecInfo}
             onMouseOver={this.showSpecInfo}

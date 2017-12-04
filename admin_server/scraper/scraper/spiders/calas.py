@@ -118,10 +118,23 @@ class CalasSpider(scrapy.Spider):
         if len(public_cpd_str) > 0:
             public_cpd = float(public_cpd_str)
 
+        provider = response.xpath(
+            "//span[contains(@id, 'ContentPlaceHolder1_lblOrganiser')]"
+            )[0].xpath("text()").extract_first()
+
+        if provider == "Ad-hoc Accredited CPD Activity Organiser":
+            provider = None
+
+        level = response.xpath(
+            "//span[contains(@id, 'ContentPlaceHolder1_lblTrainingCategory')]"
+            )[0].xpath("text()").extract_first()
+
         upcoming = start_date is None and end_date is None
         course_item = CourseItem(name=name, url=response.url,
                                  start_date=start_date,
                                  end_date=end_date,
                                  public_cpd=public_cpd,
-                                 upcoming=upcoming)
+                                 upcoming=upcoming,
+                                 provider=provider,
+                                 level=level)
         yield course_item
