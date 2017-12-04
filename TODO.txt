@@ -7,7 +7,6 @@
     - Create login details for committee to use
     - Remind Anita about pentest email
 
-- Substring search in course browser or phase 2 it
 - Add information icon in role picker to explain that more specialisms will be
   added over time.
 - Screenshots for Rizam
@@ -37,6 +36,7 @@ Secrets in Vault
 ------------------------------------------------
 
 Done:
+- Substring search in course browser or phase 2 it
 - Only show future courses
 - Make arrow size smaller
 - Home icon in course browser instead of back

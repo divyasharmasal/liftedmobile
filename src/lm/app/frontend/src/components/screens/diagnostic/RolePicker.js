@@ -48,8 +48,8 @@ class RoleLevelPicker extends Component{
       boxClass = "answer no_user_select";
     }
     return (
-      <div class={boxClass} onClick={this.handleLevelSelect} 
-      >
+      <div class={boxClass} 
+           onClick={this.handleLevelSelect}>
         {this.state.showRoles && 
           <p class="prompt">
             Great! Now, select the description which best fits your job:
@@ -79,6 +79,13 @@ class RolePicker extends Component{
   }
 
 
+  showSpecInfo = () => {
+    this.setState({
+      specInfoVisible: true,
+    });
+  }
+
+
   render(){
     let levelRoles = {};
     this.props.qnData.options.forEach((option, i) => {
@@ -94,7 +101,9 @@ class RolePicker extends Component{
     Object.keys(levelRoles).sort((a, b) => a - b).forEach(level => {
       levelSections.push(
         <div class="level">
-          <p class="level_text">Level {level}</p>
+          <p class="level_text">
+            Level {level}
+          </p>
           <RoleLevelPicker
             handleRoleSelect={this.props.handleOptionSelect}
             level={level}
@@ -106,7 +115,18 @@ class RolePicker extends Component{
       <div class="role_picker">
         <p class="prompt">
           (select the best fit category)
+          <span 
+            onClick={this.showSpecInfo}
+            onMouseOver={this.showSpecInfo}
+            class="spec_info">
+            <img src="/static/app/dist/images/info_circle.png" />
+          </span>
         </p>
+        {this.state.specInfoVisible &&
+            <p class="prompt">
+              Note: more job specialisms will be added to this tool over time.
+            </p>
+        }
         {levelSections}
       </div>
     );
