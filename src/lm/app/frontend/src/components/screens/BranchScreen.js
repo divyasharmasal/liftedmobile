@@ -125,12 +125,23 @@ export class BranchScreen extends Screen {
       <div class="pure-g">
         <a name="top" />
         {notification}
-        <div class="pure-u-1">
+        <div className="pure-u-1-3">
+          <a class="no_user_select top_nav_link home" 
+             onClick={() => { route("/") }}>
+            <img src="/static/app/dist/images/home.png" />
+            Home
+          </a>
+        </div>
+        <div className="pure-u-1-3 start_over_parent">
           {this.renderStartOver()}
+        </div>
+        <div className="pure-u-1-3">
           <a class="top_nav_link full_review"
             onClick={this.redirectToNext}>
             Full review ➜
           </a>
+        </div>
+        <div class="pure-u-1">
           <Question
             isMultiQn={true}
             //preSelected={preSelected}

@@ -44,15 +44,35 @@ html, body{
     &:visited{
         color:@sal_blue;
     }
+
+    img{
+        height:15px;
+        margin-right:5px;
+    }
+    @media (max-width: @small_screen_width) {
+        font-size:1em;
+    }
+}
+
+.home{
+    float:left;
+}
+
+.start_over_parent{
+    text-align:center;
+    .start_over{
+        float:none;
+    }
+}
+
+.start_over{
+    float:left;
 }
 
 .full_review{
     float:right;
 }
 
-.start_over{
-    float:left;
-}
 
 h1{
     text-align:center;
@@ -543,11 +563,6 @@ hr{
     .notification{
         width:100%;
         left:0px;
-    }
-
-	.full_review,
-    .start_over{
-        font-size:1em;
     }
 
     hr{

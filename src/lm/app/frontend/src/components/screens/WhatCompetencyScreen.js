@@ -40,12 +40,23 @@ class WhatCompetencyScreen extends Screen{
     }
     return (
       <div className="pure-g">
-        <div className="pure-u-1">
+        <div className="pure-u-1-3">
+          <a class="no_user_select top_nav_link home" 
+             onClick={() => { route("/") }}>
+            <img src="/static/app/dist/images/home.png" />
+            Home
+          </a>
+        </div>
+        <div className="pure-u-1-3 start_over_parent">
           {this.renderStartOver()}
+        </div>
+        <div className="pure-u-1-3">
           <a class="top_nav_link full_review"
             onClick={this.redirectToDiag}>
             Full review ➜
           </a>
+        </div>
+        <div className="pure-u-1">
 					<Question
 						isMultiQn={false}
 						handleOptionSelect={this.handleOptionSelect}

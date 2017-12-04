@@ -6,15 +6,16 @@
     - Tag courses with info
     - Create login details for committee to use
     - Remind Anita about pentest email
-- Get logos from Rizam
+
 - Substring search in course browser or phase 2 it
 - Home icon in course browser instead of back
 - Change go back to a home icon
-- information icon in role picker to explain that more specialisms will be added over time.
+- Add information icon in role picker to explain that more specialisms will be added over time.
 - Make arrow size smaller
 - Only show future courses
 - Home --- Start over ---- Full review
 - Screenshots for Rizam
+- Get logos from Rizam
 
 - For LP: omit role descriptions / branching in role screen (after 8 Jan)
 

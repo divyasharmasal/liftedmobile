@@ -124,7 +124,10 @@ def cms_get_published_courses_data(request):
     courses = app_models.Course.objects.all()
     courses = _optimise_course_query(courses)
 
-    result["courses"] = [_course_json(course, include_id=True)
+    result["courses"] = [_course_json(
+                            course,
+                            include_id=True,
+                            include_lifted_keys=True)
                          for course in courses]
 
     return json_response(result)

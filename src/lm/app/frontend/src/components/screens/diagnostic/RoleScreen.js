@@ -102,8 +102,17 @@ class RoleScreen extends Screen{
     }
     return (
       <div class="pure-g">
-        <div class="pure-u-1">
+        <div className="pure-u-1-3">
+          <a class="no_user_select top_nav_link home" 
+             onClick={() => { route("/") }}>
+            <img src="/static/app/dist/images/home.png" />
+            Home
+          </a>
+        </div>
+        <div className="pure-u-1-3 start_over_parent">
           {this.renderStartOver()}
+        </div>
+        <div class="pure-u-1">
           <div class="question">
             {this.props.isNextRole ?
               <h1 class="next_role_title">I aspire to work as a...</h1>

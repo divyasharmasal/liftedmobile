@@ -16,7 +16,8 @@ export class TechRoleScreen extends TechScreen{
         <div className="pure-u-1">
           <a class="no_user_select top_nav_link start_over" 
              onClick={() => { route("/") }}>
-            ← go back
+            <img src="/static/app/dist/images/home.png" />
+            Home
           </a>
 
 					<Question

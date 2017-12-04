@@ -337,8 +337,17 @@ class DiagResultsScreen extends Screen{
     return(
       <div className="pure-g">
         <a name="top"></a>
-        <div className="pure-u-1">
+        <div className="pure-u-1-3">
+          <a class="no_user_select top_nav_link home" 
+             onClick={() => { route("/") }}>
+            <img src="/static/app/dist/images/home.png" />
+            Home
+          </a>
+        </div>
+        <div className="pure-u-1-3 start_over_parent">
           {this.renderStartOver()}
+        </div>
+        <div className="pure-u-1">
           <div className="results">
             <h1>Your competencies</h1>
             <p>Click on each name below to jump to courses that help you to improve.</p>

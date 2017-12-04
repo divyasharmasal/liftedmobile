@@ -213,8 +213,17 @@ class DiagScreen extends Screen{
     }
     return (
       <div class="pure-g">
-        <div class="pure-u-1">
+        <div className="pure-u-1-3">
+          <a class="no_user_select top_nav_link home" 
+             onClick={() => { route("/") }}>
+            <img src="/static/app/dist/images/home.png" />
+            Home
+          </a>
+        </div>
+        <div className="pure-u-1-3 start_over_parent">
           {this.renderStartOver(this.props.techRole != null)}
+        </div>
+        <div class="pure-u-1">
           <div className="diag question">
             <h2>As a {this.state.role.name} <wbr />...</h2>
             {this.renderQns(this.state.diag)}
