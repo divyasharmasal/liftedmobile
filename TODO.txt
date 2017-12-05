@@ -1,6 +1,11 @@
 - *** Launch date: 8 Jan
 - Scrape SkillsFuture
 
+- "TBC" option for CPD points in course editor
+- Inga will add courses on Wed afternoon
+
+Add new vertical to CMS picker: "Technology Framework"
+
 - Get new LE certs on Fri 8 Dec 1500 hrs!
 - LE cert backup plan
     - Remind Anita about pentest email
@@ -8,13 +13,11 @@
 - Get logos from Rizam
 
 - New favicon?
-- Lifted keys for tech roles...
-
 - For LP: omit role descriptions / branching in role screen (after 8 Jan)
 - Funnel visitors from the course browser to the diagnostic
 - Mid-Jan: Submit phase 2 proposal: heatmap, scraping of books, scraping of AP
   site, law school event pages, tagging of books, recommended reading section,
-  journals Online.
+  journals online, granular tagging of courses
 - Do a code generator for 3rd party
 - Scrape SCCA, SkillsFuture
 - Full auth system with 2FA
@@ -30,6 +33,7 @@ Secrets in Vault
 ------------------------------------------------
 
 Done:
+- Remove specialisms from diag results
 - Monday 4 Dec:
     - Tag courses with info
     - Create login details for committee to use

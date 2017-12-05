@@ -36,11 +36,13 @@ class DiagScreen extends Screen{
       if (this.shortcut === "123"){
         this.shortcut = "";
         const qnIds = this.state.diag.map(d => d.id);
-        //let randAnswers = {};
         this.state.diag.forEach((d, i) => {
-          //randAnswers[d.id] = i % 2 ? 0 : 1;
           this.handleOptionSelect(d.id, i % 2 ? 0 : 1)
         });
+      }
+
+      if (this.shortcut.length > 3){
+        this.shortcut = "";
       }
     });
 

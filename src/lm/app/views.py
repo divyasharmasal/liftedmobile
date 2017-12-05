@@ -390,7 +390,7 @@ def _course_json(course, index=None, orig_start_dates=True,
 
     if orig_start_dates:
         start_dates = course.coursestartdate_set.all()
-        result["start_dates"] = [x.start_date.isoformat() for x in start_dates]
+        result["start_dates"] = [x.start_date.isoformat() for x in start_dates if x is not None]
 
     if custom_start_date is not None:
         result["start_date"] = custom_start_date.isoformat()
@@ -746,9 +746,10 @@ def results(request):
         category = comp.category.name
 
         special = False
-        if comp.specialism:
-            category = comp.specialism.name
-            special = True
+        # Disabled for beta
+        # if comp.specialism:
+            # category = comp.specialism.name
+            # special = True
 
         cat_names[category] = comp.category
 
