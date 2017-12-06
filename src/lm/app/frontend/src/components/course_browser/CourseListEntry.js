@@ -25,15 +25,15 @@ export class CourseListEntry extends Component{
 
     const points = bold ? <em>{cpd.points}</em> : <span>{cpd.points}</span>;
 
-    return(
-      <span>
-        { cpd.is_private ?
-            <span>Private CPD</span>
-          :
-            <span>{points} CPD {pointLabel}</span>
-        }
-      </span>
-    );
+    if (cpd.is_private){
+      return <span>Private CPD</span>
+    }
+    else if (cpd.is_tbc){
+      return <span>CPD: TBC</span>
+    }
+    else{
+      return <span>{points} CPD {pointLabel}</span>
+    }
   }
 
 

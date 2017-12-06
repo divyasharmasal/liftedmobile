@@ -68,7 +68,6 @@ export class LiftedKeyInput extends Component{
       selectedVerticalIndex = sortedVerticalNames.indexOf(item.vertical_name) + 1;
     }
 
-
     let selectedVerticalCategoryIndex;
     if (item.vertical_category_name){
       selectedVerticalCategoryIndex =

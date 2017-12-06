@@ -264,6 +264,10 @@ class CourseEditor extends Component{
       if (course.cpd.points == null && course.cpd.is_private === false){
         validCpd = false;
       }
+
+      if (course.cpd.points < 0){
+        validCpd = false;
+      }
     }
 
     let validCost = false;
