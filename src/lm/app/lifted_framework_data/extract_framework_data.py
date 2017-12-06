@@ -101,16 +101,16 @@ def parse_courses():
             if len(date) > 0:
                 parsed_date = None
                 if date == "Q1":
-                    parsed_date = datetime.datetime(2017, 1, 1)
+                    parsed_date = datetime.datetime(2018, 1, 1)
                 elif date == "Q2":
-                    parsed_date = datetime.datetime(2017, 4, 1)
+                    parsed_date = datetime.datetime(2018, 4, 1)
                 elif date == "Q3":
-                    parsed_date = datetime.datetime(2017, 7, 1)
+                    parsed_date = datetime.datetime(2018, 7, 1)
                 elif date == "Q4":
-                    parsed_date = datetime.datetime(2017, 10, 1)
+                    parsed_date = datetime.datetime(2018, 10, 1)
                 else:
                     parsed_date = datetime.datetime.strptime(
-                        date, "%d %b").replace(year=2017)
+                        date, "%d %b").replace(year=2018)
 
                 parsed_date = timezone.localize(parsed_date)
                 start_dates.append(parsed_date)

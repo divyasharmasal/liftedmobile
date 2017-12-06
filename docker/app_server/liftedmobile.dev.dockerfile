@@ -18,8 +18,8 @@ EXPOSE 8000
 ENV PYTHONUNBUFFERED 1
 ENV DEV 1
 
-    #sh /src/lm/wait_for_db.sh liftedmobile_db_dev && \
-# Wait till the database is ready and then launch the dev server
+WORKDIR /src/lm
+
 CMD cd /src/lm                                                             && \
     python3 /src/lm/wait_for_postgres.py                                   && \
     python3 manage.py collectstatic --no-input                             && \

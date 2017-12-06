@@ -52,7 +52,6 @@ def get_level_format_vertical_data():
     }
     vertical_category_query = (
         app_models.VerticalCategory.objects.all()
-        .order_by("vertical__id")
         .select_related("vertical")
     )
 
@@ -63,6 +62,19 @@ def get_level_format_vertical_data():
             result["verticals"][vertical_name] = [vertical_category_name]
         else:
             result["verticals"][vertical_name].append(vertical_category_name)
+
+    
+    tech_verticals = []
+    tech_competency_category_query = (
+        app_models.TechCompetencyCategory.objects.all()
+        .distinct("name")
+    )
+
+    for tech_comp_cat in tech_competency_category_query:
+        tech_verticals.append(tech_comp_cat.name)
+
+    result["verticals"]["Technology Framework"] = tech_verticals
+
     return result
 
 
@@ -218,17 +230,30 @@ def save_course(request):
 
         # LIFTED keys
         app_models.CourseVerticalCategory.objects.filter(course=course).delete()
+        app_models.CourseTechCompetencyCategory.objects.filter(course=course).delete()
         for lifted_key in lifted_keys:
-            vc = app_models.VerticalCategory.objects.get(
-                name=lifted_key["vertical_category_name"],
-                vertical__name=lifted_key["vertical_name"]
-                )
+            if lifted_key["vertical_name"] == "Technology Framework":
+                tech_comp_cat_name = lifted_key["vertical_category_name"]
 
-            cvc = app_models.CourseVerticalCategory(
-                course=course,
-                vertical_category=vc
-            )
-            cvc.save()
+                for tech_comp_cat in (app_models.TechCompetencyCategory.objects
+                                      .filter(name=tech_comp_cat_name)):
+
+                    course_tech_comp_cat = app_models.CourseTechCompetencyCategory(
+                        course=course,
+                        tech_competency_category=tech_comp_cat
+                    )
+                    course_tech_comp_cat.save()
+            else:
+                vc = app_models.VerticalCategory.objects.get(
+                    name=lifted_key["vertical_category_name"],
+                    vertical__name=lifted_key["vertical_name"]
+                    )
+
+                cvc = app_models.CourseVerticalCategory(
+                    course=course,
+                    vertical_category=vc
+                )
+                cvc.save()
 
         # CPD
 
@@ -290,14 +315,24 @@ def save_course(request):
 
         # LIFTED keys
         for lifted_key in lifted_keys:
-            vertical_category = app_models.VerticalCategory.objects.get(
-                name=lifted_key["vertical_category_name"],
-                vertical__name=lifted_key["vertical_name"]
-            )
+            if lifted_key["vertical_name"] == "Technology Framework":
+                for tech_comp_cat in app_models.TechCompetencyCategory.objects.filter(
+                    name=lifted_key["vertical_category_name"]):
+                    course_tcc = app_models.CourseTechCompetencyCategory(
+                        course=course,
+                        tech_competency_category=tech_comp_cat)
+                    course_tcc.save()
 
-            course_vc = app_models.CourseVerticalCategory(
-                    course=course, vertical_category=vertical_category)
-            course_vc.save()
+            else:
+                vertical_category = app_models.VerticalCategory.objects.get(
+                    name=lifted_key["vertical_category_name"],
+                    vertical__name=lifted_key["vertical_name"]
+                )
+
+                course_vc = app_models.CourseVerticalCategory(
+                    course=course, 
+                    vertical_category=vertical_category)
+                course_vc.save()
 
         # CPD
 
@@ -516,9 +551,10 @@ def scraper_add_course(request):
         course.save()
 
         # update start date
-        (app_models.CourseStartDate.objects
-            .filter(course=course)
-            .update(start_date=start_date))
+        if start_date is not None:
+            (app_models.CourseStartDate.objects
+                .filter(course=course)
+                .update(start_date=start_date))
 
         # update public_cpd
         (app_models.CourseCpdPoints.objects

@@ -715,8 +715,8 @@ class CostInput extends Component{
 
 
   componentWillReceiveProps = newProps => {
-    if (this.props.value.cost !== this.state.cost ||
-      this.props.value.isVarying !== this.state.isVarying ||
+    if (this.state.cost !== newProps.value.cost ||
+      this.state.isVarying !== newProps.value.isVarying ||
       this.state.invalid !== newProps.invalid){
       this.setState({
         cost: newProps.value.cost,

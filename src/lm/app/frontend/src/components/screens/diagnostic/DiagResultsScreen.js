@@ -148,7 +148,6 @@ class DiagResultsScreen extends Screen{
     }
 
     // Fetch recommended courses
-    console.log(url);
     authFetch(url).then(response => {
       response.json().then(results => {
         this.setState({ 

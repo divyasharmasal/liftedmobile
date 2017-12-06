@@ -39,8 +39,8 @@ class Migration(migrations.Migration):
                 ('url', models.TextField(null=True)),
                 ('spider_name', models.TextField(null=True)),
                 ('provider', models.TextField(null=True)),
-                ('is_manually_added', models.NullBooleanField(null=True)),
-                ('cost_is_varying', models.NullBooleanField(null=True)),
+                ('is_manually_added', models.NullBooleanField()),
+                ('cost_is_varying', models.NullBooleanField()),
             ],
         ),
         migrations.CreateModel(
@@ -91,6 +91,13 @@ class Migration(migrations.Migration):
         ),
         migrations.CreateModel(
             name='CourseTechCompetency',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='CourseTechCompetencyCategory',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
@@ -267,6 +274,11 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Venue'),
         ),
         migrations.AddField(
+            model_name='coursetechcompetencycategory',
+            name='tech_competency_category',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.TechCompetencyCategory'),
+        ),
+        migrations.AddField(
             model_name='coursetechcompetency',
             name='tech_competency',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.TechCompetency'),
@@ -333,6 +345,10 @@ class Migration(migrations.Migration):
         migrations.AlterUniqueTogether(
             name='coursevenue',
             unique_together=set([('course', 'venue')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='coursetechcompetencycategory',
+            unique_together=set([('course', 'tech_competency_category')]),
         ),
         migrations.AlterUniqueTogether(
             name='coursetechcompetency',

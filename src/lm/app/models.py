@@ -215,3 +215,12 @@ class CourseTechCompetency(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     tech_competency = models.ForeignKey(TechCompetency,
                                         on_delete=models.CASCADE)
+
+
+class CourseTechCompetencyCategory(models.Model):
+    class Meta:
+        unique_together = (("course", "tech_competency_category"))
+    id = models.AutoField(primary_key=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    tech_competency_category = models.ForeignKey(TechCompetencyCategory,
+            on_delete=models.CASCADE)

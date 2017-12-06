@@ -16,6 +16,7 @@ def load(apps, schema_editor):
     TechCompetencyCategory = apps.get_model("app", "TechCompetencyCategory")
     TechCompetency = apps.get_model("app", "TechCompetency")
     TechRoleCompetency = apps.get_model("app", "TechRoleCompetency")
+    CourseTechCompetencyCategory = apps.get_model("app", "CourseTechCompetencyCategory")
     CourseTechCompetency = apps.get_model("app", "CourseTechCompetency")
     TechRole = apps.get_model("app", "TechRole")
     Vertical = apps.get_model("app", "Vertical")
@@ -305,6 +306,13 @@ def load(apps, schema_editor):
             tech_competencies = c["Tech Competencies"]
             for id in tech_competencies:
                 tech_competency = TechCompetency.objects.get(id=id)
-                course_tech_comp = CourseTechCompetency(course=course,
-                        tech_competency=tech_competency)
-                course_tech_comp.save()
+
+                # course_tech_comp = CourseTechCompetency(
+                    # course=course,
+                    # tech_competency=tech_competency)
+                # course_tech_comp.save()
+                ###
+
+                CourseTechCompetencyCategory.objects.get_or_create(
+                    course=course,
+                    tech_competency_category=tech_competency.category)

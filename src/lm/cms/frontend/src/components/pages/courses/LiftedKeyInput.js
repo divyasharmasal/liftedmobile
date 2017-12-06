@@ -80,7 +80,7 @@ export class LiftedKeyInput extends Component{
           onChange={e => this.handleVerticalSelect(e, index)}>
           <option value="" disabled selected>Select a vertical:</option>
           {
-            Object.keys(this.props.verticals).map(vertical =>
+            Object.keys(this.props.verticals).sort().map(vertical =>
               <option>
                 {vertical}
               </option>

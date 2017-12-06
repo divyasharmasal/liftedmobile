@@ -99,14 +99,22 @@ export default class Courses extends Component{
 
 
   format_cpd = cpd => {
-    if (cpd.points == null){
-      return "";
-    }
-    else if (cpd.is_private){
+    if (cpd.is_private){
       return "Private";
     }
+    else if (cpd.points == null){
+      return "";
+    }
+    else if (cpd.points === 0){
+      return "Nil";
+    }
     else {
-      return cpd.points.toFixed(0) + " points";
+      if (cpd.points * 10 % 10 > 0){
+        return cpd.points.toFixed(1) + " points";
+      }
+      else{
+        return cpd.points.toFixed(0) + " points";
+      }
     }
   }
 
@@ -152,19 +160,29 @@ export default class Courses extends Component{
     }
     else if (field === "cpd"){
       courses.sort((a, b) => {
-        let x = a.cpd.points;
-        let y = b.cpd.points;
+        const aPts = a.cpd.points;
+        const bPts = b.cpd.points;
+        const aPriv = a.cpd.is_private;
+        const bPriv = b.cpd.is_private;
 
-        if (a.cpd.is_private){
-          x = -1;
+        if (aPriv && bPriv){
+          return 0;
         }
-        if (b.cpd.is_private){
-          y = -1;
+        else if (!aPriv || !bPriv){
+          if (aPts === 0 && bPriv){
+            return -1;
+          }
+          else if (bPts === 0 && aPriv){
+            return 1;
+          }
+          else if (aPts > 0 && bPriv){
+            return 1;
+          }
+          else if (bPts > 0 && aPriv){
+            return -1;
+          }
         }
-        if (x > y){
-          return 1;
-        }
-        return 0;
+        return aPts - bPts;
       });
     }
     else if (field === "date"){

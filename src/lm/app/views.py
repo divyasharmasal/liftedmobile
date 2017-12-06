@@ -314,6 +314,7 @@ def course_recs(request):
         course_query = course_query.filter(
             courseverticalcategory__vertical_category__id=vertical_category_id,
             courseverticalcategory__vertical_category__vertical_id=vertical_id,
+            courseformat__format__needformat__need__in=need_ids,
             courselevel__level_id__needlevel__need_id__in=need_ids)
     else:
         course_query = course_query.filter(
@@ -383,6 +384,14 @@ def _course_json(course, index=None, orig_start_dates=True,
                 "vertical_name": cvc.vertical_category.vertical.name,
                 "vertical_category_name": cvc.vertical_category.name,
             })
+
+        for tech_comp_cat in models.CourseTechCompetencyCategory.objects.filter(
+                course=course).distinct("tech_competency_category__name"):
+            lifted_keys.append({
+                "vertical_name": "Technology Framework",
+                "vertical_category_name": tech_comp_cat.tech_competency_category.name
+            })
+
         result["lifted_keys"] = lifted_keys
 
     if include_id:
@@ -390,7 +399,10 @@ def _course_json(course, index=None, orig_start_dates=True,
 
     if orig_start_dates:
         start_dates = course.coursestartdate_set.all()
-        result["start_dates"] = [x.start_date.isoformat() for x in start_dates if x is not None]
+        result["start_dates"] = []
+        for sd in start_dates:
+            if sd.start_date is not None:
+                result["start_dates"].append(sd.start_date.isoformat())
 
     if custom_start_date is not None:
         result["start_date"] = custom_start_date.isoformat()
@@ -640,28 +652,31 @@ def _tech_diag_course_recommendations(categorised_answers, tech_role):
     for category_name, score_info in categorised_answers.items():
         courses = []
         result["map"][category_name] = []
+        courses = models.Course.objects.filter(
+            coursetechcompetencycategory__tech_competency_category__name=category_name
+        ).distinct()
 
-        if score_info["score"] == 100:
-            level = _next_level(tech_role)
+        # if score_info["score"] == 100:
+            # level = _next_level(tech_role)
 
-            competencies = models.TechCompetency.objects.filter(
-                    category__name=category_name,
-                    techrolecompetency__tech_role__role_level=level)\
-                .distinct()
+            # competencies = models.TechCompetency.objects.filter(
+                    # category__name=category_name,
+                    # techrolecompetency__tech_role__role_level=level)\
+                # .distinct()
 
-            courses = models.Course.objects.filter(
-                    coursetechcompetency__tech_competency__in=competencies
-            ).distinct()
+            # courses = models.Course.objects.filter(
+                    # coursetechcompetency__tech_competency__in=competencies
+            # ).distinct()
 
-        else:
-            level = tech_role.role_level
-            competencies = models.TechCompetency.objects.filter(
-                    category__name=category_name,
-                    techrolecompetency__tech_role__role_level=level)
+        # else:
+            # level = tech_role.role_level
+            # competencies = models.TechCompetency.objects.filter(
+                    # category__name=category_name,
+                    # techrolecompetency__tech_role__role_level=level)
 
-            courses = models.Course.objects.filter(
-                    coursetechcompetency__tech_competency__in=competencies
-            ).distinct()
+            # courses = models.Course.objects.filter(
+                    # coursetechcompetency__tech_competency__in=competencies
+            # ).distinct()
 
         courses = _optimise_course_query(courses)\
                 .filter(coursestartdate__start_date__gte=now)
@@ -848,6 +863,7 @@ def _diag_course_recommendations(categorised_answers, vertical, job_role):
             courses = models.Course.objects.filter(
                         courseverticalcategory__vertical_category__name=real_cat_name,
                         courseverticalcategory__vertical_category__vertical=vertical)
+
             # if score_info["score"] == 100:
                 # level = _next_level(job_role)
                 # competencies = models.Competency.objects.filter(

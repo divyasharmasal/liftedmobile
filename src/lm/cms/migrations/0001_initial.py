@@ -23,6 +23,13 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='LiftedTechKey',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('category_name', models.TextField()),
+            ],
+        ),
+        migrations.CreateModel(
             name='ScrapedCourse',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
@@ -36,6 +43,7 @@ class Migration(migrations.Migration):
                 ('provider', models.TextField(null=True)),
                 ('level', models.TextField(null=True)),
                 ('lifted_keys', models.ManyToManyField(to='cms.LiftedKey')),
+                ('lifted_tech_keys', models.ManyToManyField(to='cms.LiftedTechKey')),
             ],
         ),
     ]

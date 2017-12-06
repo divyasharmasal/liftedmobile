@@ -8,6 +8,11 @@ class LiftedKey(models.Model):
     vertical_category_name = models.TextField(null=False)
 
 
+class LiftedTechKey(models.Model):
+    id = models.AutoField(primary_key=True)
+    category_name = models.TextField(null=False)
+
+
 class ScrapedCourse(models.Model):
     id = models.AutoField(primary_key=True)
     is_new = models.BooleanField(null=False)
@@ -18,5 +23,6 @@ class ScrapedCourse(models.Model):
     public_cpd = models.FloatField(null=True)
     spider_name = models.TextField(null=False)
     lifted_keys = models.ManyToManyField(LiftedKey)
+    lifted_tech_keys = models.ManyToManyField(LiftedTechKey)
     provider = models.TextField(null=True)
     level = models.TextField(null=True)
