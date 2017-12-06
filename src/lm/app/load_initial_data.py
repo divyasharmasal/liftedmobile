@@ -253,7 +253,9 @@ def load(apps, schema_editor):
             elif cpd_points == "":
                 cpd_points = 0
 
-            course_cpd_points = CourseCpdPoints(course=course, points=cpd_points,
+            course_cpd_points = CourseCpdPoints(course=course,
+                                                points=cpd_points,
+                                                is_tbc=False,
                                                 is_private=is_private)
             course_cpd_points.save()
 

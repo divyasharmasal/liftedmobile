@@ -27,12 +27,9 @@ class CourseEditor extends Component{
       };
     }
 
-    // Rename is_private to isPrivate
-    course.cpd.isPrivate = course.cpd.is_private;
-    if (course.cpd.isPrivate == null){
-      course.cpd.isPrivate = false;
+    if (course.cpd.is_private == null){
+      course.cpd.is_private = false;
     }
-    delete course.cpd.is_private;
 
     // Unpublished courses only provide the start_date attribute,
     // instead of a list of start dates.
@@ -106,13 +103,13 @@ class CourseEditor extends Component{
   }
 
   
-  handleCpdChange = (points, isPrivate) => { 
+  handleCpdChange = (points, is_private, is_tbc) => { 
     if (typeof points === "undefined"){
       points = null;
     }
 
     let course = this.state.course;
-    course.cpd = { isPrivate, points };
+    course.cpd = { is_private, points, is_tbc };
     course.hasChanged = true;
 
     let invalidFields = this.state.invalidFields;
@@ -196,7 +193,8 @@ class CourseEditor extends Component{
 			name: course.name, 
 			cost: course.cost, 
 			cpdPoints: course.cpd.points, 
-			cpdIsPrivate: course.cpd.isPrivate, 
+			cpdIsPrivate: course.cpd.is_private, 
+			cpdIsTbc: course.cpd.is_tbc, 
 			level: course.level, 
 			format: course.format, 
 			start_dates: course.start_dates,
@@ -252,15 +250,22 @@ class CourseEditor extends Component{
 
     let validCpd = false;
 
-    // neither points nor isPrivate can both be null
-    if (course.cpd.points != null || course.cpd.isPrivate != null){
+    if (course.cpd.is_tbc){
+      course.cpd.points = null;
+      course.cpd.is_private = false;
       validCpd = true;
     }
-
-    // there must either be CPD points, or isPrivate == true
-    if (course.cpd.points == null && course.cpd.isPrivate === false){
-      validCpd = false;
+    else{
+      // neither points nor is_private can both be null
+      if (course.cpd.points != null || course.cpd.is_private != null){
+        validCpd = true;
+      }
+      // there must either be CPD points, or is_private == true
+      if (course.cpd.points == null && course.cpd.is_private === false){
+        validCpd = false;
+      }
     }
+
     let validCost = false;
     if (course.cost.isVarying){
       validCost = true;
@@ -813,7 +818,8 @@ class CpdInput extends Component{
       this.state = {
         blank: false,
         points: this.props.value.points,
-        isPrivate: this.props.value.isPrivate,
+        is_private: this.props.value.is_private,
+        is_tbc: this.props.value.is_tbc,
         invalid: this.props.invalid,
       };
     }
@@ -823,12 +829,13 @@ class CpdInput extends Component{
   componentWillReceiveProps = newProps => {
     if (newProps.value){
       if (this.state.points !== newProps.value.points ||
-        this.state.isPrivate !== newProps.value.isPrivate ||
+        this.state.is_private !== newProps.value.is_private ||
         this.state.invalid !== newProps.invalid){
         this.setState({
           blank: false,
           points: newProps.value.points,
-          isPrivate: newProps.value.isPrivate,
+          is_private: newProps.value.is_private,
+          is_tbc: newProps.value.is_tbc,
           invalid: newProps.invalid,
         });
       }
@@ -837,10 +844,25 @@ class CpdInput extends Component{
 
 
   handlePrivateInputCheck = e => {
-    const isPrivate = e.target.checked;
+    const is_private = e.target.checked;
 
-    this.setState({ isPrivate: isPrivate }, () => {
-      this.props.handleValueChange(this.state.points, isPrivate);
+    this.setState({ 
+      is_private: is_private,
+      is_tbc: false
+    }, () => {
+      this.props.handleValueChange(this.state.points, is_private, false);
+    });
+  }
+
+
+  handleTbcInputCheck = e => {
+    const is_tbc = e.target.checked;
+
+    this.setState({ 
+      is_tbc: is_tbc,
+      is_private: false
+    }, () => {
+      this.props.handleValueChange(this.state.points, false, is_tbc);
     });
   }
 
@@ -851,29 +873,43 @@ class CpdInput extends Component{
     }
     if (this.state.points !== points){
       this.setState({ points }, () => {
-        this.props.handleValueChange(points, false);
+        this.props.handleValueChange(points, false, false);
       });
     }
   }
 
 
   render(){
+    const pointsInput = (
+      <input class="cpd_points_input" 
+        disabled={this.props.disabled}
+        type="number" placeholder={this.state.is_private ? "Private" : "(points)"} 
+        min="0"
+        onKeyUp={e => {this.handlePointsChange(e.target.value)}}
+        onChange={e => {this.handlePointsChange(e.target.value)}}
+        onClick={e => {this.handlePointsChange(e.target.value)}}
+        value={this.state.is_private ? "Private" : this.state.points} />
+    );
+
     return(
       <div class={renderClassname(this.state.invalid, "custom_input")}>
         <div class="pure-u-1-3">
           <label>CPD:</label>
 
-          {this.state.isPrivate ?
+          {this.state.is_private ?
               <label class="cpd_points_private">Private</label>
               :
-              <input class="cpd_points_input" 
-                disabled={this.props.disabled}
-                type="number" placeholder={this.state.isPrivate ? "Private" : "(points)"} 
-                min="0"
-                onKeyUp={e => {this.handlePointsChange(e.target.value)}}
-                onChange={e => {this.handlePointsChange(e.target.value)}}
-                onClick={e => {this.handlePointsChange(e.target.value)}}
-                value={this.state.isPrivate ? "Private" : this.state.points} />
+              {pointsInput}
+          }
+
+          {this.state.is_tbc ?
+              <label class="cpd_points_private">TBC</label>
+              :
+              {pointsInput}
+          }
+
+          {!this.state.is_tbc && !this.state.is_private &&
+            pointsInput
           }
         </div>
 
@@ -882,9 +918,17 @@ class CpdInput extends Component{
           <input class="cpd_is_private_input"
             disabled={this.props.disabled}
             type="checkbox" 
-            ref={x => {this.isPrivateInput = x}}
             onChange={this.handlePrivateInputCheck}
-            checked={this.state.isPrivate} />
+            checked={this.state.is_private} />
+        </div>
+
+        <div class="pure-u-1-3">
+          <label>TBC?</label>
+          <input class="cpd_is_private_input"
+            disabled={this.props.disabled}
+            type="checkbox" 
+            onChange={this.handleTbcInputCheck}
+            checked={this.state.is_tbc} />
         </div>
       </div>
     );

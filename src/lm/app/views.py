@@ -324,18 +324,21 @@ def course_recs(request):
     return _course_query_to_json(course_query)
 
 
-def _optimise_course_query(courses):
-    return (
-        courses.select_related("coursecpdpoints")
-        .select_related("courselevel__level")
-        .select_related("courseformat__format")
-        .prefetch_related("coursestartdate_set")
-    )
-
-
 def _course_query_to_json(course_query):
     query = _optimise_course_query(course_query.distinct())
     return json_response([_course_json(course) for course in query])
+
+
+def _optimise_course_query(courses):
+    return (
+        courses
+        .select_related("coursecpdpoints")
+        .select_related("courselevel__level")
+        .select_related("courseformat__format")
+        .prefetch_related("coursestartdate_set")
+        .prefetch_related("courseverticalcategory_set")
+        .prefetch_related("coursetechcompetencycategory_set")
+    )
 
 
 def _course_json(course, index=None, orig_start_dates=True,
@@ -343,8 +346,8 @@ def _course_json(course, index=None, orig_start_dates=True,
     start_dates = None
     level_name = course.courselevel.level.name
     format_name = course.courseformat.format.name
-    points = course.coursecpdpoints
     cpd_points = course.coursecpdpoints.points
+    points = course.coursecpdpoints
 
     if cpd_points is not None:
         cpd_points = float(cpd_points)
@@ -369,7 +372,8 @@ def _course_json(course, index=None, orig_start_dates=True,
         "is_manually_added": course.is_manually_added,
         "cpd": {
             "points": cpd_points,
-            "is_private": points.is_private
+            "is_private": points.is_private,
+            "is_tbc": points.is_tbc,
         }
     }
 

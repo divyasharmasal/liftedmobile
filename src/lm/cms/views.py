@@ -206,6 +206,7 @@ def save_course(request):
         level_name = body["level"]
         cpd_points = body["cpdPoints"]
         cpd_is_private = body["cpdIsPrivate"]
+        cpd_is_tbc = body["cpdIsTbc"]
         format_name = body["format"]
         is_published = body["is_published"]
         spider_name = body["spider_name"]
@@ -256,10 +257,13 @@ def save_course(request):
                 cvc.save()
 
         # CPD
-
         course_cpd = app_models.CourseCpdPoints.objects.get(course=course)
         course_cpd.points = cpd_points
         course_cpd.is_private = cpd_is_private
+        course_cpd.is_tbc = cpd_is_tbc
+        if cpd_is_tbc:
+            course_cpd.points = None
+            course_cpd.is_private = False
         course_cpd.save()
 
         # Level
@@ -346,6 +350,7 @@ def save_course(request):
 
         course_cpd = app_models.CourseCpdPoints(course=course,
                                                 points=cpd_points,
+                                                is_tbc=cpd_is_tbc,
                                                 is_private=cpd_is_private)
         course_cpd.save()
 
@@ -541,6 +546,7 @@ def scraper_add_course(request):
     # Note: the provider won't be changed
     matching_courses = (app_models.Course.objects
         .filter(spider_name=spider_name,
+            # is_manually_added=false, # honour manually added data
                 url=url))
 
     if matching_courses.exists():
