@@ -152,10 +152,30 @@ export default class Courses extends Component{
     }
     else if (field === "cost"){
       courses.sort((a, b) => {
-        if (parseInt(a.cost) > parseInt(b.cost)){
-          return 1;
+        const aVaries = a.cost.isVarying;
+        const aCost = a.cost.cost;
+
+        const bVaries = b.cost.isVarying;
+        const bCost = b.cost.cost;
+
+        if (aVaries && bVaries){
+          return 0;
         }
-        return 0;
+        else if (!aVaries || !bVaries){
+          if (aCost === 0 && bVaries){
+            return -1;
+          }
+          else if (bCost === 0 && aVaries){
+            return 1;
+          }
+          else if (aCost > 0 && bVaries){
+            return 1;
+          }
+          else if (bCost > 0 && aVaries){
+            return -1;
+          }
+        }
+        return aCost - bCost;
       });
     }
     else if (field === "cpd"){

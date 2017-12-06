@@ -521,6 +521,9 @@ hr{
         font-size:1em;
         width:75%;
         margin:auto;
+        @media (max-width: @small_screen_width) {
+            width:initial;
+        }
     }
 
     p.back_to_top{
@@ -702,7 +705,7 @@ hr{
 
     .diag_courses{
         p.back_to_top{
-            font-size:0.8em;
+            font-size:1em;
         }
     }
 }
