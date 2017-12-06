@@ -755,7 +755,7 @@ class CostInput extends Component{
   render(){
     return(
       <div class={renderClassname(this.state.invalid, "custom_input")}>
-        <div class="pure-u-1-3">
+        <div class="pure-u-2-5">
           <label>Cost ($):</label>
           {this.state.isVarying ?
             <label>Varies</label>
@@ -771,7 +771,8 @@ class CostInput extends Component{
               value={this.state.cost} />
           }
         </div>
-        <div class="pure-u-1-3">
+
+        <div class="pure-u-2-5">
           <label>Varies?</label>
           <input class="cost_is_varying_input"
             disabled={this.props.disabled}
@@ -893,7 +894,7 @@ class CpdInput extends Component{
 
     return(
       <div class={renderClassname(this.state.invalid, "custom_input")}>
-        <div class="pure-u-1-3">
+        <div class="pure-u-2-5">
           <label>CPD:</label>
 
           {this.state.is_private ?
@@ -913,22 +914,23 @@ class CpdInput extends Component{
           }
         </div>
 
-        <div class="pure-u-1-3">
-          <label>Private?</label>
-          <input class="cpd_is_private_input"
-            disabled={this.props.disabled}
-            type="checkbox" 
-            onChange={this.handlePrivateInputCheck}
-            checked={this.state.is_private} />
-        </div>
-
-        <div class="pure-u-1-3">
-          <label>TBC?</label>
-          <input class="cpd_is_private_input"
-            disabled={this.props.disabled}
-            type="checkbox" 
-            onChange={this.handleTbcInputCheck}
-            checked={this.state.is_tbc} />
+        <div class="pure-u-2-5">
+          <div class="pure-u-1-1">
+            <label>Private?</label>
+            <input class="cpd_is_private_input"
+              disabled={this.props.disabled}
+              type="checkbox" 
+              onChange={this.handlePrivateInputCheck}
+              checked={this.state.is_private} />
+          </div>
+          <div class="pure-u-1-1">
+            <label>TBC?</label>
+            <input class="cpd_is_private_input"
+              disabled={this.props.disabled}
+              type="checkbox" 
+              onChange={this.handleTbcInputCheck}
+              checked={this.state.is_tbc} />
+          </div>
         </div>
       </div>
     );

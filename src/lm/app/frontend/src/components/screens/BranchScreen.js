@@ -163,7 +163,7 @@ export class BranchScreen extends Screen {
               unPadCourses={this.unPadCourses} />
           </div>
         :
-          <div class="rec_courses pure-u-1">
+          <div class="rec_courses no_recs pure-u-1">
             <p>
               Could not recommend any courses based on the selections
               you made.

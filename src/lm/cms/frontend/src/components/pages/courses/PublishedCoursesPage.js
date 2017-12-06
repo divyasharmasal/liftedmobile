@@ -31,9 +31,9 @@ export class PublishedCoursesPage extends Component {
 
 
   handleSearch = text => {
-    text = text.trim();
-    if (text.length > 0){
-    }
+    //text = text.trim();
+    //if (text.length > 0){
+    //}
   }
 
 
