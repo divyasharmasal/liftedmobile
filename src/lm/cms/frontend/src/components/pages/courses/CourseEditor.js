@@ -24,11 +24,16 @@ class CourseEditor extends Component{
       course.cpd = {
         points: null,
         is_private: null,
+        is_tbc: null,
       };
     }
 
     if (course.cpd.is_private == null){
       course.cpd.is_private = false;
+    }
+
+    if (course.cpd.is_tbc == null){
+      course.cpd.is_tbc = false;
     }
 
     // Unpublished courses only provide the start_date attribute,
@@ -106,6 +111,10 @@ class CourseEditor extends Component{
   handleCpdChange = (points, is_private, is_tbc) => { 
     if (typeof points === "undefined"){
       points = null;
+    }
+
+    if (!is_tbc){
+      is_tbc = false;
     }
 
     let course = this.state.course;
@@ -877,7 +886,11 @@ class CpdInput extends Component{
       points = null;
     }
     if (this.state.points !== points){
-      this.setState({ points }, () => {
+      this.setState({ 
+        points,
+        is_tbc: false,
+        is_private: false,
+      }, () => {
         this.props.handleValueChange(points, false, false);
       });
     }

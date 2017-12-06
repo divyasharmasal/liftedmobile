@@ -53,7 +53,7 @@ export class PublishedCoursesPage extends Component {
         cost: null,
         isVarying: false,
       },
-      cpd: {points: null, isPrivate: null},
+      cpd: {points: null, is_private: false, is_tbc: false},
       format: null,
       level: null,
       start_dates: [],

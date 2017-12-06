@@ -197,6 +197,8 @@ def save_course(request):
 
     is_new = "is_new" in body.keys() and body["is_new"]
 
+    if "cpdIsTbc" not in body:
+        body["cpdIsTbc"] = False
     try:
         if not is_new:
             id = body["id"]
