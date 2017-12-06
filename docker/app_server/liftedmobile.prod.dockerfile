@@ -24,7 +24,7 @@ RUN apk update                                                              && \
     apk --no-cache upgrade                                                  && \
     apk --no-cache add python3 python3-dev postgresql py-psycopg2              \
         curl gnupg nodejs linux-headers build-base libxml2-dev libxslt-dev     \
-        libffi-dev bash py3-lxml                                            && \ 
+        libffi-dev bash                                                     && \ 
     pip3 --no-cache-dir install --upgrade pip                               && \
     pip3 --no-cache-dir install -r /src/requirements.txt                    && \
     apk --no-cache add yarn --repository                                       \

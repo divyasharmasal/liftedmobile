@@ -62,16 +62,19 @@ export class LiftedKeyInput extends Component{
 
 
   renderItem = (item, index) => {
+    const sortedVerticalNames = Object.keys(this.props.verticals).sort();
     let selectedVerticalIndex;
     if (item.vertical_name){
-      selectedVerticalIndex = Object.keys(this.props.verticals).indexOf(item.vertical_name) + 1;
+      selectedVerticalIndex = sortedVerticalNames.indexOf(item.vertical_name) + 1;
     }
+
 
     let selectedVerticalCategoryIndex;
     if (item.vertical_category_name){
       selectedVerticalCategoryIndex =
         this.props.verticals[item.vertical_name].indexOf(item.vertical_category_name) + 1;
     }
+
 
     return (
       <div class="custom_input liftedkey_input_item">
@@ -80,7 +83,8 @@ export class LiftedKeyInput extends Component{
           onChange={e => this.handleVerticalSelect(e, index)}>
           <option value="" disabled selected>Select a vertical:</option>
           {
-            Object.keys(this.props.verticals).sort().map(vertical =>
+            //Object.keys(this.props.verticals).map(vertical =>
+            sortedVerticalNames.map(vertical =>
               <option>
                 {vertical}
               </option>
