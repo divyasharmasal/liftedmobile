@@ -12,6 +12,7 @@ from django.http import HttpResponseServerError
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max
+from django.db.models import F
 
 from app import models
 
@@ -310,12 +311,14 @@ def course_recs(request):
 
     course_query = models.Course.objects\
                 .filter(coursestartdate__start_date__gte=now)
+
     if need_ids is not None:
         course_query = course_query.filter(
             courseverticalcategory__vertical_category__id=vertical_category_id,
             courseverticalcategory__vertical_category__vertical_id=vertical_id,
-            courseformat__format__needformat__need__in=need_ids,
-            courselevel__level_id__needlevel__need_id__in=need_ids)
+            courselevel__level_id__needlevel__need_id__in=need_ids,
+            courseformat__format__needformat__need__in=\
+                    F("courselevel__level_id__needlevel__need_id"))
     else:
         course_query = course_query.filter(
             courseverticalcategory__vertical_category__id=vertical_category_id,

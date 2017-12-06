@@ -1,4 +1,3 @@
-b. "TBC" option for CPD points in course editor
 
 - *** Launch date: 8 Jan
 - Scrape SkillsFuture
@@ -30,6 +29,7 @@ Secrets in Vault
 ------------------------------------------------
 
 Done:
+- TBC option for CPD points in course editor
 - new vertical in CMS picker: "Technology Framework"
 - correct order: nil - private - 1 ..
 - Remove specialisms from diag results
