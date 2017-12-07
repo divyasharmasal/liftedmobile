@@ -6,10 +6,10 @@
 - LE cert backup plan
     - Remind Anita about pentest email
 
-- Get logos from Rizam
 
+- "NA" option for CPD points
 - New favicon?
-- For LP: omit role descriptions / branching in role screen (after 8 Jan)
+- Optimise /cms/get_published_courses_data/
 - Funnel visitors from the course browser to the diagnostic
 - Mid-Jan: Submit phase 2 proposal: heatmap, scraping of books, scraping of AP
   site, law school event pages, tagging of books, recommended reading section,
@@ -18,17 +18,17 @@
 - Scrape SCCA, SkillsFuture
 - Full auth system with 2FA
 - Email reminders about untagged courses?
-Optimise /cms/get_published_courses_data/
-Make push_prod do all deployment work
-Unit testing
-Secrets in Vault
-  - Link CloudWatch to graylog
-- 8 Jan: launch
+- Make push_prod do all deployment work
+- Unit testing
+- Secrets in Vault
+- Link CloudWatch to graylog
 - Anita's leave: 8-28 Dec
 
 ------------------------------------------------
 
 Done:
+- Get logos from Rizam
+- For LP: omit role descriptions / branching in role screen
 - TBC option for CPD points in course editor
 - new vertical in CMS picker: "Technology Framework"
 - correct order: nil - private - 1 ..
