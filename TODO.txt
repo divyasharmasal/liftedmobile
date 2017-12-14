@@ -1,12 +1,12 @@
-
-- *** Launch date: 8 Jan
-- Scrape SkillsFuture
+- BY 4TH JANUARY 2018:
+    - Show descriptions for the legal tech competency descriptions in the diag screen
+    - Scrape SkillsFuture
+    - Add narrative to the phase 2 proposal - why there is a need for each feature. what the value add is
+    - CJ announcement - 8 Jan
 
 - Get new LE certs on Fri 8 Dec 1500 hrs!
 - LE cert backup plan
     - Remind Anita about pentest email
-
-
 - "NA" option for CPD points
 - New favicon?
 - Optimise /cms/get_published_courses_data/
