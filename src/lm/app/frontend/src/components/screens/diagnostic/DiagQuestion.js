@@ -45,6 +45,7 @@ export class DiagQuestion extends Component{
 
 
   render(){
+    let qn = this.props.qn;
     const answers = ["Yes", "No"];
     let ansElms = [];
     answers.forEach((answer, i) => {
@@ -65,34 +66,38 @@ export class DiagQuestion extends Component{
       highlightClass = "highlight";
     }
 
-    let expln = [];
-    if (this.props.qn.expln){
-      expln = this.props.qn.expln.split("\n").map(row =>
-        <li>{row}</li>
-      );
-    }
+    //let expln = [];
+    //qn.expln.split("\n").forEach(row => {
+      //expln.push(
+        //<li>{row}</li>
+      //);
+    //});
 
-    const descPrompt = this.state.showHelp ? "Hide description ▲" : "Show description ▼";
+    //let desc_prompt;
+    //if (this.state.showHelp){
+      //desc_prompt = "Hide description ▲";
+    //}
+    //else{
+      //desc_prompt = "Show description ▼";
+    //}
+          //{[>
+          //<p class="diag_whatsthis"
+            //onClick={this.showHelp}>
+            //{desc_prompt}
+          //</p>
+          //{this.state.showHelp && 
+            //<div class="diag_help">
+              //<ul>
+                //{expln}
+              //</ul>
+            //</div>
+          //}
+          //*/}
 
     return (
       <div class="diag_qn">
         <div class="diag_left">
-          <p class={highlightClass}>{this.props.qn.desc}</p>
-          {this.props.isTechQn &&
-            <div>
-              <p class="diag_whatsthis"
-                onClick={this.showHelp}>
-                {descPrompt}
-              </p>
-              {this.state.showHelp && 
-                <div class="diag_help">
-                  <ul>
-                    {expln}
-                  </ul>
-                </div>
-              }
-            </div>
-          }
+          <p class={highlightClass}>{qn.desc}</p>
         </div>
         <div class="diag_right">
           <div class="diag_opts">

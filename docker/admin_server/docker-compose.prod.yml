@@ -49,7 +49,6 @@ services:
             - db_config
         environment:
             - CMS=true
-            - PYTHONUNBUFFERED=1
         ports:
             - "9001:80"
         expose:

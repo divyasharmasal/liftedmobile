@@ -30,8 +30,6 @@ services:
             - admin_emails
             - db_config
             - django_com_pwd
-        environment:
-            - PYTHONUNBUFFERED=1
         logging:
             driver: "awslogs"
             options:
