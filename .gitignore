@@ -1,3 +1,5 @@
+admin_server/scraper/scraper/dbs/*
+
 # Docker secrets
 docker/app_server/secrets/*
 docker/admin_server/secrets/*
