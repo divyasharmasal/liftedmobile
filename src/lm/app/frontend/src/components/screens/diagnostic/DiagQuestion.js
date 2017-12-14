@@ -66,38 +66,34 @@ export class DiagQuestion extends Component{
       highlightClass = "highlight";
     }
 
-    //let expln = [];
-    //qn.expln.split("\n").forEach(row => {
-      //expln.push(
-        //<li>{row}</li>
-      //);
-    //});
+    let expln;
+    if (qn.expln != null){
+      expln = qn.expln.split("\n").map(row => 
+        <li>{row}</li>
+      );
+    }
 
-    //let desc_prompt;
-    //if (this.state.showHelp){
-      //desc_prompt = "Hide description ▲";
-    //}
-    //else{
-      //desc_prompt = "Show description ▼";
-    //}
-          //{[>
-          //<p class="diag_whatsthis"
-            //onClick={this.showHelp}>
-            //{desc_prompt}
-          //</p>
-          //{this.state.showHelp && 
-            //<div class="diag_help">
-              //<ul>
-                //{expln}
-              //</ul>
-            //</div>
-          //}
-          //*/}
+    const descPrompt = this.state.showHelp ? "Hide description ▲" : "Show description ▼";
 
     return (
       <div class="diag_qn">
         <div class="diag_left">
           <p class={highlightClass}>{qn.desc}</p>
+          {this.props.isTechQn && 
+            <div>
+              <p class="diag_whatsthis"
+                onClick={this.showHelp}>
+                {descPrompt}
+              </p>
+              {this.state.showHelp && 
+                <div class="diag_help">
+                  <ul>
+                    {expln}
+                  </ul>
+                </div>
+              }
+            </div>
+          }
         </div>
         <div class="diag_right">
           <div class="diag_opts">

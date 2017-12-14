@@ -153,6 +153,7 @@ class DiagScreen extends Screen{
   renderQn = qn => {
     return (
       <DiagQuestion 
+        isTechQn={this.props.techRole != null}
         handleOptionSelect={this.handleOptionSelect}
         selectedAnswerId={this.state.answers[qn.id]}
         qn={qn} />
