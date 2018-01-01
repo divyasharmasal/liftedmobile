@@ -67,7 +67,7 @@ export class IntroScreen extends Component{
             </p>
             */}
             <p>
-              © 2017 Singapore Academy of Law. All rights reserved.
+              © 2018 Singapore Academy of Law. All rights reserved.
             </p>
             {/*
             <p>

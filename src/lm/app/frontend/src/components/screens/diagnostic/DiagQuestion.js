@@ -66,10 +66,16 @@ export class DiagQuestion extends Component{
       highlightClass = "highlight";
     }
 
-    let expln;
+    let expln = [];
     if (qn.expln != null){
-      expln = qn.expln.split("\n").map(row => 
-        <li>{row}</li>
+      const rows = qn.expln.split("\n");
+        qn.expln.split("\n").forEach(row => {
+          const a = qn.desc.toLowerCase().trim();
+          const b = row.toLowerCase().trim();
+          if (!a.includes(b)){
+            expln.push(<li>{row}</li>);
+          }
+        }
       );
     }
 
@@ -79,7 +85,7 @@ export class DiagQuestion extends Component{
       <div class="diag_qn">
         <div class="diag_left">
           <p class={highlightClass}>{qn.desc}</p>
-          {this.props.isTechQn && 
+          {this.props.isTechQn && expln.length > 0 &&
             <div>
               <p class="diag_whatsthis"
                 onClick={this.showHelp}>

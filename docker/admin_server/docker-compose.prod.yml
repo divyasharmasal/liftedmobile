@@ -26,6 +26,8 @@ services:
             - scrapyd_api_key
         expose:
             - "6800"
+        environment:
+            - PYTHONUNBUFFERED=1
 
     cms:
         container_name: admin_cms
@@ -49,6 +51,7 @@ services:
             - db_config
         environment:
             - CMS=true
+            - PYTHONUNBUFFERED=1
         ports:
             - "9001:80"
         expose:

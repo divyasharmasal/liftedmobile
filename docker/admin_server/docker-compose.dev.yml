@@ -28,6 +28,7 @@ services:
         environment:
             - DEV=true
             - SCRAPYD_API_KEY=scrapydapikey
+            - PYTHONUNBUFFERED=1
         expose:
             - "6800"
 
