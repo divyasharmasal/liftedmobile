@@ -40,7 +40,7 @@ export class UnpublishedCoursesPage extends Component {
       response.json().then(data => {
 
         // sort by date
-        data.courses = sortByDate(data.courses)
+        //data.courses = sortByDate(data.courses)
 
         this.setState({ 
           courses: data.courses, 

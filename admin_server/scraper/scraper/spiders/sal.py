@@ -8,7 +8,7 @@ from ..items import CourseItem
 class SalSpider(scrapy.Spider):
     name = 'sal'
     allowed_domains = ['sal.org.sg']
-    start_urls = ['http://sal.org.sg/Events/View-All-Events/Date-Desc#']
+    start_urls = ['https://www.sal.org.sg/Events/View-All-Events/Date-Desc']
 
 
     def convert_to_isodate(self, date):
@@ -38,15 +38,21 @@ class SalSpider(scrapy.Spider):
             if url.startswith("/"):
                 url = "https://www.sal.org.sg" + url
 
+            if start_date == end_date:
+                end_date = None
+
             course_item = CourseItem(
                 name=name,
                 url=url,
                 public_cpd=None,
-                start_date=self.convert_to_isodate(start_date),
-                end_date=self.convert_to_isodate(end_date),
+                date_ranges=[{
+                    "start": self.convert_to_isodate(start_date),
+                    "end": self.convert_to_isodate(end_date),
+                }],
                 upcoming=upcoming,
                 level=None,
                 provider="Singapore Academy of Law")
+
             items.append(course_item)
 
         return items

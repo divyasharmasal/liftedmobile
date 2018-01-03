@@ -15,6 +15,18 @@ configureAnchors({
 
 export { CourseEditor };
 
+
+const dateRangeToStr = dateRange => {
+  const fmt = "DD/MM/YYYY";
+  if (dateRange.end){
+    return format(dateRange.start, fmt) + " - " + format(dateRange.end, fmt);
+  }
+  else{
+    return format(dateRange.start, fmt);
+  }
+}
+
+
 class CourseEditor extends Component{
   constructor(props){
     super(props);
@@ -36,20 +48,12 @@ class CourseEditor extends Component{
       course.cpd.is_tbc = false;
     }
 
-    // Unpublished courses only provide the start_date attribute,
-    // instead of a list of start dates.
-    if (Object.keys(course).indexOf("start_date") > -1){
-      if (course.start_date == null){
-        course.start_dates = [];
-      }
-      else{
-        course.start_dates = [course.start_date];
-      }
+    if (Object.keys(course).indexOf("date_ranges") === -1){
+      course.date_ranges = [];
     }
-
-    course.start_dates = course.start_dates.map(
-      date => format(date, "DD/MM/YYYY")
-    );
+    else{
+      course.date_ranges = course.date_ranges.map(dateRangeToStr);
+    }
 
     if (Object.keys(course).indexOf("is_manually_added") === -1){
       course.is_manually_added = false;
@@ -88,7 +92,6 @@ class CourseEditor extends Component{
       cost = null;
     }
     course.cost = { cost, isVarying };
-    console.log(course.cost)
     course.hasChanged = true;
 
     let invalidFields = this.state.invalidFields;
@@ -173,13 +176,13 @@ class CourseEditor extends Component{
 
   handleDatesChange = dates => {
     let course = this.state.course;
-    course.start_dates = dates;
+    course.date_ranges = dates;
     if (dates[dates.length-1] !== ""){
       course.hasChanged = true;
     }
 
     let invalidFields = this.state.invalidFields;
-    invalidFields.startDates = false;
+    invalidFields.dateRanges = false;
     this.setState({ course, invalidFields });
   }
 
@@ -206,7 +209,7 @@ class CourseEditor extends Component{
 			cpdIsTbc: course.cpd.is_tbc, 
 			level: course.level, 
 			format: course.format, 
-			start_dates: course.start_dates,
+			date_ranges: course.date_ranges,
 			is_published: !this.state.unpublished,
       is_new: course.isNew,
       spider_name: course.spider_name,
@@ -295,22 +298,48 @@ class CourseEditor extends Component{
     const validProvider = course.provider != null && 
       course.provider.trim().length > 0;
 
+    const parseDateStr = d => {
+      const sp = d.split("/");
+      const day = sp[0];
+      const month = sp[1];
+      const year = sp[2];
+      return parse(month + "/" + day + "/" + year);
+    }
+
     const isValidDate = d => {
       const dateRe = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
       if (dateRe.test(d)){
-        const sp = d.split("/");
-        const day = sp[0];
-        const month = sp[1];
-        const year = sp[2];
-        return isValid(parse(month + "/" + day + "/" + year));
+        return isValid(parseDateStr(d));
       }
       return false;
     };
 
-    const startDates = course.start_dates.filter(d => d.length > 0);
-    const validStartDates = 
-      startDates.length > 0 && 
-      startDates.every(isValidDate);
+    const isValidDateRange = dateRange => {
+      const sp = dateRange.split("-").map(s => s.trim());
+      if (!sp.every(isValidDate)){
+        return false;
+      }
+
+      if (sp.length === 2){
+        const start = parseDateStr(sp[0]);
+        const end = parseDateStr(sp[1]);
+        if (end <= start){
+          return false;
+        }
+      }
+
+      if (sp.length === 0){
+        return false;
+      }
+
+      return true;
+    }
+
+    //TODO: validate date ranges
+    const dateRanges = course.date_ranges.filter(d => d.length > 0);
+    const validDateRanges = 
+      dateRanges.length > 0 && 
+      dateRanges.every(isValidDateRange);
 
     const keysAreUnique = dicts => {
       for (let i=0; i < dicts.length; i++){
@@ -341,10 +370,11 @@ class CourseEditor extends Component{
       validCost &&
       validLevel &&
       validFormat &&
-      validStartDates &&
+      validDateRanges &&
       validLiftedKeys);
 
     if (valid){
+      course.date_ranges = dateRanges;
       this.saveCourseData(course);
     }
     else{
@@ -357,7 +387,7 @@ class CourseEditor extends Component{
           cost: !validCost,
           level: !validLevel,
           format: !validFormat,
-          startDates: !validStartDates,
+          dateRanges: !validDateRanges,
           liftedKeys: !validLiftedKeys,
           provider: !validProvider,
         },
@@ -578,15 +608,6 @@ class CourseEditor extends Component{
 
     // For unpublished courses:
     if (this.state.unpublished){
-      let dates = course.start_date == null ? 
-        [] 
-        : 
-        [course.start_date];
-
-      if (course.start_dates){
-        dates = course.start_dates;
-      }
-
       return (
         <div class={className}>
           {nameInput}
@@ -602,8 +623,8 @@ class CourseEditor extends Component{
             <DatesInput 
               disabled={this.state.hasSaved && this.state.unpublished}
               handleValueChange={this.handleDatesChange}
-              invalid={this.state.invalidFields.startDates}
-              values={dates} />
+              invalid={this.state.invalidFields.dateRanges}
+              values={course.date_ranges} />
           </div>
 
           {liftedKeyInput}
@@ -642,8 +663,8 @@ class CourseEditor extends Component{
           <DatesInput 
             disabled={this.props.disabled}
             handleValueChange={this.handleDatesChange}
-            invalid={this.state.invalidFields.startDates}
-            values={course.start_dates} />
+            invalid={this.state.invalidFields.dateRanges}
+            values={course.date_ranges} />
         </div>
 
         {liftedKeyInput}
@@ -1106,7 +1127,7 @@ class DateListInput extends Component{
               disabled={this.props.disabled}
               handleValueChange={value => this.updateItem(index, value)}
               handleRemoveItem={() => this.removeItem(index)}
-              placeholder="dd/mm/yyyy"
+              placeholder="dd/mm/yyyy - dd/mm/yyyy"
               value={item} 
             />
           )}
@@ -1150,7 +1171,7 @@ class DateListInputItem extends Component{
           onKeyUp={e => this.handleValueChange(e.target.value)}
           onChange={e => this.handleValueChange(e.target.value)}
           type="text" 
-          maxlength="10" placeholder={this.props.placeholder} 
+          maxlength="25" placeholder={this.props.placeholder} 
           value={this.state.value} />
         {!this.props.disabled &&
           <span

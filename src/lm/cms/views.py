@@ -19,7 +19,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 
 from lm import settings
-from app.views import _optimise_course_query, _course_json
+from app.views import _optimise_course_query, _course_json, extract_date_range
 from cms import models
 from app import models as app_models
 
@@ -96,14 +96,24 @@ def cms_get_unpublished_courses_data(request):
                 "vertical_category_name": lifted_key.vertical_category_name,
             })
 
+        date_ranges = []
 
-        start_date = end_date = None
+        for scraped_dr in models.ScrapedCourseDate.objects \
+            .filter(scraped_course=scraped_course):
 
-        if isinstance(scraped_course.start_date, datetime.datetime):
-            start_date = scraped_course.start_date.isoformat()
+            start = None
+            end = None
+            if scraped_dr.start is not None:
+                start = scraped_dr.start.isoformat()
 
-        if isinstance(scraped_course.end_date, datetime.datetime):
-            end_date = scraped_course.end_date.isoformat()
+            if scraped_dr.end is not None:
+                end = scraped_dr.end.isoformat()
+
+            date_ranges.append({
+                "start": start,
+                "end": end,
+            })
+
 
         result["courses"].append({
             "id": scraped_course.id,
@@ -113,8 +123,7 @@ def cms_get_unpublished_courses_data(request):
             "cpd": {
                 "points": scraped_course.public_cpd,
             },
-            "start_date": start_date,
-            "end_date": end_date,
+            "date_ranges": date_ranges,
             "spider_name": scraped_course.spider_name,
             "lifted_keys": lifted_keys,
             "level": scraped_course.level,
@@ -127,6 +136,13 @@ def cms_get_unpublished_courses_data(request):
     return json_response(result)
 
 
+def get_date_ranges(course):
+    result = []
+    for dr in app_models.CourseDate.objects.filter(course=course):
+        result.append(extract_date_range(dr))
+    return result
+
+
 @staff_member_required(login_url=None)
 def cms_get_published_courses_data(request):
     result = get_level_format_vertical_data()
@@ -137,6 +153,7 @@ def cms_get_published_courses_data(request):
     result["courses"] = [_course_json(
                             course,
                             include_id=True,
+                            date_ranges=get_date_ranges(course),
                             include_lifted_keys=True)
                          for course in courses]
 
@@ -179,6 +196,28 @@ def _bytes_to_utf8(bytes_obj):
     return bytes_obj
 
 
+def localise_date(date):
+    timezone = pytz.timezone("Asia/Singapore")
+    return timezone.localize(
+        datetime.datetime.strptime(
+            date, "%d/%m/%Y"))
+
+
+def create_course_date_ranges(course, date_ranges):
+    for dr in date_ranges:
+        start = end = None
+        sp = [x.strip() for x in dr.split("-")]
+
+        if len(sp) == 0:
+            end = None
+        else:
+            start = localise_date(sp[0])
+            if len(sp) == 2:
+                end = localise_date(sp[1])
+
+        app_models.CourseDate(course=course, start=start, end=end).save()
+
+
 @staff_member_required(login_url="login")
 def save_course(request):
     body = json.loads(_bytes_to_utf8(request.body))
@@ -186,15 +225,17 @@ def save_course(request):
     # validate input
     spider_name = id = name = cost = url = level_name = cpd_points = \
         cpd_is_private = format_name = lifted_keys = is_published = \
-        provider = None
+        provider = date_ranges = None
 
     is_new = "is_new" in body.keys() and body["is_new"]
 
     if "cpdIsTbc" not in body:
         body["cpdIsTbc"] = False
+
     try:
         if not is_new:
             id = body["id"]
+
         name = body["name"]
         cost = body["cost"]
         url = body["url"]
@@ -208,11 +249,15 @@ def save_course(request):
         lifted_keys = body["lifted_keys"]
         is_manually_added = body["is_manually_added"]
         provider = body["provider"]
+        date_ranges = body["date_ranges"]
+
     except:
         import traceback
         traceback.print_exc()
         return HttpResponseServerError("Invalid body keys: {keys}"\
             .format(keys=str(body.keys())))
+
+
 
     if is_published and not is_new:
         # Course
@@ -275,25 +320,12 @@ def save_course(request):
         course_format.format = format
         course_format.save()
 
-        # Start date
+        # Date ranges
         app_models.CourseDate.objects.filter(course=course).delete()
 
-        timezone = pytz.timezone("Asia/Singapore")
-        for date in body["start_dates"]:
+        create_course_date_ranges(course, list(set(body["date_ranges"])))
+        return json_response({"published_course_id": course.id})
 
-            localized_date = timezone.localize(
-                datetime.datetime.strptime(
-                    date, "%d/%m/%Y"))
-
-            course_start_date = app_models.CourseDate(
-                course=course,
-                start_date=localized_date)
-
-            course_start_date.save()
-
-        return json_response({
-            "published_course_id": course.id,
-        })
     else:
         id = None
         if not is_new:
@@ -360,23 +392,9 @@ def save_course(request):
         course_format.save()
 
         # Start dates
-        course_start_dates = []
-        timezone = pytz.timezone("Asia/Singapore")
+        create_course_date_ranges(course, list(set(body["date_ranges"])))
 
-        for date in list(set(body["start_dates"])):
-            localized_date = timezone.localize(
-                datetime.datetime.strptime(date, "%d/%m/%Y"))
-
-            course_start_date = app_models.CourseDate(
-                course=course, start_date=localized_date)
-            course_start_dates.append(course_start_date)
-
-        for c in course_start_dates:
-            c.save()
-
-        return json_response({
-            "published_course_id": course.id,
-        })
+        return json_response({"published_course_id": course.id})
 
 
 @staff_member_required(login_url="login")
@@ -486,12 +504,12 @@ def scraper_sync_urls(request):
     return json_response("ok")
 
 
-def create_course_dates(date_ranges):
+def create_course_dates(course, date_ranges):
     for dr in date_ranges:
         csd = app_models.CourseDate(
             course=course,
-            start_date=dr.start_date,
-            end_date=dr.start_date)
+            start=dr.start,
+            end=dr.end)
         csd.save()
 
 @csrf_exempt
@@ -540,39 +558,28 @@ def scraper_add_course(request):
                     url=url,
                     spider_name=spider_name,
                     public_cpd=public_cpd,
-                    end_date=end_date,
                     level=level,
                     provider=provider).exists())
 
-    sc = (models.ScrapedCourse.objects
-          .get(name=name,
-               url=url,
-               spider_name=spider_name,
-               public_cpd=public_cpd,
-               end_date=end_date,
-               level=level,
-               provider=provider).exists())
+    if sc_exists:
+        sc = (models.ScrapedCourse.objects
+              .get(name=name,
+                   url=url,
+                   spider_name=spider_name,
+                   public_cpd=public_cpd,
+                   level=level,
+                   provider=provider))
 
-    # Check whether the date ranges match
-    sc_date_ranges = models.ScrapedCourseDate.objects\
-        .filter(scraped_course=sc)
+        # Replace the date ranges
+        sc_date_ranges = models.ScrapedCourseDate.objects\
+            .filter(scraped_course=sc).delete()
 
-    # Compare the no. of date ranges
-    sc_date_range_matches = len(sc_date_ranges) != len(date_ranges)
-
-    # Make sure the date ranges actually match
-    for sc_dr in sc_date_ranges:
-        found = False
         for date_range in date_ranges:
             start = date_range["start"]
             end = date_range["end"]
-            if sc_dr.start == start and sc_dr.end == end:
-                found = True
-                break
-        sc_date_range_matches = sc_date_range_matches and found
+            if start is not None:
+                models.ScrapedCourseDate(scraped_course=sc, start=start, end=end).save()
 
-    # Exit if the ScrapedCourse exists
-    if sc_exists and sc_date_range_exists:
         return json_response("Found matching ScrapedCourse, skipping.")
 
     # Update published matching courses with the same spider name and url:
@@ -598,7 +605,7 @@ def scraper_add_course(request):
                  .delete())
 
             # Add course dates
-            create_course_dates(date_ranges)
+            create_course_dates(course, date_ranges)
 
         # update public_cpd
         (app_models.CourseCpdPoints.objects
@@ -627,11 +634,22 @@ def scraper_add_course(request):
         url=course_data["url"],
         is_new=True)
 
-    if created:
-        create_course_dates(date_ranges)
+    models.ScrapedCourseDate.objects.filter(scraped_course=scraped_course).delete()
 
+    for dr in date_ranges:
+        start = end = None
+        start = dr["start"]
+        end = dr["end"]
+
+        if start is not None:
+            models.ScrapedCourseDate(scraped_course=scraped_course,
+                                     start=start,
+                                     end=end).save()
+
+    if created:
         return json_response("Added ScrapedCourse")
     else:
+
         return json_response("Updated ScrapedCourse")
 
     return json_response("No action taken")

@@ -36,14 +36,21 @@ class Migration(migrations.Migration):
                 ('is_new', models.BooleanField()),
                 ('name', models.TextField()),
                 ('url', models.TextField()),
-                ('start_date', models.DateTimeField(null=True)),
-                ('end_date', models.DateTimeField(null=True)),
                 ('public_cpd', models.FloatField(null=True)),
                 ('spider_name', models.TextField()),
                 ('provider', models.TextField(null=True)),
                 ('level', models.TextField(null=True)),
                 ('lifted_keys', models.ManyToManyField(to='cms.LiftedKey')),
                 ('lifted_tech_keys', models.ManyToManyField(to='cms.LiftedTechKey')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='ScrapedCourseDate',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('start', models.DateTimeField()),
+                ('end', models.DateTimeField(null=True)),
+                ('scraped_course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cms.ScrapedCourse')),
             ],
         ),
     ]

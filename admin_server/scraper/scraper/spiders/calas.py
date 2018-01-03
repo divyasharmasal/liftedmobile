@@ -73,6 +73,7 @@ class CalasSpider(scrapy.Spider):
         for path in response.xpath("//dd/a").css("a::attr(href)").extract():
             event_url = self.sile_url + path
             yield scrapy.Request(event_url, callback=self.parse_event_page)
+            break
 
 
     def convert_to_isodate(self, date):
@@ -130,9 +131,12 @@ class CalasSpider(scrapy.Spider):
             )[0].xpath("text()").extract_first()
 
         upcoming = start_date is None and end_date is None
-        course_item = CourseItem(name=name, url=response.url,
-                                 start_date=start_date,
-                                 end_date=end_date,
+        course_item = CourseItem(name=name,
+                                 url=response.url,
+                                 date_ranges=[{
+                                     "start": start_date,
+                                     "end": end_date
+                                 }],
                                  public_cpd=public_cpd,
                                  upcoming=upcoming,
                                  provider=provider,

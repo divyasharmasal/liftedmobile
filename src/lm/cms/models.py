@@ -29,5 +29,5 @@ class ScrapedCourse(models.Model):
 class ScrapedCourseDate(models.Model):
     id = models.AutoField(primary_key=True)
     scraped_course = models.ForeignKey(ScrapedCourse, on_delete=models.CASCADE)
-    start_date = models.DateTimeField(null=False)
-    end_date = models.DateTimeField(null=True)
+    start = models.DateTimeField(null=False)
+    end = models.DateTimeField(null=True)

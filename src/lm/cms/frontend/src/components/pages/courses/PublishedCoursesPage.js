@@ -1,6 +1,6 @@
 import { h, Component } from "preact";
 import { authFetch } from "../../../lib/js/fetch";
-import { sortCoursesByDate } from "../../../lib/js/courses";
+import { sortCoursesByDateRange } from "../../../../../../../lib/js/courses";
 import { renderLoader } from "../../../lib/js/loader_anim";
 import { CourseEditor } from "./CourseEditor";
 
@@ -10,7 +10,7 @@ export class PublishedCoursesPage extends Component {
     authFetch("/cms/get_published_courses_data/").then(response => {
       response.json().then(data => {
         // sort by date
-        data.courses = sortCoursesByDate(data.courses)
+        //data.courses = sortCoursesByDateRange(data.courses)
 
         this.setState({ 
           courses: data.courses,
@@ -56,7 +56,7 @@ export class PublishedCoursesPage extends Component {
       cpd: {points: null, is_private: false, is_tbc: false},
       format: null,
       level: null,
-      start_dates: [],
+      date_ranges: [],
       spider_name: null,
       is_manually_added: true,
       lifted_keys: [],

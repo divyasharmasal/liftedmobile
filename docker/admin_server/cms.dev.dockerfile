@@ -23,7 +23,7 @@ WORKDIR /src/lm
 
 # Wait till the database is ready and then launch the dev server
 CMD cd /src/lm                                                              && \
-    python3 /src/lm/wait_for_postgres.py                                   && \
+    python3 /src/lm/wait_for_postgres.py                                    && \
     python3 manage.py collectstatic --no-input                              && \
     python3 manage.py migrate                                               && \
     echo -e "\nDocker containers are up; server at: http://0.0.0.0:9000/"   && \

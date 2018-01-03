@@ -368,11 +368,13 @@ def _optimise_course_query(courses):
     )
 
 
-def _course_json(course, index=None,
-                 date_range=None, include_id=False,
+def _course_json(course,
+                 index=None,
+                 date_ranges=None,
+                 date_range=None,
+                 include_id=False,
                  include_lifted_keys=False):
 
-    start_dates = None
     level_name = course.courselevel.level.name
     format_name = course.courseformat.format.name
     cpd_points = course.coursecpdpoints.points
@@ -406,6 +408,9 @@ def _course_json(course, index=None,
             "is_tbc": points.is_tbc,
         }
     }
+
+    if date_ranges:
+        result["date_ranges"] = date_ranges
 
     if include_lifted_keys:
         lifted_keys = []

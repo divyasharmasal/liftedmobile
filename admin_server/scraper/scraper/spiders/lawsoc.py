@@ -121,11 +121,12 @@ class LawsocSpider(scrapy.Spider):
                     pass
                 break
 
-
         upcoming = start_date is None and end_date is None
         course_item = CourseItem(name=name, url=response.url,
-                                 start_date=start_date,
-                                 end_date=end_date,
+                                 date_ranges=[{
+                                     "start": start_date,
+                                     "end": end_date
+                                 }],
                                  public_cpd=public_cpd,
                                  provider=None,
                                  level=None,
