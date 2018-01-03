@@ -3,7 +3,7 @@
 
 """
 Extract data from the ODS spreadsheets which contain
-the LIFTED framework and courses for 2017.
+the LIFTED framework and courses.
 (see https://liftedsg.files.wordpress.com/2017/01/lifted-learning-planner-2017-with-insert.pdf)
 """
 
@@ -94,28 +94,44 @@ def parse_needs():
 def parse_courses():
     rows = parse_item_rows(read_ods_file(COURSES_FILE))
     for row in rows:
-        start_dates = []
         timezone = pytz.timezone("Asia/Singapore")
-        for date in [x.strip() for x in \
-            row["Start dates (2017)"].split("\n")]:
+
+        date_ranges = []
+
+        def convert_date(date):
+            return datetime.datetime.strptime(date, "%d %b")\
+                .replace(year=datetime.datetime.now().year)
+
+        for date in [x.strip() for x in row["Dates"].split("\n")]:
+
             if len(date) > 0:
-                parsed_date = None
+                start_date = end_date = None
+                this_year = datetime.datetime.now().year
                 if date == "Q1":
-                    parsed_date = datetime.datetime(2018, 1, 1)
+                    start_date = datetime.datetime(this_year, 1, 1)
                 elif date == "Q2":
-                    parsed_date = datetime.datetime(2018, 4, 1)
+                    start_date = datetime.datetime(this_year, 4, 1)
                 elif date == "Q3":
-                    parsed_date = datetime.datetime(2018, 7, 1)
+                    start_date = datetime.datetime(this_year, 7, 1)
                 elif date == "Q4":
-                    parsed_date = datetime.datetime(2018, 10, 1)
+                    start_date = datetime.datetime(this_year, 10, 1)
+                elif "-" in date:
+                    sp = [d.strip() for d in date.split("-")]
+                    start_date = convert_date(sp[0])
+                    end_date = convert_date(sp[1])
                 else:
-                    parsed_date = datetime.datetime.strptime(
-                        date, "%d %b").replace(year=2018)
+                    start_date = convert_date(date)
 
-                parsed_date = timezone.localize(parsed_date)
-                start_dates.append(parsed_date)
+                if start_date is not None:
+                    start_date = timezone.localize(start_date)
+                if end_date is not None:
+                    end_date = timezone.localize(end_date)
+                date_ranges.append({
+                    "start": start_date,
+                    "end": end_date,
+                })
 
-        row["Start dates (2017)"] = start_dates
+        row["Dates"] = date_ranges
 
         funding_types = []
         for funding_type in row["Available Funding"].split("/"):

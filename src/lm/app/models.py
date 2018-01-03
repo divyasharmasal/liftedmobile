@@ -137,12 +137,13 @@ class CourseVenue(models.Model):
     venue = models.ForeignKey(Venue, on_delete=models.CASCADE)
 
 
-class CourseStartDate(models.Model):
+class CourseDate(models.Model):
     class Meta:
-        unique_together = (("course", "start_date"))
+        unique_together = (("course", "start", "end"))
     id = models.AutoField(primary_key=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    start_date = models.DateTimeField(null=True)
+    start = models.DateTimeField(null=False)
+    end = models.DateTimeField(null=True)
 
 
 class CourseFunding(models.Model):

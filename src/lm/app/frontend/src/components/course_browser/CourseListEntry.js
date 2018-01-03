@@ -37,8 +37,22 @@ export class CourseListEntry extends Component{
   }
 
 
-  formatDate = date => {
-    return format(date, "dddd, Do MMM YYYY");
+  formatDateRange = dateRange => {
+    const start = dateRange.start;
+    const end = dateRange.end;
+
+    if (start == null){
+      return "Invalid date";
+    }
+
+    const fmtStr = "ddd, D MMM YYYY";
+
+    if (end != null){
+      return format(start, fmtStr) + " to " + format(end, fmtStr);
+    }
+    else{
+      return format(start, fmtStr);
+    }
   }
 
 
@@ -60,7 +74,7 @@ export class CourseListEntry extends Component{
 
         <div class="pure-u-22-24">
           <div class="date pure-u-1">
-            {this.formatDate(course.start_date)}
+            {this.formatDateRange(course.date_range)}
           </div>
 
           {course.provider &&
@@ -134,7 +148,7 @@ export class CourseListEntry extends Component{
           </div>
 
           <div class="date pure-u-1-2">
-            {this.formatDate(course.start_date)}
+            {this.formatDateRange(course.date_range)}
           </div>
 
           <div class="date pure-u-1-2">

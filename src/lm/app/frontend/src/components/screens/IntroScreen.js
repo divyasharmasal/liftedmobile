@@ -40,7 +40,7 @@ export class IntroScreen extends Component{
                 <img src="/static/app/dist/images/intro_tech.png" />
               </div>
               <div class="desc">
-                <h2>Are you tech savvy?</h2>
+                <h2>Are you legal-tech savvy?</h2>
               </div>
             </a>
           </div>
@@ -68,6 +68,14 @@ export class IntroScreen extends Component{
             */}
             <p>
               © 2018 Singapore Academy of Law. All rights reserved.
+            </p>
+            <p>
+              <a target="_blank"
+                href="https://www.sal.org.sg/Footer/Terms-Conditions">
+                Terms &amp; Conditions</a> <a target="_blank"
+                href="https://www.sal.org.sg/Footer/Privacy-Policy">
+                Privacy Policy
+              </a>
             </p>
             {/*
             <p>

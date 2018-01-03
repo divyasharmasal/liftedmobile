@@ -32,7 +32,7 @@ def load(apps, schema_editor):
     CourseCpdPoints = apps.get_model("app", "CourseCpdPoints")
     CourseVenue = apps.get_model("app", "CourseVenue")
     CourseLevel = apps.get_model("app", "CourseLevel")
-    CourseStartDate = apps.get_model("app", "CourseStartDate")
+    CourseDate = apps.get_model("app", "CourseDate")
     CourseFormat = apps.get_model("app", "CourseFormat")
     CourseFunding = apps.get_model("app", "CourseFunding")
     CourseVerticalCategory = apps.get_model("app", "CourseVerticalCategory")
@@ -265,45 +265,46 @@ def load(apps, schema_editor):
             course_venue.save()
 
             # Start dates
-            for start_date in c["Start dates (2017)"]:
-                csd = CourseStartDate(course=course, start_date=start_date)
-                csd.save()
+            for date_range in c["Dates"]:
+                CourseDate(
+                    course=course,
+                    start=date_range["start"],
+                    end=date_range["end"]
+                ).save()
 
             # Funding
             for funding in c["Available Funding"]:
                 funding_type = Funding.objects.get(funding_type=funding)
-                course_funding = CourseFunding(course=course, funding_type=funding_type)
-                course_funding.save()
+                CourseFunding(course=course, funding_type=funding_type).save()
 
             # Format
             fmt = Format.objects.get(acronym=c["Format"])
-            course_format = CourseFormat(course=course, format=fmt)
-            course_format.save()
+            CourseFormat(course=course, format=fmt).save()
 
             # Level
             lvl = Level.objects.get(acronym=c["Training Level"])
-            course_level = CourseLevel(course=course, level=lvl)
-            course_level.save()
+            CourseLevel(course=course, level=lvl).save()
 
             # Vertical categories
-            vertical_names = ["Legal Practitioner", "In-House Counsel",
-                              "Legal Support"]
+            vertical_names = [
+                "Legal Practitioner",
+                "In-House Counsel",
+                "Legal Support"
+            ]
 
             for name in vertical_names:
                 key = c[name]
                 if key:
                     vertical = Vertical.objects.get(name=name)
                     vert_cat = VerticalCategory.objects.get(key=key, vertical=vertical)
-                    cvc = CourseVerticalCategory(course=course,
-                                                 vertical_category=vert_cat)
-                    cvc.save()
+                    CourseVerticalCategory(
+                        course=course, vertical_category=vert_cat).save()
 
             # Competencies
             competencies = c["Competencies"]
             for competency_id in competencies:
                 competency = Competency.objects.get(id=competency_id)
-                course_comp = CourseCompetency(course=course, competency=competency)
-                course_comp.save()
+                CourseCompetency(course=course, competency=competency).save()
 
             tech_competencies = c["Tech Competencies"]
             for id in tech_competencies:

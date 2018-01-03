@@ -1,18 +1,20 @@
 import { h, Component } from 'preact';
+import format from 'date-fns/format';
+
 import {renderLoader} from './screens/Screen';
+import { sortCoursesByDateRange } from "../../../../../lib/js/courses";
 
 export { Courses };
-import { sortCoursesByDate } from "../../../../../lib/js/courses";
-import format from 'date-fns/format';
 
 const symbol = isDesc => {
   const desc = "▼";
   const asc = "▲";
 
-  if (isDesc){ 
-    return desc;
-  }
-  return asc;
+  return isDesc ? desc : asc;
+  //if (isDesc){ 
+    //return desc;
+  //}
+  //return asc;
 }
 
 
@@ -129,10 +131,22 @@ export default class Courses extends Component{
   }
 
 
-  format_dates = dates => {
-    return dates
-      .map(d => format(new Date(d), "D MMM 'YY"))
-      .join(", ")
+  format_date_range = dateRange => {
+    const start = dateRange.start;
+    const end = dateRange.end;
+
+    if (start == null){
+      return "Invalid date";
+    }
+
+    const fmtStr = "ddd, D MMM YYYY";
+
+    if (end != null){
+      return format(start, fmtStr) + " to " + format(end, fmtStr);
+    }
+    else{
+      return format(start, fmtStr);
+    }
   }
 
 
@@ -206,7 +220,7 @@ export default class Courses extends Component{
       });
     }
     else if (field === "date"){
-      courses = sortCoursesByDate(courses);
+      courses = sortCoursesByDateRange(courses);
     }
 
     if (!sortDesc){
@@ -247,7 +261,7 @@ export default class Courses extends Component{
             <td data-title="CPD">{this.format_cpd(course.cpd)}</td>
             <td data-title="Level" class="full_width">{course.level}</td>
             <td data-title="Format" class="full_width">{course.format}</td>
-            <td data-title="Dates">{this.format_dates(course.start_dates)}</td>
+            <td data-title="Date">{this.format_date_range(course.date_range)}</td>
           </tr>
         );
       });
@@ -285,7 +299,7 @@ export default class Courses extends Component{
               this.handleSort("date")} 
             }
           class="sorter">
-          <a>Dates <span class="symbol">{dateSym}</span>
+          <a>Date <span class="symbol">{dateSym}</span>
           </a> 
         </td>
       );

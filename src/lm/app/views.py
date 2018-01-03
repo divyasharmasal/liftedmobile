@@ -1,12 +1,13 @@
 """
 Views for liftedmobile
 """
+
 import json
 import os
 import base64
-import hashids
 import datetime
 import pytz
+import hashids
 from django.shortcuts import render
 from django.http import HttpResponseServerError
 from django.http import HttpResponse
@@ -17,7 +18,7 @@ from django.db.models import F
 from app import models
 
 
-def gen_cache_bust_str(length=32):
+def gen_random_str(length=32):
     """
     Returns a URL-friendly, 32-bit random string
     """
@@ -35,8 +36,7 @@ def json_response(obj):
 
 @login_required
 def terms_of_use(request):
-    return render(request, "app/terms.html",
-                  {"cache_bust": gen_cache_bust_str(10)})
+    return render(request, "app/terms.html")
 
 
 @login_required
@@ -44,8 +44,7 @@ def index(request):
     """
     View for /
     """
-    return render(request, "app/index.html",
-                  {"cache_bust": gen_cache_bust_str(10)})
+    return render(request, "app/index.html")
 
 
 @login_required
@@ -161,7 +160,8 @@ def course_browse(request):
         "name": course.name,
         "cost": float(course.cost),
         "url": course.url,
-        "start_date"
+        "start_date",
+        "end_date",
         "level": level.name,
         "format": format_name,
         "cpd": {
@@ -215,7 +215,7 @@ def course_browse(request):
     }
 
     SORT_OPTS = {
-        0: "start_date",
+        0: "course__coursedate__start",
         1: "course__coursecpdpoints__points",
         2: "course__cost",
     }
@@ -245,15 +245,16 @@ def course_browse(request):
 
     start_date_param = _date_param(request, None, "sd", "Invalid start date")
     end_date_param = _date_param(request, None, "ed", "Invalid end date")
-    
-    csd_query = (
-        models.CourseStartDate.objects.all()
+
+
+    cd_query = _optimise_course_date_query(
+        models.CourseDate.objects.all()
             .select_related("course")
             .select_related("course__courseformat__format")
             .select_related("course__courselevel__level")
             .select_related("course__coursecpdpoints")
             .prefetch_related("course__courselevel__level")
-            .prefetch_related("course__coursestartdate_set")
+            .prefetch_related("course__coursedate_set")
             .prefetch_related("course__courseformat__format")
             .prefetch_related("course__coursecpdpoints")
             .order_by(ORDER_OPTS[order_param] + SORT_OPTS[sort_param],
@@ -261,27 +262,37 @@ def course_browse(request):
     )
 
     if CPD_OPTS[cpd_param] != "both":
-        csd_query = csd_query.filter(
+        cd_query = cd_query.filter(
                 course__coursecpdpoints__is_private=CPD_OPTS[cpd_param])
 
     if start_date_param is not None:
-        csd_query = csd_query.filter(start_date__gte=start_date_param)
+        cd_query = cd_query.filter(start__gte=start_date_param)
     if end_date_param is not None:
-        csd_query = csd_query.filter(start_date__lte=end_date_param)
+        cd_query = cd_query.filter(start__lte=end_date_param)
     
-    # csd_query = csd_query[start_page:end_page]
+    # cd_query = cd_query[start_page:end_page]
 
     if search_param is not None:
-        csd_query = csd_query.filter(course__name__icontains=search_param)
+        cd_query = cd_query.filter(course__name__icontains=search_param)
 
     return json_response([
-            _course_json(
-                csd.course,
-                index=index,
-                orig_start_dates=False,
-                custom_start_date=csd.start_date
-            )
-            for index, csd in enumerate(csd_query)])
+        _course_json(cd.course, index=i, date_range=extract_date_range(cd))
+        for i, cd in enumerate(cd_query)
+    ])
+
+
+def extract_date_range(course_date):
+    start = end = None
+    if course_date.start:
+        start = course_date.start.isoformat()
+
+    if course_date.end:
+        end = course_date.end.isoformat()
+
+    return {
+        "start": start,
+        "end": end
+    }
 
 
 @login_required
@@ -290,46 +301,59 @@ def course_recs(request):
     Respond with a list of courses that correspond to a given vertical and
     category ID.
     """
-    vertical_id = _numeric_param(
-            request, None, "v", "Invalid vertical param", True)
-    vertical_category_id = _numeric_param(
-            request, None, "c", "Invalid vertical category param", True)
+    vertical_id = \
+        _numeric_param(request, None, "v", "Invalid vertical param", True)
+
+    vertical_category_id = \
+        _numeric_param(request, None, "c", "Invalid vertical category param",
+                       True)
 
     need_ids = None
     if "n" in request.GET and len(request.GET["n"]) > 0:
+        error = HttpResponseServerError("Invalid need param")
         try:
             need_ids = [int(x) for x in request.GET["n"].strip().split(",")]
             for n in need_ids:
                 if n < 0:
-                    return HttpResponseServerError("Invalid need param")
+                    return error
         except:
-            return HttpResponseServerError("Invalid need param")
+            return error
 
 
     timezone = pytz.timezone("UTC")
     now = timezone.localize(datetime.datetime.now()).isoformat()
 
-    course_query = models.Course.objects\
-                .filter(coursestartdate__start_date__gte=now)
+    cd_query = _optimise_course_date_query(
+        models.CourseDate.objects.filter(start__gte=now)
+        .distinct())
 
     if need_ids is not None:
-        course_query = course_query.filter(
-            courseverticalcategory__vertical_category__id=vertical_category_id,
-            courseverticalcategory__vertical_category__vertical_id=vertical_id,
-            courselevel__level_id__needlevel__need_id__in=need_ids,
-            courseformat__format__needformat__need__in=\
-                    F("courselevel__level_id__needlevel__need_id"))
+        need_f_query = F("courselevel__level_id__needlevel__need_id")
+        cd_query = cd_query.filter(
+            course__courseverticalcategory__vertical_category__id=vertical_category_id,
+            course__courseverticalcategory__vertical_category__vertical_id=vertical_id,
+            course__courselevel__level_id__needlevel__need_id__in=need_ids,
+            course__courseformat__format__needformat__need__in=need_f_query)
     else:
-        course_query = course_query.filter(
-            courseverticalcategory__vertical_category__id=vertical_category_id,
-            courseverticalcategory__vertical_category__vertical_id=vertical_id)
+        cd_query = cd_query.filter(
+            course__courseverticalcategory__vertical_category__id=vertical_category_id,
+            course__courseverticalcategory__vertical_category__vertical_id=vertical_id)
 
-    return _course_query_to_json(course_query)
+    return json_response([
+        _course_json(cd.course, date_range=extract_date_range(cd)) \
+            for cd in cd_query])
 
 
-def _course_query_to_json(course_query):
-    query = _optimise_course_query(course_query.distinct())
-    return json_response([_course_json(course) for course in query])
+def _optimise_course_date_query(course_dates):
+    return (course_dates
+        .select_related("course")
+        .select_related("course__courseformat__format")
+        .select_related("course__courselevel__level")
+        .select_related("course__coursecpdpoints")
+        .prefetch_related("course__courselevel__level")
+        .prefetch_related("course__coursedate_set")
+        .prefetch_related("course__courseformat__format")
+        .prefetch_related("course__coursecpdpoints"))
 
 
 def _optimise_course_query(courses):
@@ -338,14 +362,16 @@ def _optimise_course_query(courses):
         .select_related("coursecpdpoints")
         .select_related("courselevel__level")
         .select_related("courseformat__format")
-        .prefetch_related("coursestartdate_set")
+        .prefetch_related("coursedate_set")
         .prefetch_related("courseverticalcategory_set")
         .prefetch_related("coursetechcompetencycategory_set")
     )
 
 
-def _course_json(course, index=None, orig_start_dates=True,
-        custom_start_date=None, include_id=False, include_lifted_keys=False):
+def _course_json(course, index=None,
+                 date_range=None, include_id=False,
+                 include_lifted_keys=False):
+
     start_dates = None
     level_name = course.courselevel.level.name
     format_name = course.courseformat.format.name
@@ -373,6 +399,7 @@ def _course_json(course, index=None, orig_start_dates=True,
         "format": format_name,
         "spider_name": course.spider_name,
         "is_manually_added": course.is_manually_added,
+        "date_range": date_range,
         "cpd": {
             "points": cpd_points,
             "is_private": points.is_private,
@@ -403,16 +430,6 @@ def _course_json(course, index=None, orig_start_dates=True,
 
     if include_id:
         result["id"] = course.id
-
-    if orig_start_dates:
-        start_dates = course.coursestartdate_set.all()
-        result["start_dates"] = []
-        for sd in start_dates:
-            if sd.start_date is not None:
-                result["start_dates"].append(sd.start_date.isoformat())
-
-    if custom_start_date is not None:
-        result["start_date"] = custom_start_date.isoformat()
 
     if index is not None:
         result["index"] = index
@@ -638,59 +655,32 @@ def _tech_diag_course_recommendations(categorised_answers, tech_role):
 
     # Obsfucate course IDs with a hashids function seeded with a
     # random salt
-    hash_func = hashids.Hashids(min_length=4, salt=gen_cache_bust_str()).encode
+    hash_func = hashids.Hashids(min_length=4, salt=gen_random_str()).encode
 
     result = {
         "map": {},
         "courses": {},
     }
 
-    def _next_level(tech_role):
-        max_level = models.TechRole.objects.all()\
-            .aggregate(Max("role_level"))["role_level__max"]
-        level = tech_role.role_level
-        if level < max_level:
-            level += 1
-        return level
-
     timezone = pytz.timezone("UTC")
     now = timezone.localize(datetime.datetime.now()).isoformat()
 
     for category_name, score_info in categorised_answers.items():
-        courses = []
         result["map"][category_name] = []
-        courses = models.Course.objects.filter(
-            coursetechcompetencycategory__tech_competency_category__name=category_name
+        cd_query = \
+            models.CourseDate.objects.filter(
+                start__gte=now,
+                course__coursetechcompetencycategory__tech_competency_category__name=category_name
         ).distinct()
 
-        # if score_info["score"] == 100:
-            # level = _next_level(tech_role)
+        cd_query = _optimise_course_date_query(cd_query)
 
-            # competencies = models.TechCompetency.objects.filter(
-                    # category__name=category_name,
-                    # techrolecompetency__tech_role__role_level=level)\
-                # .distinct()
-
-            # courses = models.Course.objects.filter(
-                    # coursetechcompetency__tech_competency__in=competencies
-            # ).distinct()
-
-        # else:
-            # level = tech_role.role_level
-            # competencies = models.TechCompetency.objects.filter(
-                    # category__name=category_name,
-                    # techrolecompetency__tech_role__role_level=level)
-
-            # courses = models.Course.objects.filter(
-                    # coursetechcompetency__tech_competency__in=competencies
-            # ).distinct()
-
-        courses = _optimise_course_query(courses)\
-                .filter(coursestartdate__start_date__gte=now)
-        for course in courses:
-            course_id = hash_func(course.id)
-            result["map"][category_name].append(course_id)
-            result["courses"][course_id] = _course_json(course)
+        for cd in cd_query:
+            course = cd.course
+            cd_id = hash_func(cd.id)
+            result["map"][category_name].append(cd_id)
+            result["courses"][cd_id] = \
+                _course_json(course, date_range=extract_date_range(cd))
 
     return result
 
@@ -838,26 +828,18 @@ def _diag_course_recommendations(categorised_answers, vertical, job_role):
 
     # Obsfucate course IDs with a hashids function seeded with a
     # random salt
-    hash_func = hashids.Hashids(min_length=4, salt=gen_cache_bust_str()).encode
+    hash_func = hashids.Hashids(min_length=4, salt=gen_random_str()).encode
 
     result = {
         "map": {},
         "courses": {},
     }
 
-    def _next_level(job_role):
-        max_level = models.JobRole.objects.filter(vertical=job_role.vertical)\
-            .aggregate(Max("role_level"))["role_level__max"]
-        level = job_role.role_level
-        if level < max_level:
-            level += 1
-        return level
-
     timezone = pytz.timezone("UTC")
     now = timezone.localize(datetime.datetime.now()).isoformat()
 
     for category_name, score_info in categorised_answers.items():
-        courses = []
+        cd_query = []
         result["map"][category_name] = []
 
         if score_info["special"]:
@@ -867,55 +849,25 @@ def _diag_course_recommendations(categorised_answers, vertical, job_role):
                 jobrolecompetency__job_role=job_role
             )[0].category.name
 
-            courses = models.Course.objects.filter(
-                        courseverticalcategory__vertical_category__name=real_cat_name,
-                        courseverticalcategory__vertical_category__vertical=vertical)
+            cd_query = \
+                models.CourseDate.objects.filter(
+                    course__courseverticalcategory__vertical_category__name=real_cat_name,
+                    course__courseverticalcategory__vertical_category__vertical=vertical)
 
-            # if score_info["score"] == 100:
-                # level = _next_level(job_role)
-                # competencies = models.Competency.objects.filter(
-                        # specialism__name=category_name,
-                        # jobrolecompetency__job_role__role_level=level)\
-                    # .distinct()
-
-                # courses = _get_courses_from_comps(
-                    # None, vertical.id, competencies)
-
-            # else:
-                # # competencies = models.Competency.objects.filter(
-                        # # specialism__name=category_name).distinct()
-                # # courses = _get_courses_from_comps(
-                        # # job_role, vertical.id, competencies)
-                # courses = models.Course.objects.filter(
-                            # courseverticalcategory__vertical_category__vertical=vertical,
-                            # courseverticalcategory__vertical_category__name="Specialisms")
         else:
-            courses = models.Course.objects.filter(
-                        courseverticalcategory__vertical_category__vertical=vertical,
-                        courseverticalcategory__vertical_category__name=category_name)
-            # if score_info["score"] == 100:
-                # level = _next_level(job_role)
-                # competencies = models.Competency.objects.filter(
-                        # category__name=category_name,
-                        # jobrolecompetency__job_role__role_level=level)\
-                    # .distinct()
-                # courses = _get_courses_from_comps(
-                        # None, vertical.id, competencies)
+            cd_query = \
+                models.CourseDate.objects.filter(
+                    course__courseverticalcategory__vertical_category__vertical=vertical,
+                    course__courseverticalcategory__vertical_category__name=category_name)
 
-            # else:
-                # # competencies = models.Competency.objects.filter(
-                        # # category__name=category_name)
-                # # courses = _get_courses_from_comps(
-                        # # job_role, vertical.id, competencies)
-                # courses = models.Course.objects.filter(
-                            # courseverticalcategory__vertical_category__vertical=vertical,
-                            # courseverticalcategory__vertical_category__name=category_name)
+        cd_query = \
+            _optimise_course_query(cd_query) \
+                .filter(start__gte=now)
 
-        courses = _optimise_course_query(courses) \
-                .filter(coursestartdate__start_date__gte=now)
-        for course in courses:
-            course_id = hash_func(course.id)
-            result["map"][category_name].append(course_id)
-            result["courses"][course_id] = _course_json(course)
+        for cd in cd_query:
+            cd_id = hash_func(cd.id)
+            result["map"][category_name].append(cd_id)
+            result["courses"][cd_id] = \
+                _course_json(course, date_range=extract_date_range(cd))
 
     return result

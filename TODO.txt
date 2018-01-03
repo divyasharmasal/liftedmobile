@@ -1,13 +1,30 @@
-- *** Launch date: 8 Jan
+- *** Launch date: 5 Jan
+
+Needed for 4 Jan:
     - Scrape SkillsFuture
-        - ScrapedCourse start_date has to be a list
+    - Date range for courses
+    - CPD point text:
+        - "Public CPD points: TBC"
+        - "3 public CPD points"
+        - "Private"
+        - "Not applicable"
+    - Fix CPD sorting in the browser
+
+- Explainers for tech roles and "I want to develop my" whatscreen 
+     - info icon that shows more details when tapped
+- High to low: high-low public, TBC public, private, NA
+- Low to high: low-high public, TBC public, private, NA
 
 - Get new LE certs on Fri 8 Dec 1500 hrs!
 - LE cert backup plan
     - Remind Anita about pentest email
 
-
-- "NA" option for CPD points
+----------------
+- Link to T&C and privacy policy
+    - https://www.sal.org.sg/Footer/Terms-Conditions
+    - https://www.sal.org.sg/Footer/Privacy-Policy
+- Breadcrumbs
+- CMS sorting
 - New favicon?
 - Optimise /cms/get_published_courses_data/
 - Funnel visitors from the course browser to the diagnostic
@@ -27,6 +44,7 @@
 ------------------------------------------------
 
 Done:
+- "Are you legal-tech savvy?"
 - Beef up phase 2 document - add narrative
 - Get logos from Rizam
 - For LP: omit role descriptions / branching in role screen

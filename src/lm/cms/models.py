@@ -18,11 +18,16 @@ class ScrapedCourse(models.Model):
     is_new = models.BooleanField(null=False)
     name = models.TextField(null=False)
     url = models.TextField(null=False)
-    start_date = models.DateTimeField(null=True)
-    end_date = models.DateTimeField(null=True)
     public_cpd = models.FloatField(null=True)
     spider_name = models.TextField(null=False)
     lifted_keys = models.ManyToManyField(LiftedKey)
     lifted_tech_keys = models.ManyToManyField(LiftedTechKey)
     provider = models.TextField(null=True)
     level = models.TextField(null=True)
+
+
+class ScrapedCourseDate(models.Model):
+    id = models.AutoField(primary_key=True)
+    scraped_course = models.ForeignKey(ScrapedCourse, on_delete=models.CASCADE)
+    start_date = models.DateTimeField(null=False)
+    end_date = models.DateTimeField(null=True)

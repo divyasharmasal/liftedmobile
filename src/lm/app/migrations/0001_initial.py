@@ -62,6 +62,15 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='CourseDate',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('start', models.DateTimeField(null=False)),
+                ('end', models.DateTimeField(null=True)),
+                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
+            ],
+        ),
+        migrations.CreateModel(
             name='CourseFormat',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
@@ -80,14 +89,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('course', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='CourseStartDate',
-            fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('start_date', models.DateTimeField(null=True)),
-                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
             ],
         ),
         migrations.CreateModel(
@@ -356,10 +357,6 @@ class Migration(migrations.Migration):
             unique_together=set([('course', 'tech_competency')]),
         ),
         migrations.AlterUniqueTogether(
-            name='coursestartdate',
-            unique_together=set([('course', 'start_date')]),
-        ),
-        migrations.AlterUniqueTogether(
             name='courselevel',
             unique_together=set([('course', 'level')]),
         ),
@@ -370,6 +367,10 @@ class Migration(migrations.Migration):
         migrations.AlterUniqueTogether(
             name='courseformat',
             unique_together=set([('course', 'format')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='coursedate',
+            unique_together=set([('course', 'start', 'end')]),
         ),
         migrations.AlterUniqueTogether(
             name='coursecompetency',

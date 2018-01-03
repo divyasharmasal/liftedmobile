@@ -24,20 +24,13 @@ from cms import models
 from app import models as app_models
 
 
-def gen_cache_bust_str(length=32):
-    """
-    Returns a URL-friendly, 32-bit random string
-    """
-    return (base64.urlsafe_b64encode(os.urandom(length))
-            .rstrip(b'=').decode('ascii'))
-
-
 def json_response(obj):
     """
     Returns @obj in JSON format, wrapped in a HttpResponse
     """
-    return HttpResponse(json.dumps(obj, separators=(',', ':')),
-                        content_type="application/json")
+    return HttpResponse(
+        json.dumps(obj, separators=(',', ':')),
+        content_type="application/json")
 
 
 def get_level_format_vertical_data():
@@ -283,7 +276,7 @@ def save_course(request):
         course_format.save()
 
         # Start date
-        app_models.CourseStartDate.objects.filter(course=course).delete()
+        app_models.CourseDate.objects.filter(course=course).delete()
 
         timezone = pytz.timezone("Asia/Singapore")
         for date in body["start_dates"]:
@@ -292,7 +285,7 @@ def save_course(request):
                 datetime.datetime.strptime(
                     date, "%d/%m/%Y"))
 
-            course_start_date = app_models.CourseStartDate(
+            course_start_date = app_models.CourseDate(
                 course=course,
                 start_date=localized_date)
 
@@ -374,7 +367,7 @@ def save_course(request):
             localized_date = timezone.localize(
                 datetime.datetime.strptime(date, "%d/%m/%Y"))
 
-            course_start_date = app_models.CourseStartDate(
+            course_start_date = app_models.CourseDate(
                 course=course, start_date=localized_date)
             course_start_dates.append(course_start_date)
 
@@ -412,9 +405,7 @@ def index(request):
     """
     View for /
     """
-
-    url = "cms/base.html"
-    return render(request, url, {"cache_bust": gen_cache_bust_str(10)})
+    return render(request, "cms/base.html")
 
 
 @staff_member_required(login_url=None)
@@ -495,6 +486,14 @@ def scraper_sync_urls(request):
     return json_response("ok")
 
 
+def create_course_dates(date_ranges):
+    for dr in date_ranges:
+        csd = app_models.CourseDate(
+            course=course,
+            start_date=dr.start_date,
+            end_date=dr.start_date)
+        csd.save()
+
 @csrf_exempt
 @is_from_scrapyd
 def scraper_add_course(request):
@@ -506,43 +505,75 @@ def scraper_add_course(request):
     course_data = None
     spider_name = None
 
+    # Load POST param data
     try:
         course_data = json.loads(request.POST["c"])
     except:
         return HttpResponseServerError("Invalid or missing course data")
+
+    # Validate course_data
+    if len(course_data.keys()) == 0:
+        return HttpResponseServerError("Empty course data JSON")
 
     try:
         spider_name = request.POST["spider_name"]
     except:
         return HttpResponseServerError("Invalid or missing spider name")
 
-    name = course_data["name"]
-    url = course_data["url"]
-    public_cpd = course_data["public_cpd"]
-    start_date = course_data["start_date"]
-    end_date = course_data["end_date"]
-    provider = course_data["provider"]
-    level = course_data["level"]
+    name = url = public_cpd = date_ranges = provider = level = None
+    try:
+        name = course_data["name"]
+        url = course_data["url"]
+        public_cpd = course_data["public_cpd"]
+        date_ranges = course_data["date_ranges"]
+        provider = course_data["provider"]
+        level = course_data["level"]
 
-    if level == "Foundation":
-        level = "Foundational"
-
-    # Validate course_data here
-    if len(course_data.keys()) == 0:
-        return HttpResponseServerError("Empty course data JSON")
+        if level == "Foundation":
+            level = "Foundational"
+    except:
+        return HttpResponseServerError("Invalid course data params")
 
     # Do nothing if a ScrapedCourse with the same data exists:
-    if (models.ScrapedCourse.objects
-            .filter(name=name,
+    sc_exists = (models.ScrapedCourse.objects.filter(
+                    name=name,
                     url=url,
                     spider_name=spider_name,
                     public_cpd=public_cpd,
-                    start_date=start_date,
                     end_date=end_date,
                     level=level,
-                    provider=provider)
-            .exists()):
-        return json_response("Found matching ScrapedCourse")
+                    provider=provider).exists())
+
+    sc = (models.ScrapedCourse.objects
+          .get(name=name,
+               url=url,
+               spider_name=spider_name,
+               public_cpd=public_cpd,
+               end_date=end_date,
+               level=level,
+               provider=provider).exists())
+
+    # Check whether the date ranges match
+    sc_date_ranges = models.ScrapedCourseDate.objects\
+        .filter(scraped_course=sc)
+
+    # Compare the no. of date ranges
+    sc_date_range_matches = len(sc_date_ranges) != len(date_ranges)
+
+    # Make sure the date ranges actually match
+    for sc_dr in sc_date_ranges:
+        found = False
+        for date_range in date_ranges:
+            start = date_range["start"]
+            end = date_range["end"]
+            if sc_dr.start == start and sc_dr.end == end:
+                found = True
+                break
+        sc_date_range_matches = sc_date_range_matches and found
+
+    # Exit if the ScrapedCourse exists
+    if sc_exists and sc_date_range_exists:
+        return json_response("Found matching ScrapedCourse, skipping.")
 
     # Update published matching courses with the same spider name and url:
     # Note: the provider won't be changed
@@ -558,16 +589,21 @@ def scraper_add_course(request):
         course.name = name
         course.save()
 
-        # update start date
-        if start_date is not None:
-            (app_models.CourseStartDate.objects
-                .filter(course=course)
-                .update(start_date=start_date))
+        #TODO: test this!
+        # update date ranges
+        if date_ranges is not None:
+            # Delete existing date ranges
+            (app_models.CourseDate.objects
+                 .filter(course=course)
+                 .delete())
+
+            # Add course dates
+            create_course_dates(date_ranges)
 
         # update public_cpd
         (app_models.CourseCpdPoints.objects
-            .filter(course=course)
-            .update(points=public_cpd))
+             .filter(course=course)
+             .update(points=public_cpd))
 
         # update the level
         level_obj = app_models.Level.objects.get(name=level)
@@ -578,19 +614,22 @@ def scraper_add_course(request):
         return json_response("Updated matching Course")
 
     # Otherwise, update/create the ScrapedCourse:
+    # From the Django docs: "If a match is found, it updates the fields passed
+    # in the defaults dictionary."
     scraped_course, created = models.ScrapedCourse.objects.update_or_create(
-        defaults={"start_date": start_date,
-                  "end_date": end_date,
-                  "public_cpd": public_cpd,
-                  "provider": provider,
-                  "level": level,
-                  "name": name,
-              },
+        defaults={
+            "public_cpd": public_cpd,
+            "provider": provider,
+            "level": level,
+            "name": name
+        },
         spider_name=spider_name,
         url=course_data["url"],
         is_new=True)
 
     if created:
+        create_course_dates(date_ranges)
+
         return json_response("Added ScrapedCourse")
     else:
         return json_response("Updated ScrapedCourse")
