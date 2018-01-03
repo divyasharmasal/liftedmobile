@@ -17,7 +17,6 @@ export class ScrapersPage extends Component {
     }
 
     const filterLatest = scrapers => {
-      console.log(scrapers)
       let nameStartTimes = {};
       scrapers.forEach(s => {
         if (Object.keys(nameStartTimes).indexOf(s.spider) > -1){
@@ -70,6 +69,10 @@ export class ScrapersPage extends Component {
       lawsoc: {
         name: "LawSoc",
         url: "http://www.lawsoc.org.sg",
+      },
+      skillsfuture: {
+        name: "SkillsFuture Training Directory",
+        url: "https://www.myskillsfuture.sg/content/portal/en/training-exchange/course-directory.html"
       }
     };
     return details[spiderName];

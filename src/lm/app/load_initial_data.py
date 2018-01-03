@@ -108,7 +108,6 @@ def load(apps, schema_editor):
             j += 1
         i += 1
 
-
     # Levels
     levels = []
     for lvl in extract_framework_data.parse_levels():
@@ -228,7 +227,6 @@ def load(apps, schema_editor):
             jrc = JobRoleCompetency(job_role=jr_obj, competency=comp)
             jrc.save()
 
-
     # Courses
     # Only load dummy courses in dev
     if "DEV" in os.environ and os.environ["DEV"]:
@@ -240,24 +238,20 @@ def load(apps, schema_editor):
             course.save()
 
             # CPD points
-            cpd_points = 0
-            is_private = False
-            if "Est. CPD points" not in c.keys():
-                cpd_points = None
-            else:
+            cpd_points = None
+            if "Est. CPD points" in c.keys():
                 cpd_points = c["Est. CPD points"]
 
+            is_private = False
             if cpd_points == "Pte":
                 is_private = True
-                cpd_points = 0
-            elif cpd_points == "":
-                cpd_points = 0
+                cpd_points = None
 
-            course_cpd_points = CourseCpdPoints(course=course,
-                                                points=cpd_points,
-                                                is_tbc=False,
-                                                is_private=is_private)
-            course_cpd_points.save()
+            CourseCpdPoints(course=course,
+                            points=cpd_points,
+                            is_tbc=False,
+                            is_na=False,
+                            is_private=is_private).save()
 
             # Venue
             venue = Venue.objects.get(acronym__exact=c["Venue"])
@@ -297,8 +291,8 @@ def load(apps, schema_editor):
                 if key:
                     vertical = Vertical.objects.get(name=name)
                     vert_cat = VerticalCategory.objects.get(key=key, vertical=vertical)
-                    CourseVerticalCategory(
-                        course=course, vertical_category=vert_cat).save()
+                    CourseVerticalCategory(course=course,
+                                           vertical_category=vert_cat).save()
 
             # Competencies
             competencies = c["Competencies"]
@@ -309,13 +303,6 @@ def load(apps, schema_editor):
             tech_competencies = c["Tech Competencies"]
             for id in tech_competencies:
                 tech_competency = TechCompetency.objects.get(id=id)
-
-                # course_tech_comp = CourseTechCompetency(
-                    # course=course,
-                    # tech_competency=tech_competency)
-                # course_tech_comp.save()
-                ###
-
                 CourseTechCompetencyCategory.objects.get_or_create(
                     course=course,
                     tech_competency_category=tech_competency.category)

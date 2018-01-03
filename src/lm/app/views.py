@@ -406,6 +406,7 @@ def _course_json(course,
             "points": cpd_points,
             "is_private": points.is_private,
             "is_tbc": points.is_tbc,
+            "is_na": points.is_na,
         }
     }
 

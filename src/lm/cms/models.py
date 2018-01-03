@@ -19,6 +19,7 @@ class ScrapedCourse(models.Model):
     name = models.TextField(null=False)
     url = models.TextField(null=False)
     public_cpd = models.FloatField(null=True)
+    cost = models.FloatField(null=True)
     spider_name = models.TextField(null=False)
     lifted_keys = models.ManyToManyField(LiftedKey)
     lifted_tech_keys = models.ManyToManyField(LiftedTechKey)

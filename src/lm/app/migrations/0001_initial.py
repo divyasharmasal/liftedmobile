@@ -57,6 +57,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('points', models.DecimalField(decimal_places=2, max_digits=6, null=True)),
                 ('is_private', models.BooleanField()),
+                ('is_na', models.BooleanField()),
                 ('is_tbc', models.BooleanField()),
                 ('course', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='app.Course')),
             ],

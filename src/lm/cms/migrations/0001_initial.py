@@ -37,6 +37,7 @@ class Migration(migrations.Migration):
                 ('name', models.TextField()),
                 ('url', models.TextField()),
                 ('public_cpd', models.FloatField(null=True)),
+                ('cost', models.FloatField(null=True)),
                 ('spider_name', models.TextField()),
                 ('provider', models.TextField(null=True)),
                 ('level', models.TextField(null=True)),

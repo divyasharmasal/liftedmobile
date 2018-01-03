@@ -104,6 +104,12 @@ export default class Courses extends Component{
     if (cpd.is_private){
       return "Private";
     }
+    else if (cpd.is_tbc){
+      return "Public points: TBC";
+    }
+    else if (cpd.is_na){
+      return "N/A";
+    }
     else if (cpd.points == null){
       return "";
     }
@@ -153,6 +159,7 @@ export default class Courses extends Component{
   handleSort = field => {
     let courses = this.state.courses;
     let sortDesc = this.state.sortDesc;
+    let shouldReverse = true;
 
     if (field === "name"){
       courses.sort((a, b) => {
@@ -193,37 +200,29 @@ export default class Courses extends Component{
       });
     }
     else if (field === "cpd"){
-      courses.sort((a, b) => {
+      let privCourses = courses.filter(c => c.cpd.is_private);
+      let tbcCourses = courses.filter(c => c.cpd.is_tbc);
+      let naCourses = courses.filter(c => c.cpd.is_na);
+      let ptsCourses = courses.filter(c => c.cpd.points != null);
+
+      ptsCourses.sort((a, b) => {
         const aPts = a.cpd.points;
         const bPts = b.cpd.points;
-        const aPriv = a.cpd.is_private;
-        const bPriv = b.cpd.is_private;
-
-        if (aPriv && bPriv){
-          return 0;
-        }
-        else if (!aPriv || !bPriv){
-          if (aPts === 0 && bPriv){
-            return -1;
-          }
-          else if (bPts === 0 && aPriv){
-            return 1;
-          }
-          else if (aPts > 0 && bPriv){
-            return 1;
-          }
-          else if (bPts > 0 && aPriv){
-            return -1;
-          }
-        }
         return aPts - bPts;
       });
+
+    if (!sortDesc && shouldReverse){
+        ptsCourses.reverse();
+        shouldReverse = false;
+      }
+
+      courses = ptsCourses.concat(tbcCourses).concat(privCourses).concat(naCourses);
     }
     else if (field === "date"){
       courses = sortCoursesByDateRange(courses);
     }
 
-    if (!sortDesc){
+    if (!sortDesc && shouldReverse){
       courses.reverse();
     }
     sortDesc = !sortDesc;

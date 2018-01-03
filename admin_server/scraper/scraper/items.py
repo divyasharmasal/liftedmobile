@@ -12,6 +12,7 @@ from scrapy.item import Item, Field
 class CourseItem(Item):
     name = Field()
     url = Field()
+    cost = Field()
     date_ranges = Field()
     public_cpd = Field()
     upcoming = Field()

@@ -111,7 +111,7 @@ class CourseEditor extends Component{
   }
 
   
-  handleCpdChange = (points, is_private, is_tbc) => { 
+  handleCpdChange = (points, is_private, is_tbc, is_na) => { 
     if (typeof points === "undefined"){
       points = null;
     }
@@ -120,8 +120,12 @@ class CourseEditor extends Component{
       is_tbc = false;
     }
 
+    if (!is_na){
+      is_na = false;
+    }
+
     let course = this.state.course;
-    course.cpd = { is_private, points, is_tbc };
+    course.cpd = { is_private, points, is_tbc, is_na };
     course.hasChanged = true;
 
     let invalidFields = this.state.invalidFields;
@@ -207,6 +211,7 @@ class CourseEditor extends Component{
 			cpdPoints: course.cpd.points, 
 			cpdIsPrivate: course.cpd.is_private, 
 			cpdIsTbc: course.cpd.is_tbc, 
+			cpdIsNa: course.cpd.is_na, 
 			level: course.level, 
 			format: course.format, 
 			date_ranges: course.date_ranges,
@@ -261,26 +266,49 @@ class CourseEditor extends Component{
     const course = this.state.course;
 
     let validCpd = false;
+    if (course.cpd.is_private || course.cpd.is_na || course.cpd.is_tbc){
+      course.cpd.points = null;
+    }
 
     if (course.cpd.is_tbc){
-      course.cpd.points = null;
+      course.cpd.is_private = false;
+      course.cpd.is_na = false;
+      validCpd = true;
+    }
+
+    if (course.cpd.is_na){
+      course.cpd.is_tbc = false;
       course.cpd.is_private = false;
       validCpd = true;
     }
-    else{
-      // neither points nor is_private can both be null
-      if (course.cpd.points != null || course.cpd.is_private != null){
-        validCpd = true;
-      }
-      // there must either be CPD points, or is_private == true
-      if (course.cpd.points == null && course.cpd.is_private === false){
-        validCpd = false;
-      }
 
-      if (course.cpd.points < 0){
-        validCpd = false;
-      }
+    if (course.cpd.is_private){
+      course.cpd.is_na = false;
+      course.cpd.is_tbc = false;
+      validCpd = true;
     }
+
+    // validate CPD
+    if (course.cpd.points != null && 
+      (course.cpd.is_private || course.cpd.is_na || course.cpd.is_tbc)){
+      validCpd = false;
+    }
+
+    if (course.cpd.points != null && 
+      !(course.cpd.is_private || course.cpd.is_na || course.cpd.is_tbc)){
+      validCpd = true;
+    }
+
+    if (course.cpd.points == null && 
+      !(course.cpd.is_private || course.cpd.is_na || course.cpd.is_tbc)){
+      console.log(2)
+      validCpd = false;
+    }
+
+    if (course.cpd.points < 0){
+      validCpd = false;
+    }
+
 
     let validCost = false;
     if (course.cost.isVarying){
@@ -335,7 +363,6 @@ class CourseEditor extends Component{
       return true;
     }
 
-    //TODO: validate date ranges
     const dateRanges = course.date_ranges.filter(d => d.length > 0);
     const validDateRanges = 
       dateRanges.length > 0 && 
@@ -467,7 +494,7 @@ class CourseEditor extends Component{
       </div>
 
     const costInput =
-      <div class="pure-u-1-2 pure-u-sm-2-5">
+      <div class="pure-u-2-5 pure-u-sm-2-5">
         <CostInput 
           disabled={this.state.hasSaved && this.state.unpublished}
           handleValueChange={this.handleCostChange}
@@ -476,7 +503,7 @@ class CourseEditor extends Component{
       </div>
 
     const cpdInput =
-      <div class="pure-u-1-2 pure-u-sm-2-5">
+      <div class="pure-u-3-5 pure-u-sm-3-5">
         <CpdInput 
           disabled={this.state.hasSaved && this.state.unpublished}
           handleValueChange={this.handleCpdChange}
@@ -855,6 +882,7 @@ class CpdInput extends Component{
         points: this.props.value.points,
         is_private: this.props.value.is_private,
         is_tbc: this.props.value.is_tbc,
+        is_na: this.props.value.is_na,
         invalid: this.props.invalid,
       };
     }
@@ -865,12 +893,14 @@ class CpdInput extends Component{
     if (newProps.value){
       if (this.state.points !== newProps.value.points ||
         this.state.is_private !== newProps.value.is_private ||
+        this.state.is_na !== newProps.value.is_na ||
         this.state.invalid !== newProps.invalid){
         this.setState({
           blank: false,
           points: newProps.value.points,
           is_private: newProps.value.is_private,
           is_tbc: newProps.value.is_tbc,
+          is_na: newProps.value.is_na,
           invalid: newProps.invalid,
         });
       }
@@ -883,9 +913,10 @@ class CpdInput extends Component{
 
     this.setState({ 
       is_private: is_private,
-      is_tbc: false
+      is_tbc: false,
+      is_na: false,
     }, () => {
-      this.props.handleValueChange(this.state.points, is_private, false);
+      this.props.handleValueChange(this.state.points, is_private, false, false);
     });
   }
 
@@ -895,9 +926,23 @@ class CpdInput extends Component{
 
     this.setState({ 
       is_tbc: is_tbc,
-      is_private: false
+      is_private: false,
+      is_na: false,
     }, () => {
-      this.props.handleValueChange(this.state.points, false, is_tbc);
+      this.props.handleValueChange(this.state.points, false, is_tbc, false);
+    });
+  }
+
+
+  handleNaInputCheck = e => {
+    const is_na = e.target.checked;
+
+    this.setState({ 
+      is_tbc: false,
+      is_private: false,
+      is_na: true
+    }, () => {
+      this.props.handleValueChange(this.state.points, false, false, is_na)
     });
   }
 
@@ -911,6 +956,7 @@ class CpdInput extends Component{
         points,
         is_tbc: false,
         is_private: false,
+        is_na: false,
       }, () => {
         this.props.handleValueChange(points, false, false);
       });
@@ -932,7 +978,7 @@ class CpdInput extends Component{
 
     return(
       <div class={renderClassname(this.state.invalid, "custom_input")}>
-        <div class="pure-u-2-5">
+        <div class="pure-u-1-5">
           <label>CPD:</label>
 
           {this.state.is_private ?
@@ -947,13 +993,19 @@ class CpdInput extends Component{
               {pointsInput}
           }
 
-          {!this.state.is_tbc && !this.state.is_private &&
+          {this.state.is_na ?
+              <label class="cpd_points_private">N/A</label>
+              :
+              {pointsInput}
+          }
+
+          {!this.state.is_tbc && !this.state.is_private && !this.state.is_na &&
             pointsInput
           }
         </div>
 
-        <div class="pure-u-2-5">
-          <div class="pure-u-1-1">
+        <div class="pure-u-3-5">
+          <div class="pure-u-2-3">
             <label>Private?</label>
             <input class="cpd_is_private_input"
               disabled={this.props.disabled}
@@ -961,13 +1013,21 @@ class CpdInput extends Component{
               onChange={this.handlePrivateInputCheck}
               checked={this.state.is_private} />
           </div>
-          <div class="pure-u-1-1">
+          <div class="pure-u-2-3">
             <label>TBC?</label>
             <input class="cpd_is_private_input"
               disabled={this.props.disabled}
               type="checkbox" 
               onChange={this.handleTbcInputCheck}
               checked={this.state.is_tbc} />
+          </div>
+          <div class="pure-u-2-3">
+            <label>N/A?</label>
+            <input class="cpd_is_private_input"
+              disabled={this.props.disabled}
+              type="checkbox" 
+              onChange={this.handleNaInputCheck}
+              checked={this.state.is_na} />
           </div>
         </div>
       </div>

@@ -137,6 +137,7 @@ class CalasSpider(scrapy.Spider):
                                      "start": start_date,
                                      "end": end_date
                                  }],
+                                 cost=None,
                                  public_cpd=public_cpd,
                                  upcoming=upcoming,
                                  provider=provider,

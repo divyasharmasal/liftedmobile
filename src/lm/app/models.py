@@ -159,6 +159,7 @@ class CourseCpdPoints(models.Model):
     course = models.OneToOneField(Course, on_delete=models.CASCADE)
     points = models.DecimalField(decimal_places=2, max_digits=6, null=True)
     is_private = models.BooleanField()
+    is_na = models.BooleanField()
     is_tbc = models.BooleanField()
 
 

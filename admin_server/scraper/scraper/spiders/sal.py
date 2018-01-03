@@ -7,7 +7,7 @@ from ..items import CourseItem
 
 class SalSpider(scrapy.Spider):
     name = 'sal'
-    allowed_domains = ['sal.org.sg']
+    allowed_domains = ['www.sal.org.sg']
     start_urls = ['https://www.sal.org.sg/Events/View-All-Events/Date-Desc']
 
 
@@ -49,6 +49,7 @@ class SalSpider(scrapy.Spider):
                     "start": self.convert_to_isodate(start_date),
                     "end": self.convert_to_isodate(end_date),
                 }],
+                cost=None,
                 upcoming=upcoming,
                 level=None,
                 provider="Singapore Academy of Law")

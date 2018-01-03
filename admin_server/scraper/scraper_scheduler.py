@@ -25,6 +25,7 @@ def run_all_scrapes():
     """
     _log("Running all scrapes...")
 
+    # spiders = ["sal", "calas", "lawsoc", "skillsfuture"]
     spiders = ["sal", "calas", "lawsoc"]
     payloads = [{"project": "scraper", "spider": spider} for spider in spiders]
 
@@ -55,7 +56,7 @@ if __name__ == "__main__":
     run_all_scrapes()
     _log("Ran first scrape")
 
-    schedule.every().day.at("4:00").do(run_all_scrapes)
+    schedule.every().day.at("3:45").do(run_all_scrapes)
 
     while True:
         schedule.run_pending()

@@ -122,13 +122,15 @@ class LawsocSpider(scrapy.Spider):
                 break
 
         upcoming = start_date is None and end_date is None
-        course_item = CourseItem(name=name, url=response.url,
+        course_item = CourseItem(name=name,
+                                 url=response.url,
                                  date_ranges=[{
                                      "start": start_date,
                                      "end": end_date
                                  }],
                                  public_cpd=public_cpd,
                                  provider=None,
+                                 cost=None,
                                  level=None,
                                  upcoming=upcoming)
         yield course_item

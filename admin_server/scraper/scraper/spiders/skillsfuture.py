@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import json
+import pytz
+import datetime
+from datetime import timedelta
 
+from ..items import CourseItem
 
 URL_STR = (
     "https://www.myskillsfuture.sg/services/"
@@ -29,7 +33,6 @@ URL_STR = (
     "26refresh%3D1514367831700")
 
 
-
 def build_query_str(start_num):
     """
     The JSON result from the SF endpoint provides a max. of 24 results per
@@ -42,6 +45,12 @@ class SkillsfutureSpider(scrapy.Spider):
     name = 'skillsfuture'
     allowed_domains = ['www.myskillsfuture.sg']
     start_urls = [build_query_str(0)]
+
+
+    def convert_date_str(self, date):
+        tz = pytz.timezone("Asia/Singapore")
+        d = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+        return tz.localize(d, is_dst=None)
 
 
     def parse(self, response):
@@ -58,15 +67,14 @@ class SkillsfutureSpider(scrapy.Spider):
 
         for group in groups:
             course_data = group["doclist"]["docs"][0]
-            title = course_data["Course_Title"]
-            provider = course_data["Organisation_Name"]
-
-            start_dates = []
-            if "Course_Start_Date" in course_data:
-                start_dates = course_data["Course_Start_Date"]
-            print(title, "---", provider, "---", start_dates)
-
-        # import pdb; pdb.set_trace()
+            detail_url = ("https://www.myskillsfuture.sg/services/tex/"
+                          "individual/course-detail?action="
+                          "get-course-by-ref-number&refNumber={ref_num}")
+            request = scrapy.Request(
+                detail_url.format(ref_num=course_data["Course_Ref_No"]),
+                callback=self.parse_indiv_course)
+            request.meta["course_data"] = course_data
+            yield request
 
         if start_num >= total_results:
             yield None
@@ -79,3 +87,58 @@ class SkillsfutureSpider(scrapy.Spider):
 
             request.meta["start_num"] = next_start_num
             yield request
+
+
+    def parse_indiv_course(self, response):
+        indiv_course_data = json.loads(response.body)["data"]
+        course_data = response.meta["course_data"]
+
+        name = None
+        if "Course_Title" in course_data:
+            name = course_data["Course_Title"].strip()
+            if name.isupper():
+                name = name.title()
+
+        provider = None
+        if "Organisation_Name" in course_data:
+            provider = course_data["Organisation_Name"].strip()
+            if provider.isupper():
+                provider = provider.title()
+
+        cost = None
+        if "totalCostOfTrainingPerTrainee" in indiv_course_data:
+            cost = float(indiv_course_data["totalCostOfTrainingPerTrainee"])
+
+        url = None
+        if "courseURL" in indiv_course_data:
+            url = indiv_course_data["courseURL"].strip()
+
+        date_ranges = []
+        if "Course_Start_Date" in course_data:
+            duration = 0
+            if "Len_of_Course_Duration" in course_data:
+                duration = course_data["Len_of_Course_Duration"] - 1
+
+            for start_date in course_data["Course_Start_Date"]:
+                parsed_start_date = self.convert_date_str(start_date)
+
+                end_date = None
+                if duration > 0:
+                    end_date = parsed_start_date + timedelta(days=duration)
+                    end_date = end_date.isoformat()
+
+                date_ranges.append({
+                    "start": parsed_start_date.isoformat(),
+                    "end": end_date
+                })
+
+        yield CourseItem(
+            name=name,
+            url=url,
+            cost=cost,
+            date_ranges=date_ranges,
+            provider=provider,
+            upcoming=None,
+            public_cpd=None,
+            level=None,
+        )

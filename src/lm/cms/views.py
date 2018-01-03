@@ -114,6 +114,12 @@ def cms_get_unpublished_courses_data(request):
                 "end": end,
             })
 
+        cost = {
+            "cost_is_varying": False,
+            "cost": None
+        }
+        if scraped_course.cost is not None:
+            cost["cost"] = scraped_course.cost
 
         result["courses"].append({
             "id": scraped_course.id,
@@ -127,10 +133,7 @@ def cms_get_unpublished_courses_data(request):
             "spider_name": scraped_course.spider_name,
             "lifted_keys": lifted_keys,
             "level": scraped_course.level,
-            "cost": {
-                "cost_is_varying": False,
-                "value": None
-            }
+            "cost": cost,
         })
 
     return json_response(result)
@@ -225,7 +228,7 @@ def save_course(request):
     # validate input
     spider_name = id = name = cost = url = level_name = cpd_points = \
         cpd_is_private = format_name = lifted_keys = is_published = \
-        provider = date_ranges = None
+        cpd_is_na = provider = date_ranges = None
 
     is_new = "is_new" in body.keys() and body["is_new"]
 
@@ -243,6 +246,7 @@ def save_course(request):
         cpd_points = body["cpdPoints"]
         cpd_is_private = body["cpdIsPrivate"]
         cpd_is_tbc = body["cpdIsTbc"]
+        cpd_is_na = body["cpdIsNa"]
         format_name = body["format"]
         is_published = body["is_published"]
         spider_name = body["spider_name"]
@@ -257,6 +261,20 @@ def save_course(request):
         return HttpResponseServerError("Invalid body keys: {keys}"\
             .format(keys=str(body.keys())))
 
+    if cpd_is_tbc:
+        cpd_points = None
+        cpd_is_private = False
+        cpd_is_na = False
+
+    if cpd_is_private:
+        cpd_points = None
+        cpd_is_tbc = False
+        cpd_is_na = False
+
+    if cpd_is_na:
+        cpd_points = None
+        cpd_is_tbc = False
+        cpd_is_private = False
 
 
     if is_published and not is_new:
@@ -301,13 +319,11 @@ def save_course(request):
         course_cpd.points = cpd_points
         course_cpd.is_private = cpd_is_private
         course_cpd.is_tbc = cpd_is_tbc
-        if cpd_is_tbc:
-            course_cpd.points = None
-            course_cpd.is_private = False
+        course_cpd.is_na = cpd_is_na
+
         course_cpd.save()
 
         # Level
-
         level = app_models.Level.objects.get(name=level_name)
         course_level = app_models.CourseLevel.objects.get(course=course)
         course_level.level = level
@@ -366,10 +382,7 @@ def save_course(request):
                 course_vc.save()
 
         # CPD
-
-        # having private status & having public cpd points are mutually
-        # exclusive
-        if cpd_is_private:
+        if cpd_is_private or cpd_is_na or cpd_is_tbc:
             cpd_points = None
 
         if cpd_is_private is None or cpd_points is not None:
@@ -378,6 +391,7 @@ def save_course(request):
         course_cpd = app_models.CourseCpdPoints(course=course,
                                                 points=cpd_points,
                                                 is_tbc=cpd_is_tbc,
+                                                is_na=cpd_is_na,
                                                 is_private=cpd_is_private)
         course_cpd.save()
 
@@ -512,13 +526,14 @@ def create_course_dates(course, date_ranges):
             end=dr.end)
         csd.save()
 
+
 @csrf_exempt
 @is_from_scrapyd
 def scraper_add_course(request):
     """
     Endpoint for scrapers to add a course to the CMS.
     """
-    
+
     # Parse course data
     course_data = None
     spider_name = None
@@ -538,10 +553,11 @@ def scraper_add_course(request):
     except:
         return HttpResponseServerError("Invalid or missing spider name")
 
-    name = url = public_cpd = date_ranges = provider = level = None
+    name = cost = url = public_cpd = date_ranges = provider = level = None
     try:
         name = course_data["name"]
         url = course_data["url"]
+        cost = course_data["cost"]
         public_cpd = course_data["public_cpd"]
         date_ranges = course_data["date_ranges"]
         provider = course_data["provider"]
@@ -552,10 +568,16 @@ def scraper_add_course(request):
     except:
         return HttpResponseServerError("Invalid course data params")
 
+
+    if name is not None: name = name.strip()
+    if url is not None: url = url.strip()
+    if provider is not None: provider = provider.strip()
+
     # Do nothing if a ScrapedCourse with the same data exists:
     sc_exists = (models.ScrapedCourse.objects.filter(
                     name=name,
                     url=url,
+                    cost=cost,
                     spider_name=spider_name,
                     public_cpd=public_cpd,
                     level=level,
@@ -565,6 +587,7 @@ def scraper_add_course(request):
         sc = (models.ScrapedCourse.objects
               .get(name=name,
                    url=url,
+                   cost=cost,
                    spider_name=spider_name,
                    public_cpd=public_cpd,
                    level=level,
@@ -628,6 +651,7 @@ def scraper_add_course(request):
             "public_cpd": public_cpd,
             "provider": provider,
             "level": level,
+            "cost": cost,
             "name": name
         },
         spider_name=spider_name,
@@ -647,9 +671,9 @@ def scraper_add_course(request):
                                      end=end).save()
 
     if created:
-        return json_response("Added ScrapedCourse")
+        return json_response("Success: added ScrapedCourse.")
     else:
 
-        return json_response("Updated ScrapedCourse")
+        return json_response("Success: updated ScrapedCourse")
 
     return json_response("No action taken")
