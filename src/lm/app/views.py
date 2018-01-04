@@ -160,8 +160,10 @@ def course_browse(request):
         "name": course.name,
         "cost": float(course.cost),
         "url": course.url,
-        "start_date",
-        "end_date",
+        "date_range": {
+            "start": ___,
+            "end": ___
+        },
         "level": level.name,
         "format": format_name,
         "cpd": {

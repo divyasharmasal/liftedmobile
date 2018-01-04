@@ -25,8 +25,8 @@ def run_all_scrapes():
     """
     _log("Running all scrapes...")
 
-    # spiders = ["sal", "calas", "lawsoc", "skillsfuture"]
-    spiders = ["sal", "calas", "lawsoc"]
+    spiders = ["sal", "calas", "lawsoc", "skillsfuture"]
+    # spiders = ["sal", "calas", "lawsoc"]
     payloads = [{"project": "scraper", "spider": spider} for spider in spiders]
 
     for payload in payloads:
