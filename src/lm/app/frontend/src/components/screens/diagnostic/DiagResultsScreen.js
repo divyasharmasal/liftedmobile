@@ -335,6 +335,7 @@ class DiagResultsScreen extends Screen{
     if (!this.state.results){
       return renderLoader();
     }
+    const isTechRole = Object.keys(this.props).indexOf("techRole") > -1;
     return(
       <div className="pure-g">
         <a name="top"></a>
@@ -346,7 +347,7 @@ class DiagResultsScreen extends Screen{
           </a>
         </div>
         <div className="pure-u-1-3 start_over_parent">
-          {this.renderStartOver(Object.keys(this.props).indexOf("techRole") > -1)}
+          {this.renderStartOver(isTechRole)}
         </div>
         <div className="pure-u-1">
           <div className="results">
