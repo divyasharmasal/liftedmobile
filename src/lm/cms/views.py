@@ -235,6 +235,12 @@ def save_course(request):
     if "cpdIsTbc" not in body:
         body["cpdIsTbc"] = False
 
+    if "cpdIsNa" not in body:
+        body["cpdIsNa"] = False
+
+    if "isVarying" not in body["cost"]:
+        body["cost"]["isVarying"] = False
+
     try:
         if not is_new:
             id = body["id"]

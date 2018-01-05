@@ -346,7 +346,7 @@ class DiagResultsScreen extends Screen{
           </a>
         </div>
         <div className="pure-u-1-3 start_over_parent">
-          {this.renderStartOver(true)}
+          {this.renderStartOver(Object.keys(this.props).indexOf("techRole") > -1)}
         </div>
         <div className="pure-u-1">
           <div className="results">

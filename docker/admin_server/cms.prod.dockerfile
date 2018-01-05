@@ -11,6 +11,9 @@ COPY ./docker/admin_server/nginx.conf /etc/nginx/nginx.conf
 
 WORKDIR /src
 
+#RUN echo "http://ftp.tsukuba.wide.ad.jp/Linux/alpine/v3.5/main/" > /etc/apk/repositories
+#RUN echo "http://ftp.tsukuba.wide.ad.jp/Linux/alpine/v3.5/community/" >> /etc/apk/repositories
+
 RUN apk update                                                              && \
     apk --no-cache upgrade                                                  && \
     apk --no-cache add python3 python3-dev postgresql py-psycopg2              \
@@ -19,7 +22,7 @@ RUN apk update                                                              && \
     pip3 --no-cache-dir install --upgrade pip                               && \
     pip3 --no-cache-dir install -r /src/requirements.txt                    && \
     apk --no-cache add yarn --repository                                       \
-        http://dl-3.alpinelinux.org/alpine/edge/community                   && \
+        https://dl-3.alpinelinux.org/alpine/edge/community                  && \
     yarn global add preact-cli gulp gulp-shell                              && \
     cd /src/lm/cms/frontend                                                 && \
     yarn install                                                            && \

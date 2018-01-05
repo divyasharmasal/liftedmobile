@@ -45,12 +45,20 @@ export class CourseListEntry extends Component{
     const end = dateRange.end;
 
     if (start == null){
-      return "Invalid date";
+      return "Unknown date";
     }
 
     const fmtStr = "ddd, D MMM YYYY";
 
+    
     if (end != null){
+      const fmtStart = format(start, fmtStr);
+      const fmtEnd = format(end, fmtStr);
+      
+      if (fmtStart === fmtEnd){
+        return fmtStart;
+      }
+
       return format(start, fmtStr) + " to " + format(end, fmtStr);
     }
     else{

@@ -1,5 +1,7 @@
 - *** Launch date: 5 Jan
 
+- SkillsFuture URLs should go to SF
+
 - Explainers for tech roles and "I want to develop my" whatscreen 
      - info icon that shows more details when tapped
 
@@ -7,11 +9,15 @@
 - LE cert backup plan
     - Remind Anita about pentest email
 
+- Resolve course duplicates across sources
+- Standardise course provider names and provide a suggestion input dropdown
+
 ----------------
-- Fix CPD sorting in the browser
+
+- Hyperlink course editor url
+- Only show one date if the start and end are the same
 - High to low: high-low public, TBC public, private, NA
 - Low to high: low-high public, TBC public, private, NA
-
 - CPD point text:
     - "Public CPD points: TBC"
     - "3 public CPD points"

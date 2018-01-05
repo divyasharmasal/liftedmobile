@@ -109,9 +109,13 @@ class SkillsfutureSpider(scrapy.Spider):
         if "totalCostOfTrainingPerTrainee" in indiv_course_data:
             cost = float(indiv_course_data["totalCostOfTrainingPerTrainee"])
 
-        url = None
-        if "courseURL" in indiv_course_data:
-            url = indiv_course_data["courseURL"].strip()
+        url_prefix = ("https://www.myskillsfuture.sg/content/portal/en/"
+               "training-exchange/course-directory/course-detail.html"
+               "?courseReferenceNumber={course_ref_num}")
+
+        course_ref_num = indiv_course_data["courseReferenceNumber"]
+
+        url = url_prefix.format(course_ref_num=course_ref_num)
 
         date_ranges = []
         if "Course_Start_Date" in course_data:

@@ -3,8 +3,8 @@
 sh scripts/app_server/prod/build_prod.sh --no-logs
 
 echo "Building the admin server..."
-yes | docker-compose -f docker/admin_server/docker-compose.prod.yml stop -t 0
-yes | docker-compose -f docker/admin_server/docker-compose.prod.yml rm
+#yes | docker-compose -f docker/admin_server/docker-compose.prod.yml stop -t 0
+#yes | docker-compose -f docker/admin_server/docker-compose.prod.yml rm
 docker-compose -f docker/admin_server/docker-compose.prod.yml build #--no-cache
 docker-compose -f docker/admin_server/docker-compose.prod.yml up -d #--force-recreate
 

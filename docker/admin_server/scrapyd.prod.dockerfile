@@ -1,4 +1,7 @@
-FROM alpine:latest
+FROM alpine:3.7
+
+#RUN echo "http://ftp.tsukuba.wide.ad.jp/Linux/alpine/v3.5/main/" > /etc/apk/repositories
+#RUN echo "http://ftp.tsukuba.wide.ad.jp/Linux/alpine/v3.5/community/" >> /etc/apk/repositories
 
 RUN apk update                                                             && \
     apk --no-cache upgrade                                                 && \

@@ -9,8 +9,6 @@ import { CourseListOpts } from "./course_list_opts/CourseListOpts";
 import { renderLoader } from "../screens/Screen";
 import { authFetch } from "../../lib/fetch";
 
-import format from "date-fns/format";
-
 
 const sortKey = {
   "Date": 0,
@@ -66,8 +64,11 @@ export class CourseBrowser extends Component{
 
 
   updateCoursesFromState = () => {
-    const url = this.genCourseListUrl(
-      this.state.sortBy, "all", this.state.dateRange, 0, this.state.searchQuery);
+    const url = this.genCourseListUrl(this.state.sortBy,
+                                      "all",
+                                      this.state.dateRange,
+                                      0,
+                                      this.state.searchQuery);
     this.fetchAndSetCourses(url);
   }
 

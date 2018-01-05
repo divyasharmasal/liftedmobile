@@ -73,7 +73,6 @@ class CalasSpider(scrapy.Spider):
         for path in response.xpath("//dd/a").css("a::attr(href)").extract():
             event_url = self.sile_url + path
             yield scrapy.Request(event_url, callback=self.parse_event_page)
-            break
 
 
     def convert_to_isodate(self, date):

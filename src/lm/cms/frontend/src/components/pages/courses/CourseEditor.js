@@ -351,7 +351,7 @@ class CourseEditor extends Component{
       if (sp.length === 2){
         const start = parseDateStr(sp[0]);
         const end = parseDateStr(sp[1]);
-        if (end <= start){
+        if (end < start){
           return false;
         }
       }
@@ -756,7 +756,7 @@ class UrlInput extends TextInput{
   render(){
     return(
       <div class={renderClassname(this.state.invalid, "url_input")}>
-        <label>URL:</label>
+        <label><a href={this.state.value} target="_blank">URL:</a></label>
         <textarea
           disabled={this.props.disabled}
           onKeyUp={e => this.handleValueChange(e.target.value)}

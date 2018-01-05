@@ -138,6 +138,7 @@ export default class Courses extends Component{
 
 
   format_date_range = dateRange => {
+    //TODO: move to lib/
     const start = dateRange.start;
     const end = dateRange.end;
 
@@ -148,7 +149,15 @@ export default class Courses extends Component{
     const fmtStr = "ddd, D MMM YYYY";
 
     if (end != null){
-      return format(start, fmtStr) + " to " + format(end, fmtStr);
+      const fmtStart = format(start, fmtStr);
+      const fmtEnd = format(end, fmtStr);
+      
+      if (fmtStart === fmtEnd){
+        return fmtStart;
+      }
+      else{
+      }
+      return fmtStart + " to " + fmtEnd;
     }
     else{
       return format(start, fmtStr);

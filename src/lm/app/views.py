@@ -216,15 +216,19 @@ def course_browse(request):
         2: "both"
     }
 
+    CPD_SORT = "CPD_SORT"
+
     SORT_OPTS = {
         0: "course__coursedate__start",
-        1: "course__coursecpdpoints__points",
+        # 1: "course__coursecpdpoints__points",
+        1: CPD_SORT,
         2: "course__cost",
     }
 
+    ASC = "-"
     ORDER_OPTS = {
         0: "",
-        1: "-"
+        1: ASC
     }
 
     sort_param = _option_param(request, 0, "s", SORT_OPTS,
@@ -251,16 +255,14 @@ def course_browse(request):
 
     cd_query = _optimise_course_date_query(
         models.CourseDate.objects.all()
-            .select_related("course")
-            .select_related("course__courseformat__format")
-            .select_related("course__courselevel__level")
-            .select_related("course__coursecpdpoints")
-            .prefetch_related("course__courselevel__level")
-            .prefetch_related("course__coursedate_set")
-            .prefetch_related("course__courseformat__format")
-            .prefetch_related("course__coursecpdpoints")
-            .order_by(ORDER_OPTS[order_param] + SORT_OPTS[sort_param],
-                "course__id")
+            # .select_related("course")
+            # .select_related("course__courseformat__format")
+            # .select_related("course__courselevel__level")
+            # .select_related("course__coursecpdpoints")
+            # .prefetch_related("course__courselevel__level")
+            # .prefetch_related("course__coursedate_set")
+            # .prefetch_related("course__courseformat__format")
+            # .prefetch_related("course__coursecpdpoints")
     )
 
     if CPD_OPTS[cpd_param] != "both":
@@ -277,10 +279,32 @@ def course_browse(request):
     if search_param is not None:
         cd_query = cd_query.filter(course__name__icontains=search_param)
 
-    return json_response([
-        _course_json(cd.course, index=i, date_range=extract_date_range(cd))
-        for i, cd in enumerate(cd_query)
-    ])
+    if SORT_OPTS[sort_param] == CPD_SORT:
+        result = []
+        for i, cd in enumerate(cd_query):
+            result.append(
+                _course_json(cd.course, index=i,
+                             date_range=extract_date_range(cd))
+            )
+
+        priv_courses = list(filter(lambda c: c["cpd"]["is_private"], result))
+        tbc_courses = list(filter(lambda c: c["cpd"]["is_tbc"], result))
+        na_courses = list(filter(lambda c: c["cpd"]["is_na"], result))
+        pts_courses = list(filter(lambda c: c["cpd"]["points"] is not None, result))
+        pts_courses = list(sorted(pts_courses, key=lambda c: c["cpd"]["points"]))
+
+        if ORDER_OPTS[order_param] == ASC:
+            pts_courses = list(reversed(pts_courses))
+
+        return json_response(pts_courses + tbc_courses + priv_courses + na_courses)
+        # return json_response(result)
+    else:
+        cd_query = cd_query.order_by(ORDER_OPTS[order_param] + SORT_OPTS[sort_param],
+                                     "course__id")
+        return json_response([
+            _course_json(cd.course, index=i, date_range=extract_date_range(cd))
+            for i, cd in enumerate(cd_query)
+            ])
 
 
 def extract_date_range(course_date):
@@ -330,7 +354,7 @@ def course_recs(request):
         .distinct())
 
     if need_ids is not None:
-        need_f_query = F("courselevel__level_id__needlevel__need_id")
+        need_f_query = F("course__courselevel__level_id__needlevel__need_id")
         cd_query = cd_query.filter(
             course__courseverticalcategory__vertical_category__id=vertical_category_id,
             course__courseverticalcategory__vertical_category__vertical_id=vertical_id,
@@ -868,14 +892,13 @@ def _diag_course_recommendations(categorised_answers, vertical, job_role):
                     course__courseverticalcategory__vertical_category__vertical=vertical,
                     course__courseverticalcategory__vertical_category__name=category_name)
 
-        cd_query = \
-            _optimise_course_query(cd_query) \
-                .filter(start__gte=now)
+        cd_query = _optimise_course_date_query(cd_query) \
+                        .filter(start__gte=now)
 
         for cd in cd_query:
             cd_id = hash_func(cd.id)
             result["map"][category_name].append(cd_id)
             result["courses"][cd_id] = \
-                _course_json(course, date_range=extract_date_range(cd))
+                _course_json(cd.course, date_range=extract_date_range(cd))
 
     return result
