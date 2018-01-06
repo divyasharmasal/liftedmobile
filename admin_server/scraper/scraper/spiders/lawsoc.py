@@ -107,6 +107,13 @@ class LawsocSpider(scrapy.Spider):
         dates_str = response.xpath("//span[@class='ListEventDate']/a/text()").extract_first()
         start_date, end_date = parse_dates_str(dates_str)
 
+        date_ranges = []
+        if start_date is not None:
+            date_ranges.append({
+                "start": start_date,
+                "end": end_date,
+            })
+
         cpd_candidates = response.xpath("//div[@class='ListContent']/p") \
             .xpath("string()").extract()
 
@@ -124,10 +131,7 @@ class LawsocSpider(scrapy.Spider):
         upcoming = start_date is None and end_date is None
         course_item = CourseItem(name=name,
                                  url=response.url,
-                                 date_ranges=[{
-                                     "start": start_date,
-                                     "end": end_date
-                                 }],
+                                 date_ranges=date_ranges,
                                  public_cpd=public_cpd,
                                  provider=None,
                                  cost=None,

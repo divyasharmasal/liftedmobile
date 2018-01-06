@@ -26,7 +26,6 @@ def run_all_scrapes():
     _log("Running all scrapes...")
 
     spiders = ["sal", "calas", "lawsoc", "skillsfuture"]
-    # spiders = ["sal", "calas", "lawsoc"]
     payloads = [{"project": "scraper", "spider": spider} for spider in spiders]
 
     for payload in payloads:
@@ -53,10 +52,11 @@ if __name__ == "__main__":
     subprocess.run(command, shell=True)
     _log("Ran {command}".format(command=command))
 
-    run_all_scrapes()
-    _log("Ran first scrape")
+    # Deactivate scrapers till 10 Jan
 
-    schedule.every().day.at("3:45").do(run_all_scrapes)
+    # run_all_scrapes()
+    # _log("Ran first scrape")
+    # schedule.every().day.at("3:45").do(run_all_scrapes)
 
     while True:
         schedule.run_pending()

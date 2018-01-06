@@ -43,6 +43,9 @@ urlpatterns = [
     url(r'^scraper/list/$', views.scraper_list,
         name="scraper_list"),
 
+    url(r'^scraper/list_spiders/$', views.scraper_list_spiders,
+        name="scraper_list_spiders"),
+
     url(r'^scraper/sync_urls/$', views.scraper_sync_urls,
         name='scraper_sync_urls'),
 

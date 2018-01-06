@@ -106,10 +106,6 @@ class CalasSpider(scrapy.Spider):
             "//span[contains(@id, 'ContentPlaceHolder1_lblEventEndDate')]"
             )[0].xpath("text()").extract_first()
 
-
-        start_date = self.convert_to_isodate(start_date_str)
-        end_date = self.convert_to_isodate(end_date_str)
-
         public_cpd_str = response.xpath(
             "//span[contains(@id, 'ContentPlaceHolder1_lblPublicCPDPoints')]"
             )[0].xpath("text()").extract_first().strip()
@@ -129,13 +125,20 @@ class CalasSpider(scrapy.Spider):
             "//span[contains(@id, 'ContentPlaceHolder1_lblTrainingCategory')]"
             )[0].xpath("text()").extract_first()
 
+        start_date = self.convert_to_isodate(start_date_str)
+        end_date = self.convert_to_isodate(end_date_str)
+
+        date_ranges = []
+        if start_date is not None:
+            date_ranges.append({
+                "start": start_date,
+                "end": end_date,
+            })
+
         upcoming = start_date is None and end_date is None
         course_item = CourseItem(name=name,
                                  url=response.url,
-                                 date_ranges=[{
-                                     "start": start_date,
-                                     "end": end_date
-                                 }],
+                                 date_ranges=date_ranges,
                                  cost=None,
                                  public_cpd=public_cpd,
                                  upcoming=upcoming,

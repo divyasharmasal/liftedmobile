@@ -219,7 +219,7 @@ def course_browse(request):
     CPD_SORT = "CPD_SORT"
 
     SORT_OPTS = {
-        0: "course__coursedate__start",
+        0: "start",
         # 1: "course__coursecpdpoints__points",
         1: CPD_SORT,
         2: "course__cost",
@@ -252,18 +252,7 @@ def course_browse(request):
     start_date_param = _date_param(request, None, "sd", "Invalid start date")
     end_date_param = _date_param(request, None, "ed", "Invalid end date")
 
-
-    cd_query = _optimise_course_date_query(
-        models.CourseDate.objects.all()
-            # .select_related("course")
-            # .select_related("course__courseformat__format")
-            # .select_related("course__courselevel__level")
-            # .select_related("course__coursecpdpoints")
-            # .prefetch_related("course__courselevel__level")
-            # .prefetch_related("course__coursedate_set")
-            # .prefetch_related("course__courseformat__format")
-            # .prefetch_related("course__coursecpdpoints")
-    )
+    cd_query = _optimise_course_date_query(models.CourseDate.objects.all())
 
     if CPD_OPTS[cpd_param] != "both":
         cd_query = cd_query.filter(
@@ -297,7 +286,6 @@ def course_browse(request):
             pts_courses = list(reversed(pts_courses))
 
         return json_response(pts_courses + tbc_courses + priv_courses + na_courses)
-        # return json_response(result)
     else:
         cd_query = cd_query.order_by(ORDER_OPTS[order_param] + SORT_OPTS[sort_param],
                                      "course__id")

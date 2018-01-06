@@ -1,7 +1,5 @@
 - *** Launch date: 5 Jan
 
-- SkillsFuture URLs should go to SF
-
 - Explainers for tech roles and "I want to develop my" whatscreen 
      - info icon that shows more details when tapped
 
@@ -15,7 +13,9 @@
 ----------------
 
 - Hyperlink course editor url
+- SkillsFuture URLs should go to SF
 - Only show one date if the start and end are the same
+
 - High to low: high-low public, TBC public, private, NA
 - Low to high: low-high public, TBC public, private, NA
 - CPD point text:

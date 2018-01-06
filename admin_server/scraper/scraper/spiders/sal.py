@@ -41,14 +41,18 @@ class SalSpider(scrapy.Spider):
             if start_date == end_date:
                 end_date = None
 
+            date_ranges = []
+            if start_date is not None:
+                date_ranges.append({
+                    "start": self.convert_to_isodate(start_date),
+                    "end": self.convert_to_isodate(end_date),
+                })
+
             course_item = CourseItem(
                 name=name,
                 url=url,
                 public_cpd=None,
-                date_ranges=[{
-                    "start": self.convert_to_isodate(start_date),
-                    "end": self.convert_to_isodate(end_date),
-                }],
+                date_ranges=date_ranges,
                 cost=None,
                 upcoming=upcoming,
                 level=None,

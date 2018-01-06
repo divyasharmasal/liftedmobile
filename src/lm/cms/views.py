@@ -466,6 +466,13 @@ def scraper_list(request):
     return json_response(r.json())
 
 
+@staff_member_required(login_url=None)
+def scraper_list_spiders(request):
+    url = "http://" + settings.SCRAPYD_IP + ":6800/listspiders.json?project=scraper"
+    r = requests.get(url)
+    return json_response(r.json())
+
+
 def is_from_scrapyd(function):
     def wrap(request, *args, **kwargs):
         # Security layer 1: all requests must be POST and all requests must
@@ -524,15 +531,6 @@ def scraper_sync_urls(request):
     return json_response("ok")
 
 
-def create_course_dates(course, date_ranges):
-    for dr in date_ranges:
-        csd = app_models.CourseDate(
-            course=course,
-            start=dr.start,
-            end=dr.end)
-        csd.save()
-
-
 @csrf_exempt
 @is_from_scrapyd
 def scraper_add_course(request):
@@ -574,22 +572,32 @@ def scraper_add_course(request):
     except:
         return HttpResponseServerError("Invalid course data params")
 
-
     if name is not None: name = name.strip()
     if url is not None: url = url.strip()
     if provider is not None: provider = provider.strip()
 
-    # Do nothing if a ScrapedCourse with the same data exists:
-    sc_exists = (models.ScrapedCourse.objects.filter(
+    matching_scraped_courses = \
+        (models.ScrapedCourse.objects.filter(
                     name=name,
                     url=url,
                     cost=cost,
                     spider_name=spider_name,
                     public_cpd=public_cpd,
                     level=level,
-                    provider=provider).exists())
+                    provider=provider))
+    sc_exists = matching_scraped_courses.exists()
 
-    if sc_exists:
+    # Note: the provider won't be changed
+    matching_courses = (app_models.Course.objects
+        .filter(spider_name=spider_name,
+            # is_manually_added=false, # honour manually added data
+                url=url))
+    matching_courses_exists = matching_courses.exists()
+
+    if matching_courses_exists and sc_exists:
+        matching_scraped_courses.delete()
+
+    elif sc_exists:
         sc = (models.ScrapedCourse.objects
               .get(name=name,
                    url=url,
@@ -612,29 +620,25 @@ def scraper_add_course(request):
         return json_response("Found matching ScrapedCourse, skipping.")
 
     # Update published matching courses with the same spider name and url:
-    # Note: the provider won't be changed
-    matching_courses = (app_models.Course.objects
-        .filter(spider_name=spider_name,
-            # is_manually_added=false, # honour manually added data
-                url=url))
 
-    if matching_courses.exists():
+    elif matching_courses.exists():
         course = matching_courses[0]
 
         # update course name
         course.name = name
         course.save()
 
-        #TODO: test this!
         # update date ranges
-        if date_ranges is not None:
-            # Delete existing date ranges
-            (app_models.CourseDate.objects
-                 .filter(course=course)
-                 .delete())
+        if date_ranges is not None and len(date_ranges) > 0:
+            app_models.CourseDate.objects.filter(course=course).delete()
+            for date_range in date_ranges:
+                start = date_range["start"]
+                end = date_range["end"]
+                if start is not None:
+                    app_models.CourseDate(start=start,
+                                          end=end,
+                                          course=course).save()
 
-            # Add course dates
-            create_course_dates(course, date_ranges)
 
         # update public_cpd
         (app_models.CourseCpdPoints.objects
@@ -642,44 +646,45 @@ def scraper_add_course(request):
              .update(points=public_cpd))
 
         # update the level
-        level_obj = app_models.Level.objects.get(name=level)
-        (app_models.CourseLevel.objects
-            .filter(course=course)
-            .update(level=level_obj))
+        if level is not None:
+            level_obj = app_models.Level.objects.get(name=level)
+            (app_models.CourseLevel.objects
+                .filter(course=course)
+                .update(level=level_obj))
 
         return json_response("Updated matching Course")
 
-    # Otherwise, update/create the ScrapedCourse:
-    # From the Django docs: "If a match is found, it updates the fields passed
-    # in the defaults dictionary."
-    scraped_course, created = models.ScrapedCourse.objects.update_or_create(
-        defaults={
-            "public_cpd": public_cpd,
-            "provider": provider,
-            "level": level,
-            "cost": cost,
-            "name": name
-        },
-        spider_name=spider_name,
-        url=course_data["url"],
-        is_new=True)
-
-    models.ScrapedCourseDate.objects.filter(scraped_course=scraped_course).delete()
-
-    for dr in date_ranges:
-        start = end = None
-        start = dr["start"]
-        end = dr["end"]
-
-        if start is not None:
-            models.ScrapedCourseDate(scraped_course=scraped_course,
-                                     start=start,
-                                     end=end).save()
-
-    if created:
-        return json_response("Success: added ScrapedCourse.")
     else:
+        # Otherwise, update/create the ScrapedCourse:
+        # From the Django docs: "If a match is found, it updates the fields passed
+        # in the defaults dictionary."
+        scraped_course, created = models.ScrapedCourse.objects.update_or_create(
+            defaults={
+                "public_cpd": public_cpd,
+                "provider": provider,
+                "level": level,
+                "cost": cost,
+                "name": name
+            },
+            spider_name=spider_name,
+            url=course_data["url"],
+            is_new=True)
 
-        return json_response("Success: updated ScrapedCourse")
+        models.ScrapedCourseDate.objects.filter(scraped_course=scraped_course).delete()
 
-    return json_response("No action taken")
+        for dr in date_ranges:
+            start = end = None
+            start = dr["start"]
+            end = dr["end"]
+
+            if start is not None:
+                models.ScrapedCourseDate(scraped_course=scraped_course,
+                                         start=start,
+                                         end=end).save()
+
+        if created:
+            return json_response("Success: added ScrapedCourse.")
+        else:
+            return json_response("Success: updated ScrapedCourse")
+
+        return json_response("No action taken")

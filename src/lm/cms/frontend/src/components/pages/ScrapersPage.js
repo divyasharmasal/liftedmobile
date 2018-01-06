@@ -42,15 +42,34 @@ export class ScrapersPage extends Component {
       return result;
     }
 
-    authFetch("/cms/scraper/list/").then(response => {
+    authFetch("/cms/scraper/list_spiders/").then(response => {
       response.json().then(json => {
-        let scrapers = [];
-        scrapers = scrapers.concat(extractScrapers(json.finished, "finished"));
-        scrapers = scrapers.concat(extractScrapers(json.pending, "pending"));
-        scrapers = scrapers.concat(extractScrapers(json.running, "running"));
-        scrapers = filterLatest(scrapers);
+        const spiders = json.spiders;
 
-        this.setState({ scrapers });
+        authFetch("/cms/scraper/list/").then(response => {
+          response.json().then(json => {
+            let scrapers = [];
+            scrapers = scrapers.concat(extractScrapers(json.finished, "finished"));
+            scrapers = scrapers.concat(extractScrapers(json.pending, "pending"));
+            scrapers = scrapers.concat(extractScrapers(json.running, "running"));
+            scrapers = filterLatest(scrapers);
+
+            // find missing spiders
+            const scrapers_spiders = scrapers.map(s => s.spider);
+            const missing = spiders.filter(s => scrapers_spiders.indexOf(s) === -1);
+            missing.forEach(s => {
+              scrapers.push({
+                start_time: null,
+                end_time: null,
+                status: "inactive",
+                id: "N/A",
+                spider: s
+              });
+            });
+            this.setState({ scrapers });
+
+          });
+        });
       });
     });
   }
@@ -135,6 +154,9 @@ class ScraperControl extends Component {
 
 
   render(){
+    const t = this.props.scrapydData.start_time;
+    const lastScrapeTime = t == null ? "N/A" : format(t, "ddd DD MMM YYYY, HH:mm:ss Z");
+
     return (
       <div class="scraper_control">
         <h2>{this.props.spiderDetails.name}</h2>
@@ -146,12 +168,11 @@ class ScraperControl extends Component {
 
         <p>Status: {this.props.scrapydData.status}</p>
         <p>
-          Most recent scrape at: {
-            format(this.props.scrapydData.start_time, "ddd DD MMM YYYY, HH:mm:ss Z")}
+          Most recent scrape at: {lastScrapeTime}
         </p>
         <p>ID: {this.props.scrapydData.id}</p>
 
-        {this.props.scrapydData.status === "finished" &&
+        {(this.props.scrapydData.status !== "running") &&
             !this.state.scrapeButtonClicked &&
           <button onClick={this.handleScrapeButtonClick} class="pure-button button-green">
             <span>Scrape</span> 
