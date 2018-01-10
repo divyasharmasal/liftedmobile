@@ -86,7 +86,7 @@ export class ScrapersPage extends Component {
         url: "https://www.silecpdcentre.sg/calas/",
       },
       lawsoc: {
-        name: "LawSoc",
+        name: "Law Society",
         url: "http://www.lawsoc.org.sg",
       },
       skillsfuture: {

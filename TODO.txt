@@ -1,5 +1,3 @@
-- *** Launch date: 5 Jan
-
 - Explainers for tech roles and "I want to develop my" whatscreen 
      - info icon that shows more details when tapped
 

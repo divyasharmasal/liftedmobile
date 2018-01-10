@@ -133,8 +133,8 @@ MIDDLEWARE = [
     'htmlmin.middleware.MarkRequestMiddleware',
 ]
 
-# if DEBUG:
-    # MIDDLEWARE.append("querycount.middleware.QueryCountMiddleware")
+if DEBUG:
+    MIDDLEWARE.append("querycount.middleware.QueryCountMiddleware")
 
 QUERYCOUNT = {
     "IGNORE_REQUEST_PATTERNS": ["^/favicon.ico"]

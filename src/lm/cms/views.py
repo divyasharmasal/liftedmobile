@@ -76,16 +76,14 @@ def cms_get_unpublished_courses_data(request):
     """
     For /cms/get_unpublished_courses_data/
     """
+
     result = get_level_format_vertical_data()
     result["courses"] = []
 
-    # TODO: only show future courses??
-
-    sc_query = (
-        models.ScrapedCourse.objects
-        .filter(is_new=True)
-        .prefetch_related("lifted_keys")
-    )
+    sc_query = (models.ScrapedCourse.objects
+                .filter(is_new=True)
+                .prefetch_related("scrapedcoursedate_set")
+                .prefetch_related("lifted_keys"))
 
 
     for scraped_course in sc_query:
@@ -98,11 +96,9 @@ def cms_get_unpublished_courses_data(request):
 
         date_ranges = []
 
-        for scraped_dr in models.ScrapedCourseDate.objects \
-            .filter(scraped_course=scraped_course):
+        for scraped_dr in scraped_course.scrapedcoursedate_set.all():
 
-            start = None
-            end = None
+            start = end = None
             if scraped_dr.start is not None:
                 start = scraped_dr.start.isoformat()
 
