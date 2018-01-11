@@ -6,14 +6,32 @@
     - Remind Anita about pentest email
 
 - Resolve course duplicates across sources
+
+- Option for "ongoing" option to courses - always show on top
+    - add_course should not overrride this option
 - Standardise course provider names and provide a suggestion input dropdown
+- Breadcrumbs
+- CMS sorting
 
-----------------
+- Funnel visitors from the course browser to the diagnostic
+- Mid-Jan: Submit phase 2 proposal: heatmap, scraping of books, scraping of AP
+  site, law school event pages, tagging of books, recommended reading section,
+  journals online, granular tagging of courses
+- Do a code generator for 3rd party
+- Scrape SCCA
+- Full auth system with 2FA
+- Email reminders about untagged courses?
+- Make push_prod do all deployment work
+- Unit testing
+- Secrets in Vault
+- Link CloudWatch to graylog
 
+------------------------------------------------
+
+Done:
 - Hyperlink course editor url
 - SkillsFuture URLs should go to SF
 - Only show one date if the start and end are the same
-
 - High to low: high-low public, TBC public, private, NA
 - Low to high: low-high public, TBC public, private, NA
 - CPD point text:
@@ -26,27 +44,8 @@
 - Link to T&C and privacy policy
     - https://www.sal.org.sg/Footer/Terms-Conditions
     - https://www.sal.org.sg/Footer/Privacy-Policy
-- Breadcrumbs
-- CMS sorting
 - New favicon?
 - Optimise /cms/get_published_courses_data/
-- Funnel visitors from the course browser to the diagnostic
-- Mid-Jan: Submit phase 2 proposal: heatmap, scraping of books, scraping of AP
-  site, law school event pages, tagging of books, recommended reading section,
-  journals online, granular tagging of courses
-- Do a code generator for 3rd party
-- Scrape SCCA, SkillsFuture
-- Full auth system with 2FA
-- Email reminders about untagged courses?
-- Make push_prod do all deployment work
-- Unit testing
-- Secrets in Vault
-- Link CloudWatch to graylog
-- Anita's leave: 8-28 Dec
-
-------------------------------------------------
-
-Done:
 - "Are you legal-tech savvy?"
 - Beef up phase 2 document - add narrative
 - Get logos from Rizam

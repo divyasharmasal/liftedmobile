@@ -96,8 +96,7 @@ def cms_get_unpublished_courses_data(request):
 
         date_ranges = []
 
-        for scraped_dr in scraped_course.scrapedcoursedate_set.all():
-
+        for scraped_dr in scraped_course.scrapedcoursedate_set.all(): 
             start = end = None
             if scraped_dr.start is not None:
                 start = scraped_dr.start.isoformat()
