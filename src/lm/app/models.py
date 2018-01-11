@@ -103,6 +103,7 @@ class Course(models.Model):
     provider = models.TextField(null=True)
     is_manually_added = models.NullBooleanField(null=True)
     cost_is_varying = models.NullBooleanField(null=True)
+    is_ongoing = models.NullBooleanField(null=True)
 
 
 class CourseVerticalCategory(models.Model):

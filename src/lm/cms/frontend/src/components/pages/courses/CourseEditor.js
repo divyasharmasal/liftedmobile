@@ -59,6 +59,10 @@ class CourseEditor extends Component{
       course.is_manually_added = false;
     }
 
+    if (Object.keys(course).indexOf("is_ongoing") === -1){
+      course.is_ongoing = false;
+    }
+
     this.state = {
       course: course,
       showDeleteButton: true,
@@ -191,6 +195,20 @@ class CourseEditor extends Component{
   }
 
 
+  handleOngoingChange = is_ongoing => {
+    let course = this.state.course;
+
+    if (is_ongoing == null){
+      is_ongoing = false;
+    }
+
+    course.is_ongoing = is_ongoing;
+    course.hasChanged = true;
+
+    this.setState({ course });
+  }
+
+
   handleLiftedKeyChange = liftedKeys => {
     let course = this.state.course;
     course.lifted_keys = liftedKeys;
@@ -214,6 +232,7 @@ class CourseEditor extends Component{
 			cpdIsNa: course.cpd.is_na, 
 			level: course.level, 
 			format: course.format, 
+      is_ongoing: course.is_ongoing,
 			date_ranges: course.date_ranges,
 			is_published: !this.state.unpublished,
       is_new: course.isNew,
@@ -650,7 +669,9 @@ class CourseEditor extends Component{
             <DatesInput 
               disabled={this.state.hasSaved && this.state.unpublished}
               handleValueChange={this.handleDatesChange}
+              handleOngoingChange={this.handleOngoingChange}
               invalid={this.state.invalidFields.dateRanges}
+              is_ongoing={course.is_ongoing}
               values={course.date_ranges} />
           </div>
 
@@ -690,7 +711,9 @@ class CourseEditor extends Component{
           <DatesInput 
             disabled={this.props.disabled}
             handleValueChange={this.handleDatesChange}
+            handleOngoingChange={this.handleOngoingChange}
             invalid={this.state.invalidFields.dateRanges}
+            is_ongoing={course.is_ongoing}
             values={course.date_ranges} />
         </div>
 
@@ -1080,16 +1103,19 @@ class DatesInput extends Component{
     this.state = {
       values: this.props.values,
       invalid: this.props.invalid,
+      is_ongoing: this.props.is_ongoing,
     };
   }
 
 
   componentWillReceiveProps = newProps => {
     if (this.state.values !== newProps.values ||
+        this.state.is_ongoing !== newProps.is_ongoing ||
         this.state.invalid !== newProps.invalid){
       this.setState({
         values: newProps.values,
         invalid: newProps.invalid,
+        is_ongoing: newProps.is_ongoing,
       });
     }
   }
@@ -1102,15 +1128,37 @@ class DatesInput extends Component{
   }
 
 
+  handleOngoingInputChecked = e => {
+    const is_ongoing = e.target.checked;
+    this.setState({ is_ongoing }, () => {
+      this.props.handleOngoingChange(is_ongoing);
+    });
+  }
+
+
   render(){
+    console.log(this.state.is_ongoing);
     return(
-      <div class={renderClassname(this.state.invalid, "dates_input")}>
-        <label>Dates (SGT):</label>
-        <DateListInput
-          disabled={this.props.disabled}
-          handleValueChange={this.handleValueChange}
-          values={this.state.values}
-        />
+      <div>
+        <div class="pure-u-1 custom_input ongoing_input">
+          <label>Ongoing?</label>
+          <input 
+            type="checkbox" 
+            disabled={this.props.disabled}
+            checked={this.state.is_ongoing}
+            onChange={this.handleOngoingInputChecked}
+          />
+        </div>
+        <div class="pure-u-1">
+          <div class={renderClassname(this.state.invalid, "dates_input")}>
+            <label>Dates (SGT):</label>
+            <DateListInput
+              disabled={this.props.disabled}
+              handleValueChange={this.handleValueChange}
+              values={this.state.values}
+            />
+          </div>
+        </div>
       </div>
     );
   }

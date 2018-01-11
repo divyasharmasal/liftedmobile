@@ -136,7 +136,8 @@ def cms_get_unpublished_courses_data(request):
 
 def get_date_ranges(course):
     result = []
-    for dr in app_models.CourseDate.objects.filter(course=course):
+    # for dr in app_models.CourseDate.objects.filter(course=course):
+    for dr in course.coursedate_set.all():
         result.append(extract_date_range(dr))
     return result
 
@@ -145,8 +146,10 @@ def get_date_ranges(course):
 def cms_get_published_courses_data(request):
     result = get_level_format_vertical_data()
 
-    courses = app_models.Course.objects.all()
-    courses = _optimise_course_query(courses)
+    courses = _optimise_course_query(app_models.Course.objects.all()
+         .prefetch_related("courseverticalcategory_set__vertical_category")
+         .prefetch_related("courseverticalcategory_set__vertical_category__vertical")
+        )
 
     result["courses"] = [_course_json(
                             course,
@@ -223,7 +226,7 @@ def save_course(request):
     # validate input
     spider_name = id = name = cost = url = level_name = cpd_points = \
         cpd_is_private = format_name = lifted_keys = is_published = \
-        cpd_is_na = provider = date_ranges = None
+        cpd_is_na = provider = is_ongoing = date_ranges = None
 
     is_new = "is_new" in body.keys() and body["is_new"]
 
@@ -235,6 +238,9 @@ def save_course(request):
 
     if "isVarying" not in body["cost"]:
         body["cost"]["isVarying"] = False
+
+    if "is_ongoing" not in body:
+        body["is_ongoing"] = False
 
     try:
         if not is_new:
@@ -250,6 +256,7 @@ def save_course(request):
         cpd_is_na = body["cpdIsNa"]
         format_name = body["format"]
         is_published = body["is_published"]
+        is_ongoing = body["is_ongoing"]
         spider_name = body["spider_name"]
         lifted_keys = body["lifted_keys"]
         is_manually_added = body["is_manually_added"]
@@ -286,6 +293,7 @@ def save_course(request):
         course.cost = cost["cost"]
         course.cost_is_varying = cost["isVarying"]
         course.provider = provider
+        course.is_ongoing = is_ongoing
         course.save()
 
         # LIFTED keys

@@ -377,8 +377,6 @@ def _optimise_course_query(courses):
         .select_related("courselevel__level")
         .select_related("courseformat__format")
         .prefetch_related("coursedate_set")
-        .prefetch_related("courseverticalcategory_set")
-        .prefetch_related("coursetechcompetencycategory_set")
     )
 
 
@@ -415,6 +413,7 @@ def _course_json(course,
         "format": format_name,
         "spider_name": course.spider_name,
         "is_manually_added": course.is_manually_added,
+        "is_ongoing": course.is_ongoing,
         "date_range": date_range,
         "cpd": {
             "points": cpd_points,
@@ -429,18 +428,16 @@ def _course_json(course,
 
     if include_lifted_keys:
         lifted_keys = []
-        cvc_query = (
-            course.courseverticalcategory_set.all()
-            .select_related("vertical_category__vertical")
-        )
-        for cvc in cvc_query:
+
+        for cvc in course.courseverticalcategory_set.all():
             lifted_keys.append({
                 "vertical_name": cvc.vertical_category.vertical.name,
                 "vertical_category_name": cvc.vertical_category.name,
             })
 
-        for tech_comp_cat in models.CourseTechCompetencyCategory.objects.filter(
-                course=course).distinct("tech_competency_category__name"):
+        for tech_comp_cat in (course.coursetechcompetencycategory_set
+                .select_related("tech_competency_category")):
+
             lifted_keys.append({
                 "vertical_name": "Technology Framework",
                 "vertical_category_name": tech_comp_cat.tech_competency_category.name
