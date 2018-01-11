@@ -217,9 +217,11 @@ def course_browse(request):
     }
 
     CPD_SORT = "CPD_SORT"
+    DATE_SORT = "DATE_SORT"
 
     SORT_OPTS = {
-        0: "start",
+        # 0: "start",
+        0: DATE_SORT,
         # 1: "course__coursecpdpoints__points",
         1: CPD_SORT,
         2: "course__cost",
@@ -271,10 +273,9 @@ def course_browse(request):
     if SORT_OPTS[sort_param] == CPD_SORT:
         result = []
         for i, cd in enumerate(cd_query):
-            result.append(
-                _course_json(cd.course, index=i,
-                             date_range=extract_date_range(cd))
-            )
+            result.append(_course_json(cd.course,
+                index=i,
+                date_range=extract_date_range(cd)))
 
         priv_courses = list(filter(lambda c: c["cpd"]["is_private"], result))
         tbc_courses = list(filter(lambda c: c["cpd"]["is_tbc"], result))
@@ -286,13 +287,44 @@ def course_browse(request):
             pts_courses = list(reversed(pts_courses))
 
         return json_response(pts_courses + tbc_courses + priv_courses + na_courses)
+    elif SORT_OPTS[sort_param] == DATE_SORT:
+        ongoing_courses = (
+            cd_query
+            .filter(course__is_ongoing=True)
+            .order_by(
+                ORDER_OPTS[order_param] + "start", "course__id") 
+        )
+        
+        other_courses = (
+            cd_query
+            .exclude(course__is_ongoing=True)
+            .order_by(
+                ORDER_OPTS[order_param] + "start", "course__id") 
+        )
+        return json_response(
+            [_course_json(cd.course, index=i, date_range=extract_date_range(cd))
+                for i, cd in enumerate(ongoing_courses)] +
+            [_course_json(cd.course, index=i, date_range=extract_date_range(cd))
+                for i, cd in enumerate(other_courses)]
+        )
+        # ongoing_courses = []
+        # other_courses = []
+        # for i, cd in enumerate(cd_query):
+            # c = _course_json(cd.course,
+                             # index=i,
+                             # date_range=extract_date_range(cd))
+
+            # if cd.course["is_ongoing"]:
+                # ongoing_courses.append(c)
+            # else:
+                # other_courses.append(c)
     else:
         cd_query = cd_query.order_by(ORDER_OPTS[order_param] + SORT_OPTS[sort_param],
                                      "course__id")
-        return json_response([
-            _course_json(cd.course, index=i, date_range=extract_date_range(cd))
-            for i, cd in enumerate(cd_query)
-            ])
+        return json_response(
+            [_course_json(cd.course, index=i, date_range=extract_date_range(cd))
+                for i, cd in enumerate(cd_query)]
+        )
 
 
 def extract_date_range(course_date):

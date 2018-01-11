@@ -11,10 +11,6 @@ const symbol = isDesc => {
   const asc = "▲";
 
   return isDesc ? desc : asc;
-  //if (isDesc){ 
-    //return desc;
-  //}
-  //return asc;
 }
 
 
@@ -137,30 +133,37 @@ export default class Courses extends Component{
   }
 
 
-  format_date_range = dateRange => {
+  format_date_range = course => {
     //TODO: move to lib/
-    const start = dateRange.start;
-    const end = dateRange.end;
-
-    if (start == null){
-      return "Invalid date";
-    }
-
-    const fmtStr = "ddd, D MMM YYYY";
-
-    if (end != null){
-      const fmtStart = format(start, fmtStr);
-      const fmtEnd = format(end, fmtStr);
-      
-      if (fmtStart === fmtEnd){
-        return fmtStart;
-      }
-      else{
-      }
-      return fmtStart + " to " + fmtEnd;
+    //
+    if (course.is_ongoing){
+      return "Ongoing";
     }
     else{
-      return format(start, fmtStr);
+      const dateRange = course.date_range;
+      const start = dateRange.start;
+      const end = dateRange.end;
+
+      if (start == null){
+        return "Invalid date";
+      }
+
+      const fmtStr = "ddd, D MMM YYYY";
+
+      if (end != null){
+        const fmtStart = format(start, fmtStr);
+        const fmtEnd = format(end, fmtStr);
+        
+        if (fmtStart === fmtEnd){
+          return fmtStart;
+        }
+        else{
+        }
+        return fmtStart + " to " + fmtEnd;
+      }
+      else{
+        return format(start, fmtStr);
+      }
     }
   }
 
@@ -228,7 +231,16 @@ export default class Courses extends Component{
       courses = ptsCourses.concat(tbcCourses).concat(privCourses).concat(naCourses);
     }
     else if (field === "date"){
-      courses = sortCoursesByDateRange(courses);
+      const ongoingCourses = sortCoursesByDateRange(courses.filter(c => c.is_ongoing));
+      const otherCourses = sortCoursesByDateRange(
+        courses.filter(c => !c.is_ongoing || c.is_ongoing == null));
+
+    if (!sortDesc && shouldReverse){
+        otherCourses.reverse();
+        shouldReverse = false;
+      }
+      //courses = sortCoursesByDateRange(courses);
+      courses = ongoingCourses.concat(otherCourses);
     }
 
     if (!sortDesc && shouldReverse){
@@ -269,7 +281,7 @@ export default class Courses extends Component{
             <td data-title="CPD">{this.format_cpd(course.cpd)}</td>
             <td data-title="Level" class="full_width">{course.level}</td>
             <td data-title="Format" class="full_width">{course.format}</td>
-            <td data-title="Date">{this.format_date_range(course.date_range)}</td>
+            <td data-title="Date">{this.format_date_range(course)}</td>
           </tr>
         );
       });
