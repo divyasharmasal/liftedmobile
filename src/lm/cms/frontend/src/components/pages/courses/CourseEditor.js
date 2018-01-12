@@ -320,7 +320,6 @@ class CourseEditor extends Component{
 
     if (course.cpd.points == null && 
       !(course.cpd.is_private || course.cpd.is_na || course.cpd.is_tbc)){
-      console.log(2)
       validCpd = false;
     }
 
@@ -1130,14 +1129,16 @@ class DatesInput extends Component{
 
   handleOngoingInputChecked = e => {
     const is_ongoing = e.target.checked;
-    this.setState({ is_ongoing }, () => {
+    this.setState({ 
+      is_ongoing: is_ongoing,
+      value: [],
+    }, () => {
       this.props.handleOngoingChange(is_ongoing);
     });
   }
 
 
   render(){
-    console.log(this.state.is_ongoing);
     return(
       <div>
         <div class="pure-u-1 custom_input ongoing_input">
@@ -1152,11 +1153,15 @@ class DatesInput extends Component{
         <div class="pure-u-1">
           <div class={renderClassname(this.state.invalid, "dates_input")}>
             <label>Dates (SGT):</label>
-            <DateListInput
-              disabled={this.props.disabled}
-              handleValueChange={this.handleValueChange}
-              values={this.state.values}
-            />
+            {this.state.is_ongoing ?
+                <span>Ongoing courses don't have dates</span>
+                :
+                <DateListInput
+                disabled={this.props.disabled}
+                handleValueChange={this.handleValueChange}
+                values={this.state.values}
+              />
+            }
           </div>
         </div>
       </div>

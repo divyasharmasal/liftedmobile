@@ -261,9 +261,18 @@ def course_browse(request):
                 course__coursecpdpoints__is_private=CPD_OPTS[cpd_param])
 
     if start_date_param is not None:
-        cd_query = cd_query.filter(start__gte=start_date_param)
+        cd_query = (
+            cd_query
+            .filter(start__gte=start_date_param)
+            .exclude(course__is_ongoing=True)
+        )
     if end_date_param is not None:
-        cd_query = cd_query.filter(start__lte=end_date_param)
+        cd_query = (
+            cd_query
+            .filter(start__lte=end_date_param)
+            .exclude(course__is_ongoing=True)
+        )
+
     
     # cd_query = cd_query[start_page:end_page]
 
@@ -287,6 +296,7 @@ def course_browse(request):
             pts_courses = list(reversed(pts_courses))
 
         return json_response(pts_courses + tbc_courses + priv_courses + na_courses)
+    
     elif SORT_OPTS[sort_param] == DATE_SORT:
         ongoing_courses = (
             cd_query
@@ -307,17 +317,6 @@ def course_browse(request):
             [_course_json(cd.course, index=i, date_range=extract_date_range(cd))
                 for i, cd in enumerate(other_courses)]
         )
-        # ongoing_courses = []
-        # other_courses = []
-        # for i, cd in enumerate(cd_query):
-            # c = _course_json(cd.course,
-                             # index=i,
-                             # date_range=extract_date_range(cd))
-
-            # if cd.course["is_ongoing"]:
-                # ongoing_courses.append(c)
-            # else:
-                # other_courses.append(c)
     else:
         cd_query = cd_query.order_by(ORDER_OPTS[order_param] + SORT_OPTS[sort_param],
                                      "course__id")
