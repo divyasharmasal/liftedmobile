@@ -95,7 +95,7 @@ export class CourseDateFilter extends Component{
               </div>
             </div>
 
-            <p>Ongoing courses will not be shown.</p>
+            <p>If you filter by dates, ongoing courses will not be shown.</p>
 
           </div>
         </DropdownContent>

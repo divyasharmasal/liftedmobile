@@ -200,6 +200,9 @@ def course_browse(request):
         - 1: results 31-60
         - n: (30n + 1) to (30n + 30), index starting from 1
     @q: search query (default: None)
+    @og: show ongoing courses (default: 1)
+        - 1: True
+        - 0: False
 
     Respond with an error in the following situations:
         - @sd > @ed
@@ -209,6 +212,11 @@ def course_browse(request):
     """
 
     PAGE_SIZE = 30
+
+    SHOW_ONGOING_OPTS = {
+        0: False,
+        1: True
+    }
 
     CPD_OPTS = {
         0: False,
@@ -233,10 +241,12 @@ def course_browse(request):
         1: ASC
     }
 
+    show_ongoing_param = _option_param(request, 1, "og", SHOW_ONGOING_OPTS,
+                               "Invalid show_ongoing param")
     sort_param = _option_param(request, 0, "s", SORT_OPTS,
-                                "Invalid sort param")
+                               "Invalid sort param")
     cpd_param = _option_param(request, 2, "c", CPD_OPTS,
-                               "Invalid CPD param")
+                              "Invalid CPD param")
     order_param = _option_param(request, 0, "o", ORDER_OPTS,
                                 "Invalid order param")
     page_param = _numeric_param(request, 0, "pg", "Invalid page param",
@@ -258,33 +268,48 @@ def course_browse(request):
 
     if CPD_OPTS[cpd_param] != "both":
         cd_query = cd_query.filter(
-                course__coursecpdpoints__is_private=CPD_OPTS[cpd_param])
+            course__coursecpdpoints__is_private=CPD_OPTS[cpd_param])
 
     if start_date_param is not None:
         cd_query = (
             cd_query
             .filter(start__gte=start_date_param)
-            .exclude(course__is_ongoing=True)
+            # .exclude(course__is_ongoing=True)
         )
     if end_date_param is not None:
         cd_query = (
             cd_query
             .filter(start__lte=end_date_param)
-            .exclude(course__is_ongoing=True)
+            # .exclude(course__is_ongoing=True)
         )
 
-    
+    ongoing_without_dates = []
+    for c in models.Course.objects \
+        .filter(is_ongoing=True) \
+        .filter(coursedate__isnull=False):
+
+        ongoing_without_dates.append(c)
+
     # cd_query = cd_query[start_page:end_page]
 
     if search_param is not None:
         cd_query = cd_query.filter(course__name__icontains=search_param)
 
+    if not SHOW_ONGOING_OPTS[show_ongoing_param]:
+        cd_query = cd_query.exclude(course__is_ongoing=True)
+
     if SORT_OPTS[sort_param] == CPD_SORT:
         result = []
+        j = 0
         for i, cd in enumerate(cd_query):
             result.append(_course_json(cd.course,
                 index=i,
                 date_range=extract_date_range(cd)))
+            j += 1
+
+        for course in ongoing_without_dates:
+            result.append(_course_json(course, index=j))
+            j += 1
 
         priv_courses = list(filter(lambda c: c["cpd"]["is_private"], result))
         tbc_courses = list(filter(lambda c: c["cpd"]["is_tbc"], result))
@@ -311,6 +336,7 @@ def course_browse(request):
             .order_by(
                 ORDER_OPTS[order_param] + "start", "course__id") 
         )
+
         return json_response(
             [_course_json(cd.course, index=i, date_range=extract_date_range(cd))
                 for i, cd in enumerate(ongoing_courses)] +
@@ -318,12 +344,23 @@ def course_browse(request):
                 for i, cd in enumerate(other_courses)]
         )
     else:
-        cd_query = cd_query.order_by(ORDER_OPTS[order_param] + SORT_OPTS[sort_param],
-                                     "course__id")
-        return json_response(
-            [_course_json(cd.course, index=i, date_range=extract_date_range(cd))
-                for i, cd in enumerate(cd_query)]
-        )
+        cd_query = cd_query.order_by(
+            ORDER_OPTS[order_param] + SORT_OPTS[sort_param],
+            "course__id")
+        
+        i = 0
+        result = []
+        # for course in ongoing_without_dates:
+            # result.append(_course_json(course, index=i))
+            # i += 1
+
+        for cd in cd_query:
+            result.append(
+                _course_json(cd.course,
+                             index=i,
+                             date_range=extract_date_range(cd)))
+
+        return json_response(result)
 
 
 def extract_date_range(course_date):
