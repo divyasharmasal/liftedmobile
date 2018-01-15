@@ -1,3 +1,6 @@
+- Option for "ongoing" option to courses - always show on top
+    - add_course should not overrride this option
+
 - Explainers for tech roles and "I want to develop my" whatscreen 
      - info icon that shows more details when tapped
 
@@ -7,8 +10,6 @@
 
 - Resolve course duplicates across sources
 
-- Option for "ongoing" option to courses - always show on top
-    - add_course should not overrride this option
 - Standardise course provider names and provide a suggestion input dropdown
 - Breadcrumbs
 - CMS sorting
