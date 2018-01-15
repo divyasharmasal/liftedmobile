@@ -197,15 +197,20 @@ class CourseEditor extends Component{
 
   handleOngoingChange = is_ongoing => {
     let course = this.state.course;
+    let invalidFields = this.state.invalidFields;
 
     if (is_ongoing == null){
       is_ongoing = false;
     }
 
+    if (is_ongoing){
+      invalidFields.dateRanges = false;
+    }
+
     course.is_ongoing = is_ongoing;
     course.hasChanged = true;
 
-    this.setState({ course });
+    this.setState({ course, invalidFields });
   }
 
 
@@ -386,6 +391,8 @@ class CourseEditor extends Component{
       dateRanges.length > 0 && 
       dateRanges.every(isValidDateRange);
 
+    const validDateInfo = course.is_ongoing || validDateRanges;
+
     const keysAreUnique = dicts => {
       for (let i=0; i < dicts.length; i++){
         for (let j=0; j < dicts.length; j++){
@@ -415,7 +422,7 @@ class CourseEditor extends Component{
       validCost &&
       validLevel &&
       validFormat &&
-      validDateRanges &&
+      validDateInfo &&
       validLiftedKeys);
 
     if (valid){
