@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#sh scripts/app_server/prod/build_prod.sh --no-logs
+sh scripts/app_server/prod/build_prod.sh --no-logs
 
 echo "Building the admin server..."
 #yes | docker-compose -f docker/admin_server/docker-compose.prod.yml stop -t 0
