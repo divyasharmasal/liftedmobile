@@ -1,6 +1,3 @@
-- Option for "ongoing" option to courses - always show on top
-    - add_course should not overrride this option
-
 - Explainers for tech roles and "I want to develop my" whatscreen 
      - info icon that shows more details when tapped
 
@@ -30,6 +27,9 @@
 ------------------------------------------------
 
 Done:
+- Option for "ongoing" option to courses - always show on top
+    - add_course should not overrride this option
+
 - Hyperlink course editor url
 - SkillsFuture URLs should go to SF
 - Only show one date if the start and end are the same
