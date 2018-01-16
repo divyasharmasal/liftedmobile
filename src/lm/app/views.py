@@ -286,7 +286,7 @@ def course_browse(request):
     ongoing_without_dates = []
     for c in models.Course.objects \
         .filter(is_ongoing=True) \
-        .filter(coursedate__isnull=False):
+        .filter(coursedate__isnull=True):
 
         ongoing_without_dates.append(c)
 
@@ -338,8 +338,12 @@ def course_browse(request):
         )
 
         return json_response(
+            [_course_json(course, index=i)
+                for i, course in enumerate(ongoing_without_dates)] +
+
             [_course_json(cd.course, index=i, date_range=extract_date_range(cd))
                 for i, cd in enumerate(ongoing_courses)] +
+
             [_course_json(cd.course, index=i, date_range=extract_date_range(cd))
                 for i, cd in enumerate(other_courses)]
         )
