@@ -337,16 +337,21 @@ def course_browse(request):
                 ORDER_OPTS[order_param] + "start", "course__id") 
         )
 
-        return json_response(
-            [_course_json(course, index=i)
-                for i, course in enumerate(ongoing_without_dates)] +
-
+        result = (
             [_course_json(cd.course, index=i, date_range=extract_date_range(cd))
                 for i, cd in enumerate(ongoing_courses)] +
 
             [_course_json(cd.course, index=i, date_range=extract_date_range(cd))
-                for i, cd in enumerate(other_courses)]
-        )
+                for i, cd in enumerate(other_courses)])
+
+        if SHOW_ONGOING_OPTS[show_ongoing_param]:
+            return json_response(
+                [_course_json(course, index=i)
+                    for i, course in enumerate(ongoing_without_dates)] +
+                result)
+        else:
+            return json_response(result)
+
     else:
         cd_query = cd_query.order_by(
             ORDER_OPTS[order_param] + SORT_OPTS[sort_param],
