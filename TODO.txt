@@ -1,3 +1,6 @@
+- ongoing courses to go to the botttom if sorted by date or at the default screen
+
+- filter for e-learning courses in course browser
 - Explainers for tech roles and "I want to develop my" whatscreen 
      - info icon that shows more details when tapped
 

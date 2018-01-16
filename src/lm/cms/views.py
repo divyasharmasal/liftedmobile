@@ -230,6 +230,7 @@ def save_course(request):
 
     is_new = "is_new" in body.keys() and body["is_new"]
 
+    # set safe defaults
     if "cpdIsTbc" not in body:
         body["cpdIsTbc"] = False
 
@@ -241,6 +242,10 @@ def save_course(request):
 
     if "is_ongoing" not in body:
         body["is_ongoing"] = False
+
+    # is_ongoing and date_ranges are mutually exclusive options!
+    if body["is_ongoing"]:
+        body["date_ranges"] = []
 
     try:
         if not is_new:

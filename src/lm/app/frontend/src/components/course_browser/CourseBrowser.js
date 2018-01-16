@@ -127,7 +127,7 @@ export class CourseBrowser extends Component{
       case "SET_DATE_RANGE":
         return { 
           dateRange: action.data,
-          showOngoing: false,
+          showOngoing: true,
         };
       case "SET_DEFAULT_DATE_RANGE":
         return { 

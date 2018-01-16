@@ -197,6 +197,8 @@ class CourseEditor extends Component{
 
   handleOngoingChange = is_ongoing => {
     let course = this.state.course;
+    course.date_ranges = [];
+
     let invalidFields = this.state.invalidFields;
 
     if (is_ongoing == null){
@@ -439,7 +441,7 @@ class CourseEditor extends Component{
           cost: !validCost,
           level: !validLevel,
           format: !validFormat,
-          dateRanges: !validDateRanges,
+          dateRanges: !validDateInfo,
           liftedKeys: !validLiftedKeys,
           provider: !validProvider,
         },

@@ -339,16 +339,14 @@ def course_browse(request):
 
         result = (
             [_course_json(cd.course, index=i, date_range=extract_date_range(cd))
-                for i, cd in enumerate(ongoing_courses)] +
-
+                for i, cd in enumerate(other_courses)] +
             [_course_json(cd.course, index=i, date_range=extract_date_range(cd))
-                for i, cd in enumerate(other_courses)])
+                for i, cd in enumerate(ongoing_courses)])
 
         if SHOW_ONGOING_OPTS[show_ongoing_param]:
-            return json_response(
+            return json_response(result +
                 [_course_json(course, index=i)
-                    for i, course in enumerate(ongoing_without_dates)] +
-                result)
+                    for i, course in enumerate(ongoing_without_dates)])
         else:
             return json_response(result)
 
@@ -359,15 +357,11 @@ def course_browse(request):
         
         i = 0
         result = []
-        # for course in ongoing_without_dates:
-            # result.append(_course_json(course, index=i))
-            # i += 1
-
         for cd in cd_query:
-            result.append(
-                _course_json(cd.course,
-                             index=i,
-                             date_range=extract_date_range(cd)))
+            result.append(_course_json(cd.course,
+                index=i,
+                date_range=extract_date_range(cd)))
+            i += 1
 
         return json_response(result)
 
