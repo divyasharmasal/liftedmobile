@@ -39,6 +39,16 @@ export class CourseListEntry extends Component{
     }
   }
 
+    
+  renderDateRange = course => {
+    if (course.is_ongoing){
+      return "Ongoing";
+    }
+    else{
+      return this.formatDateRange(course.date_range);
+    }
+  }
+
 
   formatDateRange = dateRange => {
     const start = dateRange.start;
@@ -85,7 +95,7 @@ export class CourseListEntry extends Component{
 
         <div class="pure-u-22-24">
           <div class="date pure-u-1">
-            {this.formatDateRange(course.date_range)}
+            {this.renderDateRange(course)}
           </div>
 
           {course.provider &&
@@ -159,7 +169,7 @@ export class CourseListEntry extends Component{
           </div>
 
           <div class="date pure-u-1-2">
-            {this.formatDateRange(course.date_range)}
+            {this.renderDateRange(course)}
           </div>
 
           <div class="date pure-u-1-2">

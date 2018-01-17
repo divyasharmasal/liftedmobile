@@ -201,6 +201,9 @@ def course_browse(request):
         - 1: results 31-60
         - n: (30n + 1) to (30n + 30), index starting from 1
     @q: search query (default: None)
+    @og: show ongoing courses (default: 1)
+        - 1: True
+        - 0: False
 
     Respond with an error in the following situations:
         - @sd > @ed
@@ -211,6 +214,11 @@ def course_browse(request):
 
     PAGE_SIZE = 30
 
+    SHOW_ONGOING_OPTS = {
+        0: False,
+        1: True
+    }
+
     CPD_OPTS = {
         0: False,
         1: True,
@@ -218,9 +226,11 @@ def course_browse(request):
     }
 
     CPD_SORT = "CPD_SORT"
+    DATE_SORT = "DATE_SORT"
 
     SORT_OPTS = {
-        0: "start",
+        # 0: "start",
+        0: DATE_SORT,
         # 1: "course__coursecpdpoints__points",
         1: CPD_SORT,
         2: "course__cost",
@@ -232,10 +242,12 @@ def course_browse(request):
         1: ASC
     }
 
+    show_ongoing_param = _option_param(request, 1, "og", SHOW_ONGOING_OPTS,
+                               "Invalid show_ongoing param")
     sort_param = _option_param(request, 0, "s", SORT_OPTS,
-                                "Invalid sort param")
+                               "Invalid sort param")
     cpd_param = _option_param(request, 2, "c", CPD_OPTS,
-                               "Invalid CPD param")
+                              "Invalid CPD param")
     order_param = _option_param(request, 0, "o", ORDER_OPTS,
                                 "Invalid order param")
     page_param = _numeric_param(request, 0, "pg", "Invalid page param",
@@ -257,25 +269,48 @@ def course_browse(request):
 
     if CPD_OPTS[cpd_param] != "both":
         cd_query = cd_query.filter(
-                course__coursecpdpoints__is_private=CPD_OPTS[cpd_param])
+            course__coursecpdpoints__is_private=CPD_OPTS[cpd_param])
 
     if start_date_param is not None:
-        cd_query = cd_query.filter(start__gte=start_date_param)
+        cd_query = (
+            cd_query
+            .filter(start__gte=start_date_param)
+            # .exclude(course__is_ongoing=True)
+        )
     if end_date_param is not None:
-        cd_query = cd_query.filter(start__lte=end_date_param)
-    
+        cd_query = (
+            cd_query
+            .filter(start__lte=end_date_param)
+            # .exclude(course__is_ongoing=True)
+        )
+
+    ongoing_without_dates = []
+    for c in models.Course.objects \
+        .filter(is_ongoing=True) \
+        .filter(coursedate__isnull=True):
+
+        ongoing_without_dates.append(c)
+
     # cd_query = cd_query[start_page:end_page]
 
     if search_param is not None:
         cd_query = cd_query.filter(course__name__icontains=search_param)
 
+    if not SHOW_ONGOING_OPTS[show_ongoing_param]:
+        cd_query = cd_query.exclude(course__is_ongoing=True)
+
     if SORT_OPTS[sort_param] == CPD_SORT:
         result = []
+        j = 0
         for i, cd in enumerate(cd_query):
-            result.append(
-                _course_json(cd.course, index=i,
-                             date_range=extract_date_range(cd))
-            )
+            result.append(_course_json(cd.course,
+                index=i,
+                date_range=extract_date_range(cd)))
+            j += 1
+
+        for course in ongoing_without_dates:
+            result.append(_course_json(course, index=j))
+            j += 1
 
         priv_courses = list(filter(lambda c: c["cpd"]["is_private"], result))
         tbc_courses = list(filter(lambda c: c["cpd"]["is_tbc"], result))
@@ -287,13 +322,52 @@ def course_browse(request):
             pts_courses = list(reversed(pts_courses))
 
         return json_response(pts_courses + tbc_courses + priv_courses + na_courses)
+    
+    elif SORT_OPTS[sort_param] == DATE_SORT:
+        other_courses = (cd_query
+            .exclude(course__is_ongoing=True)
+            .order_by( ORDER_OPTS[order_param] + "start", "course__id"))
+
+        result = (
+            [_course_json(cd.course, index=i, date_range=extract_date_range(cd))
+                for i, cd in enumerate(other_courses)])
+
+        if SHOW_ONGOING_OPTS[show_ongoing_param]:
+            return json_response(
+                result +
+                [_course_json(course, index=i)
+                    for i, course in enumerate(ongoing_without_dates)])
+        else:
+            return json_response(result)
+
     else:
-        cd_query = cd_query.order_by(ORDER_OPTS[order_param] + SORT_OPTS[sort_param],
-                                     "course__id")
-        return json_response([
-            _course_json(cd.course, index=i, date_range=extract_date_range(cd))
-            for i, cd in enumerate(cd_query)
-            ])
+        cd_query = cd_query.order_by(
+            ORDER_OPTS[order_param] + SORT_OPTS[sort_param],
+            "course__id")
+
+        i = 0
+        result = []
+        for cd in cd_query:
+            result.append(_course_json(cd.course,
+                index=i,
+                date_range=extract_date_range(cd)))
+            i += 1
+
+        for course in ongoing_without_dates:
+            result.append(_course_json(course, index=i))
+            i += 1
+
+        # sort by cost
+        should_reverse = ORDER_OPTS[order_param] == ASC
+        result.sort(key=cost_sort_key, reverse=should_reverse)
+        return json_response(result)
+
+
+def cost_sort_key(a):
+    if a["cost"]["isVarying"]:
+        return -1
+    else:
+        return a["cost"]["cost"]
 
 
 def extract_date_range(course_date):
@@ -338,6 +412,11 @@ def course_recs(request):
     timezone = pytz.timezone("UTC")
     now = timezone.localize(datetime.datetime.now()).isoformat()
 
+    ongoing_course_query = (
+        models.Course.objects.filter(is_ongoing=True, coursedate__isnull=True)
+            .distinct()
+    )
+    
     cd_query = _optimise_course_date_query(
         models.CourseDate.objects.filter(start__gte=now)
         .distinct())
@@ -349,14 +428,31 @@ def course_recs(request):
             course__courseverticalcategory__vertical_category__vertical_id=vertical_id,
             course__courselevel__level_id__needlevel__need_id__in=need_ids,
             course__courseformat__format__needformat__need__in=need_f_query)
+        
+        course_need_f_query = F("_courselevel__level_id__needlevel__need_id")
+        ongoing_course_query = ongoing_course_query.filter(
+            courseverticalcategory__vertical_category__id=vertical_category_id,
+            courseverticalcategory__vertical_category__vertical_id=vertical_id,
+            courselevel__level_id__needlevel__need_id__in=need_ids,
+            courseformat__format__needformat__need__in=course_need_f_query)
     else:
         cd_query = cd_query.filter(
             course__courseverticalcategory__vertical_category__id=vertical_category_id,
             course__courseverticalcategory__vertical_category__vertical_id=vertical_id)
+        ongoing_course_query = ongoing_course_query.filter(
+            courseverticalcategory__vertical_category__id=vertical_category_id,
+            courseverticalcategory__vertical_category__vertical_id=vertical_id)
 
-    return json_response([
-        _course_json(cd.course, date_range=extract_date_range(cd)) \
-            for cd in cd_query])
+    for c in ongoing_course_query:
+        print(c.name)
+
+    result = (
+        [_course_json(cd.course, date_range=extract_date_range(cd))
+            for cd in cd_query] +
+        [_course_json(course) for course in ongoing_course_query]
+    )
+
+    return json_response(result)
 
 
 def _optimise_course_date_query(course_dates):
@@ -378,8 +474,6 @@ def _optimise_course_query(courses):
         .select_related("courselevel__level")
         .select_related("courseformat__format")
         .prefetch_related("coursedate_set")
-        .prefetch_related("courseverticalcategory_set")
-        .prefetch_related("coursetechcompetencycategory_set")
     )
 
 
@@ -416,6 +510,7 @@ def _course_json(course,
         "format": format_name,
         "spider_name": course.spider_name,
         "is_manually_added": course.is_manually_added,
+        "is_ongoing": course.is_ongoing,
         "date_range": date_range,
         "cpd": {
             "points": cpd_points,
@@ -430,18 +525,16 @@ def _course_json(course,
 
     if include_lifted_keys:
         lifted_keys = []
-        cvc_query = (
-            course.courseverticalcategory_set.all()
-            .select_related("vertical_category__vertical")
-        )
-        for cvc in cvc_query:
+
+        for cvc in course.courseverticalcategory_set.all():
             lifted_keys.append({
                 "vertical_name": cvc.vertical_category.vertical.name,
                 "vertical_category_name": cvc.vertical_category.name,
             })
 
-        for tech_comp_cat in models.CourseTechCompetencyCategory.objects.filter(
-                course=course).distinct("tech_competency_category__name"):
+        for tech_comp_cat in (course.coursetechcompetencycategory_set
+                .select_related("tech_competency_category")):
+
             lifted_keys.append({
                 "vertical_name": "Technology Framework",
                 "vertical_category_name": tech_comp_cat.tech_competency_category.name

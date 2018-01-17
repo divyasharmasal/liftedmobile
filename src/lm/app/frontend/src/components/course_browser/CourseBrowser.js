@@ -29,7 +29,6 @@ export class CourseBrowser extends Component{
     const now = new Date();
     const nextYear = now.getFullYear() + 1;
     this.defaultDateRange = {
-      //startDate: new Date(2017, 0, 1),
       startDate: now,
       endDate: new Date(nextYear, 11, 31),
     };
@@ -43,6 +42,7 @@ export class CourseBrowser extends Component{
       },
       dateRange: this.defaultDateRange,
       searchQuery: "",
+      showOngoing: true,
     };
 
     this.defaultState = {
@@ -54,6 +54,7 @@ export class CourseBrowser extends Component{
       },
       dateRange: this.defaultDateRange,
       searchQuery: "",
+      showOngoing: true,
     };
   }
 
@@ -64,11 +65,15 @@ export class CourseBrowser extends Component{
 
 
   updateCoursesFromState = () => {
-    const url = this.genCourseListUrl(this.state.sortBy,
-                                      "all",
-                                      this.state.dateRange,
-                                      0,
-                                      this.state.searchQuery);
+    const url =
+      this.genCourseListUrl(
+        this.state.sortBy,
+        "all",
+        this.state.dateRange,
+        0,
+        this.state.searchQuery,
+        this.state.showOngoing);
+
     this.fetchAndSetCourses(url);
   }
 
@@ -97,15 +102,17 @@ export class CourseBrowser extends Component{
   }
 
 
-  genCourseListUrl = (sortBy, cpdType, dateRange, page, searchQuery) => {
+  genCourseListUrl = (sortBy, cpdType, dateRange, page, searchQuery, showOngoing) => {
     const base = "/course_browse?";
     const sortByParam = "&s=" + sortKey[sortBy.field].toString();
     const sortOrderParam = "&o=" + directionKey[sortBy.direction].toString();
     const startDateParam = "&sd=" + this.genUtcDateStr(dateRange.startDate);
     const endDateParam = "&ed=" + this.genUtcDateStr(dateRange.endDate);
-    const searchParam = "&q=" + encodeURIComponent(searchQuery);
+    const searchParam = "&q=" + encodeURIComponent(searchQuery) + ";";
+    const showOngoingParam = "&og=" + (showOngoing ? "1": "0");
 
-    return base + sortByParam + sortOrderParam + startDateParam + endDateParam + searchParam;
+    return base + sortByParam + sortOrderParam + startDateParam +
+           endDateParam + searchParam + showOngoingParam;
   }
 
 
@@ -118,7 +125,15 @@ export class CourseBrowser extends Component{
       case "SET_SORT_BY":
         return { sortBy: action.data };
       case "SET_DATE_RANGE":
-        return { dateRange: action.data };
+        return { 
+          dateRange: action.data,
+          showOngoing: true,
+        };
+      case "SET_DEFAULT_DATE_RANGE":
+        return { 
+          dateRange: action.data,
+          showOngoing: true,
+        };
       case "SET_SEARCH_QUERY":
         return { searchQuery: action.data };
     default:
@@ -164,7 +179,12 @@ export class CourseBrowser extends Component{
 
 
   handleDateFilterClear = () => {
-    this.handleDateFilter(this.defaultDateRange);
+    this.dispatch({
+      type: "SET_DEFAULT_DATE_RANGE",
+      data: this.defaultDateRange,
+    }, () => {
+      this.updateCoursesFromState();
+    });
   }
 
 

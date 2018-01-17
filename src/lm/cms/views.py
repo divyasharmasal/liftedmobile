@@ -136,7 +136,8 @@ def cms_get_unpublished_courses_data(request):
 
 def get_date_ranges(course):
     result = []
-    for dr in app_models.CourseDate.objects.filter(course=course):
+    # for dr in app_models.CourseDate.objects.filter(course=course):
+    for dr in course.coursedate_set.all():
         result.append(extract_date_range(dr))
     return result
 
@@ -145,8 +146,10 @@ def get_date_ranges(course):
 def cms_get_published_courses_data(request):
     result = get_level_format_vertical_data()
 
-    courses = app_models.Course.objects.all()
-    courses = _optimise_course_query(courses)
+    courses = _optimise_course_query(app_models.Course.objects.all()
+         .prefetch_related("courseverticalcategory_set__vertical_category")
+         .prefetch_related("courseverticalcategory_set__vertical_category__vertical")
+        )
 
     result["courses"] = [_course_json(
                             course,
@@ -223,10 +226,11 @@ def save_course(request):
     # validate input
     spider_name = id = name = cost = url = level_name = cpd_points = \
         cpd_is_private = format_name = lifted_keys = is_published = \
-        cpd_is_na = provider = date_ranges = None
+        cpd_is_na = provider = is_ongoing = date_ranges = None
 
     is_new = "is_new" in body.keys() and body["is_new"]
 
+    # set safe defaults
     if "cpdIsTbc" not in body:
         body["cpdIsTbc"] = False
 
@@ -235,6 +239,13 @@ def save_course(request):
 
     if "isVarying" not in body["cost"]:
         body["cost"]["isVarying"] = False
+
+    if "is_ongoing" not in body:
+        body["is_ongoing"] = False
+
+    # is_ongoing and date_ranges are mutually exclusive options!
+    if body["is_ongoing"]:
+        body["date_ranges"] = []
 
     try:
         if not is_new:
@@ -250,6 +261,7 @@ def save_course(request):
         cpd_is_na = body["cpdIsNa"]
         format_name = body["format"]
         is_published = body["is_published"]
+        is_ongoing = body["is_ongoing"]
         spider_name = body["spider_name"]
         lifted_keys = body["lifted_keys"]
         is_manually_added = body["is_manually_added"]
@@ -277,7 +289,7 @@ def save_course(request):
         cpd_is_tbc = False
         cpd_is_private = False
 
-
+    # For already published courses
     if is_published and not is_new:
         # Course
         course = app_models.Course.objects.get(id=id)
@@ -286,6 +298,7 @@ def save_course(request):
         course.cost = cost["cost"]
         course.cost_is_varying = cost["isVarying"]
         course.provider = provider
+        course.is_ongoing = is_ongoing
         course.save()
 
         # LIFTED keys
@@ -298,22 +311,19 @@ def save_course(request):
                 for tech_comp_cat in (app_models.TechCompetencyCategory.objects
                                       .filter(name=tech_comp_cat_name)):
 
-                    course_tech_comp_cat = app_models.CourseTechCompetencyCategory(
+                    (app_models.CourseTechCompetencyCategory(
                         course=course,
-                        tech_competency_category=tech_comp_cat
-                    )
-                    course_tech_comp_cat.save()
+                        tech_competency_category=tech_comp_cat)
+                     .save())
             else:
                 vc = app_models.VerticalCategory.objects.get(
                     name=lifted_key["vertical_category_name"],
-                    vertical__name=lifted_key["vertical_name"]
-                    )
+                    vertical__name=lifted_key["vertical_name"])
 
-                cvc = app_models.CourseVerticalCategory(
+                (app_models.CourseVerticalCategory(
                     course=course,
-                    vertical_category=vc
-                )
-                cvc.save()
+                    vertical_category=vc)
+                 .save())
 
         # CPD
         course_cpd = app_models.CourseCpdPoints.objects.get(course=course)
@@ -321,7 +331,6 @@ def save_course(request):
         course_cpd.is_private = cpd_is_private
         course_cpd.is_tbc = cpd_is_tbc
         course_cpd.is_na = cpd_is_na
-
         course_cpd.save()
 
         # Level
@@ -332,9 +341,9 @@ def save_course(request):
 
         # Format
 
-        format = app_models.Format.objects.get(name=format_name)
+        fmt = app_models.Format.objects.get(name=format_name)
         course_format = app_models.CourseFormat.objects.get(course=course)
-        course_format.format = format
+        course_format.format = fmt
         course_format.save()
 
         # Date ranges
@@ -346,41 +355,43 @@ def save_course(request):
     else:
         id = None
         if not is_new:
-            id = body["id"]
-            scraped_course = models.ScrapedCourse(id=id)
+            scraped_course = models.ScrapedCourse(body["id"])
             scraped_course.is_new = False
             scraped_course.save()
 
         # Course
-        course = app_models.Course(name=name,
-                                   url=url,
-                                   cost=cost["cost"],
-                                   cost_is_varying=cost["isVarying"],
-                                   spider_name=spider_name,
-                                   provider=provider,
-                                   is_manually_added=is_manually_added)
+        course = (
+            app_models.Course(
+                name=name,
+                url=url,
+                cost=cost["cost"],
+                cost_is_varying=cost["isVarying"],
+                spider_name=spider_name,
+                provider=provider,
+                is_ongoing=is_ongoing,
+                is_manually_added=is_manually_added))
         course.save()
 
         # LIFTED keys
         for lifted_key in lifted_keys:
             if lifted_key["vertical_name"] == "Technology Framework":
-                for tech_comp_cat in app_models.TechCompetencyCategory.objects.filter(
-                    name=lifted_key["vertical_category_name"]):
-                    course_tcc = app_models.CourseTechCompetencyCategory(
+                for tech_comp_cat in (
+                   app_models.TechCompetencyCategory.objects.filter(
+                       name=lifted_key["vertical_category_name"])):
+                    (app_models.CourseTechCompetencyCategory(
                         course=course,
                         tech_competency_category=tech_comp_cat)
-                    course_tcc.save()
+                     .save())
 
             else:
                 vertical_category = app_models.VerticalCategory.objects.get(
                     name=lifted_key["vertical_category_name"],
-                    vertical__name=lifted_key["vertical_name"]
-                )
+                    vertical__name=lifted_key["vertical_name"])
 
-                course_vc = app_models.CourseVerticalCategory(
-                    course=course, 
+                (app_models.CourseVerticalCategory(
+                    course=course,
                     vertical_category=vertical_category)
-                course_vc.save()
+                 .save())
 
         # CPD
         if cpd_is_private or cpd_is_na or cpd_is_tbc:
@@ -402,8 +413,8 @@ def save_course(request):
         course_level.save()
 
         # Format
-        format = app_models.Format.objects.get(name=format_name)
-        course_format = app_models.CourseFormat(course=course, format=format)
+        fmt = app_models.Format.objects.get(name=format_name)
+        course_format = app_models.CourseFormat(course=course, format=fmt)
         course_format.save()
 
         # Start dates
@@ -589,7 +600,9 @@ def scraper_add_course(request):
                 url=url))
     matching_courses_exists = matching_courses.exists()
 
+    # Remove matching scraped courses if the published course already exists
     if matching_courses_exists and sc_exists:
+
         matching_scraped_courses.delete()
 
     elif sc_exists:

@@ -55,10 +55,7 @@ export class CourseDateFilter extends Component{
           </div>
         </DropdownTrigger>
         <DropdownContent>
-          <div 
-            onClick={this.closeDropdown}
-            class="overlay"
-          >
+          <div onClick={this.closeDropdown} class="overlay" >
           </div>
 
           <div class="filter">
@@ -93,12 +90,9 @@ export class CourseDateFilter extends Component{
                   </div>
               }
 
-              <div class="button ok"
-                onClick={this.selectFilterBtn}
-              >
+              <div class="button ok" onClick={this.selectFilterBtn} >
                 <a>Filter</a>
               </div>
-
             </div>
 
           </div>
