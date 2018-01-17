@@ -44,7 +44,8 @@ def index(request):
     """
     View for /
     """
-    return render(request, "app/index.html")
+    is_cms = "CMS" in os.environ and os.environ["CMS"]
+    return render(request, "app/index.html", {"is_cms": is_cms})
 
 
 # @login_required

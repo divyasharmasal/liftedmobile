@@ -35,7 +35,11 @@
             content="{% static "/app/dist/favicons/browserconfig.xml"%}">
         {% block head %}{% endblock %}
     </head>
-    <body>
+    {% if is_cms %}
+        <body data-top-msg="CMS" data-top-link="/cms/" >
+    {% else %}
+        <body>
+    {% endif %}
         <noscript><p>This page requires Javascript.</p></noscript>
         {% block body %}{% endblock %}
         <script>

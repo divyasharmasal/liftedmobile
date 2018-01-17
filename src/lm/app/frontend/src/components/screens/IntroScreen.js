@@ -1,10 +1,21 @@
 import { h, Component } from 'preact';
+import { route } from "preact-router";
 
 
 export class IntroScreen extends Component{
   render(){
+    const bodyTag = document.getElementsByTagName("body")[0];
+    const topMsg = bodyTag.dataset.topMsg;
+    const topLink = bodyTag.dataset.topLink;
+    console.log(topMsg, topLink);
+
     return(
       <div class="pure-g">
+        {topMsg != null &&
+         <div class="pure-u-1 top_msg">
+           <a href="/cms" target="_blank"><p>{topMsg}</p></a>
+         </div>
+        }
         <div class="pure-u-1">
           <div class="sal_logo no_user_select">
             <a target="_blank" href="https://www.sal.org.sg/">

@@ -151,13 +151,13 @@ export default class Courses extends Component{
     if (end != null){
       const fmtStart = format(start, fmtStr);
       const fmtEnd = format(end, fmtStr);
-      
+
       if (fmtStart === fmtEnd){
         return fmtStart;
       }
       else{
+        return fmtStart + " to " + fmtEnd;
       }
-      return fmtStart + " to " + fmtEnd;
     }
     else{
       return format(start, fmtStr);
