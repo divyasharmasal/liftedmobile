@@ -323,28 +323,17 @@ def course_browse(request):
         return json_response(pts_courses + tbc_courses + priv_courses + na_courses)
     
     elif SORT_OPTS[sort_param] == DATE_SORT:
-        ongoing_courses = (
-            cd_query
-            .filter(course__is_ongoing=True)
-            .order_by(
-                ORDER_OPTS[order_param] + "start", "course__id") 
-        )
-        
-        other_courses = (
-            cd_query
+        other_courses = (cd_query
             .exclude(course__is_ongoing=True)
-            .order_by(
-                ORDER_OPTS[order_param] + "start", "course__id") 
-        )
+            .order_by( ORDER_OPTS[order_param] + "start", "course__id"))
 
         result = (
             [_course_json(cd.course, index=i, date_range=extract_date_range(cd))
-                for i, cd in enumerate(other_courses)] +
-            [_course_json(cd.course, index=i, date_range=extract_date_range(cd))
-                for i, cd in enumerate(ongoing_courses)])
+                for i, cd in enumerate(other_courses)])
 
         if SHOW_ONGOING_OPTS[show_ongoing_param]:
-            return json_response(result +
+            return json_response(
+                result +
                 [_course_json(course, index=i)
                     for i, course in enumerate(ongoing_without_dates)])
         else:
@@ -354,7 +343,7 @@ def course_browse(request):
         cd_query = cd_query.order_by(
             ORDER_OPTS[order_param] + SORT_OPTS[sort_param],
             "course__id")
-        
+
         i = 0
         result = []
         for cd in cd_query:
@@ -363,7 +352,21 @@ def course_browse(request):
                 date_range=extract_date_range(cd)))
             i += 1
 
+        for course in ongoing_without_dates:
+            result.append(_course_json(course, index=i))
+            i += 1
+
+        # sort by cost
+        should_reverse = ORDER_OPTS[order_param] == ASC
+        result.sort(key=cost_sort_key, reverse=should_reverse)
         return json_response(result)
+
+
+def cost_sort_key(a):
+    if a["cost"]["isVarying"]:
+        return -1
+    else:
+        return a["cost"]["cost"]
 
 
 def extract_date_range(course_date):
