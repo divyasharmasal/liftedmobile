@@ -133,12 +133,12 @@ MIDDLEWARE = [
     'htmlmin.middleware.MarkRequestMiddleware',
 ]
 
-if DEBUG:
-    MIDDLEWARE.append("querycount.middleware.QueryCountMiddleware")
-
 QUERYCOUNT = {
     "IGNORE_REQUEST_PATTERNS": ["^/favicon.ico"]
 }
+
+# if DEBUG:
+    # MIDDLEWARE.append("querycount.middleware.QueryCountMiddleware")
 
 ROOT_URLCONF = 'lm.urls'
 

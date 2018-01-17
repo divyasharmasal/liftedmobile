@@ -231,7 +231,7 @@ export default class Courses extends Component{
       courses = ptsCourses.concat(tbcCourses).concat(privCourses).concat(naCourses);
     }
     else if (field === "date"){
-      const ongoingCourses = sortCoursesByDateRange(courses.filter(c => c.is_ongoing));
+      const ongoingCourses = courses.filter(c => c.is_ongoing);
       const otherCourses = sortCoursesByDateRange(
         courses.filter(c => !c.is_ongoing || c.is_ongoing == null));
 
@@ -240,7 +240,7 @@ export default class Courses extends Component{
         shouldReverse = false;
       }
       //courses = sortCoursesByDateRange(courses);
-      courses = ongoingCourses.concat(otherCourses);
+      courses = otherCourses.concat(ongoingCourses);
     }
 
     if (!sortDesc && shouldReverse){

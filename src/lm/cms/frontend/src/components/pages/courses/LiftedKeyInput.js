@@ -78,6 +78,7 @@ export class LiftedKeyInput extends Component{
     return (
       <div class="custom_input liftedkey_input_item">
         <select 
+          disabled={this.props.disabled}
           selectedIndex={selectedVerticalIndex}
           onChange={e => this.handleVerticalSelect(e, index)}>
           <option value="" disabled selected>Select a vertical:</option>
@@ -94,6 +95,7 @@ export class LiftedKeyInput extends Component{
         {this.state.values[index] &&
          this.state.values[index].vertical_name != null &&
           <select 
+            disabled={this.props.disabled}
             selectedIndex={selectedVerticalCategoryIndex}
             onChange={e => this.handleVerticalCategorySelect(e, index)}>
             <option value="" disabled selected>Select a category:</option>
@@ -128,6 +130,7 @@ export class LiftedKeyInput extends Component{
       <div class={renderClassname(this.state.invalid, "lifted_key_input")}>
         <label>LIFTED Keys:</label>
         <ListInput
+          disabled={this.props.disabled}
           handleValueChange={this.handleValueChange}
           addItemTitle="Add key"
           newItem={this.newItem}

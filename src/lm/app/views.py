@@ -408,6 +408,11 @@ def course_recs(request):
     timezone = pytz.timezone("UTC")
     now = timezone.localize(datetime.datetime.now()).isoformat()
 
+    ongoing_course_query = (
+        models.Course.objects.filter(is_ongoing=True, coursedate__isnull=True)
+            .distinct()
+    )
+    
     cd_query = _optimise_course_date_query(
         models.CourseDate.objects.filter(start__gte=now)
         .distinct())
@@ -419,14 +424,31 @@ def course_recs(request):
             course__courseverticalcategory__vertical_category__vertical_id=vertical_id,
             course__courselevel__level_id__needlevel__need_id__in=need_ids,
             course__courseformat__format__needformat__need__in=need_f_query)
+        
+        course_need_f_query = F("_courselevel__level_id__needlevel__need_id")
+        ongoing_course_query = ongoing_course_query.filter(
+            courseverticalcategory__vertical_category__id=vertical_category_id,
+            courseverticalcategory__vertical_category__vertical_id=vertical_id,
+            courselevel__level_id__needlevel__need_id__in=need_ids,
+            courseformat__format__needformat__need__in=course_need_f_query)
     else:
         cd_query = cd_query.filter(
             course__courseverticalcategory__vertical_category__id=vertical_category_id,
             course__courseverticalcategory__vertical_category__vertical_id=vertical_id)
+        ongoing_course_query = ongoing_course_query.filter(
+            courseverticalcategory__vertical_category__id=vertical_category_id,
+            courseverticalcategory__vertical_category__vertical_id=vertical_id)
 
-    return json_response([
-        _course_json(cd.course, date_range=extract_date_range(cd)) \
-            for cd in cd_query])
+    for c in ongoing_course_query:
+        print(c.name)
+
+    result = (
+        [_course_json(cd.course, date_range=extract_date_range(cd))
+            for cd in cd_query] +
+        [_course_json(course) for course in ongoing_course_query]
+    )
+
+    return json_response(result)
 
 
 def _optimise_course_date_query(course_dates):
