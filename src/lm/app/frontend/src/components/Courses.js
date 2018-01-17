@@ -11,10 +11,6 @@ const symbol = isDesc => {
   const asc = "▲";
 
   return isDesc ? desc : asc;
-  //if (isDesc){ 
-    //return desc;
-  //}
-  //return asc;
 }
 
 
@@ -139,33 +135,35 @@ export default class Courses extends Component{
 
   format_date_range = course => {
     //TODO: move to lib/
-
+    //
     if (course.is_ongoing){
       return "Ongoing";
     }
+    else{
+      const dateRange = course.date_range;
+      const start = dateRange.start;
+      const end = dateRange.end;
 
-    const start = course.date_range.start;
-    const end = course.date_range.end;
-
-    if (start == null){
-      return "Invalid date";
-    }
-
-    const fmtStr = "ddd, D MMM YYYY";
-
-    if (end != null){
-      const fmtStart = format(start, fmtStr);
-      const fmtEnd = format(end, fmtStr);
-
-      if (fmtStart === fmtEnd){
-        return fmtStart;
+      if (start == null){
+        return "Invalid date";
       }
-      else{
+
+      const fmtStr = "ddd, D MMM YYYY";
+
+      if (end != null){
+        const fmtStart = format(start, fmtStr);
+        const fmtEnd = format(end, fmtStr);
+        
+        if (fmtStart === fmtEnd){
+          return fmtStart;
+        }
+        else{
+        }
         return fmtStart + " to " + fmtEnd;
       }
-    }
-    else{
-      return format(start, fmtStr);
+      else{
+        return format(start, fmtStr);
+      }
     }
   }
 
@@ -233,7 +231,16 @@ export default class Courses extends Component{
       courses = ptsCourses.concat(tbcCourses).concat(privCourses).concat(naCourses);
     }
     else if (field === "date"){
-      courses = sortCoursesByDateRange(courses);
+      const ongoingCourses = sortCoursesByDateRange(courses.filter(c => c.is_ongoing));
+      const otherCourses = sortCoursesByDateRange(
+        courses.filter(c => !c.is_ongoing || c.is_ongoing == null));
+
+    if (!sortDesc && shouldReverse){
+        otherCourses.reverse();
+        shouldReverse = false;
+      }
+
+      courses = otherCourses.concat(ongoingCourses);
     }
 
     if (!sortDesc && shouldReverse){
