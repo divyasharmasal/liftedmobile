@@ -137,10 +137,15 @@ export default class Courses extends Component{
   }
 
 
-  format_date_range = dateRange => {
+  format_date_range = course => {
     //TODO: move to lib/
-    const start = dateRange.start;
-    const end = dateRange.end;
+
+    if (course.is_ongoing){
+      return "Ongoing";
+    }
+
+    const start = course.date_range.start;
+    const end = course.date_range.end;
 
     if (start == null){
       return "Invalid date";
@@ -269,7 +274,7 @@ export default class Courses extends Component{
             <td data-title="CPD">{this.format_cpd(course.cpd)}</td>
             <td data-title="Level" class="full_width">{course.level}</td>
             <td data-title="Format" class="full_width">{course.format}</td>
-            <td data-title="Date">{this.format_date_range(course.date_range)}</td>
+            <td data-title="Date">{this.format_date_range(course)}</td>
           </tr>
         );
       });

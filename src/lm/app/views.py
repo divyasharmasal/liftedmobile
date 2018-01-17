@@ -443,9 +443,6 @@ def course_recs(request):
             courseverticalcategory__vertical_category__id=vertical_category_id,
             courseverticalcategory__vertical_category__vertical_id=vertical_id)
 
-    for c in ongoing_course_query:
-        print(c.name)
-
     result = (
         [_course_json(cd.course, date_range=extract_date_range(cd))
             for cd in cd_query] +
