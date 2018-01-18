@@ -798,20 +798,36 @@ def _tech_diag_course_recommendations(categorised_answers, tech_role):
 
     for category_name, score_info in categorised_answers.items():
         result["map"][category_name] = []
-        cd_query = \
-            models.CourseDate.objects.filter(
-                start__gte=now,
-                course__coursetechcompetencycategory__tech_competency_category__name=category_name
-        ).distinct()
+        cd_query = (models.CourseDate.objects.filter(
+            start__gte=now,
+            course__coursetechcompetencycategory__tech_competency_category__name=category_name)
+            .distinct())
 
         cd_query = _optimise_course_date_query(cd_query)
 
+        ongoing_course_query = (
+            models.Course.objects
+            .filter(
+                is_ongoing=True,
+                coursedate__isnull=True,
+                coursetechcompetencycategory__tech_competency_category__name=category_name)
+            .distinct())
+
+        max_cd_id = 0
         for cd in cd_query:
             course = cd.course
             cd_id = hash_func(cd.id)
+            if cd.id < max_cd_id:
+                max_cd_id = cd.id
             result["map"][category_name].append(cd_id)
             result["courses"][cd_id] = \
                 _course_json(course, date_range=extract_date_range(cd))
+
+        for course in ongoing_course_query:
+            c_id = hash_func(course.id + max_cd_id)
+            result["map"][category_name].append(c_id)
+            result["courses"][c_id] = _course_json(course)
+
 
     return result
 
