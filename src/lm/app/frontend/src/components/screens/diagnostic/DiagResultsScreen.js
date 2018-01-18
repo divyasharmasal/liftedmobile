@@ -64,7 +64,7 @@ class CategoryCourses extends Component{
               })
             }}>
             {this.props.categoryName}
-            <span class="arrow">{toggleArrow}</span>
+            <span class="arrow no_user_select">{toggleArrow}</span>
           </p>
           {stars(this.props.results[this.props.categoryName].score)}
         </div>
