@@ -974,6 +974,11 @@ def _diag_course_recommendations(categorised_answers, vertical, job_role):
         cd_query = []
         result["map"][category_name] = []
 
+        ongoing_course_query = (
+            models.Course.objects
+            .filter(is_ongoing=True, coursedate__isnull=True)
+            .distinct())
+
         if score_info["special"]:
             real_cat_name = models.Competency.objects.filter(
                 specialism__name=category_name,
@@ -981,24 +986,39 @@ def _diag_course_recommendations(categorised_answers, vertical, job_role):
                 jobrolecompetency__job_role=job_role
             )[0].category.name
 
-            cd_query = \
-                models.CourseDate.objects.filter(
-                    course__courseverticalcategory__vertical_category__name=real_cat_name,
-                    course__courseverticalcategory__vertical_category__vertical=vertical)
+            cd_query = models.CourseDate.objects.filter(
+                course__courseverticalcategory__vertical_category__name=real_cat_name,
+                course__courseverticalcategory__vertical_category__vertical=vertical)
+
+            ongoing_course_query = ongoing_course_query.filter(
+                courseverticalcategory__vertical_category__name=real_cat_name,
+                courseverticalcategory__vertical_category__vertical=vertical)
 
         else:
-            cd_query = \
-                models.CourseDate.objects.filter(
-                    course__courseverticalcategory__vertical_category__vertical=vertical,
-                    course__courseverticalcategory__vertical_category__name=category_name)
+            cd_query = models.CourseDate.objects.filter(
+                course__courseverticalcategory__vertical_category__vertical=vertical,
+                course__courseverticalcategory__vertical_category__name=category_name)
 
-        cd_query = _optimise_course_date_query(cd_query) \
-                        .filter(start__gte=now)
+            ongoing_course_query = ongoing_course_query.filter(
+                courseverticalcategory__vertical_category__vertical=vertical,
+                courseverticalcategory__vertical_category__name=category_name)
 
+        cd_query = (_optimise_course_date_query(cd_query)
+                    .filter(start__gte=now))
+
+        max_cd_id = 0
         for cd in cd_query:
             cd_id = hash_func(cd.id)
             result["map"][category_name].append(cd_id)
             result["courses"][cd_id] = \
                 _course_json(cd.course, date_range=extract_date_range(cd))
+
+            if cd.id < max_cd_id:
+                max_cd_id = cd.id
+
+        for course in ongoing_course_query:
+            c_id = hash_func(course.id + max_cd_id)
+            result["map"][category_name].append(c_id)
+            result["courses"][c_id] = _course_json(course)
 
     return result
