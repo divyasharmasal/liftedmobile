@@ -12,6 +12,7 @@ from django.shortcuts import render
 from django.http import HttpResponseServerError
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Max
 from django.db.models import F
 
@@ -34,12 +35,24 @@ def json_response(obj):
                         content_type="application/json")
 
 
+def conditional_decorate(condition, decorator):
+    if condition:
+        return decorator
+    else:
+        return lambda x: x
+
+staff_login_decorator = staff_member_required(login_url="login")
+
+IS_CMS = "CMS" in os.environ and os.environ["CMS"]
+
 # @login_required
+@conditional_decorate(IS_CMS, staff_login_decorator)
 def terms_of_use(request):
     return render(request, "app/terms.html")
 
 
 # @login_required
+@conditional_decorate(IS_CMS, staff_login_decorator)
 def index(request):
     """
     View for /
@@ -49,6 +62,7 @@ def index(request):
 
 
 # @login_required
+@conditional_decorate(IS_CMS, staff_login_decorator)
 def qns_and_opts(request):
     """
     Respond with a JSON representation of the quiz questions
@@ -153,6 +167,7 @@ def _date_param(request, default, key, error_msg):
 
 
 # @login_required
+@conditional_decorate(IS_CMS, staff_login_decorator)
 def course_browse(request):
     """
     Respond with a JSON string with a list of courses. Each course
@@ -385,6 +400,7 @@ def extract_date_range(course_date):
 
 
 # @login_required
+@conditional_decorate(IS_CMS, staff_login_decorator)
 def course_recs(request):
     """
     Respond with a list of courses that correspond to a given vertical and
@@ -549,6 +565,7 @@ def _course_json(course,
 
 
 # @login_required
+@conditional_decorate(IS_CMS, staff_login_decorator)
 def roles(request):
     """
     Repsond with a list of roles given the organisation type, vertical, and
@@ -632,6 +649,7 @@ def roles(request):
 
 
 # @login_required
+@conditional_decorate(IS_CMS, staff_login_decorator)
 def tech_diag(request):
     """
     Given a tech role ID, respond with the tech diagnostic questions.
@@ -653,6 +671,7 @@ def tech_diag(request):
 
 
 # @login_required
+@conditional_decorate(IS_CMS, staff_login_decorator)
 def diag(request):
     """
     Given a role ID, respond with the competency diagnostic questions.
@@ -679,6 +698,7 @@ def diag(request):
 
 
 # @login_required
+@conditional_decorate(IS_CMS, staff_login_decorator)
 def tech_diag_results(request):
     tech_role_id = _numeric_param(request, None, "r", "Invalid tech role param", True)
     tech_role = models.TechRole.objects.get(id=tech_role_id)
@@ -797,6 +817,7 @@ def _tech_diag_course_recommendations(categorised_answers, tech_role):
 
 
 # @login_required
+@conditional_decorate(IS_CMS, staff_login_decorator)
 def results(request):
     """
     Calculate the user's diagnostic scores and provide a list of
