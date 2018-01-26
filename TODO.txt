@@ -1,23 +1,13 @@
-- ongoing courses to go to the botttom if sorted by date or at the default screen
-
 - filter for e-learning courses in course browser
 - Explainers for tech roles and "I want to develop my" whatscreen 
      - info icon that shows more details when tapped
-
-- Get new LE certs on Fri 8 Dec 1500 hrs!
 - LE cert backup plan
     - Remind Anita about pentest email
-
 - Resolve course duplicates across sources
-
 - Standardise course provider names and provide a suggestion input dropdown
 - Breadcrumbs
 - CMS sorting
-
 - Funnel visitors from the course browser to the diagnostic
-- Mid-Jan: Submit phase 2 proposal: heatmap, scraping of books, scraping of AP
-  site, law school event pages, tagging of books, recommended reading section,
-  journals online, granular tagging of courses
 - Do a code generator for 3rd party
 - Scrape SCCA
 - Full auth system with 2FA
@@ -26,13 +16,15 @@
 - Unit testing
 - Secrets in Vault
 - Link CloudWatch to graylog
+- Get new LE certs
 
 ------------------------------------------------
 
 Done:
 - Option for "ongoing" option to courses - always show on top
     - add_course should not overrride this option
-
+    - ongoing courses to go to the botttom if sorted by date or at the default
+      screen
 - Hyperlink course editor url
 - SkillsFuture URLs should go to SF
 - Only show one date if the start and end are the same

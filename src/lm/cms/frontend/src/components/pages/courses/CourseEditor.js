@@ -775,7 +775,8 @@ class NameInput extends TextInput{
         <input type="text" 
           disabled={this.props.disabled}
           placeholder="Name" 
-          onKeyUp={e => this.handleValueChange(e.target.value)}
+          onKeyUp{e => this.handleValueChange(e.target.value)}
+          onChange={e => this.handleValueChange(e.target.value)}
           value={this.state.value} />
       </div>
     );
@@ -791,6 +792,7 @@ class UrlInput extends TextInput{
         <textarea
           disabled={this.props.disabled}
           onKeyUp={e => this.handleValueChange(e.target.value)}
+          onChange={e => this.handleValueChange(e.target.value)}
           placeholder="(none)"
           rows="2"
           value={this.state.value} />

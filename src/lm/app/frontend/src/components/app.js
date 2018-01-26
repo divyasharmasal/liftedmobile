@@ -97,7 +97,6 @@ export default class App extends Component {
         ga("send", "pageview");
       }
     }
-
 	};
 
 

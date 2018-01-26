@@ -445,7 +445,7 @@ def course_recs(request):
             course__courselevel__level_id__needlevel__need_id__in=need_ids,
             course__courseformat__format__needformat__need__in=need_f_query)
         
-        course_need_f_query = F("_courselevel__level_id__needlevel__need_id")
+        course_need_f_query = F("courselevel__level_id__needlevel__need_id")
         ongoing_course_query = ongoing_course_query.filter(
             courseverticalcategory__vertical_category__id=vertical_category_id,
             courseverticalcategory__vertical_category__vertical_id=vertical_id,
