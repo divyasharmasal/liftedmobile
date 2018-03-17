@@ -39,6 +39,7 @@ export class ScrapersPage extends Component {
           }
         });
       });
+
       return result;
     }
 

@@ -189,6 +189,29 @@ This means that even though the App server contains code for both `app` and
 sets the `CMS` environment variable, only the CMS server will enable the `cms`
 Django app. 
 
+In effect, since the CMS server runs *both* the `app` and `cms` Django
+applications, it is a mirror of what the App server does.
+
+||`app`|`cms`|
+|---|---|---|
+|App server|Y|N|
+|CMS server|Y|Y|
+
+To make it obvious to a CMS user that they are accessing the CMS, the App will
+insert a banner with a link to the CMS dashboard if it detects the `CMS`
+environment variable. The link to the CMS is not hardcoded into the App
+frontend code, but dynamically inserted in the base template in Django
+(`src/lm/app/templates/app/base.html`).
+
+Note, however, that all the routes in the CMS server are password-protected,
+including those from `app`. This is made possible by `src/lm/app/views.py`
+which applies a Python decorator (`conditional_decorate`) to every view. Each
+decorator checks whether the `CMS` environment variable exists, and if it does,
+applies the `staff_member_required` decorator from the
+`django.contrib.admin.views.decorators` library, effectively restricting App
+functionality in the CMS to only staff, but not applying said restrictions in
+the App (since it does not have the `CMS` environment variable set.
+
 `settings.py` also looks for the `CMS` environment variable to selectively
 modify or add the following configuration settings **in production** as such:
 
@@ -219,14 +242,95 @@ information about the development environment can be found in the
 
 |Number|Service|Notes|
 |---|---|---|
+|80|HTTP||
+|443|SSL/TLS||
 |2233|SSH|It is a best practice to not use port 22 for SSH|
 |5544|Postgres|Restricted to traffic between the App and CMS servers|
-|80|HTTP|For the App server|
 |9001|HTTP|For the CMS|
 
 ### The App and CMS databases
+
+<a href="./images/db_separation.png" target="_blank">
+    <img src="./images/db_separation.png" width=400 />
+</a>
+
+As mentioned above, the same Django project runs on both the App and CMS
+servers. It is crucial to note that data is not replicated between each
+corresponding database. The CMS server does not store `app` data, and the App
+server does not store `cms` data. Only the App server stores `app` data, and
+only the CMS stores `cms` data. This is achieved by the following technique:
+
+1. `settings.py` appends `"cms.db_routers.CmsRouter"` to the `DATABASE_ROUTERS`
+   configuration setting if and only if `CMS` is an environment variable.
+2. The `DATABASES` configuration setting in `settings.py` differs for the CMS
+   and App servers, again depending on the presence of the `CMS` environment
+   variable.
+    - In the App, there is only 1 database configured: `default`.
+    - In the CMS, there are 2 databases configured:
+        1. `app_server`, which points to the database on the remote App server
+        2. `default`, which points to CMS database, which should be set to `dockerhost` (more on this below)
+3. `CmsRouter`, defined in `src/lm/cms/db_routers.py`, uses the `db_for_read`,
+   `db_for_write`, and `allow_migrate` functions to tell Django which database
+    to read or write to, and to disable migrations on the App database from the
+    CMS server, based on the `app_label` and `db` variables. See the Django
+    documentation on [Multiple
+    Databases](https://docs.djangoproject.com/en/2.0/topics/db/multi-db/) for more
+information.
+
+#### The `dockerhost` hostname
+
+While it is a best practice to *not* Dockerise a production database, this
+creates the challenge of connecting a Docker container, which resides within
+a Docker bridge network, to a database server which resides on a different
+network. In the case of the `liftedmobile` container in the App
+server, for instance, it  must communicate with the Postgres server situated on
+the host. To make this possible, the `liftedmobile` container (as well as
+`admin_cms`) have their `/etc/hosts` files configured as such:
+
+In `docker/app_server/liftedmobile.prod.dockerfile` and
+`docker/admin_server/cms.prod.dockerfile`:
+
+```
+CMD echo $(netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}') dockerhost >> /etc/hosts
+&& (rest of the dockerfile...)
+```
+
+This appends the following to the `/etc/hosts` file within each container:
+
+```
+172.18.0.1 dockerhost
+```
+
+This makes the `dockerhost` an alias to `172.18.0.1`, which is the gateway
+through which the container can access the host. Since this gateway address may
+not be consistent across system reboots, the `echo` command shown above is
+agnostic to the actual gateway IP address, this technique removes the need to
+reconfigure the system if the gateway address changes.
+
+### Postgres configuration
+
+In order for a Docker container to connect to the Postgres server on the host,
+Postgres must also be configured to listen on the Docker gateway IP:
+
+In `/etc/postgresql/9.5/main/postgresql.conf`:
+
+```
+listen_addresses = 'localhost,172.17.0.1,172.18.0.1'
+```
+
+At the moment, the Lifted App and CMS deployment scripts do not automatically
+add the gateway address to `postgresql.conf`, so this has to be done manually
+for now. One way to get around this is to specify more than one possible
+gateway address, as shown above (`171.17...` and `172.18...`).
+
+Also make sure to change the port number away from the default:
+
+```
+port = 5544
+```
+
+#### Initial LIFTED Framework Data
 <!--TODO: how initial data gets loaded -->
-<!--TODO: how the Django code separates the CMS and App -->
 
 ## Frontend architecture
 

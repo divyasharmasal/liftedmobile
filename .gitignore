@@ -18,6 +18,8 @@ license_extractor/licenses.json
 src/lm/static/
 admin/cms/static/
 
+docs/node_modules/
+
 # node
 node_modules/
 npm-debug.log*

@@ -2,11 +2,13 @@
 
 The Lifted App, located at [app.lifted.sg](https://app.lifted.sg), helps
 lawyers and legal professionals to improve their skillsets. Through a simple
-and friendly interface, it allows users to identify their strengths and
-weaknesses, as well as discover relevant continuous professional development
-(CPD) courses from a variety of providers. These courses provide "CPD points",
-which lawyers are obligated to collect every year in order to renew their
-practice licenses. As such, the app reduces inefficiences of this process.
+and friendly interface, it allows them to identify their strengths and
+weaknesses in their practice areas, and thereby discover relevant continuous
+professional development (CPD) courses from a variety of providers. These
+courses provide "CPD points", which lawyers are obligated to collect every year
+in order to renew their practice licenses. By linking users to courses in a
+personalised manner, the app helps them to save time and become better at their
+jobs.
 
 The course discovery functions of the app is guided by the [Legal Industry
 Framework for Training and

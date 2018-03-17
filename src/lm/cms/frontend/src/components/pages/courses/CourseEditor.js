@@ -775,7 +775,7 @@ class NameInput extends TextInput{
         <input type="text" 
           disabled={this.props.disabled}
           placeholder="Name" 
-          onKeyUp{e => this.handleValueChange(e.target.value)}
+          onKeyUp={e => this.handleValueChange(e.target.value)}
           onChange={e => this.handleValueChange(e.target.value)}
           value={this.state.value} />
       </div>

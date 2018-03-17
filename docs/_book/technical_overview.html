@@ -403,6 +403,42 @@ exists, and if it does, it enables the <code>cms</code> app as an installed app:
 <code>cms</code>, including each of their views and URL routes, but because Docker Compose
 sets the <code>CMS</code> environment variable, only the CMS server will enable the <code>cms</code>
 Django app. </p>
+<p>In effect, since the CMS server runs <em>both</em> the <code>app</code> and <code>cms</code> Django
+applications, it is a mirror of what the App server does.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>app</code></th>
+<th><code>cms</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>App server</td>
+<td>Y</td>
+<td>N</td>
+</tr>
+<tr>
+<td>CMS server</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+</tbody>
+</table>
+<p>To make it obvious to a CMS user that they are accessing the CMS, the App will
+insert a banner with a link to the CMS dashboard if it detects the <code>CMS</code>
+environment variable. The link to the CMS is not hardcoded into the App
+frontend code, but dynamically inserted in the base template in Django
+(<code>src/lm/app/templates/app/base.html</code>).</p>
+<p>Note, however, that all the routes in the CMS server are password-protected,
+including those from <code>app</code>. This is made possible by <code>src/lm/app/views.py</code>
+which applies a Python decorator (<code>conditional_decorate</code>) to every view. Each
+decorator checks whether the <code>CMS</code> environment variable exists, and if it does,
+applies the <code>staff_member_required</code> decorator from the
+<code>django.contrib.admin.views.decorators</code> library, effectively restricting App
+functionality in the CMS to only staff, but not applying said restrictions in
+the App (since it does not have the <code>CMS</code> environment variable set.</p>
 <p><code>settings.py</code> also looks for the <code>CMS</code> environment variable to selectively
 modify or add the following configuration settings <strong>in production</strong> as such:</p>
 <ul>
@@ -440,6 +476,16 @@ information about the development environment can be found in the
 </thead>
 <tbody>
 <tr>
+<td>80</td>
+<td>HTTP</td>
+<td></td>
+</tr>
+<tr>
+<td>443</td>
+<td>SSL/TLS</td>
+<td></td>
+</tr>
+<tr>
 <td>2233</td>
 <td>SSH</td>
 <td>It is a best practice to not use port 22 for SSH</td>
@@ -450,11 +496,6 @@ information about the development environment can be found in the
 <td>Restricted to traffic between the App and CMS servers</td>
 </tr>
 <tr>
-<td>80</td>
-<td>HTTP</td>
-<td>For the App server</td>
-</tr>
-<tr>
 <td>9001</td>
 <td>HTTP</td>
 <td>For the CMS</td>
@@ -462,8 +503,68 @@ information about the development environment can be found in the
 </tbody>
 </table>
 <h3 id="the-app-and-cms-databases">The App and CMS databases</h3>
+<p><a href="images/db_separation.png" target="_blank">
+    <img src="images/db_separation.png" width="400">
+</a></p>
+<p>As mentioned above, the same Django project runs on both the App and CMS
+servers. It is crucial to note that data is not replicated between each
+corresponding database. The CMS server does not store <code>app</code> data, and the App
+server does not store <code>cms</code> data. Only the App server stores <code>app</code> data, and
+only the CMS stores <code>cms</code> data. This is achieved by the following technique:</p>
+<ol>
+<li><code>settings.py</code> appends <code>&quot;cms.db_routers.CmsRouter&quot;</code> to the <code>DATABASE_ROUTERS</code>
+configuration setting if and only if <code>CMS</code> is an environment variable.</li>
+<li>The <code>DATABASES</code> configuration setting in <code>settings.py</code> differs for the CMS
+and App servers, again depending on the presence of the <code>CMS</code> environment
+variable.<ul>
+<li>In the App, there is only 1 database configured: <code>default</code>.</li>
+<li>In the CMS, there are 2 databases configured:<ol>
+<li><code>app_server</code>, which points to the database on the remote App server</li>
+<li><code>default</code>, which points to CMS database, which should be set to <code>dockerhost</code> (more on this below)</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><code>CmsRouter</code>, defined in <code>src/lm/cms/db_routers.py</code>, uses the <code>db_for_read</code>,
+<code>db_for_write</code>, and <code>allow_migrate</code> functions to tell Django which database
+ to read or write to, and to disable migrations on the App database from the
+ CMS server, based on the <code>app_label</code> and <code>db</code> variables. See the Django
+ documentation on <a href="https://docs.djangoproject.com/en/2.0/topics/db/multi-db/" target="_blank">Multiple
+ Databases</a> for more
+information.</li>
+</ol>
+<h4 id="the-dockerhost-hostname">The <code>dockerhost</code> hostname</h4>
+<p>While it is a best practice to <em>not</em> Dockerise a production database, this
+creates the challenge of connecting a Docker container, which resides within
+a Docker bridge network, to a database server which resides on a different
+network. In the case of the <code>liftedmobile</code> container in the App
+server, for instance, it  must communicate with the Postgres server situated on
+the host. To make this possible, the <code>liftedmobile</code> container (as well as
+<code>admin_cms</code>) have their <code>/etc/hosts</code> files configured as such:</p>
+<p>In <code>docker/app_server/liftedmobile.prod.dockerfile</code> and
+<code>docker/admin_server/cms.prod.dockerfile</code>:</p>
+<pre><code>CMD echo $(netstat -nr | grep &apos;^0\.0\.0\.0&apos; | awk &apos;{print $2}&apos;) dockerhost &gt;&gt; /etc/hosts
+&amp;&amp; (rest of the dockerfile...)
+</code></pre><p>This appends the following to the <code>/etc/hosts</code> file within each container:</p>
+<pre><code>172.18.0.1 dockerhost
+</code></pre><p>This makes the <code>dockerhost</code> an alias to <code>172.18.0.1</code>, which is the gateway
+through which the container can access the host. Since this gateway address may
+not be consistent across system reboots, the <code>echo</code> command shown above is
+agnostic to the actual gateway IP address, this technique removes the need to
+reconfigure the system if the gateway address changes.</p>
+<h3 id="postgres-configuration">Postgres configuration</h3>
+<p>In order for a Docker container to connect to the Postgres server on the host,
+Postgres must also be configured to listen on the Docker gateway IP:</p>
+<p>In <code>/etc/postgresql/9.5/main/postgresql.conf</code>:</p>
+<pre><code>listen_addresses = &apos;localhost,172.17.0.1,172.18.0.1&apos;
+</code></pre><p>At the moment, the Lifted App and CMS deployment scripts do not automatically
+add the gateway address to <code>postgresql.conf</code>, so this has to be done manually
+for now. One way to get around this is to specify more than one possible
+gateway address, as shown above (<code>171.17...</code> and <code>172.18...</code>).</p>
+<p>Also make sure to change the port number away from the default:</p>
+<pre><code>port = 5544
+</code></pre><h4 id="initial-lifted-framework-data">Initial LIFTED Framework Data</h4>
 <!--TODO: how initial data gets loaded -->
-<!--TODO: how the Django code separates the CMS and App -->
 <h2 id="frontend-architecture">Frontend architecture</h2>
 <p>The frontend is, broadly speaking, a Single-Page Application. A single
 JavaScript app, developed using the Preact user interface library, LESS for
@@ -519,7 +620,7 @@ comprises the frontend code. URL routes are handled by <code>preact-router</code
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Technical overview","level":"1.4","depth":1,"next":{"title":"Development","level":"1.5","depth":1,"path":"development.md","ref":"development.md","articles":[]},"previous":{"title":"How to use the CMS","level":"1.3","depth":1,"path":"cms_usage.md","ref":"cms_usage.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"technical_overview.md","mtime":"2018-03-16T14:58:27.314Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-16T12:24:30.764Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Technical overview","level":"1.4","depth":1,"next":{"title":"Development","level":"1.5","depth":1,"path":"development.md","ref":"development.md","articles":[]},"previous":{"title":"How to use the CMS","level":"1.3","depth":1,"path":"cms_usage.md","ref":"cms_usage.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"technical_overview.md","mtime":"2018-03-17T13:14:22.242Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-17T09:20:46.842Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
