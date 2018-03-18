@@ -14,7 +14,6 @@ were tailor-made.
 <a href="./images/architecture.png" target="_blank">
     <img src="./images/architecture.png" width=400 />
 </a>
-<!--![Local Image](./images/architecture.png)-->
 
 The backend runs on two Amazon EC2 server instances and uses Amazon CloudFront
 as a content delivery network (CDN). Amazon Route 53 manages the Domain Name
@@ -25,7 +24,6 @@ scraper) are fed to Amazon CloudWatch.
 <a href="./images/aws_services.png" target="_blank">
     <img src="./images/aws_services.png" width=200 />
 </a>
-<!--![Local Image](./images/aws_services.png)-->
 
 The app and CMS servers run Docker (v17) containers orchestrated by Docker
 Compose (v1.17.1), as well as one non-containerised Postgres (v9.5) instance
@@ -319,8 +317,8 @@ listen_addresses = 'localhost,172.17.0.1,172.18.0.1'
 ```
 
 At the moment, the Lifted App and CMS deployment scripts do not automatically
-add the gateway address to `postgresql.conf`, so this has to be done manually
-for now. One way to get around this is to specify more than one possible
+add the gateway address to `postgresql.conf`, so this has to be done manually.
+One way to get around this is to specify more than one possible
 gateway address, as shown above (`171.17...` and `172.18...`).
 
 Also make sure to change the port number away from the default:
@@ -329,8 +327,31 @@ Also make sure to change the port number away from the default:
 port = 5544
 ```
 
-#### Initial LIFTED Framework Data
-<!--TODO: how initial data gets loaded -->
+
+### Database layout
+
+Refer to the documentation in `src/lm/app/models.py` and `src/lm/cms/models.py`
+for specific information about each model in the App and CMS databases, and
+read on for a summary.
+
+#### App
+
+This database should only store data about aspects of the LIFTED framework, CPD
+courses, and how each course has been tagged with competency categories in the
+framework. The App should not depend on data from the CMS database to function.
+
+##### Initial LIFTED Framework Data
+
+Located at `src/lm/app/lifted_framework_data/`, the core data in the LIFTED
+Framework, such as competency descriptions and job roles, is stored in a
+collection of `ods` spreadsheet files. This data gets loaded into the App
+database by the first Django database migration
+`src/lm/app/migrations/0001_initial.py`.
+
+#### CMS
+
+This database should only store data essential to the operation of the CMS, so
+that the App can work even if this database is offline.
 
 ## Frontend architecture
 
