@@ -1,4 +1,5 @@
 admin_server/scraper/scraper/dbs/*
+docs/_book/*
 
 # Docker secrets
 docker/app_server/secrets/*
