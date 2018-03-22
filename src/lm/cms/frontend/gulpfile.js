@@ -21,7 +21,6 @@ gulp.task('build', shell.task([
   'rm -rf ../static/cms/images',
   'rm -rf ../static/cms/favicons',
   'cp -r ../../static/cms/images ../static/cms/',
-  'cp -r ../../static/cms/favicons ../static/cms/',
   ],
   {
     env: {
