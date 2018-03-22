@@ -1,0 +1,105 @@
+.course_table{
+    width:100%;
+    table-layout:fixed;
+    font-size:1em;
+
+    thead{
+        font-weight:bold;
+
+        .sorter{
+            font-size:1em;
+            cursor:pointer;
+            text-align:left;
+            padding-left:0.7em;
+            margin-left:0;
+
+            a{
+                color:black;
+                margin-left:5px;
+            }
+                
+        }        
+    }
+
+    tr{
+        border-bottom: 1px solid #cbcbcb;
+        text-align:left;
+    }
+}
+
+@media (max-width: 768px) {
+    .course_table, .course_table tbody{
+        display: block;
+        width: 100%;
+    }
+
+    .course_table {
+        border:none;
+        font-size:1.25em;
+
+        .sorter p{
+            font-size:1em;
+        }
+
+        thead{
+            display:none;
+        }
+
+        tr, th, td {
+            display: block;
+            padding: 0;
+            text-align: left;
+            white-space: normal;
+        }
+
+        tr{
+            padding: 10px;
+            margin-bottom: 5px;
+            float:left;
+        }
+
+        th[data-title]:before,
+        td[data-title]:before {
+            content: attr(data-title) ":\00A0";
+            font-weight: bold;
+        }
+
+        td {
+            border: none;
+            margin-bottom: 5px;
+            color: #444;
+            float:left;
+            width:47%;
+
+            &:nth-of-type(2n){
+                margin-right:10px;
+            }
+
+            &:empty { 
+                display: none;
+            }
+        }
+
+        td.full_width{
+            width:100%;
+        }
+
+        // Let the last <td> element take up the full width
+        // only if the number of <td> elements is odd
+        td:last-child:not(:nth-child(odd)){
+            width:100%;
+            margin-right:0;
+        }
+
+        td:first-child {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+            width:100%;
+        }
+
+        td:first-child:before { 
+            content: ''; 
+        }
+    }
+}
