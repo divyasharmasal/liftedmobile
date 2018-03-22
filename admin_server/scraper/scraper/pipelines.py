@@ -9,6 +9,7 @@ import os
 import json
 import requests
 import datetime
+import socket
 import pytz
 from scraper import settings
 
@@ -17,6 +18,14 @@ class ScraperPipeline(object):
     def __init__(self):
         self.urls = []
 
+        cms_host = None
+        if "DEV" in os.environ and os.environ["DEV"]:
+            cms_host = socket.gethostbyname("cms_dev")
+        else:
+            cms_host = socket.gethostbyname("cms")
+
+        self.sync_urls_url = "http://" + cms_host + ":9000/cms/scraper/sync_urls/"
+        self.add_course_url = "http://" + cms_host + ":9000/cms/scraper/add_course/"
 
     def close_spider(self, spider):
         payload = {
@@ -25,13 +34,9 @@ class ScraperPipeline(object):
             "spider": spider.name
         }
 
-        url = None
-        if "DEV" in os.environ and os.environ["DEV"]:
-            url = "http://cms_dev:9000/cms/scraper/sync_urls/"
-        else:
-            url = "http://cms/cms/scraper/sync_urls/"
+        url = self.sync_urls_url
 
-        post_res = requests.post(url, data=payload)
+        post_res = requests.post(self.sync_urls_url, data=payload)
         if post_res.ok:
             print(post_res.json())
         else:
@@ -55,10 +60,7 @@ class ScraperPipeline(object):
             "spider_name": spider.name,
         }
 
-        url = "http://cms/cms/scraper/add_course/"
-        if "DEV" in os.environ and os.environ["DEV"]:
-            url = "http://cms_dev:9000/cms/scraper/add_course/"
-
+        url = self.add_course_url
         post_res = requests.post(url, data=payload)
         if post_res.ok:
             print(post_res.json())
