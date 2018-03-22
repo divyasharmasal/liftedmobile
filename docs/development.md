@@ -54,9 +54,10 @@ Install App and CMS frontend dependencies and move static assets:
 ```bash
 cd src/lm/app/frontend && \
 yarn install && \
+gulp build && \
 cd ../../cms/frontend && \
 yarn install && \
-gulp
+gulp build
 ```
 
 

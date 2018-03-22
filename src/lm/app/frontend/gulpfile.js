@@ -18,6 +18,8 @@ gulp.task('watch', function () {
 
 // Keep static files updated during development
 gulp.task('build', shell.task([
+   'mkdir -p ../../static/app/images',
+   'mkdir -p ../../static/app/favicons',
    'rm -rf ../static/app/dist/images',
    'rm -rf ../static/app/dist/favicons',
    'cp -r ../../static/app/images ../static/app/dist/images',
