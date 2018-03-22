@@ -56,6 +56,10 @@ selectively render the the bundle path based on the value of the template
 variable `DEV`, which is supplied by a template context processor at
 `src/lm/cms/context_processors.py`.
 
+Note that there is no point accessing the URI of the `preact watch` server
+(`0.0.0.0:8080` and `0.0.0.0:9080`), since the frontend code queries the
+backend for data and will not render anything meaningful without said data.
+
 ### URL Routes
 
 Since the frontend is an SPA, some URL path handling tasks must be handled by

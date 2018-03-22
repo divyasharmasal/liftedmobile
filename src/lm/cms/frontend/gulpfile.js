@@ -46,7 +46,6 @@ gulp.task('build-prod', shell.task([
 
   'echo "Copying static files..."',
   'cp -r ../../static/cms/images ../static/cms/',
-  'cp -r ../../static/cms/favicons ../static/cms/',
 ],
   {
     env: {

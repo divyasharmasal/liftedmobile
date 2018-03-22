@@ -41,13 +41,24 @@ https://docs.docker.com/compose/install/
 First, install Yarn. Follow the instructions here:
 https://yarnpkg.com/lang/en/docs/install/
 
-Next, install Gulp and `preact-cli`:
+Next, run this command:
 
 ```bash
-sudo yarn global add gulp preact-cli
+sudo yarn global add gulp gulp-shell preact-cli
 ```
 
 ## Set up your development workspace
+
+Install App and CMS frontend dependencies and move static assets:
+
+```bash
+cd src/lm/app/frontend && \
+yarn install && \
+cd ../../cms/frontend && \
+yarn install && \
+gulp
+```
+
 
 To work on the code, set up three terminals.  You can use a
 [`tmux`](https://tmux.github.io/) screen with 3 panes: one for your editor, one
@@ -67,9 +78,4 @@ There are two `watch-app.sh` files: one for the App, and another for the CMS.
 - `scripts/app_server/dev/watch-app.sh`
 - `scripts/admin_server/dev/watch-app.sh`
 
-Before running `watch-app.sh` for the App, run this:
-
-```bash
-cd src/lm/app/frontend
-yarn install
-```
+### Static assets
