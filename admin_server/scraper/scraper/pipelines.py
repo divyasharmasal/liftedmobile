@@ -27,7 +27,7 @@ class ScraperPipeline(object):
 
         url = None
         if "DEV" in os.environ and os.environ["DEV"]:
-            url = "http://cms:9000/cms/scraper/sync_urls/"
+            url = "http://cms_dev:9000/cms/scraper/sync_urls/"
         else:
             url = "http://cms/cms/scraper/sync_urls/"
 
@@ -57,7 +57,7 @@ class ScraperPipeline(object):
 
         url = "http://cms/cms/scraper/add_course/"
         if "DEV" in os.environ and os.environ["DEV"]:
-            url = "http://cms:9000/cms/scraper/add_course/"
+            url = "http://cms_dev:9000/cms/scraper/add_course/"
 
         post_res = requests.post(url, data=payload)
         if post_res.ok:

@@ -21,13 +21,7 @@ gulp.task('build', shell.task([
   'rm -rf ../static/cms/images',
   'rm -rf ../static/cms/favicons',
   'cp -r ../../static/cms/images ../static/cms/',
-  ],
-  {
-    env: {
-      PREACT_PROD: false,
-      NODE_ENV: "development",
-    }
-  }
+  ]
 ));
 
 // Run preact build in production mode, and delete JS sourcemaps

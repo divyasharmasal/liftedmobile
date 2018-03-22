@@ -41,7 +41,7 @@ https://docs.docker.com/compose/install/
 First, install Yarn. Follow the instructions here:
 https://yarnpkg.com/lang/en/docs/install/
 
-Next, run this command:
+Next, run:
 
 ```bash
 sudo yarn global add gulp gulp-shell preact-cli
@@ -53,11 +53,9 @@ Install App and CMS frontend dependencies and move static assets:
 
 ```bash
 cd src/lm/app/frontend && \
-yarn install && \
-gulp build && \
+yarn install && gulp build && \
 cd ../../cms/frontend && \
-yarn install && \
-gulp build
+yarn install && gulp build
 ```
 
 
@@ -68,15 +66,44 @@ for `watch-app.sh`, and one for the `build_dev.sh`.
 ```
 -----------------------------
 | vim        | watch-app.sh |
-|            |              |
+|            | (App)        |
+|            |--------------|
+|            | watch-app.sh |
+|            | (CMS)        |
 |            |--------------|
 |            | build_dev.sh |
-|            |              |
+|            | (App or CMS) |
 -----------------------------
 ```
 
-There are two `watch-app.sh` files: one for the App, and another for the CMS.
+Each `watch-app.sh` script runs `preact watch` with a pre-set working directory
+path and port number. Each port number is hard-coded into App and CMS Django
+templates, so these scripts make it easy to run `preact watch` without having
+to remember the correct port.
+
+There are two `watch-app.sh` scripts: one for the App, and another for the CMS.
 - `scripts/app_server/dev/watch-app.sh`
 - `scripts/admin_server/dev/watch-app.sh`
 
+There are two `build_dev.sh` scripts: one for the App, and another for the CMS.
+- `scripts/app_server/dev/build_dev.sh`
+- `scripts/admin_server/dev/build_dev.sh`
+
 ### Static assets
+
+Static assets should be saved in `src/lm/static/<app or cms>/images` and/or
+`src/lm/static/<app or cms>/favicons`. Make sure that you run `gulp build`
+in the `frontend/` directory of `app` or `cms` respectively once you do so:
+
+```bash
+cd src/lm/app/frontend && gulp build
+```
+
+or
+
+```bash
+cd src/lm/cms/frontend && gulp build
+```
+
+What `gulp build` does is replace the static files which the development server
+uses with those in `src/lm/static/<app or cms>/`.

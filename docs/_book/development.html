@@ -280,29 +280,54 @@ containers without root access:</p>
 <h3 id="install-js-development-dependencies">Install JS development dependencies</h3>
 <p>First, install Yarn. Follow the instructions here:
 <a href="https://yarnpkg.com/lang/en/docs/install/" target="_blank">https://yarnpkg.com/lang/en/docs/install/</a></p>
-<p>Next, install Gulp and <code>preact-cli</code>:</p>
-<pre><code class="lang-bash">sudo yarn global add gulp preact-cli
+<p>Next, run:</p>
+<pre><code class="lang-bash">sudo yarn global add gulp gulp-shell preact-cli
 </code></pre>
 <h2 id="set-up-your-development-workspace">Set up your development workspace</h2>
+<p>Install App and CMS frontend dependencies and move static assets:</p>
+<pre><code class="lang-bash"><span class="hljs-built_in">cd</span> src/lm/app/frontend &amp;&amp; \
+yarn install &amp;&amp; gulp build &amp;&amp; \
+<span class="hljs-built_in">cd</span> ../../cms/frontend &amp;&amp; \
+yarn install &amp;&amp; gulp build
+</code></pre>
 <p>To work on the code, set up three terminals.  You can use a
 <a href="https://tmux.github.io/" target="_blank"><code>tmux</code></a> screen with 3 panes: one for your editor, one
 for <code>watch-app.sh</code>, and one for the <code>build_dev.sh</code>.</p>
 <pre><code>-----------------------------
 | vim        | watch-app.sh |
-|            |              |
+|            | (App)        |
+|            |--------------|
+|            | watch-app.sh |
+|            | (CMS)        |
 |            |--------------|
 |            | build_dev.sh |
-|            |              |
+|            | (App or CMS) |
 -----------------------------
-</code></pre><p>There are two <code>watch-app.sh</code> files: one for the App, and another for the CMS.</p>
+</code></pre><p>Each <code>watch-app.sh</code> script runs <code>preact watch</code> with a pre-set working directory
+path and port number. Each port number is hard-coded into App and CMS Django
+templates, so these scripts make it easy to run <code>preact watch</code> without having
+to remember the correct port.</p>
+<p>There are two <code>watch-app.sh</code> scripts: one for the App, and another for the CMS.</p>
 <ul>
 <li><code>scripts/app_server/dev/watch-app.sh</code></li>
 <li><code>scripts/admin_server/dev/watch-app.sh</code></li>
 </ul>
-<p>Before running <code>watch-app.sh</code> for the App, run this:</p>
-<pre><code class="lang-bash"><span class="hljs-built_in">cd</span> src/lm/app/frontend
-yarn install
+<p>There are two <code>build_dev.sh</code> scripts: one for the App, and another for the CMS.</p>
+<ul>
+<li><code>scripts/app_server/dev/build_dev.sh</code></li>
+<li><code>scripts/admin_server/dev/build_dev.sh</code></li>
+</ul>
+<h3 id="static-assets">Static assets</h3>
+<p>Static assets should be saved in <code>src/lm/static/&lt;app or cms&gt;/images</code> and/or
+<code>src/lm/static/&lt;app or cms&gt;/favicons</code>. Make sure that you run <code>gulp build</code>
+in the <code>frontend/</code> directory of <code>app</code> or <code>cms</code> respectively once you do so:</p>
+<pre><code class="lang-bash"><span class="hljs-built_in">cd</span> src/lm/app/frontend &amp;&amp; gulp build
 </code></pre>
+<p>or</p>
+<pre><code class="lang-bash"><span class="hljs-built_in">cd</span> src/lm/cms/frontend &amp;&amp; gulp build
+</code></pre>
+<p>What <code>gulp build</code> does is replace the static files which the development server
+uses with those in <code>src/lm/static/&lt;app or cms&gt;/</code>.</p>
 
                                 
                                 </section>
@@ -346,7 +371,7 @@ yarn install
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Development","level":"1.8","depth":1,"next":{"title":"Deployment","level":"1.9","depth":1,"path":"deployment.md","ref":"deployment.md","articles":[]},"previous":{"title":"Source code licenses","level":"1.7","depth":1,"path":"licenses.md","ref":"licenses.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"development.md","mtime":"2018-03-22T09:18:57.481Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-22T05:06:47.569Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Development","level":"1.8","depth":1,"next":{"title":"Deployment","level":"1.9","depth":1,"path":"deployment.md","ref":"deployment.md","articles":[]},"previous":{"title":"Source code licenses","level":"1.7","depth":1,"path":"licenses.md","ref":"licenses.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"development.md","mtime":"2018-03-22T16:26:29.817Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-22T14:04:06.130Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
