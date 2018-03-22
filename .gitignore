@@ -1,5 +1,3 @@
-lib/
-!src/lib
 admin_server/scraper/scraper/dbs/*
 docs/_book/*
 
