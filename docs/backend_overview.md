@@ -1,11 +1,11 @@
-# Technical overview
+# Technical overview - Backend
 
 The Lifted App and CMS, which we will refer to collectively as "the system",
 are web apps which can be accessed through a modern web browser, both on
 desktop or mobile devices. Like most web apps, the system is split into
 frontend and backend code and subsystems.
 
-## Backend architecture
+## Architecture
 
 Early in the development of the system, it was found that pre-packaged software
 solutions which can meet LEC's needs do not exist. As such, the App and CMS
@@ -50,6 +50,17 @@ The backend web server runs Django because it is reliable, elegant, and
 battle-tested. It provides very useful features, especially a powerful database
 ORM, right out of the box.
 
+### Ports used
+
+|Number|Service|Notes|
+|---|---|---|
+|80|HTTP||
+|443|SSL/TLS||
+|2233|SSH|It is a best practice to not use port 22 for SSH|
+|5544|Postgres|Restricted to traffic between the App and CMS servers|
+|9001|HTTP|For the CMS|
+## Source code layout
+
 The source code is managed via a single Git repository, and backed up in both
 Github and AWS CodeCommit. The source code is organised in the following
 manner. Deployment-related code is confined to the `docker` and `scripts`
@@ -85,7 +96,7 @@ src
         |- static
 ```
 
-### The Docker containers
+## Organisation of Docker containers
 
 The Docker containers run Alpine Linux to reduce image size, minimise attack
 surfaces, and simplify development. The small image size benefit can be most
@@ -157,7 +168,7 @@ On the App server, the following containers, orchestrated via
         - `./docker/app_server/db.init.sql`: creates a database called
           `liftedmobile` and grants access privileges to the `postgres` user.
 
-#### The `wait_for_postgres.py` script
+### The `wait_for_postgres.py` script
 
 `wait_for_postgres.py` reads Django's `settings.py` for information about how
 to connect to the database so that it can run the `pg_isready` command at
@@ -166,7 +177,7 @@ regular intervals until it exits successfully.  Each `CMD` directive in the
 their corresponding web server launches after the database is ready. Otherwise,
 the web servers will not start up reliably.
 
-### The Django project
+### The Django project code
 
 Both the App and CMS run the same Django project code located at `src/lm`.
 
@@ -236,17 +247,7 @@ modify or add the following configuration settings **in production** as such:
 information about the development environment can be found in the
 [Development](/development.html) section.
 
-### Ports used
-
-|Number|Service|Notes|
-|---|---|---|
-|80|HTTP||
-|443|SSL/TLS||
-|2233|SSH|It is a best practice to not use port 22 for SSH|
-|5544|Postgres|Restricted to traffic between the App and CMS servers|
-|9001|HTTP|For the CMS|
-
-### The App and CMS databases
+## Databases
 
 <a href="./images/db_separation.png" target="_blank">
     <img src="./images/db_separation.png" width=400 />
@@ -275,7 +276,7 @@ only the CMS stores `cms` data. This is achieved by the following technique:
     Databases](https://docs.djangoproject.com/en/2.0/topics/db/multi-db/) for more
 information.
 
-#### The `dockerhost` hostname
+### The `dockerhost` hostname
 
 While it is a best practice to *not* Dockerise a production database, this
 creates the challenge of connecting a Docker container, which resides within
@@ -297,7 +298,7 @@ This appends the following to the `/etc/hosts` file within each container:
 
 ```
 172.18.0.1 dockerhost
-```
+I```
 
 This makes the `dockerhost` an alias to `172.18.0.1`, which is the gateway
 through which the container can access the host. Since this gateway address may
@@ -352,20 +353,3 @@ database by the first Django database migration
 
 This database should only store data essential to the operation of the CMS, so
 that the App can work even if this database is offline.
-
-## Frontend architecture
-
-The frontend is, broadly speaking, a Single-Page Application. A single
-JavaScript app, developed using the Preact user interface library, LESS for
-stylesheets, Webpack for module bundling, and Babel for ES2015 transpilation,
-comprises the frontend code. URL routes are handled by `preact-router`.
-
-<!--TODO: how to add a new route, relationship between urls.py and preact-router -->
-
-### Architectural considerations
-<!--TODO: why Preact?-->
-<!--TODO: why preact-cli?-->
-<!--TODO: static files -->
-
-## Code license extractor
-<!--TODO -->

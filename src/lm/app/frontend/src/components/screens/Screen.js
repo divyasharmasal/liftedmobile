@@ -26,6 +26,7 @@ class Screen extends Component{
   }
 
 
+  // Scroll up when mounted
   componentDidMount = () => {
     window.scrollTo(0, 0);
   }

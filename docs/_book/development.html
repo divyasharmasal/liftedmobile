@@ -60,7 +60,7 @@
     <link rel="next" href="deployment.html" />
     
     
-    <link rel="prev" href="technical_overview.html" />
+    <link rel="prev" href="licenses.html" />
     
 
     </head>
@@ -128,12 +128,12 @@
             
         </li>
     
-        <li class="chapter " data-level="1.4" data-path="technical_overview.html">
+        <li class="chapter " data-level="1.4" data-path="backend_overview.html">
             
-                <a href="technical_overview.html">
+                <a href="backend_overview.html">
             
                     
-                    Technical overview
+                    Technical overview - Backend
             
                 </a>
             
@@ -141,7 +141,46 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.5" data-path="development.html">
+        <li class="chapter " data-level="1.5" data-path="frontend_overview.html">
+            
+                <a href="frontend_overview.html">
+            
+                    
+                    Technical overview - Frontend
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="user_flow.html">
+            
+                <a href="user_flow.html">
+            
+                    
+                    User flow in the App
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="licenses.html">
+            
+                <a href="licenses.html">
+            
+                    
+                    Source code licenses
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.8" data-path="development.html">
             
                 <a href="development.html">
             
@@ -154,7 +193,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.6" data-path="deployment.html">
+        <li class="chapter " data-level="1.9" data-path="deployment.html">
             
                 <a href="deployment.html">
             
@@ -212,7 +251,59 @@
     
                                 <section class="normal markdown-section">
                                 
-                                
+                                <h1 id="development">Development</h1>
+<p>The following instructions have only been tested on Ubuntu 17.10.</p>
+<h2 id="dependencies">Dependencies</h2>
+<h3 id="install-docker-and-docker-compose">Install Docker and Docker Compose</h3>
+<p>First, install Docker CE. Follow the instructions here:
+<a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/" target="_blank">https://docs.docker.com/install/linux/docker-ce/ubuntu/</a></p>
+<p>The following commands from the Docker CE installation page were copied on 22
+March 2018:</p>
+<pre><code class="lang-bash">sudo apt update &amp;&amp; \
+sudo apt -y install apt-transport-https ca-certificates curl software-properties-common &amp;&amp; \
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - &amp;&amp; \
+sudo apt-key fingerprint 0EBFCD88
+
+<span class="hljs-comment"># (now verify that the fingerprint is 9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88)</span>
+
+sudo add-apt-repository <span class="hljs-string">&quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu <span class="hljs-variable">$(lsb_release -cs)</span> stable&quot;</span> &amp;&amp; \
+sudo apt update &amp;&amp; sudo apt -y install docker-ce
+</code></pre>
+<p>The Docker version running in production on 22 March 2018 was <code>17.12.1-ce</code>. If
+you encounter problems with newer versions, try using this version instead.</p>
+<p>Make sure to add yourself to the <code>docker</code> group, so you can launch and manage
+containers without root access:</p>
+<pre><code class="lang-bash">sudo useradd <span class="hljs-_">-a</span>G docker <span class="hljs-variable">$USER</span>
+</code></pre>
+<p>Next, install Docker Compose. Follow the instructions here:
+<a href="https://docs.docker.com/compose/install/" target="_blank">https://docs.docker.com/compose/install/</a></p>
+<h3 id="install-js-development-dependencies">Install JS development dependencies</h3>
+<p>First, install Yarn. Follow the instructions here:
+<a href="https://yarnpkg.com/lang/en/docs/install/" target="_blank">https://yarnpkg.com/lang/en/docs/install/</a></p>
+<p>Next, install Gulp and <code>preact-cli</code>:</p>
+<pre><code class="lang-bash">sudo yarn global add gulp preact-cli
+</code></pre>
+<h2 id="set-up-your-development-workspace">Set up your development workspace</h2>
+<p>To work on the code, set up three terminals.  You can use a
+<a href="https://tmux.github.io/" target="_blank"><code>tmux</code></a> screen with 3 panes: one for your editor, one
+for <code>watch-app.sh</code>, and one for the <code>build_dev.sh</code>.</p>
+<pre><code>-----------------------------
+| vim        | watch-app.sh |
+|            |              |
+|            |--------------|
+|            | build_dev.sh |
+|            |              |
+-----------------------------
+</code></pre><p>There are two <code>watch-app.sh</code> files: one for the App, and another for the CMS.</p>
+<ul>
+<li><code>scripts/app_server/dev/watch-app.sh</code></li>
+<li><code>scripts/admin_server/dev/watch-app.sh</code></li>
+</ul>
+<p>Before running <code>watch-app.sh</code> for the App, run this:</p>
+<pre><code class="lang-bash"><span class="hljs-built_in">cd</span> src/lm/app/frontend
+yarn install
+</code></pre>
+
                                 
                                 </section>
                             
@@ -239,7 +330,7 @@
 
             
                 
-                <a href="technical_overview.html" class="navigation navigation-prev " aria-label="Previous page: Technical overview">
+                <a href="licenses.html" class="navigation navigation-prev " aria-label="Previous page: Source code licenses">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
@@ -255,7 +346,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Development","level":"1.5","depth":1,"next":{"title":"Deployment","level":"1.6","depth":1,"path":"deployment.md","ref":"deployment.md","articles":[]},"previous":{"title":"Technical overview","level":"1.4","depth":1,"path":"technical_overview.md","ref":"technical_overview.md","articles":[]},"dir":"neutral"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"development.md","mtime":"2018-03-11T03:49:19.774Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-18T05:21:49.447Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Development","level":"1.8","depth":1,"next":{"title":"Deployment","level":"1.9","depth":1,"path":"deployment.md","ref":"deployment.md","articles":[]},"previous":{"title":"Source code licenses","level":"1.7","depth":1,"path":"licenses.md","ref":"licenses.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"development.md","mtime":"2018-03-22T09:18:57.481Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-22T05:06:47.569Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
