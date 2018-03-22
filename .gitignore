@@ -1,13 +1,16 @@
-admin_server/scraper/scraper/dbs/*
 docs/_book/*
+docs/node_modules/
+
+# Scraper DBs
+admin_server/scraper/scraper/dbs/*
 
 # Docker secrets
 docker/app_server/secrets/*
 docker/admin_server/secrets/*
 
 # Compiled frontend files 
-src/lm/cms/static/cms/dist/
 src/lm/app/static/app/dist/
+src/lm/cms/static/cms/dist/
 
 # LibreOffice lock file
 src/lm/app/lifted_framework_data/.~lock*
@@ -15,11 +18,6 @@ src/lm/app/lifted_framework_data/.~lock*
 # Extracted source licenses
 license_extractor/licenses.json
 
-# Django
-src/lm/static/
-admin/cms/static/
-
-docs/node_modules/
 
 # node
 node_modules/
