@@ -20,6 +20,7 @@ gulp.task('watch', function () {
 gulp.task('build', shell.task([
    'mkdir -p ../../static/app/images',
    'mkdir -p ../../static/app/favicons',
+   'mkdir -p ../static/app/dist',
    'rm -rf ../static/app/dist/images',
    'rm -rf ../static/app/dist/favicons',
    'cp -r ../../static/app/images ../static/app/dist/images',
