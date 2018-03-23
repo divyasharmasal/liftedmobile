@@ -1,6 +1,8 @@
 # Development
 
-The following instructions have only been tested on Ubuntu 17.10.
+The following instructions have only been tested on Ubuntu 17.10. To verify
+that these instructions are correct, they were tested on a blank Virtualbox
+virtual machine.
 
 ## Dependencies
 
