@@ -257,8 +257,8 @@
 <h3 id="install-docker-and-docker-compose">Install Docker and Docker Compose</h3>
 <p>First, install Docker CE. Follow the instructions here:
 <a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/" target="_blank">https://docs.docker.com/install/linux/docker-ce/ubuntu/</a></p>
-<p>The following commands from the Docker CE installation page were copied on 22
-March 2018:</p>
+<p>The following installation commands from the abovementioned page were copied on
+22 March 2018, and may or may not work in the future:</p>
 <pre><code class="lang-bash">sudo apt update &amp;&amp; \
 sudo apt -y install apt-transport-https ca-certificates curl software-properties-common &amp;&amp; \
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - &amp;&amp; \
@@ -277,6 +277,8 @@ containers without root access:</p>
 </code></pre>
 <p>Next, install Docker Compose. Follow the instructions here:
 <a href="https://docs.docker.com/compose/install/" target="_blank">https://docs.docker.com/compose/install/</a></p>
+<p>The following instructions have been tested with Docker version <code>18.03.0-ce,
+build 0520e24</code> and Docker Compose version <code>1.20.1, build 5d8c71b</code>.</p>
 <h3 id="install-js-development-dependencies">Install JS development dependencies</h3>
 <p>First, install Yarn. Follow the instructions here:
 <a href="https://yarnpkg.com/lang/en/docs/install/" target="_blank">https://yarnpkg.com/lang/en/docs/install/</a></p>
@@ -312,11 +314,19 @@ to remember the correct port.</p>
 <li><code>scripts/app_server/dev/watch-app.sh</code></li>
 <li><code>scripts/admin_server/dev/watch-app.sh</code></li>
 </ul>
-<p>There are two <code>build_dev.sh</code> scripts: one for the App, and another for the CMS.</p>
+<p>There are two <code>build_dev.sh</code> scripts: one for the App, and another for both the
+App and CMS. Each <code>build_dev.sh</code> file is a convenience script for the
+<code>docker-compose build</code> and <code>docker-compose up</code> commands.</p>
 <ul>
-<li><code>scripts/app_server/dev/build_dev.sh</code></li>
-<li><code>scripts/admin_server/dev/build_dev.sh</code></li>
+<li><code>./scripts/app_server/dev/build_dev.sh</code></li>
+<li><code>./scripts/admin_server/dev/build_dev.sh</code></li>
 </ul>
+<p>On one hand, running <code>scripts/app_server/dev/build_dev.sh</code> launches the App
+development containers and streams the output of the <code>liftedmobile_dev</code>
+container to the standard output.  On the other hand, running
+<code>scripts/admin_server/dev/build_dev.sh</code> launches the App and CMS development
+containers, and streams the output of the <code>admin_cms_dev</code> development container
+to the standard output.</p>
 <h3 id="static-assets">Static assets</h3>
 <p>Static assets should be saved in <code>src/lm/static/&lt;app or cms&gt;/images</code> and/or
 <code>src/lm/static/&lt;app or cms&gt;/favicons</code>. Make sure that you run <code>gulp build</code>
@@ -328,6 +338,9 @@ in the <code>frontend/</code> directory of <code>app</code> or <code>cms</code> 
 </code></pre>
 <p>What <code>gulp build</code> does is replace the static files which the development server
 uses with those in <code>src/lm/static/&lt;app or cms&gt;/</code>.</p>
+<h3 id="development-server-urls">Development server URLs</h3>
+<p>Launch the App via: <a href="http://localhost:8000" target="_blank">http://localhost:8000</a></p>
+<p>Launch the CMS via: <a href="http://localhost:9000" target="_blank">http://localhost:9000</a></p>
 
                                 
                                 </section>
@@ -371,7 +384,7 @@ uses with those in <code>src/lm/static/&lt;app or cms&gt;/</code>.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Development","level":"1.8","depth":1,"next":{"title":"Deployment","level":"1.9","depth":1,"path":"deployment.md","ref":"deployment.md","articles":[]},"previous":{"title":"Source code licenses","level":"1.7","depth":1,"path":"licenses.md","ref":"licenses.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"development.md","mtime":"2018-03-22T16:26:29.817Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-22T14:04:06.130Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Development","level":"1.8","depth":1,"next":{"title":"Deployment","level":"1.9","depth":1,"path":"deployment.md","ref":"deployment.md","articles":[]},"previous":{"title":"Source code licenses","level":"1.7","depth":1,"path":"licenses.md","ref":"licenses.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"development.md","mtime":"2018-03-23T03:52:29.363Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-22T14:04:06.130Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

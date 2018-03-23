@@ -8,8 +8,8 @@ The following instructions have only been tested on Ubuntu 17.10.
 First, install Docker CE. Follow the instructions here:
 https://docs.docker.com/install/linux/docker-ce/ubuntu/
 
-The following commands from the Docker CE installation page were copied on 22
-March 2018:
+The following installation commands from the abovementioned page were copied on
+22 March 2018, and may or may not work in the future:
 
 ```bash
 sudo apt update && \
@@ -35,6 +35,9 @@ sudo useradd -aG docker $USER
 
 Next, install Docker Compose. Follow the instructions here:
 https://docs.docker.com/compose/install/
+
+The following instructions have been tested with Docker version `18.03.0-ce,
+build 0520e24` and Docker Compose version `1.20.1, build 5d8c71b`.
 
 ### Install JS development dependencies
 
@@ -85,9 +88,19 @@ There are two `watch-app.sh` scripts: one for the App, and another for the CMS.
 - `scripts/app_server/dev/watch-app.sh`
 - `scripts/admin_server/dev/watch-app.sh`
 
-There are two `build_dev.sh` scripts: one for the App, and another for the CMS.
-- `scripts/app_server/dev/build_dev.sh`
-- `scripts/admin_server/dev/build_dev.sh`
+There are two `build_dev.sh` scripts: one for the App, and another for both the
+App and CMS. Each `build_dev.sh` file is a convenience script for the
+`docker-compose build` and `docker-compose up` commands.
+
+- `./scripts/app_server/dev/build_dev.sh`
+- `./scripts/admin_server/dev/build_dev.sh`
+
+On one hand, running `scripts/app_server/dev/build_dev.sh` launches the App
+development containers and streams the output of the `liftedmobile_dev`
+container to the standard output.  On the other hand, running
+`scripts/admin_server/dev/build_dev.sh` launches the App and CMS development
+containers, and streams the output of the `admin_cms_dev` development container
+to the standard output.
 
 ### Static assets
 
@@ -107,3 +120,10 @@ cd src/lm/cms/frontend && gulp build
 
 What `gulp build` does is replace the static files which the development server
 uses with those in `src/lm/static/<app or cms>/`.
+
+### Development server URLs
+
+Launch the App via: http://localhost:8000
+
+Launch the CMS via: http://localhost:9000
+
