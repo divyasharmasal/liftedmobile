@@ -252,53 +252,53 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="development">Development</h1>
-<p>The following instructions have only been tested on Ubuntu 17.10. To verify
-that these instructions are correct, they were tested on a blank Virtualbox
-virtual machine.</p>
+<p>The following instructions assume that you are using a Ubuntu system, and they
+have only been tested on Ubuntu 17.10. To verify that these instructions are
+correct, they were tested on a VirtualBox virtual machine running a fresh
+installation of Ubuntu 17.10.</p>
 <h2 id="dependencies">Dependencies</h2>
 <h3 id="install-docker-and-docker-compose">Install Docker and Docker Compose</h3>
-<p>First, install Docker CE. Follow the instructions here:
-<a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/" target="_blank">https://docs.docker.com/install/linux/docker-ce/ubuntu/</a></p>
-<p>The following installation commands from the abovementioned page were copied on
-22 March 2018, and may or may not work in the future:</p>
+<p>First, install Docker Community Edition. Follow the instructions
+<a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/" target="_blank">here</a>, or copy and
+paste the commands below into a terminal.</p>
+<p>Note that they were copied from the Docker CE installation page on 22 March
+2018, and may not work the same way in the future:</p>
 <pre><code class="lang-bash">sudo apt update &amp;&amp; \
 sudo apt -y install apt-transport-https ca-certificates curl software-properties-common &amp;&amp; \
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - &amp;&amp; \
 sudo apt-key fingerprint 0EBFCD88
-
-<span class="hljs-comment"># (now verify that the fingerprint is 9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88)</span>
-
-sudo add-apt-repository <span class="hljs-string">&quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu <span class="hljs-variable">$(lsb_release -cs)</span> stable&quot;</span> &amp;&amp; \
+</code></pre>
+<p>Now verify that the fingerprint (excluding spaces) is <code>9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C
+0EBF CD88</code>.</p>
+<p>Only proceed if the fingerprint matches the output of the last command (<code>apt-key</code>) above.</p>
+<pre><code class="lang-bash">sudo add-apt-repository <span class="hljs-string">&quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu <span class="hljs-variable">$(lsb_release -cs)</span> stable&quot;</span> &amp;&amp; \
 sudo apt update &amp;&amp; sudo apt -y install docker-ce
 </code></pre>
-<p>The Docker version running in production on 22 March 2018 was <code>17.12.1-ce</code>. If
-you encounter problems with newer versions, try using this version instead.</p>
 <p>Make sure to add yourself to the <code>docker</code> group, so you can launch and manage
 containers without root access:</p>
-<pre><code class="lang-bash">sudo useradd <span class="hljs-_">-a</span>G docker <span class="hljs-variable">$USER</span>
+<pre><code class="lang-bash">sudo adduser <span class="hljs-variable">$USER</span> docker
 </code></pre>
+<p>Log out and log back in for this change to take effect.</p>
 <p>Next, install Docker Compose. Follow the instructions here:
 <a href="https://docs.docker.com/compose/install/" target="_blank">https://docs.docker.com/compose/install/</a></p>
-<p>The following instructions have been tested with Docker version <code>18.03.0-ce,
-build 0520e24</code> and Docker Compose version <code>1.20.1, build 5d8c71b</code>.</p>
-<h3 id="install-js-development-dependencies">Install JS development dependencies</h3>
+<h3 id="install-js-development-dependencies-and-move-static-assets">Install JS development dependencies and move static assets</h3>
 <p>First, install Yarn. Follow the instructions here:
 <a href="https://yarnpkg.com/lang/en/docs/install/" target="_blank">https://yarnpkg.com/lang/en/docs/install/</a></p>
-<p>Next, run:</p>
-<pre><code class="lang-bash">sudo yarn global add gulp gulp-shell preact-cli
-</code></pre>
-<h2 id="set-up-your-development-workspace">Set up your development workspace</h2>
-<p>Install App and CMS frontend dependencies and move static assets:</p>
-<pre><code class="lang-bash"><span class="hljs-built_in">cd</span> src/lm/app/frontend &amp;&amp; \
+<p>Next, install development dependencies and use <code>gulp</code> to move static assets to
+where they need to go:</p>
+<pre><code class="lang-bash">sudo yarn global add gulp gulp-shell preact-cli &amp;&amp; \
+<span class="hljs-built_in">cd</span> src/lm/app/frontend &amp;&amp; \
 yarn install &amp;&amp; gulp build &amp;&amp; \
 <span class="hljs-built_in">cd</span> ../../cms/frontend &amp;&amp; \
-yarn install &amp;&amp; gulp build
+yarn install &amp;&amp; gulp build &amp;&amp; \
+<span class="hljs-built_in">cd</span> ../../../../
 </code></pre>
-<p>To work on the code, set up three terminals.  You can use a
+<h2 id="set-up-your-development-workspace">Set up your development workspace</h2>
+<p>To work on the code, set up three terminals. You may use a
 <a href="https://tmux.github.io/" target="_blank"><code>tmux</code></a> screen with 3 panes: one for your editor, one
 for <code>watch-app.sh</code>, and one for the <code>build_dev.sh</code>.</p>
 <pre><code>-----------------------------
-| vim        | watch-app.sh |
+| editor     | watch-app.sh |
 |            | (App)        |
 |            |--------------|
 |            | watch-app.sh |
@@ -307,28 +307,59 @@ for <code>watch-app.sh</code>, and one for the <code>build_dev.sh</code>.</p>
 |            | build_dev.sh |
 |            | (App or CMS) |
 -----------------------------
-</code></pre><p>Each <code>watch-app.sh</code> script runs <code>preact watch</code> with a pre-set working directory
+</code></pre><p>This screenshot shows the above setup in action:</p>
+<p><a href="images/dev_terminal.png" target="_blank">
+    <img src="images/dev_terminal.png" width="400">
+</a></p>
+<p>Each <code>watch-app.sh</code> script runs <code>preact watch</code> with a pre-set working directory
 path and port number. Each port number is hard-coded into App and CMS Django
 templates, so these scripts make it easy to run <code>preact watch</code> without having
 to remember the correct port.</p>
-<p>There are two <code>watch-app.sh</code> scripts: one for the App, and another for the CMS.</p>
-<ul>
-<li><code>scripts/app_server/dev/watch-app.sh</code></li>
-<li><code>scripts/admin_server/dev/watch-app.sh</code></li>
-</ul>
+<p>There are two <code>watch-app.sh</code> scripts: one for the App: </p>
+<pre><code class="lang-bash">scripts/app_server/dev/watch-app.sh
+</code></pre>
+<p>and another for the CMS:</p>
+<pre><code class="lang-bash">scripts/admin_server/dev/watch-app.sh
+</code></pre>
 <p>There are two <code>build_dev.sh</code> scripts: one for the App, and another for both the
 App and CMS. Each <code>build_dev.sh</code> file is a convenience script for the
 <code>docker-compose build</code> and <code>docker-compose up</code> commands.</p>
-<ul>
-<li><code>./scripts/app_server/dev/build_dev.sh</code></li>
-<li><code>./scripts/admin_server/dev/build_dev.sh</code></li>
-</ul>
+<p>To build the App in development mode:</p>
+<pre><code class="lang-bash">./scripts/app_server/dev/build_dev.sh
+</code></pre>
+<p>To build the CMS in development mode:</p>
+<pre><code class="lang-bash">./scripts/admin_server/dev/build_dev.sh
+</code></pre>
 <p>On one hand, running <code>scripts/app_server/dev/build_dev.sh</code> launches the App
 development containers and streams the output of the <code>liftedmobile_dev</code>
-container to the standard output.  On the other hand, running
+container to the standard output. On the other hand, running
 <code>scripts/admin_server/dev/build_dev.sh</code> launches the App and CMS development
 containers, and streams the output of the <code>admin_cms_dev</code> development container
 to the standard output.</p>
+<h3 id="databases">Databases</h3>
+<p>No database configuration is needed for development as it is done
+automatically. The development servers connect to databases served through the
+<code>admin_db_dev</code> and <code>liftedmobile_db</code> containers. (Note: to containerise a
+database is generally a bad practice in production, but is acceptable for
+development purposes.)</p>
+<p>Although the <code>admin_cms_dev</code> container is orchestrated in a different Docker
+Compose file from <code>liftedmobile_db_dev</code>, it is able to connect to the Postgres
+database server in <code>liftedmobile_db_dev</code>. This is made possible because
+<code>docker/admin_server/docker-compose.dev.yml</code> configures Docker allow the CMS
+access to the <code>appserver_default</code> internal network:</p>
+<pre><code>networks:
+    default:
+        external:
+            name: appserver_default
+</code></pre><p>This network name (<code>appserver_default</code>) is automatically derived from the name
+of the directory (<code>app_server</code>) that contains the App Docker Compose file, with
+its <a href="https://github.com/docker/compose/issues/2923" target="_blank">underscore removed</a>.</p>
+<h3 id="development-server-urls">Development server URLs</h3>
+<p>Launch the App via: <a href="http://localhost:8000" target="_blank">http://localhost:8000</a></p>
+<p>Launch the CMS via: <a href="http://localhost:9000" target="_blank">http://localhost:9000</a></p>
+<p>Default credentials for the CMS</p>
+<p>Username: <code>admin</code></p>
+<p>Password: <code>password</code></p>
 <h3 id="static-assets">Static assets</h3>
 <p>Static assets should be saved in <code>src/lm/static/&lt;app or cms&gt;/images</code> and/or
 <code>src/lm/static/&lt;app or cms&gt;/favicons</code>. Make sure that you run <code>gulp build</code>
@@ -340,9 +371,6 @@ in the <code>frontend/</code> directory of <code>app</code> or <code>cms</code> 
 </code></pre>
 <p>What <code>gulp build</code> does is replace the static files which the development server
 uses with those in <code>src/lm/static/&lt;app or cms&gt;/</code>.</p>
-<h3 id="development-server-urls">Development server URLs</h3>
-<p>Launch the App via: <a href="http://localhost:8000" target="_blank">http://localhost:8000</a></p>
-<p>Launch the CMS via: <a href="http://localhost:9000" target="_blank">http://localhost:9000</a></p>
 
                                 
                                 </section>
@@ -386,7 +414,7 @@ uses with those in <code>src/lm/static/&lt;app or cms&gt;/</code>.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Development","level":"1.8","depth":1,"next":{"title":"Deployment","level":"1.9","depth":1,"path":"deployment.md","ref":"deployment.md","articles":[]},"previous":{"title":"Source code licenses","level":"1.7","depth":1,"path":"licenses.md","ref":"licenses.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"development.md","mtime":"2018-03-23T08:48:04.651Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-23T08:31:28.813Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Development","level":"1.8","depth":1,"next":{"title":"Deployment","level":"1.9","depth":1,"path":"deployment.md","ref":"deployment.md","articles":[]},"previous":{"title":"Source code licenses","level":"1.7","depth":1,"path":"licenses.md","ref":"licenses.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"development.md","mtime":"2018-04-11T02:23:14.361Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-11T02:22:58.089Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

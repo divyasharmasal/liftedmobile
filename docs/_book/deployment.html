@@ -252,13 +252,249 @@
                                 <h1 id="deployment">Deployment</h1>
 <h2 id="aws-setup">AWS setup</h2>
 <h3 id="iam-users-and-permissions">IAM: users and permissions</h3>
-<h3 id="route-53-dns-setup">Route 53: DNS setup</h3>
+<p>To use this guide, first create an Amazon Web Services account and log in. If
+you already have an account, this master account should have full
+administorator rights and two-factor authentication enabled. The only time you
+need to use the master account should be to create the following subaccounts:</p>
+<table>
+<thead>
+<tr>
+<th>User</th>
+<th>Managed Access Policies</th>
+<th>Programmatic Access</th>
+<th>Management Console Access</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lm_ec2</code></td>
+<td><code>AmazonEC2FullAccess</code></td>
+<td>No</td>
+<td>Yes</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>lm_route53</code></td>
+<td><code>AmazonRoute53DomainsFullAccess</code></td>
+<td>No</td>
+<td>Yes</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>lm_cloudwatch</code></td>
+<td>See below</td>
+<td>Yes</td>
+<td>No</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p>Also set up two-factor authentication for all accounts with management console
+access.</p>
+<p>Bookmark the Mangagement Console URL for convenient access:</p>
+<pre><code>https://&lt;your account number&gt;.signin.aws.amazon.com/console
+</code></pre><h4 id="policy-for-lmcloudwatch">Policy for <code>lm_cloudwatch</code></h4>
+<pre><code>{
+    &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Statement&quot;: [
+        {
+            &quot;Action&quot;: [
+                &quot;logs:CreateLogStream&quot;,
+                &quot;logs:PutLogEvents&quot;,
+                &quot;logs:CreateLogGroup&quot;
+            ],
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Resource&quot;: &quot;*&quot;
+        }
+    ]
+}
+</code></pre><p>The purpose of this strategy is to reduce the impact on the system if any
+particular account is comprimised. Depending on your threat model, you may
+choose to take this risk and use the master account to administer everything. </p>
+<p>You may also choose to customise access policies to your needs. This is a
+highly granular task, so the table above simply lists relevant Managed Access
+Policies.</p>
+<h2 id="building-the-app-and-cms-containers">Building the App and CMS containers</h2>
+<p>To build both the App and CMS containers, run:</p>
+<pre><code class="lang-bash">./scripts/admin_server/prod/build_prod.sh
+</code></pre>
+<p>Expect this script to take up to 20 minutes even on a fast connection.</p>
+<p>To only build the App container, run:</p>
+<pre><code class="lang-bash">./scripts/app_server/prod/build_prod.sh
+</code></pre>
+<p>Expect this script to take up to 10 minutes even on a fast connection.</p>
 <h3 id="ec2-virtual-servers">EC2: virtual servers</h3>
+<p>Log in to the AWS Management Console using your <code>lm_ec2</code> credentials and navigate to the 
+<a href="https://ap-southeast-1.console.aws.amazon.com/ec2/v2/home?region=ap-southeast-1#Instances:sort=instanceId" target="_blank">EC2 console</a>.</p>
+<p>Note that this guide assumes that you are using the <code>ap-southeast-1</code> AWS
+region, which is hosted in Singapore..</p>
+<p>Create two new instances. Each instance should be configured as such:</p>
+<ul>
+<li>AMI: Ubuntu Server 16.04 LTS (HVM), SSD Volume Type - ami-52d4802e (64-bit)</li>
+<li>Instance Type: t2.nano (or t2.micro)</li>
+<li>Protect against accidental termination</li>
+<li>Storage: default 8GB general purpose SSD</li>
+</ul>
+<p>Next, create 2 Elastic IPs (VPC) and assign one to each new instance.</p>
+<p>Finally, rename each instance for your convenience:</p>
+<table>
+<thead>
+<tr>
+<th>Instance name</th>
+<th>Elastic IP (example)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>app_server</td>
+<td>52.76.154.41</td>
+</tr>
+<tr>
+<td>cms_server</td>
+<td>52.77.56.112</td>
+</tr>
+</tbody>
+</table>
+<p>If you create a new secret <code>.pem</code> file (e.g. <code>secret.pem</code>), change its permissions to read-only:</p>
+<pre><code class="lang-bash">chmod 400 /path/to/secret.pem
+</code></pre>
 <h4 id="security-group-setup">Security group setup</h4>
+<p>Set up one security group each for <code>app_server</code> and <code>cms_server</code>.</p>
+<p>Inbound rules for <code>app_server</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Protocol</th>
+<th>Port</th>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TCP</td>
+<td>5544</td>
+<td>52.77.56.112/32 (the <code>cms_server</code> IP)</td>
+<td>From CMS DB</td>
+</tr>
+<tr>
+<td>TCP</td>
+<td>80</td>
+<td>0.0.0.0/0</td>
+<td>HTTP</td>
+</tr>
+<tr>
+<td>TCP</td>
+<td>443</td>
+<td>0.0.0.0/0</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>SSH</td>
+<td>22</td>
+<td>0.0.0.0/0</td>
+<td>Old SSH</td>
+</tr>
+<tr>
+<td>SSH</td>
+<td>2233</td>
+<td>0.0.0.0/0</td>
+<td>New SSH</td>
+</tr>
+</tbody>
+</table>
+<p>Inbound rules for <code>cms_server</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Protocol</th>
+<th>Port</th>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TCP</td>
+<td>80</td>
+<td>0.0.0.0/0</td>
+<td>HTTP</td>
+</tr>
+<tr>
+<td>TCP</td>
+<td>443</td>
+<td>0.0.0.0/0</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>SSH</td>
+<td>22</td>
+<td>0.0.0.0/0</td>
+<td>Old SSH</td>
+</tr>
+<tr>
+<td>SSH</td>
+<td>2233</td>
+<td>0.0.0.0/0</td>
+<td>New SSH</td>
+</tr>
+</tbody>
+</table>
 <h2 id="ssh-configuration">SSH configuration</h2>
+<p>Log in to <code>app_server</code> via SSH:</p>
+<pre><code class="lang-bash">ssh -p 22 -i /path/to/secret.pem ubuntu@52.76.154.41
+</code></pre>
+<p>Change <code>/etc/ssh/sshd_config</code> to contain the contents of <a href="sshd_config.txt">this page</a>.</p>
+<p>This configuration file changes some default settings for better security, including:</p>
+<ul>
+<li>Changes the SSH port to 2233 to avoid most bots</li>
+<li>Disallow root login</li>
+<li>Disallow X11Forwarding</li>
+</ul>
+<p>Reboot once you have changed <code>sshd_config</code>:</p>
+<pre><code class="lang-bash">sudo reboot
+</code></pre>
+<p>Once you have reconfigured <code>sshd</code> such that the port number is <code>2233</code>, delete
+the &quot;Old SSH&quot; rule from each security group.</p>
+<p>You may now log in via port <code>2233</code>:</p>
+<pre><code class="lang-bash">ssh -p 2233 -i /path/to/secret.pem ubuntu@52.76.154.41
+</code></pre>
+<p>Do the same for <code>cms_server</code>.</p>
 <h2 id="postgres-database-setup">Postgres database setup</h2>
+<p>On both servers, do the following:</p>
+<pre><code class="lang-bash">sudo apt update &amp;&amp; sudo apt -y upgrade &amp;&amp; sudo apt -y install postgresql
+</code></pre>
+<p>Edit <code>/etc/postgresql/9.5/main/postgresql.conf</code> to change the following:</p>
+<pre><code>listen_addresses = &apos;0.0.0.0,172.16.0.1,172.17.0.1,172.18.0.1&apos;
+port = 5544
+</code></pre><p>In <code>app_server</code>, edit <code>/etc/postgresql/9.5/main/pg_hba.conf</code> to add:</p>
+<pre><code>hostssl    liftedmobile  postgres       &lt;cms_server IP&gt;/32         md5
+</code></pre><p>Restart Postgres once you change both files:</p>
+<pre><code class="lang-bash">sudo service postgresql restart
+</code></pre>
+<p>Change the password for the <code>postgres</code> user:</p>
+<pre><code class="lang-bash">sudo -u postgres psql
+alter user postgres with encrypted password <span class="hljs-string">&apos;SECURE PASSWORD HERE&apos;</span>;
+</code></pre>
+<p>Press Control-D to exit <code>psql</code> and return to the shell.</p>
+<p>In <code>app_server</code>, create a databased named <code>liftedmobile</code>:</p>
+<pre><code class="lang-bash">sudo -u postgres createdb liftedmobile
+</code></pre>
+<p>In <code>cms_server</code>, create a databased named <code>admin</code>:</p>
+<pre><code class="lang-bash">sudo -u postgres createdb admin
+</code></pre>
+<p>You should now be able to access the <code>app_server</code> database from the
+<code>cms_server</code> database, but not via any other IP address:</p>
+<pre><code class="lang-bash">sudo -u postgres psql -h &lt;app_server IP&gt; -p 5544 -U postgres liftedmobile
+</code></pre>
 <h2 id="docker-setup">Docker setup</h2>
+<p>Install Docker and Docker Compose on both servers. Use the instructions in the
+<a href="development.html">Development</a> section.</p>
 <h2 id="secret-and-configuration-setup">Secret and configuration setup</h2>
+<h2 id="pushing-containers-to-production-servers">Pushing containers to production servers</h2>
+<h3 id="route-53-dns-setup">Route 53: DNS setup</h3>
+<h3 id="cloudfront-setup">CloudFront setup</h3>
 
                                 
                                 </section>
@@ -298,7 +534,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Deployment","level":"1.9","depth":1,"previous":{"title":"Development","level":"1.8","depth":1,"path":"development.md","ref":"development.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"deployment.md","mtime":"2018-03-23T06:02:01.220Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-23T08:31:28.813Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Deployment","level":"1.9","depth":1,"previous":{"title":"Development","level":"1.8","depth":1,"path":"development.md","ref":"development.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"deployment.md","mtime":"2018-04-10T22:48:54.420Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-11T02:22:58.089Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

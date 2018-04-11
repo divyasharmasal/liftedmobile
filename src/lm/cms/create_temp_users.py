@@ -9,11 +9,13 @@ def create(apps, schema_editor):
     whether the app runs in dev or prod.
     """
 
-    if not User.objects.filter(
-            username=settings.CMS_TEMP_SUPER_USERNAME).exists():
+    username = settings.CMS_TEMP_SUPER_USERNAME
+    password = settings.CMS_TEMP_SUPER_PASSWORD
+
+    if not User.objects.filter(username=username).exists():
 
         User.objects.create_superuser(
-            username=settings.CMS_TEMP_SUPER_USERNAME,
-            password=settings.CMS_TEMP_SUPER_PASSWORD,
+            username=username,
+            password=password,
             last_login=timezone.now(),
             email="")

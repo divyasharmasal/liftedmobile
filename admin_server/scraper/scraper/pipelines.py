@@ -19,13 +19,16 @@ class ScraperPipeline(object):
         self.urls = []
 
         cms_host = None
+        port = None
         if "DEV" in os.environ and os.environ["DEV"]:
             cms_host = socket.gethostbyname("cms_dev")
+            port = "9000"
         else:
             cms_host = socket.gethostbyname("cms")
+            port = "80"
 
-        self.sync_urls_url = "http://" + cms_host + ":9000/cms/scraper/sync_urls/"
-        self.add_course_url = "http://" + cms_host + ":9000/cms/scraper/add_course/"
+        self.sync_urls_url = "http://" + cms_host + ":" + port + "/cms/scraper/sync_urls/"
+        self.add_course_url = "http://" + cms_host + ":" + port + "/cms/scraper/add_course/"
 
     def close_spider(self, spider):
         payload = {

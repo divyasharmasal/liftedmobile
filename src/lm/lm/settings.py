@@ -15,14 +15,17 @@ import json
 import socket
 from boto3.session import Session
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
 
 def read_secret(filepath):
     return open(filepath).read().splitlines()[0]
 
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+
 SCRAPYD_IP = None
-if 'CMS' in os.environ:
+
+if "CMS" in os.environ:
     if "DEV" in os.environ:
         SCRAPYD_IP = socket.gethostbyname("scrapyd_dev")
         SESSION_COOKIE_NAME = "cms_sessionid_dev"
@@ -31,7 +34,7 @@ if 'CMS' in os.environ:
         SESSION_COOKIE_NAME = "cms_sessionid"
 
 
-if 'DEV' in os.environ:
+if "DEV" in os.environ:
     # Quick-start development settings - unsuitable for production
     # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
     SECRET_KEY = 'kw!3bqy4e39x0@xhoor4uvpwj!hgofxh9p5=j7^9$x-i*41vc_'
@@ -41,9 +44,6 @@ if 'DEV' in os.environ:
 
     LIFTED_TEMP_USERNAME = "lifted"
     LIFTED_TEMP_PASSWORD = "password"
-
-    LIFTED_COM_USERNAME = "committee"
-    LIFTED_COM_PASSWORD = "password"
 
     if 'CMS' in os.environ:
         SECRET_KEY = 'wdh|w>q&&roC*UEF-&~fNHwM,~GaUH2tC6Pn+)F2=GSQ*8DaM]'
@@ -62,34 +62,13 @@ else:
     LIFTED_TEMP_USERNAME = "lifted"
     LIFTED_TEMP_PASSWORD = read_secret("/run/secrets/django_team_pwd")
 
-    LIFTED_COM_USERNAME = None
-    LIFTED_COM_PASSWORD = None
-    try:
-        LIFTED_COM_USERNAME = "committee"
-        LIFTED_COM_PASSWORD = read_secret("/run/secrets/django_com_pwd")
-    except:
-        pass
-
-    email_credentials = json.loads(open("/run/secrets/email_credentials").read())
-    ADMINS = list(json.loads(open("/run/secrets/admin_emails").read()).items())
-
-    EMAIL_HOST = "email-smtp.us-west-2.amazonaws.com"
-    EMAIL_HOST_USER = email_credentials["username"]
-    EMAIL_HOST_PASSWORD = email_credentials["password"]
-    EMAIL_USE_TLS = True
-    EMAIL_PORT = 587
-    SERVER_EMAIL = "_django@lifted.sg"
-
     if 'CMS' in os.environ:
-        SERVER_EMAIL = "cms" + SERVER_EMAIL
         SECRET_KEY = read_secret("/run/secrets/django_secret")
         CMS_TEMP_SUPER_USERNAME = "admin"
         CMS_TEMP_SUPER_PASSWORD = read_secret("/run/secrets/cms_admin_pwd")
         SCRAPYD_API_KEY = read_secret("/run/secrets/scrapyd_api_key")
-    else:
-        SERVER_EMAIL = "lm" + SERVER_EMAIL
 
-    assert(DEBUG == False)
+    assert(not DEBUG)
 
 print("Debug set to", str(DEBUG))
 
@@ -117,7 +96,7 @@ INSTALLED_APPS = [
     'app',
 ]
 
-if 'CMS' in os.environ:
+if "CMS" in os.environ:
     INSTALLED_APPS.append("cms")
 
 
@@ -169,13 +148,13 @@ WSGI_APPLICATION = 'lm.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASE_ROUTERS = []
-if 'CMS' in os.environ:
+if "CMS" in os.environ:
     DATABASE_ROUTERS.append("cms.db_routers.CmsRouter")
 
 DATABASES = None
 
-if 'DEV' in os.environ:
-    if 'CMS' in os.environ:
+if "DEV" in os.environ:
+    if "CMS" in os.environ:
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.postgresql',
@@ -251,7 +230,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 LOGGING = None
-if DEBUG == False:
+if not DEBUG:
     aws_cw = json.loads(open("/run/secrets/django_logging_aws_cw").read())
 
     boto3_session = Session(
