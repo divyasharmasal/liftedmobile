@@ -17,9 +17,9 @@ SCRAPYD_API_KEY = None
 if "DEV" in os.environ and os.environ["DEV"]:
     SCRAPYD_API_KEY = os.environ["SCRAPYD_API_KEY"]
 else:
-    secrets_path = "/run/secrets/app_secrets.json"
-    APP_SECRETS = json.loads(open(secrets_path))
-    SCRAPYD_API_KEY = APP_SECRETS["scrapy_api_key"]
+    secrets_path = "/run/secrets/secrets"
+    SECRETS = json.loads(open(secrets_path).read())
+    SCRAPYD_API_KEY = SECRETS["scrapyd_api_key"]
 
 
 BOT_NAME = 'scraper'
