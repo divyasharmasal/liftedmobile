@@ -1,13 +1,11 @@
 FROM alpine:3.7
 
-#RUN echo "http://ftp.tsukuba.wide.ad.jp/Linux/alpine/v3.5/main/" > /etc/apk/repositories
-#RUN echo "http://ftp.tsukuba.wide.ad.jp/Linux/alpine/v3.5/community/" >> /etc/apk/repositories
-
 RUN apk update                                                             && \
     apk --no-cache upgrade                                                 && \
     apk add --no-cache python3 python3-dev openssl-dev ca-certificates        \
-                       libffi-dev build-base py3-lxml  supervisor py3-cffi    \
+                       libffi-dev build-base py3-lxml supervisor py3-cffi     \
                        py3-requests                                        && \
+    pip3 --no-cache-dir install --upgrade pip                              && \
     pip3 --no-cache-dir install scrapyd scrapyd-client pytz schedule       && \
     apk del build-base                                                     && \
     rm -rf /var/cache/apk
