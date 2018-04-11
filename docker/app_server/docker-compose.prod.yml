@@ -22,11 +22,7 @@ services:
         volumes:
             - ../../../app_server/django_log:/var/log/django/
         secrets:
-            - django_secret
-            - django_admin_pwd
-            - django_team_pwd
-            - django_logging_aws_cw
-            - db_config
+            - secrets
         logging:
             driver: "awslogs"
             options:
@@ -53,20 +49,10 @@ services:
                 awslogs-stream: "liftedmobile_tlsproxy_stream"
                 awslogs-create-group: "true"
         secrets:
-            - certbot_config
+            - secrets
         depends_on:
             - "liftedmobile"
 
 secrets:
-    django_secret:
-        file: ../../../LM_SECRETS/DJANGO_SECRET
-    django_admin_pwd:
-        file: ../../../LM_SECRETS/DJANGO_ADMIN_PWD
-    django_team_pwd:
-        file: ../../../LM_SECRETS/DJANGO_TEAM_PWD
-    django_logging_aws_cw:
-        file: ../../../LM_SECRETS/DJANGO_LOGGING_AWS_CW.json
-    db_config:
-        file: ../../../LM_SECRETS/DB_CONFIG.json
-    certbot_config:
-        file: ../../../LM_SECRETS/CERTBOT_CONFIG.json
+    secrets:
+        file: ../../../LM_SECRETS/app_secrets.json

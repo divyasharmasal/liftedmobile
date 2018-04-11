@@ -11,15 +11,6 @@ COPY ./docker/app_server/nginx.conf /etc/nginx/nginx.conf
 
 WORKDIR /src
 
-    #wget -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz \
-        #-O /tmp/GeoIP.dat.gz                                                && \
-    #gunzip /tmp/GeoIP.dat.gz && \
-    #mv /tmp/GeoIP.dat /usr/share/GeoIP/                                     && \
-    #wget -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz \
-        #-O /tmp/GeoLiteCity.dat.gz                                          && \
-    #gunzip /tmp/GeoLiteCity.dat.gz && \
-    #mv /tmp/GeoLiteCity.dat /usr/share/GeoIP/                               && \
-
 RUN apk update                                                              && \
     apk --no-cache upgrade                                                  && \
     apk --no-cache add python3 python3-dev postgresql py-psycopg2              \

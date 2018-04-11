@@ -16,57 +16,43 @@ import socket
 from boto3.session import Session
 
 
-def read_secret(filepath):
-    return open(filepath).read().splitlines()[0]
-
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
 SCRAPYD_IP = None
 
-if "CMS" in os.environ:
-    if "DEV" in os.environ:
-        SCRAPYD_IP = socket.gethostbyname("scrapyd_dev")
-        SESSION_COOKIE_NAME = "cms_sessionid_dev"
-    else:
-        SCRAPYD_IP = socket.gethostbyname("scrapyd")
-        SESSION_COOKIE_NAME = "cms_sessionid"
-
+SECRETS = None
+secrets_path = "/run/secrets/secrets"
+if os.path.exists(secrets_path):
+    SECRETS = json.loads(open(secrets_path).read())
 
 if "DEV" in os.environ:
     # Quick-start development settings - unsuitable for production
     # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
     SECRET_KEY = 'kw!3bqy4e39x0@xhoor4uvpwj!hgofxh9p5=j7^9$x-i*41vc_'
     DEBUG = True
-    LIFTED_TEMP_SUPER_USERNAME = "admin"
-    LIFTED_TEMP_SUPER_PASSWORD = "password"
-
-    LIFTED_TEMP_USERNAME = "lifted"
-    LIFTED_TEMP_PASSWORD = "password"
 
     if 'CMS' in os.environ:
         SECRET_KEY = 'wdh|w>q&&roC*UEF-&~fNHwM,~GaUH2tC6Pn+)F2=GSQ*8DaM]'
         CMS_TEMP_SUPER_USERNAME = "admin"
         CMS_TEMP_SUPER_PASSWORD = "password"
         SCRAPYD_API_KEY = "scrapydapikey"
+        SCRAPYD_IP = socket.gethostbyname("scrapyd_dev")
+        SESSION_COOKIE_NAME = "cms_sessionid_dev"
 else:
     # Settings for production
     DEBUG = False
 
     # SECURITY WARNING: keep the secret key used in production secret!
-    SECRET_KEY = read_secret("/run/secrets/django_secret")
-
-    LIFTED_TEMP_SUPER_USERNAME = "admin"
-    LIFTED_TEMP_SUPER_PASSWORD = read_secret("/run/secrets/django_admin_pwd")
-    LIFTED_TEMP_USERNAME = "lifted"
-    LIFTED_TEMP_PASSWORD = read_secret("/run/secrets/django_team_pwd")
+    SECRET_KEY = SECRETS["django_secret"]
 
     if 'CMS' in os.environ:
-        SECRET_KEY = read_secret("/run/secrets/django_secret")
+        SECRET_KEY = SECRETS["django_secret"]
         CMS_TEMP_SUPER_USERNAME = "admin"
-        CMS_TEMP_SUPER_PASSWORD = read_secret("/run/secrets/cms_admin_pwd")
-        SCRAPYD_API_KEY = read_secret("/run/secrets/scrapyd_api_key")
+        CMS_TEMP_SUPER_PASSWORD = SECRETS["cms_admin_pwd"]
+        SCRAPYD_API_KEY = SECRETS["scrapyd_api_key"]
+        SCRAPYD_IP = socket.gethostbyname("scrapyd")
+        SESSION_COOKIE_NAME = "cms_sessionid"
 
     assert(not DEBUG)
 
@@ -185,7 +171,7 @@ if "DEV" in os.environ:
             }
         }
 else:
-    DATABASES = json.loads(open("/run/secrets/db_config").read())
+    DATABASES = SECRETS["db_config"]
 
 
 # Password hashing
@@ -231,18 +217,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 LOGGING = None
 if not DEBUG:
-    aws_cw = json.loads(open("/run/secrets/django_logging_aws_cw").read())
+    aws_cw = SECRETS["cloudwatch_config"]
 
-    boto3_session = Session(
-        aws_access_key_id=aws_cw["access_key_id"],
-        aws_secret_access_key=aws_cw["secret_access_key"],
-        region_name=aws_cw["region_name"])
+    boto3_session = Session(aws_access_key_id=aws_cw["access_key_id"],
+                            aws_secret_access_key=aws_cw["secret_access_key"],
+                            region_name=aws_cw["region_name"])
 
-    stream_name = None
+    stream_name = "lm_django_debug"
     if "CMS" in os.environ:
         stream_name = "cms_django_debug"
-    else:
-        stream_name = "lm_django_debug"
 
     LOGGING = {
         'version': 1,

@@ -10,12 +10,8 @@ import time
 import json
 
 
-def read_secret(secret_name):
-    return open("/run/secrets/" + secret_name).read()
-
-
 if __name__ == "__main__":
-    config = json.loads(read_secret("certbot_config"))
+    config = json.loads(open("/run/secrets/secrets").read())["certbot_config"]
     if "run_certbot" in config and config["run_certbot"]:
         print("Waiting for the app HTTP server to start...")
         while True:
