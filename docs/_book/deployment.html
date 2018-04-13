@@ -290,9 +290,10 @@ need to use the master account should be to create the following subaccounts:</p
 </tr>
 </tbody>
 </table>
+<p>Make sure that you save the Access key ID and Access secret for <code>lm_cloudwatch</code>
+somewhere safe.</p>
 <p>Also set up two-factor authentication for all accounts with management console
-access.</p>
-<p>Bookmark the Mangagement Console URL for convenient access:</p>
+access. Bookmark the Mangagement Console URL for convenient access:</p>
 <pre><code>https://&lt;your account number&gt;.signin.aws.amazon.com/console
 </code></pre><h4 id="policy-for-lmcloudwatch">Policy for <code>lm_cloudwatch</code></h4>
 <pre><code>{
@@ -356,7 +357,8 @@ region, which is hosted in Singapore..</p>
 </tr>
 </tbody>
 </table>
-<p>If you create a new secret <code>.pem</code> file (e.g. <code>secret.pem</code>), change its permissions to read-only:</p>
+<p>If you create a new secret <code>.pem</code> file (e.g. <code>secret.pem</code>), change its
+permissions to read-only:</p>
 <pre><code class="lang-bash">chmod 400 /path/to/secret.pem
 </code></pre>
 <h4 id="security-group-setup">Security group setup</h4>
@@ -469,7 +471,10 @@ the &quot;Old SSH&quot; rule from each security group.</p>
 <pre><code>listen_addresses = &apos;0.0.0.0,172.16.0.1,172.17.0.1,172.18.0.1&apos;
 port = 5544
 </code></pre><p>In <code>app_server</code>, edit <code>/etc/postgresql/9.5/main/pg_hba.conf</code> to add:</p>
-<pre><code>hostssl    liftedmobile  postgres       &lt;cms_server IP&gt;/32         md5
+<pre><code>hostssl    liftedmobile  postgres       172.16.0.0/12           md5
+hostssl    liftedmobile  postgres       &lt;cms_server IP&gt;/32         md5
+</code></pre><p>In <code>cms_server</code>, edit <code>/etc/postgresql/9.5/main/pg_hba.conf</code> to add:</p>
+<pre><code>hostssl    admin  postgres       172.16.0.0/12           md5
 </code></pre><p>Restart Postgres once you change both files:</p>
 <pre><code class="lang-bash">sudo service postgresql restart
 </code></pre>
@@ -488,13 +493,185 @@ alter user postgres with encrypted password <span class="hljs-string">&apos;SECU
 <code>cms_server</code> database, but not via any other IP address:</p>
 <pre><code class="lang-bash">sudo -u postgres psql -h &lt;app_server IP&gt; -p 5544 -U postgres liftedmobile
 </code></pre>
+<h2 id="route-53-dns-setup">Route 53: DNS setup</h2>
+<p>Create four subdomains:</p>
+<ol>
+<li><code>app.lifted.sg</code><ul>
+<li>The public will access the app here</li>
+<li>Set it up to point to CloudFront later - see below</li>
+</ul>
+</li>
+<li><code>cms.lifted.sg</code><ul>
+<li>LIFTED administrators will log in to the CMS here</li>
+<li>Set it up to point to CloudFront later - see below</li>
+</ul>
+</li>
+<li><code>app-prod.lifted.sg</code><ul>
+<li>Serves as the origin server to CloudFront</li>
+<li>Set up an <code>A</code> record with the IP address of the App server</li>
+</ul>
+</li>
+<li><code>cms-prod.lifted.sg</code><ul>
+<li>Serves as the origin server to CloudFront</li>
+<li>Set up an <code>A</code> record with the IP address of the CMS server</li>
+</ul>
+</li>
+</ol>
 <h2 id="docker-setup">Docker setup</h2>
 <p>Install Docker and Docker Compose on both servers. Use the instructions in the
 <a href="development.html">Development</a> section.</p>
 <h2 id="secret-and-configuration-setup">Secret and configuration setup</h2>
+<p>You need to generate several long and random strings:</p>
+<ol>
+<li><code>DJANGO_SECRET</code> for the app server</li>
+<li><code>DJANGO_SECRET</code> for the CMS server</li>
+<li>The administrator password for the CMS</li>
+<li>The authentication key used between the scraper and the CMS server</li>
+</ol>
+<p>If run on Linux, this command uses entropy from <code>/dev/urandom</code> to generate a
+100-character long alphanumeric secret. You are, however, responsible for the
+randomness and security of each secret string you produce.</p>
+<pre><code class="lang-bash">python -c <span class="hljs-string">&quot;import random; import string; print(&apos;&apos;.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(100)))&quot;</span>
+</code></pre>
+<h3 id="app-server">App server</h3>
+<p>SSH into the app server and create a directory named <code>LM_SECRETS</code> in <code>/home/ubuntu/</code></p>
+<pre><code class="lang-bash">mkdir /home/ubuntu/LM_SECRETS
+</code></pre>
+<p>Create <code>/home/ubuntu/LM_SECRETS/app_secrets.json</code>:</p>
+<pre><code>{
+    &quot;django_secret&quot;: &quot;&lt;long and random string&gt;&quot;,
+    &quot;db_config&quot;: {
+        &quot;default&quot;: {
+            &quot;ENGINE&quot;: &quot;django.db.backends.postgresql&quot;,
+            &quot;NAME&quot;: &quot;liftedmobile&quot;,
+            &quot;USER&quot;: &quot;postgres&quot;,
+            &quot;PASSWORD&quot;: &quot;&lt;postgres password&gt;&quot;,
+            &quot;HOST&quot;: &quot;dockerhost&quot;,
+            &quot;PORT&quot;: &quot;5544&quot;
+        }                         
+    },
+    &quot;certbot_config&quot;: {
+        &quot;run_certbot&quot;: true,
+        &quot;email&quot;: &quot;&lt;your email address&gt;&quot;,
+        &quot;domain&quot;: &quot;app-prod.lifted.sg&quot;
+    },
+    &quot;cloudwatch_config&quot;: {
+        &quot;access_key_id&quot;: &quot;&lt;lm_cloudwatch user access key&gt;&quot;,
+        &quot;secret_access_key&quot;: &quot;&lt;lm_cloudwatch user secret access key&gt;&quot;,
+        &quot;region_name&quot;: &quot;ap-southeast-1&quot;
+    }
+}
+</code></pre><h3 id="cms-server">CMS server</h3>
+<pre><code>{
+    &quot;django_secret&quot;: &quot;&lt;long and random string #2&gt;&quot;,
+    &quot;db_config&quot;: {
+        &quot;default&quot;: {
+            &quot;ENGINE&quot;: &quot;django.db.backends.postgresql&quot;,
+            &quot;NAME&quot;: &quot;admin&quot;,
+            &quot;USER&quot;: &quot;postgres&quot;,
+            &quot;PASSWORD&quot;: &quot;&lt;password for the Postgres user &apos;admin&apos;&gt;&quot;,
+            &quot;HOST&quot;: &quot;dockerhost&quot;,
+            &quot;PORT&quot;: &quot;5544&quot;
+        },
+        &quot;app_server&quot;: {
+            &quot;ENGINE&quot;: &quot;django.db.backends.postgresql&quot;,
+            &quot;NAME&quot;: &quot;liftedmobile&quot;,
+            &quot;USER&quot;: &quot;postgres&quot;,
+            &quot;PASSWORD&quot;: &quot;&lt;password for the Postgres user &apos;postgres&apos;&gt;&quot;,
+            &quot;HOST&quot;: &quot;&lt;IP address of the app server&gt;&quot;,
+            &quot;PORT&quot;: &quot;5544&quot;
+        }
+    },
+    &quot;certbot_config&quot;: {
+        &quot;run_certbot&quot;: true,
+        &quot;email&quot;: &quot;&lt;your email address&gt;&quot;,
+        &quot;domain&quot;: &quot;&lt;cms_server subdomain&gt;&quot;
+    },
+    &quot;cms_admin_pwd&quot;: &quot;&lt;long and random string #3&gt;&quot;,
+    &quot;scrapyd_api_key&quot;: &quot;&lt;long and random string #4&gt;&quot;,
+    &quot;cloudwatch_config&quot;: {
+        &quot;access_key_id&quot;: &quot;&lt;lm_cloudwatch user access key&gt;&quot;,
+        &quot;secret_access_key&quot;: &quot;&lt;lm_cloudwatch user secret access key&gt;&quot;,
+        &quot;region_name&quot;: &quot;ap-southeast-1&quot;
+    }
+}
+</code></pre><h2 id="set-up-docker-logging-drivers-for-cloudwatch">Set up Docker logging drivers for CloudWatch</h2>
+<p>Docker needs to be configured to send server logs to AWS CloudWatch. To do so,
+SSH into the App and CMS servers and follow these instructions for both.</p>
+<p>Run:</p>
+<pre><code class="lang-bash">sudo mkdir -p /etc/systemd/system/docker.service.d/ &amp;&amp; \
+sudo touch /etc/systemd/system/docker.service.d/aws-credentials.conf
+</code></pre>
+<p>Edit <code>/etc/systemd/system/docker.service.d/aws-credentials.conf</code></p>
+<pre><code>[Service]
+Environment=&quot;AWS_ACCESS_KEY_ID=&lt;aws_access_key_id&gt;&quot;
+Environment=&quot;AWS_SECRET_ACCESS_KEY=&lt;aws_secret_access_key&gt;&quot;
+</code></pre><p>Finally, run:</p>
+<pre><code class="lang-bash">sudo systemctl daemon-reload &amp;&amp; sudo service docker restart
+</code></pre>
 <h2 id="pushing-containers-to-production-servers">Pushing containers to production servers</h2>
-<h3 id="route-53-dns-setup">Route 53: DNS setup</h3>
-<h3 id="cloudfront-setup">CloudFront setup</h3>
+<p>Build the app and CMS:</p>
+<pre><code class="lang-bash">./scripts/admin_server/prod/build_prod.sh
+</code></pre>
+<p>These are the images that you will next push to the production servers:</p>
+<pre><code class="lang-bash">adminserver_cms          latest      213MB
+adminserver_scrapyd      latest      182MB
+adminserver_db           latest      38.2MB
+appserver_tlsproxy       latest      103MB
+appserver_liftedmobile   latest      210MB
+appserver_db             latest      38.2MB
+</code></pre>
+<p>Note that the largest image is only 213MB in size. It is tiny in comparision to
+those produced in other projects because each Dockerfile configures the image
+to uses Alpine Linux and delete unused files.</p>
+<p>Next, run the deployment script:</p>
+<pre><code class="lang-bash">./scripts/deploy.py -p 2233 -c /home/di/Desktop/SAL/lm_demo.pem -u ubuntu@demo-app.lifted.sg <span class="hljs-_">-s</span> ./ -t app
+./scripts/deploy.py -p 2233 -c /home/di/Desktop/SAL/lm_demo.pem -u ubuntu@demo-cms.lifted.sg <span class="hljs-_">-s</span> ./ -t cms
+</code></pre>
+<p>To view the commands that the script will execute without executing them, add
+the <code>-d</code> flag to do a dry run.</p>
+<h2 id="cloudfront-setup">CloudFront setup</h2>
+<p>For the app, create a CloudFront distribution with the following settings:</p>
+<ul>
+<li>SSL certificate: create a custom SSL certificate for <code>app.lifted.sg</code></li>
+<li>Price Class: Use Only US, Canada, Europe and Asia</li>
+<li>Alternate Domain Names (CNAMEs): app.lifted.sg</li>
+<li>Origin<ul>
+<li>Origin Domain Name: app-prod.lifted.sg</li>
+<li>Origin Protocol Policy: HTTPS</li>
+<li>HTTPS Port: 443</li>
+</ul>
+</li>
+<li>Behaviours<ul>
+<li>Precedence 0<ul>
+<li>Path pattern: <code>static/*</code>: </li>
+<li>Allowed HTTP Methods: GET, HEAD</li>
+<li>Object Caching: &#xFFFC;Use Origin Cache Headers</li>
+<li>Forward Cookies: None</li>
+<li>Query String Forwarding and Caching: None</li>
+<li>Compress Objects Automatically: Yes</li>
+</ul>
+</li>
+<li>Precedence 1<ul>
+<li>Path pattern: <code>Default (*)</code></li>
+<li>Allowed HTTP Methods: GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE</li>
+<li>Cache Based on Selected Request Headers: Whitelist</li>
+<li>Whitelist Headers: Host</li>
+<li>Object Caching: Customise</li>
+<li>Minimum/Maximum/Default TTL: 0</li>
+<li>Forward Cookies: All</li>
+<li>Query String Forwarding and Caching: Forward all, cache based on all</li>
+<li>Compress Objects Automatically: Yes</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Follow the equivalent steps for the CMS.</p>
+<p>Next, link the domain intended for public use to the CloudFront distribution URL via
+Route53. Create an A record from <code>app.lifted.sg</code> to <code>dxxxxxx.cloudfront.net.</code>
+and make sure that <code>Alias</code> is set to <code>Yes</code>. After about 30 minutes, you should
+be able to access the app via <code>app.lifted.sg</code>.</p>
 
                                 
                                 </section>
@@ -534,7 +711,7 @@ alter user postgres with encrypted password <span class="hljs-string">&apos;SECU
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Deployment","level":"1.9","depth":1,"previous":{"title":"Development","level":"1.8","depth":1,"path":"development.md","ref":"development.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"deployment.md","mtime":"2018-04-11T02:37:27.476Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-11T06:45:01.685Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Deployment","level":"1.9","depth":1,"previous":{"title":"Development","level":"1.8","depth":1,"path":"development.md","ref":"development.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"deployment.md","mtime":"2018-04-12T14:43:44.917Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-12T06:00:09.902Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
