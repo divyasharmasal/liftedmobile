@@ -483,10 +483,10 @@ hostssl    liftedmobile  postgres       &lt;cms_server IP&gt;/32         md5
 alter user postgres with encrypted password <span class="hljs-string">&apos;SECURE PASSWORD HERE&apos;</span>;
 </code></pre>
 <p>Press Control-D to exit <code>psql</code> and return to the shell.</p>
-<p>In <code>app_server</code>, create a databased named <code>liftedmobile</code>:</p>
+<p>In <code>app_server</code>, create a database named <code>liftedmobile</code>:</p>
 <pre><code class="lang-bash">sudo -u postgres createdb liftedmobile
 </code></pre>
-<p>In <code>cms_server</code>, create a databased named <code>admin</code>:</p>
+<p>In <code>cms_server</code>, create a database named <code>admin</code>:</p>
 <pre><code class="lang-bash">sudo -u postgres createdb admin
 </code></pre>
 <p>You should now be able to access the <code>app_server</code> database from the
@@ -498,21 +498,21 @@ alter user postgres with encrypted password <span class="hljs-string">&apos;SECU
 <ol>
 <li><code>app.lifted.sg</code><ul>
 <li>The public will access the app here</li>
-<li>Set it up to point to CloudFront later - see below</li>
+<li>Set it up to point to your app CloudFront distribution (see below)</li>
 </ul>
 </li>
 <li><code>cms.lifted.sg</code><ul>
 <li>LIFTED administrators will log in to the CMS here</li>
-<li>Set it up to point to CloudFront later - see below</li>
+<li>Set it up to point to your CMS CloudFront distribution (see below)</li>
 </ul>
 </li>
 <li><code>app-prod.lifted.sg</code><ul>
-<li>Serves as the origin server to CloudFront</li>
+<li>Serves as the origin server to your app CloudFront distribution</li>
 <li>Set up an <code>A</code> record with the IP address of the App server</li>
 </ul>
 </li>
 <li><code>cms-prod.lifted.sg</code><ul>
-<li>Serves as the origin server to CloudFront</li>
+<li>Serves as the origin server to your CMS CloudFront distribution</li>
 <li>Set up an <code>A</code> record with the IP address of the CMS server</li>
 </ul>
 </li>
@@ -528,9 +528,9 @@ alter user postgres with encrypted password <span class="hljs-string">&apos;SECU
 <li>The administrator password for the CMS</li>
 <li>The authentication key used between the scraper and the CMS server</li>
 </ol>
-<p>If run on Linux, this command uses entropy from <code>/dev/urandom</code> to generate a
-100-character long alphanumeric secret. You are, however, responsible for the
-randomness and security of each secret string you produce.</p>
+<p>If run on Linux, the following command uses entropy from <code>/dev/urandom</code> to
+generate a 100-character long alphanumeric secret. You are, however,
+responsible for the randomness and security of each secret string you produce.</p>
 <pre><code class="lang-bash">python -c <span class="hljs-string">&quot;import random; import string; print(&apos;&apos;.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(100)))&quot;</span>
 </code></pre>
 <h3 id="app-server">App server</h3>
@@ -633,9 +633,10 @@ the <code>-d</code> flag to do a dry run.</p>
 <h2 id="cloudfront-setup">CloudFront setup</h2>
 <p>For the app, create a CloudFront distribution with the following settings:</p>
 <ul>
-<li>SSL certificate: create a custom SSL certificate for <code>app.lifted.sg</code></li>
+<li>SSL certificate: create a custom SSL certificate for <code>app.lifted.sg</code> and
+assign it to the distribution.</li>
 <li>Price Class: Use Only US, Canada, Europe and Asia</li>
-<li>Alternate Domain Names (CNAMEs): app.lifted.sg</li>
+<li>Alternate Domain Names (CNAMEs): <code>app.lifted.sg</code></li>
 <li>Origin<ul>
 <li>Origin Domain Name: app-prod.lifted.sg</li>
 <li>Origin Protocol Policy: HTTPS</li>
@@ -711,7 +712,7 @@ be able to access the app via <code>app.lifted.sg</code>.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Deployment","level":"1.9","depth":1,"previous":{"title":"Development","level":"1.8","depth":1,"path":"development.md","ref":"development.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"deployment.md","mtime":"2018-04-12T14:43:44.917Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-12T06:00:09.902Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Deployment","level":"1.9","depth":1,"previous":{"title":"Development","level":"1.8","depth":1,"path":"development.md","ref":"development.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"deployment.md","mtime":"2018-04-13T07:31:50.480Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-13T07:01:55.143Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

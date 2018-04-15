@@ -7,7 +7,6 @@ export class IntroScreen extends Component{
     const bodyTag = document.getElementsByTagName("body")[0];
     const topMsg = bodyTag.dataset.topMsg;
     const topLink = bodyTag.dataset.topLink;
-    console.log(topMsg, topLink);
 
     return(
       <div class="pure-g">

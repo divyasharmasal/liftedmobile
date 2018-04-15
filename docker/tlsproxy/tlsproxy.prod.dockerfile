@@ -9,8 +9,8 @@ RUN apk update                                                              && \
     apk del python3-dev libffi-dev linux-headers openssl-dev build-base     && \
     rm -rf /var/cache/apk/* /usr/share/man /tmp/* 
 
-COPY ./docker/app_server/nginx.conf.tlsproxy /etc/nginx/nginx.conf
-COPY ./docker/app_server/configure_tls.py /configure_tls.py
+COPY ./docker/tlsproxy/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/tlsproxy/configure_tls.py /configure_tls.py
 
 RUN mkdir /certbot_webroot
 ENV PYTHONUNBUFFERED 1

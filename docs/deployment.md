@@ -199,13 +199,13 @@ alter user postgres with encrypted password 'SECURE PASSWORD HERE';
 
 Press Control-D to exit `psql` and return to the shell.
 
-In `app_server`, create a databased named `liftedmobile`:
+In `app_server`, create a database named `liftedmobile`:
 
 ```bash
 sudo -u postgres createdb liftedmobile
 ```
 
-In `cms_server`, create a databased named `admin`:
+In `cms_server`, create a database named `admin`:
 
 ```bash
 sudo -u postgres createdb admin
@@ -224,15 +224,15 @@ Create four subdomains:
 
 1. `app.lifted.sg`
     - The public will access the app here
-    - Set it up to point to CloudFront later - see below
+    - Set it up to point to your app CloudFront distribution (see below)
 2. `cms.lifted.sg`
     - LIFTED administrators will log in to the CMS here
-    - Set it up to point to CloudFront later - see below
+    - Set it up to point to your CMS CloudFront distribution (see below)
 3. `app-prod.lifted.sg`
-    - Serves as the origin server to CloudFront
+    - Serves as the origin server to your app CloudFront distribution
     - Set up an `A` record with the IP address of the App server
 4. `cms-prod.lifted.sg`
-    - Serves as the origin server to CloudFront
+    - Serves as the origin server to your CMS CloudFront distribution
     - Set up an `A` record with the IP address of the CMS server
 
 ## Docker setup
@@ -249,9 +249,9 @@ You need to generate several long and random strings:
 3. The administrator password for the CMS
 4. The authentication key used between the scraper and the CMS server
 
-If run on Linux, this command uses entropy from `/dev/urandom` to generate a
-100-character long alphanumeric secret. You are, however, responsible for the
-randomness and security of each secret string you produce.
+If run on Linux, the following command uses entropy from `/dev/urandom` to
+generate a 100-character long alphanumeric secret. You are, however,
+responsible for the randomness and security of each secret string you produce.
 
 ```bash
 python -c "import random; import string; print(''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(100)))"
@@ -395,9 +395,10 @@ the `-d` flag to do a dry run.
 
 For the app, create a CloudFront distribution with the following settings:
 
-- SSL certificate: create a custom SSL certificate for `app.lifted.sg`
+- SSL certificate: create a custom SSL certificate for `app.lifted.sg` and
+  assign it to the distribution.
 - Price Class: Use Only US, Canada, Europe and Asia
-- Alternate Domain Names (CNAMEs): app.lifted.sg
+- Alternate Domain Names (CNAMEs): `app.lifted.sg`
 - Origin
     - Origin Domain Name: app-prod.lifted.sg
     - Origin Protocol Policy: HTTPS
