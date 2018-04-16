@@ -8,15 +8,13 @@ import subprocess
 import requests
 import time
 import json
+import os
 
 
 if __name__ == "__main__":
     config = json.loads(open("/run/secrets/secrets").read())["certbot_config"]
     host = config["host"]
     nginx_conf = "/etc/nginx/nginx.conf"
-    c = open(nginx_conf).read().replace("<HOST_NAME>", host)
-    with open(nginx_conf, "w") as f:
-        f.write(c)
 
     if "run_certbot" in config and config["run_certbot"]:
 
@@ -24,29 +22,35 @@ if __name__ == "__main__":
 
         while True:
             try:
-                requests.get("http://liftedmobile:8001")
+                requests.get("http://" + host + ":8001")
                 break
             except:
                 time.sleep(0.5)
 
         email = config["email"]
         domain = config["domain"]
-
-        # Subsitute <SERVER_NAME> in /etc/nginx/nginx.conf to the domain
-        c = open(nginx_conf).read().replace("<SERVER_NAME>", domain)
-
-        with open(nginx_conf, "w") as f:
-            f.write(c)
+        http_port = config["http_port"]
+        aws_access_key = config["access_key_id"]
+        aws_secret_key = config["secret_access_key"]
 
         command = (
-            "certbot -a webroot -i nginx --agree-tos "
+            "certbot -i nginx --agree-tos "
             "-m {email} --no-eff-email --keep-until-expiring "
-            "-d {domain} --non-interactive --webroot-path "
-            "/certbot_webroot --redirect"
-                .format(email=email, domain=domain))
+            "-d {domain} --non-interactive --redirect "
+            "--preferred-challenges=dns --dns-route53 "
+                .format(email=email, domain=domain, http_port=http_port))
+
+
+        env = os.environ.copy()
+        env["AWS_ACCESS_KEY_ID"] = aws_access_key
+        env["AWS_SECRET_ACCESS_KEY"] = aws_secret_key
 
         print("Using Certbot to update Nginx")
-        r = subprocess.run(command, shell=True, stderr=subprocess.STDOUT)
+        r = subprocess.Popen(command,
+                shell=True,
+                stderr=subprocess.STDOUT,
+                env=env)
+
         print(r.stdout)
     else:
         print("Not running certbot because run_certbot is either False or "

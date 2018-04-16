@@ -38,6 +38,7 @@ if __name__ == "__main__":
     scripts_path = os.path.join(scripts_docker_dir, "scripts")
     docker_path = os.path.join(scripts_docker_dir, "docker")
 
+    rmdir_command = ssh_command + " \"rm -rf ~/liftedmobile\""
     mkdir_command = ssh_command + " \"mkdir -p ~/liftedmobile\""
 
     scp_command = "scp -q -P {port} -i '{cred_filepath}' -r {scripts} {docker} {userhost}:~/liftedmobile"\
@@ -59,11 +60,15 @@ if __name__ == "__main__":
                         "either \"app\" or \"cms\"")
 
     if dry_run:
+        print(rmdir_command)
         print(mkdir_command)
         print(scp_command)
         print(push_command)
         print(run_command)
     else:
+        print(rmdir_command)
+        subprocess.check_call(mkdir_command, shell=True)
+
         print(mkdir_command)
         subprocess.check_call(mkdir_command, shell=True)
 

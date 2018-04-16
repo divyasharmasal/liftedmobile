@@ -16,7 +16,7 @@ need to use the master account should be to create the following subaccounts:
 |`lm_cloudwatch`|See below|Yes|No|- |
 
 Make sure that you save the Access key ID and Access secret for `lm_cloudwatch`
-somewhere safe.
+and `lm_route53` somewhere safe.
 
 Also set up two-factor authentication for all accounts with management console
 access. Bookmark the Mangagement Console URL for convenient access:
@@ -319,7 +319,9 @@ Create `/home/ubuntu/LM_SECRETS/app_secrets.json`:
     "certbot_config": {
         "run_certbot": true,
         "email": "<your email address>",
-        "domain": "<cms_server subdomain>"
+        "domain": "<cms_server subdomain>",
+        "access_key_id": "<lm_route53 user access key>",
+        "secret_access_key": "<lm_route53  user secret access key>",
     },
     "cms_admin_pwd": "<long and random string #3>",
     "scrapyd_api_key": "<long and random string #4>",

@@ -44,8 +44,8 @@ services:
         environment:
             - CMS=true
             - PYTHONUNBUFFERED=1
-        #expose:
-            #- "8001"
+        expose:
+            - "8001"
         logging:
             driver: "awslogs"
             options:
@@ -60,17 +60,16 @@ services:
             context: ../../
             dockerfile: ./docker/tlsproxy/tlsproxy.prod.dockerfile
         ports:
-            - "9001:80"
-            - "9002:443"
+            - "9001:443"
         volumes:
             - ../../../admin_server/tlsproxy/letsencrypt/:/etc/letsencrypt/
-        #logging:
-            #driver: "awslogs"
-            #options:
-                #awslogs-region: "ap-southeast-1"
-                #awslogs-group: "liftedmobile_logs"
-                #awslogs-stream: "cms_tlsproxy_stream"
-                #awslogs-create-group: "true"
+        logging:
+            driver: "awslogs"
+            options:
+                awslogs-region: "ap-southeast-1"
+                awslogs-group: "liftedmobile_logs"
+                awslogs-stream: "cms_tlsproxy_stream"
+                awslogs-create-group: "true"
         secrets:
             - secrets
         depends_on:
