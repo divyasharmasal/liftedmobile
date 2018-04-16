@@ -25,7 +25,7 @@ class ScraperPipeline(object):
             port = "9000"
         else:
             cms_host = socket.gethostbyname("cms")
-            port = "80"
+            port = "8001"
 
         self.sync_urls_url = "http://" + cms_host + ":" + port + "/cms/scraper/sync_urls/"
         self.add_course_url = "http://" + cms_host + ":" + port + "/cms/scraper/add_course/"

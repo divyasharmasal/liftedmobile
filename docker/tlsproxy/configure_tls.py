@@ -12,6 +12,12 @@ import json
 
 if __name__ == "__main__":
     config = json.loads(open("/run/secrets/secrets").read())["certbot_config"]
+    host = config["host"]
+    nginx_conf = "/etc/nginx/nginx.conf"
+    c = open(nginx_conf).read().replace("<HOST_NAME>", host)
+    with open(nginx_conf, "w") as f:
+        f.write(c)
+
     if "run_certbot" in config and config["run_certbot"]:
 
         print("Waiting for the app HTTP server to start...")
@@ -27,7 +33,6 @@ if __name__ == "__main__":
         domain = config["domain"]
 
         # Subsitute <SERVER_NAME> in /etc/nginx/nginx.conf to the domain
-        nginx_conf = "/etc/nginx/nginx.conf"
         c = open(nginx_conf).read().replace("<SERVER_NAME>", domain)
 
         with open(nginx_conf, "w") as f:

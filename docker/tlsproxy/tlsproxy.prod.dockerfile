@@ -15,6 +15,6 @@ COPY ./docker/tlsproxy/configure_tls.py /configure_tls.py
 RUN mkdir /certbot_webroot
 ENV PYTHONUNBUFFERED 1
 
-CMD nginx -c /etc/nginx/nginx.conf                                          && \
-    python3 /configure_tls.py                                               && \
+CMD python3 /configure_tls.py                                               && \
+    nginx -c /etc/nginx/nginx.conf                                          && \
     while sleep 3600; do :; done

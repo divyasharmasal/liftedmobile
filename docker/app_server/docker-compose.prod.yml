@@ -17,8 +17,8 @@ services:
         build:
             context: ../../
             dockerfile: ./docker/app_server/liftedmobile.prod.dockerfile
-        expose:
-            - "8001"
+        #expose:
+            #- "8001"
         volumes:
             - ../../../app_server/django_log:/var/log/django/
         secrets:

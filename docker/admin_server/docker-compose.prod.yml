@@ -24,8 +24,8 @@ services:
             - ../../../scrapyd/scheduler:/var/log/scraper_scheduler/
         secrets:
             - secrets
-        expose:
-            - "6800"
+        #expose:
+            #- "6800"
         environment:
             - PYTHONUNBUFFERED=1
 
@@ -44,10 +44,8 @@ services:
         environment:
             - CMS=true
             - PYTHONUNBUFFERED=1
-        ports:
-            - "9001:80"
-        expose:
-            - "80"
+        #expose:
+            #- "8001"
         logging:
             driver: "awslogs"
             options:
@@ -55,6 +53,28 @@ services:
                 awslogs-group: "liftedmobile_logs"
                 awslogs-stream: "cms_stream"
                 awslogs-create-group: "true"
+
+    tlsproxy:
+        container_name: admin_tlsproxy
+        build:
+            context: ../../
+            dockerfile: ./docker/tlsproxy/tlsproxy.prod.dockerfile
+        ports:
+            - "9001:80"
+            - "9002:443"
+        volumes:
+            - ../../../admin_server/tlsproxy/letsencrypt/:/etc/letsencrypt/
+        #logging:
+            #driver: "awslogs"
+            #options:
+                #awslogs-region: "ap-southeast-1"
+                #awslogs-group: "liftedmobile_logs"
+                #awslogs-stream: "cms_tlsproxy_stream"
+                #awslogs-create-group: "true"
+        secrets:
+            - secrets
+        depends_on:
+            - "cms"
 
 secrets:
     secrets:
