@@ -9,7 +9,7 @@ import requests
 import time
 import json
 import os
-
+import stat
 
 if __name__ == "__main__":
     config = json.loads(open("/run/secrets/secrets").read())["certbot_config"]
@@ -50,6 +50,21 @@ if __name__ == "__main__":
                              env=env)
 
         print(r.stdout)
+
+        print("Scheduling cron job")
+        renew_command = (
+            "python3 -c 'import random; "
+            "import time; time.sleep(random.random()"
+            " * 3600)' && certbot renew"
+        )
+
+        cron_file = "/etc/periodic/hourly/certbot_renew.sh"
+        
+        with open(cron_file, "w") as f:
+            f.write(renew_command)
+
+        st = os.stat(cron_file)
+        os.chmod(cron_file, st.st_mode | 0o111)
     else:
         print("Not running certbot because run_certbot is either False or "
               "missing in certbot_config")
