@@ -29,7 +29,6 @@ if __name__ == "__main__":
 
         email = config["email"]
         domain = config["domain"]
-        http_port = config["http_port"]
         aws_access_key = config["access_key_id"]
         aws_secret_key = config["secret_access_key"]
 
@@ -38,8 +37,7 @@ if __name__ == "__main__":
             "-m {email} --no-eff-email --keep-until-expiring "
             "-d {domain} --non-interactive --redirect "
             "--preferred-challenges=dns --dns-route53 "
-                .format(email=email, domain=domain, http_port=http_port))
-
+            .format(email=email, domain=domain))
 
         env = os.environ.copy()
         env["AWS_ACCESS_KEY_ID"] = aws_access_key
@@ -47,20 +45,11 @@ if __name__ == "__main__":
 
         print("Using Certbot to update Nginx")
         r = subprocess.Popen(command,
-                shell=True,
-                stderr=subprocess.STDOUT,
-                env=env)
+                             shell=True,
+                             stderr=subprocess.STDOUT,
+                             env=env)
 
         print(r.stdout)
     else:
         print("Not running certbot because run_certbot is either False or "
               "missing in certbot_config")
-
-
-#certbot -a webroot -i nginx --agree-tos -m EMAIL --no-eff-email -d app.lifted.sg --non-interactive --webroot-path /certbot_webroot --redirect --keep-until-expiring --staging
-
-    # Redirect non-https traffic to https
-    # if ($scheme != "https") {
-    #     return 301 https://$host$request_uri;
-    # } # managed by Certbot
-

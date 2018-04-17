@@ -12,7 +12,7 @@ solutions which can meet LEC's needs do not exist. As such, the App and CMS
 were tailor-made.
 
 <a href="./images/architecture.png" target="_blank">
-    <img src="./images/architecture.png" width=400 />
+    <img src="./images/architecture.png" width=500 />
 </a>
 
 The backend runs on two Amazon EC2 server instances and uses Amazon CloudFront
@@ -22,7 +22,7 @@ Asia](https://speednames.asia/). All application logs (except for those of the
 scraper) are fed to Amazon CloudWatch.
 
 <a href="./images/aws_services.png" target="_blank">
-    <img src="./images/aws_services.png" width=200 />
+    <img src="./images/aws_services.png" width=300 />
 </a>
 
 The app and CMS servers run Docker (v17) containers orchestrated by Docker
@@ -105,6 +105,35 @@ acutely experienced when deploying the system, a process that involves using
 to use Ubuntu or even Debian images, this process would take up more than twice
 the amount of time and bandwidth.
 
+On the App server, the following containers, orchestrated via
+`docker/app_server/docker-compose.prod.yml`, are:
+
+- **liftedmobile**
+    - Defined in `docker/app_server/liftedmobile.prod.dockerfile`
+    - Like `admin_cms`, this container runs Gunicorn and Nginx to serve
+      the Django project at `src/lm`.
+    - Configuration files:
+        - `docker/app_server/nginx.conf`
+
+- **liftedmobile_tlsproxy**
+    - Defined in `docker/tlsproxy/tlsproxy.prod.dockerfile`
+    - All traffic to the **liftedmobile** container passes through this
+      container, which is an Nginx reverse proxy running on an `nginx:alpine`
+      image.
+    - This image is intended to provide easy TLS configuration for the App
+      using Let's Encrypt. The `configure_tls.py` and `edit_nginx_conf.py`
+      automatically run the `certbot` command to request a certificate
+      and use `certbot-dns-route53` to authenticate ownership of the
+     `lifted.sg` domain.
+    - Configuration files:
+        - `docker/app_server/nginx.conf.tlsproxy`
+
+- **liftedmobile_db**
+    - Defined in `docker/app_server/db.prod.dockerfile`
+    - Configuration files:
+        - `./docker/app_server/db.init.sql`: creates a database called
+          `liftedmobile` and grants access privileges to the `postgres` user.
+
 On the CMS server, Docker Compose orchestrates the following containers via
 `docker/admin_server/docker-compose.prod.yml`:
 
@@ -114,6 +143,9 @@ On the CMS server, Docker Compose orchestrates the following containers via
       More information about this Django project can be found below.
     - Configuration files:
         - `docker/admin_server/nginx.conf`
+
+- **cms_tlsproxy**
+    - Does the equivalent of `liftedmobile_tlsproxy` for the `cms` container.
 
 - **admin_scrapyd**
     - Defined in `docker/admin_server/scrapyd.prod.dockerfile`.
@@ -139,34 +171,6 @@ On the CMS server, Docker Compose orchestrates the following containers via
         - `./docker/app_server/db.init.sql`: creates a database called
           `admin` and grants access privileges to the `postgres` user.
 
-On the App server, the following containers, orchestrated via
-`docker/app_server/docker-compose.prod.yml`, are:
-
-- **liftedmobile**
-    - Defined in `docker/app_server/liftedmobile.prod.dockerfile`
-    - Like `admin_cms`, this container runs Gunicorn and Nginx to serve
-      the Django project at `src/lm`.
-    - Configuration files:
-        - `docker/app_server/nginx.conf`
-
-- **liftedmobile_tlsproxy**
-    - Defined in `docker/app_server/tlsproxy.prod.dockerfile`
-    - All traffic to the **liftedmobile** container passes through this
-      container, which is an Nginx reverse proxy running on an `nginx:alpine`
-      image.
-    - This image is intended to provide easy TLS configuration for the App
-      using Let's Encrypt. At the moment, CloudFront provides SSL/TLS
-      protection, and the link between CloudFront and EC2 is not protected by
-      TLS. This will be rectified, but is an acceptable compromise because
-      said link is internal to the AWS network.
-    - Configuration files:
-        - `docker/app_server/nginx.conf.tlsproxy`
-
-- **liftedmobile_db**
-    - Defined in `docker/app_server/db.prod.dockerfile`
-    - Configuration files:
-        - `./docker/app_server/db.init.sql`: creates a database called
-          `liftedmobile` and grants access privileges to the `postgres` user.
 
 ### The `wait_for_postgres.py` script
 
@@ -267,7 +271,8 @@ only the CMS stores `cms` data. This is achieved by the following technique:
     - In the App, there is only 1 database configured: `default`.
     - In the CMS, there are 2 databases configured:
         1. `app_server`, which points to the database on the remote App server
-        2. `default`, which points to CMS database, which should be set to `dockerhost` (more on this below)
+        2. `default`, which points to CMS database, which should be set to
+           `dockerhost` (more on this below)
 3. `CmsRouter`, defined in `src/lm/cms/db_routers.py`, uses the `db_for_read`,
    `db_for_write`, and `allow_migrate` functions to tell Django which database
     to read or write to, and to disable migrations on the App database from the
@@ -279,12 +284,12 @@ information.
 ### The `dockerhost` hostname
 
 While it is a best practice to *not* Dockerise a production database, this
-creates the challenge of connecting a Docker container, which resides within
-a Docker bridge network, to a database server which resides on a different
-network. In the case of the `liftedmobile` container in the App
-server, for instance, it  must communicate with the Postgres server situated on
-the host. To make this possible, the `liftedmobile` container (as well as
-`admin_cms`) have their `/etc/hosts` files configured as such:
+creates the challenge of connecting a Docker container, which resides within a
+Docker bridge network, to a database server which resides on a different
+network. In the case of the `liftedmobile` container in the App server, for
+instance, it  must communicate with the Postgres server situated on the host.
+To make this possible, the `liftedmobile` container (as well as `admin_cms`)
+have their `/etc/hosts` files configured as such:
 
 In `docker/app_server/liftedmobile.prod.dockerfile` and
 `docker/admin_server/cms.prod.dockerfile`:
@@ -298,7 +303,7 @@ This appends the following to the `/etc/hosts` file within each container:
 
 ```
 172.18.0.1 dockerhost
-I```
+```
 
 This makes the `dockerhost` an alias to `172.18.0.1`, which is the gateway
 through which the container can access the host. Since this gateway address may
@@ -319,15 +324,14 @@ listen_addresses = 'localhost,172.17.0.1,172.18.0.1'
 
 At the moment, the Lifted App and CMS deployment scripts do not automatically
 add the gateway address to `postgresql.conf`, so this has to be done manually.
-One way to get around this is to specify more than one possible
-gateway address, as shown above (`171.17...` and `172.18...`).
+One way to get around this is to specify more than one possible gateway
+address, as shown above (`171.17...` and `172.18...`).
 
 Also make sure to change the port number away from the default:
 
 ```
 port = 5544
 ```
-
 
 ### Database layout
 

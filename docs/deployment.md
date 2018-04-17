@@ -2,17 +2,40 @@
 
 ## AWS setup
 
-### IAM: users and permissions
+To use this guide, first create an Amazon Web Services account and log in.
 
-To use this guide, first create an Amazon Web Services account and log in. If
-you already have an account, this master account should have full
-administorator rights and two-factor authentication enabled. The only time you
-need to use the master account should be to create the following subaccounts:
+### Route 53: Set up DNS
+
+Start by creating a hosted zone in Route 53.
+
+Create four subdomains:
+
+1. `app.lifted.sg`
+    - The public will access the app here
+    - Set it up to point to your app CloudFront distribution (see below)
+2. `cms.lifted.sg`
+    - LIFTED administrators will log in to the CMS here
+    - Set it up to point to your CMS CloudFront distribution (see below)
+3. `app-prod.lifted.sg`
+    - Serves as the origin server to your app CloudFront distribution
+    - Set up an `A` record with the IP address of the App server
+4. `cms-prod.lifted.sg`
+    - Serves as the origin server to your CMS CloudFront distribution
+    - Set up an `A` record with the IP address of the CMS server
+
+Take note of your hosted zone ID as you will need to configure the access
+policy for the `lm_route53` user (see below).
+
+### IAM: Set up users and permissions
+
+Your AWS master account should have full administrator rights and two-factor
+authentication enabled. The only time you need to use the master account should
+be to create the following subaccounts:
 
 |User|Managed Access Policies|Programmatic Access|Management Console Access|Notes|
 |---|---|---|
 |`lm_ec2`|`AmazonEC2FullAccess`|No|Yes|- |
-|`lm_route53`|`AmazonRoute53DomainsFullAccess`|No|Yes|- |
+|`lm_route53`|See below|No|Yes|- |
 |`lm_cloudwatch`|See below|Yes|No|- |
 
 Make sure that you save the Access key ID and Access secret for `lm_cloudwatch`
@@ -25,7 +48,37 @@ access. Bookmark the Mangagement Console URL for convenient access:
 https://<your account number>.signin.aws.amazon.com/console
 ```
 
-#### Policy for `lm_cloudwatch`
+#### Set up policy for `lm_route53`
+
+```
+{
+    "Version": "2012-10-17",
+    "Id": "certbot-dns-route53 policy",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "route53:ListHostedZones",
+                "route53:GetChange"
+            ],
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Effect" : "Allow",
+            "Action" : [
+                "route53:ChangeResourceRecordSets"
+            ],
+            "Resource" : [
+                "arn:aws:route53:::hostedzone/<YOURHOSTEDZONEID>"
+            ]
+        }
+    ]
+}
+```
+
+#### Set up policy for `lm_cloudwatch`
 
 ```
 {
@@ -44,15 +97,15 @@ https://<your account number>.signin.aws.amazon.com/console
 }
 ```
 
-The purpose of this strategy is to reduce the impact on the system if any
-particular account is comprimised. Depending on your threat model, you may
-choose to take this risk and use the master account to administer everything. 
+The purpose of this permissions policy strategy is to reduce the impact on the
+system if any particular account is comprimised. Depending on your threat
+model, you may choose to take this risk and use the master account to
+administer everything. 
 
-You may also choose to customise access policies to your needs. This is a
-highly granular task, so the table above simply lists relevant Managed Access
-Policies.
+You may also choose to customise access policies to your needs, although this
+is a highly granular task.
 
-## Building the App and CMS containers
+## Build the App and CMS containers
 
 To build both the App and CMS containers, run:
 
@@ -70,7 +123,7 @@ To only build the App container, run:
 
 Expect this script to take up to 10 minutes even on a fast connection.
 
-### EC2: virtual servers
+### EC2: Set up virtual servers
 
 Log in to the AWS Management Console using your `lm_ec2` credentials and navigate to the 
 [EC2 console](https://ap-southeast-1.console.aws.amazon.com/ec2/v2/home?region=ap-southeast-1#Instances:sort=instanceId).
@@ -101,7 +154,7 @@ permissions to read-only:
 chmod 400 /path/to/secret.pem
 ```
 
-#### Security group setup
+#### Set up security groups
 
 Set up one security group each for `app_server` and `cms_server`.
 
@@ -124,7 +177,7 @@ Inbound rules for `cms_server`:
 | SSH | 22 | 0.0.0.0/0 | Old SSH |
 | SSH | 2233 | 0.0.0.0/0 | New SSH |
 
-## SSH configuration
+## Configure SSH
 
 Log in to `app_server` via SSH:
 
@@ -157,7 +210,7 @@ ssh -p 2233 -i /path/to/secret.pem ubuntu@52.76.154.41
 
 Do the same for `cms_server`.
 
-## Postgres database setup
+## Set up Postgres databases
 
 On both servers, do the following:
 
@@ -218,29 +271,12 @@ You should now be able to access the `app_server` database from the
 sudo -u postgres psql -h <app_server IP> -p 5544 -U postgres liftedmobile
 ```
 
-## Route 53: DNS setup
-
-Create four subdomains:
-
-1. `app.lifted.sg`
-    - The public will access the app here
-    - Set it up to point to your app CloudFront distribution (see below)
-2. `cms.lifted.sg`
-    - LIFTED administrators will log in to the CMS here
-    - Set it up to point to your CMS CloudFront distribution (see below)
-3. `app-prod.lifted.sg`
-    - Serves as the origin server to your app CloudFront distribution
-    - Set up an `A` record with the IP address of the App server
-4. `cms-prod.lifted.sg`
-    - Serves as the origin server to your CMS CloudFront distribution
-    - Set up an `A` record with the IP address of the CMS server
-
-## Docker setup
+## Set up Docker
 
 Install Docker and Docker Compose on both servers. Use the instructions in the
 [Development](./development.html) section.
 
-## Secret and configuration setup
+## Set up secrets and configuration
 
 You need to generate several long and random strings:
 
@@ -284,6 +320,9 @@ Create `/home/ubuntu/LM_SECRETS/app_secrets.json`:
         "run_certbot": true,
         "email": "<your email address>",
         "domain": "app-prod.lifted.sg"
+        "host": "liftedmobile",
+        "access_key_id": "<lm_route53 user access key>",
+        "secret_access_key": "<lm_route53  user secret access key>",
     },
     "cloudwatch_config": {
         "access_key_id": "<lm_cloudwatch user access key>",
@@ -291,6 +330,12 @@ Create `/home/ubuntu/LM_SECRETS/app_secrets.json`:
         "region_name": "ap-southeast-1"
     }
 }
+```
+
+Set file permissions of `/home/ubuntu/LM_SECRETS/app_secrets.json`:
+
+```bash
+chmod 400 /home/ubuntu/LM_SECRETS/app_secrets.json`
 ```
 
 ### CMS server
@@ -320,6 +365,7 @@ Create `/home/ubuntu/LM_SECRETS/app_secrets.json`:
         "run_certbot": true,
         "email": "<your email address>",
         "domain": "<cms_server subdomain>",
+        "host": "cms",
         "access_key_id": "<lm_route53 user access key>",
         "secret_access_key": "<lm_route53  user secret access key>",
     },
@@ -331,6 +377,12 @@ Create `/home/ubuntu/LM_SECRETS/app_secrets.json`:
         "region_name": "ap-southeast-1"
     }
 }
+```
+
+Set file permissions of `/home/ubuntu/LM_SECRETS/cms_secrets.json`:
+
+```bash
+chmod 400 /home/ubuntu/LM_SECRETS/cms_secrets.json`
 ```
 
 ## Set up Docker logging drivers for CloudWatch
@@ -359,8 +411,7 @@ Finally, run:
 sudo systemctl daemon-reload && sudo service docker restart
 ```
 
-
-## Pushing containers to production servers
+## Push containers to production servers
 
 Build the app and CMS:
 
@@ -393,7 +444,7 @@ Next, run the deployment script:
 To view the commands that the script will execute without executing them, add
 the `-d` flag to do a dry run.
 
-## CloudFront setup
+## CloudFront: Set up CDNs
 
 For the app, create a CloudFront distribution with the following settings:
 
@@ -408,6 +459,7 @@ For the app, create a CloudFront distribution with the following settings:
 - Behaviours
     - Precedence 0
         - Path pattern: `static/*`: 
+        - Viewer Protocol Policy: Redirect HTTP to HTTPS
         - Allowed HTTP Methods: GET, HEAD
         - Object Caching: ￼Use Origin Cache Headers
         - Forward Cookies: None
@@ -419,12 +471,17 @@ For the app, create a CloudFront distribution with the following settings:
         - Cache Based on Selected Request Headers: Whitelist
         - Whitelist Headers: Host
         - Object Caching: Customise
-        - Minimum/Maximum/Default TTL: 0
+        - Minimum, maximum, and default TTL: 0
         - Forward Cookies: All
         - Query String Forwarding and Caching: Forward all, cache based on all
         - Compress Objects Automatically: Yes
 
 Follow the equivalent steps for the CMS.
+
+- Origin
+    - Origin Domain Name: cms-prod.lifted.sg
+    - Origin Protocol Policy: HTTPS
+    - HTTPS Port: 9001
 
 Next, link the domain intended for public use to the CloudFront distribution URL via
 Route53. Create an A record from `app.lifted.sg` to `dxxxxxx.cloudfront.net.`
