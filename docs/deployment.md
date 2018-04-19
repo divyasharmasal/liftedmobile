@@ -4,28 +4,6 @@
 
 To use this guide, first create an Amazon Web Services account and log in.
 
-### Route 53: Set up DNS
-
-Start by creating a hosted zone in Route 53.
-
-Create four subdomains:
-
-1. `app.lifted.sg`
-    - The public will access the app here
-    - Set it up to point to your app CloudFront distribution (see below)
-2. `cms.lifted.sg`
-    - LIFTED administrators will log in to the CMS here
-    - Set it up to point to your CMS CloudFront distribution (see below)
-3. `app-prod.lifted.sg`
-    - Serves as the origin server to your app CloudFront distribution
-    - Set up an `A` record with the IP address of the App server
-4. `cms-prod.lifted.sg`
-    - Serves as the origin server to your CMS CloudFront distribution
-    - Set up an `A` record with the IP address of the CMS server
-
-Take note of your hosted zone ID as you will need to configure the access
-policy for the `lm_route53` user (see below).
-
 ### IAM: Set up users and permissions
 
 Your AWS master account should have full administrator rights and two-factor
@@ -50,10 +28,13 @@ https://<your account number>.signin.aws.amazon.com/console
 
 #### Set up policy for `lm_route53`
 
+After you configure Route53, you can configure the access policy for
+`lm_route53` with your hosted zone ID. Before you configure Route53, however,
+you don't need to set up a policy.
+
 ```
 {
     "Version": "2012-10-17",
-    "Id": "certbot-dns-route53 policy",
     "Statement": [
         {
             "Effect": "Allow",
@@ -174,8 +155,31 @@ Inbound rules for `cms_server`:
 |-|-|-|-|
 | TCP | 80 | 0.0.0.0/0 | HTTP |
 | TCP | 443 | 0.0.0.0/0 | HTTPS |
+| TCP | 9001 | 0.0.0.0/0 | HTTPS server |
 | SSH | 22 | 0.0.0.0/0 | Old SSH |
 | SSH | 2233 | 0.0.0.0/0 | New SSH |
+
+## Route 53: Set up DNS
+
+Create a hosted zone in Route 53 for the `lifted.sg` domain.
+
+Create four subdomains:
+
+1. `app.lifted.sg`
+    - The public will access the app here
+    - Set it up to point to your app CloudFront distribution (see below)
+2. `cms.lifted.sg`
+    - LIFTED administrators will log in to the CMS here
+    - Set it up to point to your CMS CloudFront distribution (see below)
+3. `app-prod.lifted.sg`
+    - Serves as the origin server to your app CloudFront distribution
+    - Set up an `A` record with the IP address of the App server
+4. `cms-prod.lifted.sg`
+    - Serves as the origin server to your CMS CloudFront distribution
+    - Set up an `A` record with the IP address of the CMS server
+
+Copy your hosted zone ID and use it to set up the IAM access policy for the
+`lm_route53` user (see above).
 
 ## Configure SSH
 
@@ -271,10 +275,20 @@ You should now be able to access the `app_server` database from the
 sudo -u postgres psql -h <app_server IP> -p 5544 -U postgres liftedmobile
 ```
 
-## Set up Docker
+Conversely, the `cms_server` database should be inaccessible from any external IP. This command should not work:
+
+```bash
+sudo -u postgres psql -h <cms_server IP> -U postgres admin
+```
+
+## Set up Docker and Docker Compose
 
 Install Docker and Docker Compose on both servers. Use the instructions in the
 [Development](./development.html) section.
+
+Note: make sure that you have Docker Compose version 1.20.1, build 5d8c71b
+installed, not version 1.21.0, build 1719ceb, unless newer versions fix [this
+issue](https://github.com/docker/compose/issues/5874).
 
 ## Set up secrets and configuration
 
@@ -311,7 +325,7 @@ Create `/home/ubuntu/LM_SECRETS/app_secrets.json`:
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "liftedmobile",
             "USER": "postgres",
-            "PASSWORD": "<postgres password>",
+            "PASSWORD": "<postgres password for app_server>",
             "HOST": "dockerhost",
             "PORT": "5544"
         }                         
@@ -319,14 +333,14 @@ Create `/home/ubuntu/LM_SECRETS/app_secrets.json`:
     "certbot_config": {
         "run_certbot": true,
         "email": "<your email address>",
-        "domain": "app-prod.lifted.sg"
+        "domain": "app-prod.lifted.sg",
         "host": "liftedmobile",
-        "access_key_id": "<lm_route53 user access key>",
-        "secret_access_key": "<lm_route53  user secret access key>",
+        "access_key_id": "<lm_route53 access key>",
+        "secret_access_key": "<lm_route53  user secret access key>"
     },
     "cloudwatch_config": {
-        "access_key_id": "<lm_cloudwatch user access key>",
-        "secret_access_key": "<lm_cloudwatch user secret access key>",
+        "access_key_id": "<lm_cloudwatch access key>",
+        "secret_access_key": "<lm_cloudwatch secret access key>",
         "region_name": "ap-southeast-1"
     }
 }
@@ -335,7 +349,7 @@ Create `/home/ubuntu/LM_SECRETS/app_secrets.json`:
 Set file permissions of `/home/ubuntu/LM_SECRETS/app_secrets.json`:
 
 ```bash
-chmod 400 /home/ubuntu/LM_SECRETS/app_secrets.json`
+sudo chmod 400 /home/ubuntu/LM_SECRETS/app_secrets.json
 ```
 
 ### CMS server
@@ -348,7 +362,7 @@ chmod 400 /home/ubuntu/LM_SECRETS/app_secrets.json`
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "admin",
             "USER": "postgres",
-            "PASSWORD": "<password for the Postgres user 'admin'>",
+            "PASSWORD": "<Postgres password for cms_server",
             "HOST": "dockerhost",
             "PORT": "5544"
         },
@@ -356,7 +370,7 @@ chmod 400 /home/ubuntu/LM_SECRETS/app_secrets.json`
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "liftedmobile",
             "USER": "postgres",
-            "PASSWORD": "<password for the Postgres user 'postgres'>",
+            "PASSWORD": "<Postgres password for app_server",
             "HOST": "<IP address of the app server>",
             "PORT": "5544"
         }
@@ -364,15 +378,15 @@ chmod 400 /home/ubuntu/LM_SECRETS/app_secrets.json`
     "certbot_config": {
         "run_certbot": true,
         "email": "<your email address>",
-        "domain": "<cms_server subdomain>",
+        "domain": "cms-prod.lifted.sg",
         "host": "cms",
-        "access_key_id": "<lm_route53 user access key>",
-        "secret_access_key": "<lm_route53  user secret access key>",
+        "access_key_id": "<lm_route53 access key>",
+        "secret_access_key": "<lm_route53  user secret access key>"
     },
     "cms_admin_pwd": "<long and random string #3>",
     "scrapyd_api_key": "<long and random string #4>",
     "cloudwatch_config": {
-        "access_key_id": "<lm_cloudwatch user access key>",
+        "access_key_id": "<lm_cloudwatch access key>",
         "secret_access_key": "<lm_cloudwatch user secret access key>",
         "region_name": "ap-southeast-1"
     }
@@ -382,7 +396,7 @@ chmod 400 /home/ubuntu/LM_SECRETS/app_secrets.json`
 Set file permissions of `/home/ubuntu/LM_SECRETS/cms_secrets.json`:
 
 ```bash
-chmod 400 /home/ubuntu/LM_SECRETS/cms_secrets.json`
+sudo chmod 400 /home/ubuntu/LM_SECRETS/cms_secrets.json
 ```
 
 ## Set up Docker logging drivers for CloudWatch
@@ -401,8 +415,8 @@ Edit `/etc/systemd/system/docker.service.d/aws-credentials.conf`
 
 ```
 [Service]
-Environment="AWS_ACCESS_KEY_ID=<aws_access_key_id>"
-Environment="AWS_SECRET_ACCESS_KEY=<aws_secret_access_key>"
+Environment="AWS_ACCESS_KEY_ID=<lm_cloudwatch access key ID>"
+Environment="AWS_SECRET_ACCESS_KEY=<lm_cloudwatch secret access key>"
 ```
 
 Finally, run:
@@ -437,12 +451,15 @@ to uses Alpine Linux and delete unused files.
 Next, run the deployment script:
 
 ```bash
-./scripts/deploy.py -p 2233 -c /home/di/Desktop/SAL/lm_demo.pem -u ubuntu@demo-app.lifted.sg -s ./ -t app
-./scripts/deploy.py -p 2233 -c /home/di/Desktop/SAL/lm_demo.pem -u ubuntu@demo-cms.lifted.sg -s ./ -t cms
+./scripts/deploy.py -p 2233 -c /home/di/Desktop/SAL/lm_demo.pem -u ubuntu@app-prod.lifted.sg -s ./ -t app
+./scripts/deploy.py -p 2233 -c /home/di/Desktop/SAL/lm_demo.pem -u ubuntu@cms-prod.lifted.sg -s ./ -t cms
 ```
 
 To view the commands that the script will execute without executing them, add
 the `-d` flag to do a dry run.
+
+You should now be able to access the app at https://app-prod.lifted.sg and the
+CMS at https://cms-prod.lifted.sg:9001.
 
 ## CloudFront: Set up CDNs
 
