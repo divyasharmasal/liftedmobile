@@ -300,11 +300,18 @@ def course_browse(request):
         )
 
     ongoing_without_dates = []
-    for c in models.Course.objects \
-        .filter(is_ongoing=True) \
-        .filter(coursedate__isnull=True):
+    if search_param is None:
+        for c in models.Course.objects \
+            .filter(is_ongoing=True) \
+            .filter(coursedate__isnull=True):
+            ongoing_without_dates.append(c)
+    else:
+        for c in models.Course.objects \
+            .filter(is_ongoing=True) \
+            .filter(name__icontains=search_param) \
+            .filter(coursedate__isnull=True):
 
-        ongoing_without_dates.append(c)
+            ongoing_without_dates.append(c)
 
     # cd_query = cd_query[start_page:end_page]
 

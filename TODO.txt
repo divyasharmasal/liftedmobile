@@ -1,3 +1,6 @@
+- Fix search
+- Update the guide to give instructions on how to add new competencies
+
 - Change CMS password
 - filter for e-learning courses in course browser
 - Explainers for tech roles and "I want to develop my" whatscreen 
