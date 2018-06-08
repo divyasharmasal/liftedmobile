@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+    tests:
+        container_name: liftedmobile_tests
+        build:
+            context: ./
+            dockerfile: ./Dockerfile
+        volumes:
+            - ./screenshots:/screenshots
+        networks:
+            - liftedmobile_test_dockernet
+
+networks:
+    liftedmobile_test_dockernet:
+        external: true

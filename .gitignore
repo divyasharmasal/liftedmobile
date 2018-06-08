@@ -1,3 +1,47 @@
+_book/*
+docs/_book/*
+docs/node_modules/
+
+# Scraper DBs
+admin_server/scraper/scraper/dbs/*
+
+# Docker secrets
+docker/app_server/secrets/*
+docker/admin_server/secrets/*
+
+# Compiled frontend files 
+src/lm/app/static/app/dist/
+src/lm/cms/static/cms/dist/
+
+# LibreOffice lock file
+src/lm/app/lifted_framework_data/.~lock*
+
+# Extracted source licenses
+license_extractor/licenses.json
+
+
+# node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.yarn-integrity
+*.tgz
+.node_repl_history
+.eslintcache
+.npm
+jspm_packages/
+.lock-wscript
+bower_components
+.grunt
+.nyc_output
+coverage
+lib-cov
+pids
+*.pid
+*.seed
+*.pid.lock
+
 # Swap
 [._]*.s[a-v][a-z]
 [._]*.sw[a-p]
@@ -29,7 +73,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/

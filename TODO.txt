@@ -1,0 +1,135 @@
+- Fix search
+- Update the guide to give instructions on how to add new competencies
+
+- Change CMS password
+- filter for e-learning courses in course browser
+- Explainers for tech roles and "I want to develop my" whatscreen 
+     - info icon that shows more details when tapped
+- LE cert backup plan
+    - Remind Anita about pentest email
+- Resolve course duplicates across sources
+- Standardise course provider names and provide a suggestion input dropdown
+- Breadcrumbs
+- CMS sorting
+- Funnel visitors from the course browser to the diagnostic
+- Do a code generator for 3rd party
+- Scrape SCCA
+- Full auth system with 2FA
+- Email reminders about untagged courses?
+- Make push_prod do all deployment work
+- Unit testing
+- Secrets in Vault
+- Link CloudWatch to graylog
+- Get new LE certs
+
+------------------------------------------------
+
+Done:
+- Option for "ongoing" option to courses - always show on top
+    - add_course should not overrride this option
+    - ongoing courses to go to the botttom if sorted by date or at the default
+      screen
+- Hyperlink course editor url
+- SkillsFuture URLs should go to SF
+- Only show one date if the start and end are the same
+- High to low: high-low public, TBC public, private, NA
+- Low to high: low-high public, TBC public, private, NA
+- CPD point text:
+    - "Public CPD points: TBC"
+    - "3 public CPD points"
+    - "Private"
+    - "Not applicable"
+- Scrape SkillsFuture
+- Date range for courses
+- Link to T&C and privacy policy
+    - https://www.sal.org.sg/Footer/Terms-Conditions
+    - https://www.sal.org.sg/Footer/Privacy-Policy
+- New favicon?
+- Optimise /cms/get_published_courses_data/
+- "Are you legal-tech savvy?"
+- Beef up phase 2 document - add narrative
+- Get logos from Rizam
+- For LP: omit role descriptions / branching in role screen
+- TBC option for CPD points in course editor
+- new vertical in CMS picker: "Technology Framework"
+- correct order: nil - private - 1 ..
+- Remove specialisms from diag results
+- Monday 4 Dec:
+    - Tag courses with info
+    - Create login details for committee to use
+- Scrape the CALAS training level and organiser
+- "Select the best fit" should be aligned with the title
+- "Varying" cost option
+- Merge "areas of specialism" with the rest of the table in results
+- Temp. remove role descriptions from view
+- Temporarily remove "specialisms" in the comp category screen
+- "Free" instead of $0
+- Screenshots for Rizam
+- check the CC licenses for icons
+- Add information icon in role picker to explain that more specialisms will be
+  added over time.
+- Substring search in course browser or phase 2 it
+- Only show future courses
+- Make arrow size smaller
+- Home icon in course browser instead of back
+- Change go back to a home icon
+- Home --- Start over ---- Full review
+- Centralise and bold centralised
+- Hyperlink to SAL and LIFTED in intro 
+- SSL reverse proxy
+- Diag results - comp categories should be blue and not underlined
+- Delete dummy course data
+- Change General to Core for Practitioner
+- 3 LP job role levels:
+    1. Generalist / Developing Specialist
+        plus corporate comm OR plus community OR no specialism
+    2. ..
+        plus plus ip OR plus b&c OR plus family or no specialism
+    3. ..
+        plus crim OR plus ip OR plus b&c OR plus family or no specialism
+- Identify your learning needs.
+- Are you tech savvy?
+- Browse CPD courses
+- Change diag button to "Show me my learning needs"
+- Fix bug in "Prepare for your next role"
+- Legal learning made simple.
+- "L I F T E D" at top right
+- Make hyperlinks throughout the site @sal_blue
+- Job role titles - blue
+- Reduce spacing in results page
+- "You're off to a great start! Here's more to learn:"
+- Add "I can" to the tech competencies
+- In results, underline the competency category names
+- Change /what to "I want to develop my ..."
+- /review/role: Select the the best fit:
+- /tech screen: add space between ellipses
+- "I am a ..."
+    - Legal tech innovator
+    - ...
+- Use category titles instead of option text in the /what screen
+- Change "Updates about my own niche" to "... specialisms"
+- Change the competency category names back to the originals
+- Reduce font size further  
+    - Relative size of options vs question text
+- Font size issues in /choose
+- Mobile sorter font size
+- Enable pinch zoom
+- Competency category and verticals in CMS
+    - each course should have up to 3 LIFTED keys
+- The scraped data must be connected to the diagnostic tool!
+    - competency category only - broad matching.
+- Legal support vertical job roles should now be split into general +
+  specialisms, just like LP. Use the same role picker as LP.
+  e.g. Paralegal (civil litigation specialist)
+- For the diag screen, shift unanswered questions to the bottom after
+  the "please compelete all qns" prompt if there are unanswered qns.
+- Deduplicate scraped courses
+- Course sync system!
+- (Title, date, provider) - use to check for overlaps (?)
+    - used URL and spider_name instead
+- Standardise caps in job roles
+- Course provider field for courses.
+- Re-tag original courses with the new competencies!
+
+-------------------------------------------
+

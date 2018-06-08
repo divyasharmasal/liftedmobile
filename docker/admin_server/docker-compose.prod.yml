@@ -1,0 +1,80 @@
+# Production Dockerfile for the admin server
+version: '3.1'
+networks:
+    default:
+        external:
+            name: appserver_default
+
+services:
+    db:
+        container_name: admin_db
+        build:
+            context: ./
+            dockerfile: ./db.prod.dockerfile
+        environment:
+            - POSTGRES_PASSWORD=ko3TnNyBRYVWg3cqgP8G8CTpnmr9HPgndnhpDo98jKGCJwec9H
+
+    scrapyd:
+        container_name: admin_scrapyd
+        build:
+            context: ../../
+            dockerfile: ./docker/admin_server/scrapyd.prod.dockerfile
+        volumes:
+            - ../../../scrapyd/scrapyd:/var/log/scrapyd/
+            - ../../../scrapyd/scheduler:/var/log/scraper_scheduler/
+        secrets:
+            - secrets
+        #expose:
+            #- "6800"
+        environment:
+            - PYTHONUNBUFFERED=1
+
+    cms:
+        container_name: admin_cms
+        depends_on:
+            - "scrapyd"
+            - "db"
+        build:
+            context: ../../
+            dockerfile: ./docker/admin_server/cms.prod.dockerfile
+        volumes:
+            - ../../../admin_server/django_log:/var/log/django/
+        secrets:
+            - secrets
+        environment:
+            - CMS=true
+            - PYTHONUNBUFFERED=1
+        expose:
+            - "8001"
+        logging:
+            driver: "awslogs"
+            options:
+                awslogs-region: "ap-southeast-1"
+                awslogs-group: "liftedmobile_logs"
+                awslogs-stream: "cms_stream"
+                awslogs-create-group: "true"
+
+    tlsproxy:
+        container_name: admin_tlsproxy
+        build:
+            context: ../../
+            dockerfile: ./docker/tlsproxy/tlsproxy.prod.dockerfile
+        ports:
+            - "9001:443"
+        volumes:
+            - ../../../admin_server/tlsproxy/letsencrypt/:/etc/letsencrypt/
+        logging:
+            driver: "awslogs"
+            options:
+                awslogs-region: "ap-southeast-1"
+                awslogs-group: "liftedmobile_logs"
+                awslogs-stream: "cms_tlsproxy_stream"
+                awslogs-create-group: "true"
+        secrets:
+            - secrets
+        depends_on:
+            - "cms"
+
+secrets:
+    secrets:
+        file: ../../../LM_SECRETS/cms_secrets.json

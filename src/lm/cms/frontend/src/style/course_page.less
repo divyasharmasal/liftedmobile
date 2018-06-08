@@ -1,0 +1,291 @@
+@checkbox_width: 17px;
+.course_manager{
+    margin-bottom:50vh;
+    .search{
+        margin-bottom:1em;
+        display:flex;
+        .search_input{
+            flex-grow:100;
+            float:left;
+            height:41px;
+        }
+
+        .search_button{
+            margin-left:10px;
+            float:left;
+            height:41px;
+        }
+    }
+
+    .grey_bg{
+        background-color:#f3f3f3
+    }
+
+    .hash_highlight{
+        border:solid 1px;
+    }
+
+    .add_course{
+        text-align:right;
+        .add_course_btn{
+            margin-top:25px;
+        }
+    }
+
+    .editor{
+        margin-bottom:1em;
+        padding:0.5em;
+        margin-left:-0.5em;
+
+        .delete_confirm{
+            float:left;
+            margin-right:1em;
+            label{
+                margin-right:1em;
+            }
+        }
+
+        &>div{
+            margin-bottom:1em;
+            &:nth-of-type(odd){
+                /*margin-right:10px;*/
+            }
+
+            input{
+                width:100%;
+                padding:0.2em;
+                margin-left:-0.2em;
+                box-sizing: border-box;
+                background-color:white;
+                border: 1px solid #ccc;
+                box-shadow: inset 0 1px 3px #ddd;
+                border-radius: 4px;
+            }
+        }
+
+        .list_input_item input[disabled],
+        .cpd_points_input[disabled],
+        input[disabled]{
+            background-color:#f3f3f3;
+            border:0;
+            box-shadow:none !important;
+        }
+
+        .name{
+            font-size:1em;
+            font-weight:bold;
+        }
+
+        .name_input,
+        .url_input{
+            display:flex;
+
+            label{
+                padding:0.2em;
+                margin-right:1em;
+                float:left;
+            }
+
+            textarea, input{
+                flex-grow:100;
+                overflow-y: scroll;
+                overflow-x: hidden;
+            }
+        }
+
+        .highlight, 
+        .highlight textarea, 
+        .name_input.highlight input{
+        /*.highlight input[type=text]{*/
+            background-color:#ffe6e6;
+        }
+
+        .custom_input{
+            display:flex;
+            label{
+                float:left;
+                width:60px;
+                padding:0.2em;
+                margin-right:1em;
+            }
+
+            .cpd_points_private{
+                width:auto;
+            }
+
+            input{
+                float:left;
+                width:30%;
+                /*background-color: white;*/
+            }
+            .provider_input{
+                width:50%;
+            }
+
+            select{
+                padding:0.2em;
+                margin-top:0.2em;
+                margin-left:-3px;
+                top:-2px;
+                position:relative;
+            }
+        }
+
+        .lifted_key_input,
+        .dates_input{
+            display:flex;
+            padding:0.2em;
+            margin-top:0.2em;
+
+            label{
+                float:left;
+                width:60px;
+                margin-right:1em;
+            }
+
+            .list_input{
+                float:left;
+                display:flex;
+                flex-grow:100;
+                max-width:730px;
+
+                .button_col{
+                    width:41px;
+                }
+
+                .empty{
+                    margin-top:0;
+                }
+
+                .list_input_item{
+                    float:left;
+
+                    input{
+                        float:left;
+                        width:300px;
+                        padding: 0.2em;
+                        border-color: #ccc;
+                        box-shadow: inset 0 1px 3px #ddd;
+                        margin-bottom:0.5em;
+                    }
+
+                    .remove_btn{
+                        float:left;
+                        position:relative;
+                        left:-20px;
+                        z-index:999;
+                        margin-top:0.3em;
+                        cursor:pointer;
+
+                        &:hover{
+                            font-weight:bold;
+                        }
+                    }
+                }
+            }
+
+            .add_button{
+                @button_width: 25px;
+                float:left;
+                margin-right:1em;
+                height:@button_width;
+                width:@button_width;
+                padding:2px;
+                margin-bottom: 10px;
+
+                &:hover{
+                    box-shadow: inset 0 0 
+                                @button_width @button_width
+                                rgba(255, 255, 255, 0.25);
+                }
+            }
+        }
+
+        .lifted_key_input{
+            .list_input{
+                .liftedkey_input_item{
+                    margin-bottom:5px;
+                    select{
+                        margin-right:10px;
+                    }
+
+                    .remove_btn{
+                        float:left;
+                        position:relative;
+                        z-index:999;
+                        margin-top:0.5em;
+                        cursor:pointer;
+
+                        &:hover{
+                            font-weight:bold;
+                        }
+                    }
+                }
+            }
+        }
+
+        .ongoing_input{
+            margin-top:0.2em;
+            margin-bottom:0.2em;
+        }
+
+        .ongoing_input input,
+        .custom_input .cost_is_varying_input,
+        .custom_input .cpd_is_private_input{
+            width: @checkbox_width;
+            height:25.6px;
+            margin-top:0.1em;
+            margin-left:0.1em;
+            border:none;
+            box-shadow: none;
+        }
+
+        .custom_input .cost_input,
+        .custom_input .cpd_points_input{
+            width:80px;
+            &:hover{
+                &:disabled{
+                    box-shadow:none;
+                }
+            }
+        }
+
+        .actions{
+            margin-top:1em;
+            .error_msg, .success_msg{
+                margin-left:1em;
+            }
+
+            .buttons{
+                button{
+                    @button_width: auto;
+                    margin-left:10px;
+                    padding: .5em 0.9em;
+                    width:@button_width;
+                    height:35.2px;
+
+                    &:first-of-type{
+                        margin-left:0px;
+                    }
+
+                    img{
+                        height:15px;
+                    }
+
+                    &:hover{
+                        box-shadow: inset 0 0 
+                                    @button_width @button_width
+                                    rgba(255, 255, 255, 0.25);
+                    }
+                }
+
+                .save_button{
+                    img{
+                        height:10px;
+                    }
+                }
+            }
+
+        }
+    }
+}

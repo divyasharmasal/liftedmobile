@@ -1,0 +1,28 @@
+version: '3.1'
+
+services:
+    db_dev:
+        container_name: liftedmobile_db_dev
+        build: 
+            context: ../../
+            dockerfile: ./docker/app_server/db.dev.dockerfile
+        environment:
+            - POSTGRES_PASSWORD=password 
+        expose:
+            - "5432"
+
+
+    liftedmobile_dev:
+        container_name: liftedmobile_dev
+        build:
+            context: ../../
+            dockerfile: ./docker/app_server/liftedmobile.dev.dockerfile
+        volumes:
+            - ../../src:/src
+        ports:
+            - "8000:8000"
+        environment:
+            - DEV=true
+            - DB_PWD=password
+        depends_on:
+            - "db_dev"

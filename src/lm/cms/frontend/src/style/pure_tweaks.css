@@ -1,0 +1,36 @@
+.pure-g {
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+@media (max-width: 767px) {
+	.pure-g {
+		width: 568px;
+		padding-right: 0px;
+		padding-left: 0px;
+		margin-left:2%;
+		margin-right:2%;
+		width:96% !important;
+	}
+}
+
+@media (min-width: 768px) {
+	.pure-g {
+		width: 768px;
+	}
+}
+
+@media (min-width: 1024px) {
+	.pure-g {
+		width: 1024px;
+	}
+}
+
+@media (min-width: 1280px) {
+	.pure-g {
+		width: 1280px;
+	}
+}
+

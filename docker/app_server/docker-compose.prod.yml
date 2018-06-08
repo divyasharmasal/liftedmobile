@@ -1,0 +1,58 @@
+version: '3.1'
+
+services:
+    db:
+        container_name: liftedmobile_db
+        build: 
+            context: ../../
+            dockerfile: ./docker/app_server/db.prod.dockerfile
+        environment:
+            - POSTGRES_PASSWORD=fGWJTw2Dbpa2p547brXEVjXyzHZu9puytcAaA9mY 
+
+
+    liftedmobile:
+        container_name: liftedmobile
+        depends_on:
+            - "db"
+        build:
+            context: ../../
+            dockerfile: ./docker/app_server/liftedmobile.prod.dockerfile
+        #expose:
+            #- "8001"
+        volumes:
+            - ../../../app_server/django_log:/var/log/django/
+        secrets:
+            - secrets
+        logging:
+            driver: "awslogs"
+            options:
+                awslogs-region: "ap-southeast-1"
+                awslogs-group: "liftedmobile_logs"
+                awslogs-stream: "liftedmobile_stream"
+                awslogs-create-group: "true"
+
+    tlsproxy:
+        container_name: liftedmobile_tlsproxy
+        build:
+            context: ../../
+            dockerfile: ./docker/tlsproxy/tlsproxy.prod.dockerfile
+        ports:
+            - "443:443"
+            - "80:80"
+        volumes:
+            - ../../../app_server/tlsproxy/letsencrypt/:/etc/letsencrypt/
+        logging:
+            driver: "awslogs"
+            options:
+                awslogs-region: "ap-southeast-1"
+                awslogs-group: "liftedmobile_logs"
+                awslogs-stream: "liftedmobile_tlsproxy_stream"
+                awslogs-create-group: "true"
+        secrets:
+            - secrets
+        depends_on:
+            - "liftedmobile"
+
+secrets:
+    secrets:
+        file: ../../../LM_SECRETS/app_secrets.json

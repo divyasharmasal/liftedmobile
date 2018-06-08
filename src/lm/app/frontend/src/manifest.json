@@ -1,0 +1,14 @@
+{
+  "name": "LIFTED Mobile",
+  "short_name": "LIFTED Mobile",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff",
+  "theme_color": "#673ab8",
+  "icons": [{
+    "src": "/static/app/dist/favicons/favicon-196x196.png",
+    "type": "image/png",
+    "sizes": "192x192"
+  }
+}
