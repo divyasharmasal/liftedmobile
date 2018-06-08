@@ -6,7 +6,7 @@ then
 fi
 
 docker-compose -f ./docker/admin_server/docker-compose.prod.yml stop -t 0
-docker-compose -f ./docker/admin_server/docker-compose.prod.yml up -d
+docker-compose -f ./docker/admin_server/docker-compose.prod.yml up --no-build -d
 
 if [ "${1}" != "--no-logs" ]
 then

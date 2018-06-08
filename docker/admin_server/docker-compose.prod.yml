@@ -23,9 +23,9 @@ services:
             - ../../../scrapyd/scrapyd:/var/log/scrapyd/
             - ../../../scrapyd/scheduler:/var/log/scraper_scheduler/
         secrets:
-            - scrapyd_api_key
-        expose:
-            - "6800"
+            - secrets
+        #expose:
+            #- "6800"
         environment:
             - PYTHONUNBUFFERED=1
 
@@ -40,22 +40,12 @@ services:
         volumes:
             - ../../../admin_server/django_log:/var/log/django/
         secrets:
-            - django_secret
-            - cms_admin_pwd
-            - scrapyd_api_key
-            - django_admin_pwd
-            - django_team_pwd
-            - django_logging_aws_cw
-            - email_credentials
-            - admin_emails
-            - db_config
+            - secrets
         environment:
             - CMS=true
             - PYTHONUNBUFFERED=1
-        ports:
-            - "9001:80"
         expose:
-            - "80"
+            - "8001"
         logging:
             driver: "awslogs"
             options:
@@ -64,22 +54,27 @@ services:
                 awslogs-stream: "cms_stream"
                 awslogs-create-group: "true"
 
+    tlsproxy:
+        container_name: admin_tlsproxy
+        build:
+            context: ../../
+            dockerfile: ./docker/tlsproxy/tlsproxy.prod.dockerfile
+        ports:
+            - "9001:443"
+        volumes:
+            - ../../../admin_server/tlsproxy/letsencrypt/:/etc/letsencrypt/
+        logging:
+            driver: "awslogs"
+            options:
+                awslogs-region: "ap-southeast-1"
+                awslogs-group: "liftedmobile_logs"
+                awslogs-stream: "cms_tlsproxy_stream"
+                awslogs-create-group: "true"
+        secrets:
+            - secrets
+        depends_on:
+            - "cms"
+
 secrets:
-    django_secret:
-        file: ../../../LM_ADMIN_SECRETS/DJANGO_SECRET
-    cms_admin_pwd:
-        file: ../../../LM_ADMIN_SECRETS/CMS_ADMIN_PWD
-    scrapyd_api_key:
-        file: ../../../LM_ADMIN_SECRETS/SCRAPYD_API_KEY
-    db_config:
-        file: ../../../LM_ADMIN_SECRETS/DB_CONFIG.json
-    django_admin_pwd:
-        file: ../../../LM_SECRETS/DJANGO_ADMIN_PWD
-    django_team_pwd:
-        file: ../../../LM_SECRETS/DJANGO_TEAM_PWD
-    django_logging_aws_cw:
-        file: ../../../LM_SECRETS/DJANGO_LOGGING_AWS_CW.json
-    email_credentials:
-        file: ../../../LM_SECRETS/EMAIL_CREDENTIALS.json
-    admin_emails:
-        file: ../../../LM_SECRETS/ADMIN_EMAILS.json
+    secrets:
+        file: ../../../LM_SECRETS/cms_secrets.json

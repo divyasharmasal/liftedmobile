@@ -44,6 +44,10 @@ Log out and log back in for this change to take effect.
 Next, install Docker Compose. Follow the instructions here:
 https://docs.docker.com/compose/install/
 
+Note: make sure that you have Docker Compose version 1.20.1, build 5d8c71b
+installed, not version 1.21.0, build 1719ceb, unless newer versions fix [this
+issue](https://github.com/docker/compose/issues/5874).
+
 ### Install JS development dependencies and move static assets
 
 First, install Yarn. Follow the instructions here:
